@@ -34,13 +34,90 @@
     overflow-y: hidden; /* To prevent independent scrolling */
 }
 
+.line-numbers2 {
+     line-height: 2.5em;
+    width: 30px; /* Adjust as needed */
+    text-align: right;
+    padding-right: 5px;
+    background-color: #f0f0f0;
+    overflow-y: hidden; /* To prevent independent scrolling */
+}
+
 textarea {
     flex-grow: 1;
     white-space: pre; /* Important for line breaks */
     overflow-y: scroll;
 }
+
+.miScrollableDiv {
+  height: 200px; /* Set a fixed height for the div */
+  border: 2px solid #333; /* Add a border */
+  overflow-y: auto; /* Enable vertical scrolling when content exceeds height */
+  /* overflow-x: auto; for horizontal scrolling, or overflow: auto; for both */
+}
+
     </style>
   </head>
   <body>
+  <script>
+function myFunction(ndiv) {
+
+  return;
+
+  const valmarca =ndiv.innerHTML;
+  console.log('div click ', ndiv, ndiv.id, valmarca);
+  const CheckMark1  = "\u2713";
+  const CheckMark  = "\u2714";
+  const emptyBallotBox = "\u2610";
+  const sourceTextarea  = document.getElementById('textarea'); // Replace 'myTextarea' with your textarea's ID
+
+  const targetTextarea = document.getElementById('textarea2');
+
+  const Lines = sourceTextarea.value.split(/\r?\n/);
+  const lineIndex = ndiv.id-1;
+  var lineToMove = Lines[lineIndex];
+
+  let choice = prompt("Eliga opcion :\n1. Pagado\n2. Entregado\n3. Nada", "1");
+  if (choice !=3)
+  {
+    if (choice == 1)
+   {
+      lineToMove = lineToMove+ ' '+CheckMark2+' Pagado';
+   }
+    if (choice == 2)
+   {
+      lineToMove = lineToMove+' '+CheckMark2+' Pagado '+ +CheckMark2+' Entregado';
+   }
+    // Remove the line from the source
+    Lines.splice(lineIndex, 1);
+    sourceTextarea.value = Lines.join('\n');
+
+    // Add the line to the target
+    if (targetTextarea.value !== '') {
+        targetTextarea.value += '\n'; // Add newline if target already has content
+    }
+    targetTextarea.value += lineToMove;
+  }
+
+  //if (choice == 1)
+  // {
+  //   ndiv.style.backgroundColor = "lightblue";
+  // } else if  (choice == 2)
+  // {
+  //   ndiv.style.backgroundColor = "yellow";
+  // }  else if  (choice == 3)
+  // {
+  //   ndiv.style.backgroundColor = "green";
+  // }
+
+ // if (valmarca == emptyBallotBox ) {
+ //    console.log("Excellent!");
+ //    ndiv.innerHTML  =CheckMark;
+ // } else if (valmarca ==CheckMark) {
+ //   console.log("Good job!");
+ //  ndiv.innerHTML  =emptyBallotBox;
+ // }
+}
+</script>
   </body>
 </html>

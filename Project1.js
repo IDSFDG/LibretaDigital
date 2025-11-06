@@ -63768,6 +63768,7 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
       this.WebButton3 = null;
       this.listaselect = null;
       this.WebMemo3 = null;
+      this.WebButton4 = null;
     };
     this.$final = function () {
       this.PaginasLibreta = undefined;
@@ -63803,6 +63804,7 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
       this.WebButton3 = undefined;
       this.listaselect = undefined;
       this.WebMemo3 = undefined;
+      this.WebButton4 = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
@@ -64615,6 +64617,44 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
       };
       this.WebPanel5.SetVisible(false);
     };
+    this.WebButton4Click = function (Sender) {
+      var i = 0;
+      var strlinea = "";
+      var color = "";
+      color = "lightgreen";
+      color = "lightblue";
+      color = "rgb(255, 127, 127)";
+      const targetDiv = document.getElementById('miDivTexto');
+      const myElements = [];
+      for (var $l = 0, $end = this.WebMemo1.FLines.GetCount() - 1; $l <= $end; $l++) {
+        i = $l;
+        strlinea = this.WebMemo1.FLines.Get(i);
+        if (pas.SysUtils.TStringHelper.GetLength.call({get: function () {
+            return strlinea;
+          }, set: function (v) {
+            strlinea = v;
+          }}) > 0) {
+          strlinea = pas.SysUtils.IntToStr(i) + ".-" + strlinea;
+          // Create a paragraph element
+                  var p1 = document.createElement('p');
+                  p1.textContent = strlinea;
+          
+                 // p1.addEventListener('click', function() {
+                 //         p1.style.backgroundColor = 'green';
+                 //     });
+                  myElements.push(p1);
+                     // targetDiv.innerHTML += '<br>';
+                    targetDiv.style.textWrap = 'wrap';
+        };
+      };
+      for (const element of myElements) {
+      element.addEventListener('click', function() {
+              element.style.backgroundColor = color; //'lightgreen';
+          });
+      targetDiv.appendChild(element);
+      }
+      //targetDiv.appendChild(myElements);
+    };
     this.maximoPopupTexto = function () {
       var Result = 0.0;
       var i = 0;
@@ -64817,6 +64857,7 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
       this.botonCompartir = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.botoncompartirpdf2 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.comppdf = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.WebButton4 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebPopupMenu1 = pas["WEBLib.Menus"].TPopupMenu.$create("Create$1",[this]);
       this.Pagado1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Entregado1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
@@ -64850,6 +64891,7 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
       this.botonCompartir.BeforeLoadDFMValues();
       this.botoncompartirpdf2.BeforeLoadDFMValues();
       this.comppdf.BeforeLoadDFMValues();
+      this.WebButton4.BeforeLoadDFMValues();
       this.WebPopupMenu1.BeforeLoadDFMValues();
       this.Pagado1.BeforeLoadDFMValues();
       this.Entregado1.BeforeLoadDFMValues();
@@ -64882,7 +64924,7 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
         this.PaginasLibreta.FElementTabActiveClassName = "nav-link active";
         this.PaginasLibreta.FElementTabItemClassName = "nav-item";
         this.PaginasLibreta.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.PaginasLibreta.SetTabIndex(0);
+        this.PaginasLibreta.SetTabIndex(1);
         this.PaginasLibreta.SetTabOrder(0);
         this.PaginaVentas.SetParentComponent(this.PaginasLibreta);
         this.PaginaVentas.SetName("PaginaVentas");
@@ -65178,7 +65220,7 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
         this.divTexto.SetLeft(0);
         this.divTexto.SetTop(0);
         this.divTexto.SetWidth(598);
-        this.divTexto.SetHeight(392);
+        this.divTexto.SetHeight(376);
         this.divTexto.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
         this.divTexto.SetChildOrderEx(1);
         this.divTexto.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
@@ -65186,9 +65228,9 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
         this.WebPanel3.SetParentComponent(this.PaginaPagadoEntregado);
         this.WebPanel3.SetName("WebPanel3");
         this.WebPanel3.SetLeft(0);
-        this.WebPanel3.SetTop(392);
+        this.WebPanel3.SetTop(376);
         this.WebPanel3.SetWidth(598);
-        this.WebPanel3.SetHeight(68);
+        this.WebPanel3.SetHeight(84);
         this.WebPanel3.SetElementClassName("card");
         this.WebPanel3.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
         this.WebPanel3.SetChildOrderEx(2);
@@ -65197,7 +65239,7 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
         this.WebPanel3.SetTabOrder(2);
         this.botonCompartir.SetParentComponent(this.WebPanel3);
         this.botonCompartir.SetName("botonCompartir");
-        this.botonCompartir.SetLeft(96);
+        this.botonCompartir.SetLeft(114);
         this.botonCompartir.SetTop(6);
         this.botonCompartir.SetWidth(120);
         this.botonCompartir.SetHeight(25);
@@ -65236,6 +65278,20 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
         this.comppdf.SetHeightPercent(100.000000000000000000);
         this.comppdf.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.comppdf,this,"OnClick","comppdfClick");
+        this.WebButton4.SetParentComponent(this.WebPanel3);
+        this.WebButton4.SetName("WebButton4");
+        this.WebButton4.SetLeft(18);
+        this.WebButton4.SetTop(6);
+        this.WebButton4.SetWidth(72);
+        this.WebButton4.SetHeight(25);
+        this.WebButton4.SetCaption("Cargar");
+        this.WebButton4.SetChildOrderEx(3);
+        this.WebButton4.SetElementClassName("btn btn-light");
+        this.WebButton4.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebButton4.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebButton4.SetHeightPercent(100.000000000000000000);
+        this.WebButton4.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.WebButton4,this,"OnClick","WebButton4Click");
         this.WebPopupMenu1.SetParentComponent(this);
         this.WebPopupMenu1.SetName("WebPopupMenu1");
         this.WebPopupMenu1.FAppearance.FHamburgerMenu.SetCaption("Menu");
@@ -65298,6 +65354,7 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
         this.botonCompartir.AfterLoadDFMValues();
         this.botoncompartirpdf2.AfterLoadDFMValues();
         this.comppdf.AfterLoadDFMValues();
+        this.WebButton4.AfterLoadDFMValues();
         this.WebPopupMenu1.AfterLoadDFMValues();
         this.Pagado1.AfterLoadDFMValues();
         this.Entregado1.AfterLoadDFMValues();
@@ -65343,6 +65400,7 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
     $r.addField("WebButton3",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addField("listaselect",pas["WEBLib.StdCtrls"].$rtti["TListBox"]);
     $r.addField("WebMemo3",pas["WEBLib.StdCtrls"].$rtti["TMemo"]);
+    $r.addField("WebButton4",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebButton1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebButton2Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
@@ -65359,6 +65417,7 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
     $r.addMethod("WebMemo1DblClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("LimpiarSeleccion1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebButton3Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebButton4Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.Form3 = null;
   $mod.$implcode = function () {

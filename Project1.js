@@ -63240,9 +63240,498 @@ rtl.module("WEBLib.ComCtrls",["System","Classes","SysUtils","Web","WEBLib.Contro
     };
   };
 },["WEBLib.Buttons","WEBLib.Forms","WEBLib.Utils"]);
-rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.Controls","WEBLib.WebCtrls","WEBLib.StdCtrls","WEBLib.StdCtrls","WEBLib.ExtCtrls","WEBLib.Menus","WEBLib.Menus","WEBLib.ComCtrls"],function () {
+rtl.module("WEBLib.Toast",["System","Web","Classes","SysUtils","WEBLib.Controls","WEBLib.ExtCtrls"],function () {
   "use strict";
   var $mod = this;
+  this.$rtti.$Class("TToast");
+  this.TToastPosition = {"0": "tpTopLeft", tpTopLeft: 0, "1": "tpTopRight", tpTopRight: 1, "2": "tpBottomLeft", tpBottomLeft: 2, "3": "tpBottomRight", tpBottomRight: 3, "4": "tpAbsolute", tpAbsolute: 4, "5": "tpContainer", tpContainer: 5};
+  this.$rtti.$Enum("TToastPosition",{minvalue: 0, maxvalue: 5, ordtype: 1, enumtype: this.TToastPosition});
+  this.TToastTime = {"0": "ttNone", ttNone: 0, "1": "ttShow", ttShow: 1, "2": "ttDeltaShow", ttDeltaShow: 2};
+  this.$rtti.$Enum("TToastTime",{minvalue: 0, maxvalue: 2, ordtype: 1, enumtype: this.TToastTime});
+  rtl.createClass(this,"TToastItem",pas.Classes.TCollectionItem,function () {
+    this.$init = function () {
+      pas.Classes.TCollectionItem.$init.call(this);
+      this.FBody = "";
+      this.FHeader = "";
+      this.FCloseButton = false;
+      this.FElementHandle = null;
+      this.FElementTime = null;
+      this.FAutoHide = false;
+      this.FTime = 0;
+      this.FDispTime = 0.0;
+      this.FVisible = false;
+      this.FID$1 = 0;
+      this.FTag = 0;
+    };
+    this.$final = function () {
+      this.FElementHandle = undefined;
+      this.FElementTime = undefined;
+      pas.Classes.TCollectionItem.$final.call(this);
+    };
+    this.SetVisible = function (Value) {
+      if (this.FVisible !== Value) {
+        this.FVisible = Value;
+        if (this.FVisible) {
+          this.Show()}
+         else this.Hide();
+      };
+    };
+    this.ToastID = function () {
+      var Result = "";
+      Result = this.FCollection.Owner().FName + pas.SysUtils.IntToStr(this.FID$1);
+      return Result;
+    };
+    this.UpdateToast = function (el) {
+      var hdr = null;
+      var bdy = null;
+      var btn = null;
+      var cap = null;
+      el.classList.add("toast");
+      if (this.FAutoHide) {
+        el.setAttribute("data-autohide","true");
+        el.setAttribute("data-delay",pas.SysUtils.IntToStr(this.Toast().FAutoHideDelay));
+      } else el.setAttribute("data-autohide","false");
+      el.setAttribute("data-animation","true");
+      el.setAttribute("role","alert");
+      el.setAttribute("id",this.ToastID());
+      el.style.setProperty("min-width","300px");
+      hdr = document.createElement("DIV");
+      hdr.setAttribute("class","toast-header");
+      cap = document.createElement("STRONG");
+      if (rtl.as(this.FCollection.Owner(),$mod.TToast).FLevel === $mod.TLibraryLevel.llv4) {
+        cap.setAttribute("class","mr-auto")}
+       else cap.setAttribute("class","me-auto");
+      cap.innerHTML = this.FHeader;
+      hdr.appendChild(cap);
+      if (this.FTime !== $mod.TToastTime.ttNone) {
+        this.FElementTime = document.createElement("SMALL");
+        if (this.FTime === $mod.TToastTime.ttShow) this.FElementTime.innerHTML = pas.SysUtils.TimeToStr(pas.SysUtils.Now());
+        hdr.appendChild(this.FElementTime);
+      };
+      if (this.FCloseButton) {
+        btn = document.createElement("BUTTON");
+        btn.setAttribute("type","button");
+        if (rtl.as(this.FCollection.Owner(),$mod.TToast).FLevel === $mod.TLibraryLevel.llv4) {
+          btn.setAttribute("class","ml-2 mb-1 close");
+          btn.setAttribute("data-dismiss","toast");
+        } else {
+          btn.setAttribute("class","btn-close");
+          btn.setAttribute("data-bs-dismiss","toast");
+        };
+        btn.setAttribute("data-id",this.ToastID());
+        if (rtl.as(this.FCollection.Owner(),$mod.TToast).FLevel === $mod.TLibraryLevel.llv4) btn.innerHTML = "&times;";
+        btn.addEventListener("click",this.Toast().FClosePtr);
+        hdr.appendChild(btn);
+      };
+      bdy = document.createElement("DIV");
+      bdy.setAttribute("class","toast-body");
+      bdy.innerHTML = this.FBody;
+      el.appendChild(hdr);
+      el.appendChild(bdy);
+    };
+    this.Create$1 = function (ACollection) {
+      pas.Classes.TCollectionItem.Create$1.apply(this,arguments);
+      rtl.as(ACollection,$mod.TToastCollection).FUniqueID = rtl.as(ACollection,$mod.TToastCollection).FUniqueID + 1;
+      this.FElementHandle = null;
+      this.FTime = $mod.TToastTime.ttNone;
+      this.FCloseButton = true;
+      this.FID$1 = rtl.as(ACollection,$mod.TToastCollection).FUniqueID;
+      return this;
+    };
+    this.Destroy = function () {
+      pas.Classes.TCollectionItem.Destroy.call(this);
+    };
+    this.Assign = function (Source) {
+      if ($mod.TToastItem.isPrototypeOf(Source)) {
+        this.FBody = rtl.as(Source,$mod.TToastItem).FBody;
+        this.FHeader = rtl.as(Source,$mod.TToastItem).FHeader;
+        this.FCloseButton = rtl.as(Source,$mod.TToastItem).FCloseButton;
+        this.FAutoHide = rtl.as(Source,$mod.TToastItem).FAutoHide;
+        this.FTime = rtl.as(Source,$mod.TToastItem).FTime;
+        this.FTag = rtl.as(Source,$mod.TToastItem).FTag;
+      };
+    };
+    this.Show = function () {
+      var id = "";
+      var el = null;
+      this.Toast().UpdatePosition();
+      if (!(this.FElementHandle != null)) this.FElementHandle = this.CreateToast();
+      id = this.ToastID();
+      el = this.Toast().FToastContainer;
+      if ((this.Toast().FPosition === $mod.TToastPosition.tpContainer) && (this.Toast().FContainer !== "")) {
+        el = document.getElementById(this.Toast().FContainer);
+        if (!(el != null)) el = this.Toast().FToastContainer;
+      };
+      if (this.Toast().FOnShow != null) {
+        this.Toast().FOnShow(this.Toast(),this.GetIndex(),this.FElementHandle);
+      };
+      el.appendChild(this.FElementHandle);
+      if (id !== "") {
+        var tst = document.getElementById(id);  //select id of toast
+        var msg = new bootstrap.Toast(tst);  //inizialize it
+        msg.show();  //show it;
+      };
+      this.FDispTime = pas.SysUtils.Now();
+      this.FVisible = true;
+    };
+    this.Hide = function () {
+      var id = "";
+      if (this.FElementHandle != null) {
+        id = this.ToastID();
+        var tst = document.getElementById(id); //select id of toast
+        var msg = new bootstrap.Toast(tst); //inizialize it
+        msg.hide(); //show it;
+        this.FVisible = false;
+      };
+    };
+    this.CreateToast = function () {
+      var Result = null;
+      var el = null;
+      el = document.createElement("DIV");
+      this.UpdateToast(el);
+      Result = el;
+      return Result;
+    };
+    this.Update = function () {
+      if (this.FElementHandle != null) {
+        while (this.FElementHandle.childElementCount > 0) this.FElementHandle.removeChild(this.FElementHandle.firstChild);
+      } else this.FElementHandle = this.CreateToast();
+      this.UpdateToast(this.FElementHandle);
+    };
+    this.Toast = function () {
+      var Result = null;
+      Result = this.FCollection.Owner();
+      return Result;
+    };
+    var $r = this.$rtti;
+    $r.addMethod("Create$1",2,[["ACollection",pas.Classes.$rtti["TCollection"]]]);
+    $r.addProperty("AutoHide",0,rtl.boolean,"FAutoHide","FAutoHide",{Default: false});
+    $r.addProperty("Body",0,rtl.string,"FBody","FBody");
+    $r.addProperty("CloseButton",0,rtl.boolean,"FCloseButton","FCloseButton",{Default: true});
+    $r.addProperty("Tag",0,rtl.longint,"FTag","FTag",{Default: 0});
+    $r.addProperty("Time",0,$mod.$rtti["TToastTime"],"FTime","FTime");
+    $r.addProperty("Header",0,rtl.string,"FHeader","FHeader");
+  });
+  rtl.createClass(this,"TToastCollection",pas.Classes.TOwnedCollection,function () {
+    this.$init = function () {
+      pas.Classes.TOwnedCollection.$init.call(this);
+      this.FUniqueID = 0;
+    };
+    this.GetItem$1 = function (AIndex) {
+      var Result = null;
+      Result = this.GetItem(AIndex);
+      return Result;
+    };
+    this.SetItem$1 = function (AIndex, Value) {
+      this.SetItem(AIndex,Value);
+    };
+    this.Create$3 = function (AOwner) {
+      pas.Classes.TOwnedCollection.Create$2.call(this,AOwner,$mod.TToastItem);
+      this.FUniqueID = 0;
+      return this;
+    };
+    this.Add$1 = function (AHeader, ABody) {
+      var Result = null;
+      Result = pas.Classes.TCollection.Add.call(this);
+      Result.FHeader = AHeader;
+      Result.FBody = ABody;
+      return Result;
+    };
+    this.Add$2 = function () {
+      var Result = null;
+      Result = pas.Classes.TCollection.Add.call(this);
+      return Result;
+    };
+    this.Insert$1 = function (Index) {
+      var Result = null;
+      Result = pas.Classes.TCollection.Insert.call(this,Index);
+      return Result;
+    };
+    var $r = this.$rtti;
+    $r.addMethod("Create$3",2,[["AOwner",pas.Classes.$rtti["TComponent"]]]);
+  });
+  this.$rtti.$MethodVar("TToastHideEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["AIndex",rtl.longint]]), methodkind: 0});
+  this.$rtti.$MethodVar("TToastShowEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["AIndex",rtl.longint],["AElement",pas.Web.$rtti["TJSHTMLElement"]]]), methodkind: 0});
+  this.TLibraryLevel = {"0": "llv4", llv4: 0, "1": "llv5", llv5: 1};
+  this.$rtti.$Enum("TLibraryLevel",{minvalue: 0, maxvalue: 1, ordtype: 1, enumtype: this.TLibraryLevel});
+  rtl.createClass(this,"TToast",pas.Classes.TComponent,function () {
+    this.$init = function () {
+      pas.Classes.TComponent.$init.call(this);
+      this.FToastContainer = null;
+      this.FItems = null;
+      this.FPosition = 0;
+      this.FTimer = null;
+      this.FAutoHideDelay = 0;
+      this.FContainer = "";
+      this.FX = 0;
+      this.FY = 0;
+      this.FClosePtr = null;
+      this.FOnHide = null;
+      this.FLevel = 0;
+      this.FOnShow = null;
+    };
+    this.$final = function () {
+      this.FToastContainer = undefined;
+      this.FItems = undefined;
+      this.FTimer = undefined;
+      this.FOnHide = undefined;
+      this.FOnShow = undefined;
+      pas.Classes.TComponent.$final.call(this);
+    };
+    this.SetX = function (Value) {
+      this.FX = Value;
+    };
+    this.SetY = function (Value) {
+      this.FY = Value;
+    };
+    this.SetItems = function (Value) {
+      this.FItems.Assign(Value);
+    };
+    this.UpdatePosition = function () {
+      var el = null;
+      this.EnsureToastArea();
+      el = this.FToastContainer;
+      var $tmp = this.FPosition;
+      if ($tmp === $mod.TToastPosition.tpTopLeft) {
+        el.style.setProperty("top","0");
+        el.style.setProperty("left","0");
+        el.style.removeProperty("right");
+        el.style.removeProperty("bottom");
+      } else if ($tmp === $mod.TToastPosition.tpTopRight) {
+        el.style.setProperty("top","0");
+        el.style.removeProperty("left");
+        el.style.setProperty("right","0");
+        el.style.removeProperty("bottom");
+      } else if ($tmp === $mod.TToastPosition.tpBottomLeft) {
+        el.style.removeProperty("top");
+        el.style.setProperty("left","0");
+        el.style.removeProperty("right");
+        el.style.setProperty("bottom","0");
+      } else if ($tmp === $mod.TToastPosition.tpBottomRight) {
+        el.style.removeProperty("top");
+        el.style.removeProperty("left");
+        el.style.setProperty("right","0");
+        el.style.setProperty("bottom","0");
+      } else if ($tmp === $mod.TToastPosition.tpAbsolute) {
+        el.style.setProperty("top",pas.SysUtils.IntToStr(this.FY) + "px");
+        el.style.setProperty("left",pas.SysUtils.IntToStr(this.FX) + "px");
+        el.style.removeProperty("right");
+        el.style.removeProperty("bottom");
+      };
+      el.style.setProperty("position","absolute");
+      el.style.setProperty("z-index",pas.SysUtils.TIntegerHelper.ToString$1.call({a: pas["WEBLib.Forms"].Application.FMaxZIndex + 1, get: function () {
+          return this.a;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }}));
+    };
+    this.EnsureToastArea = function () {
+      if (!(this.FToastContainer != null)) {
+        this.FToastContainer = document.createElement("DIV");
+        document.body.appendChild(this.FToastContainer);
+      };
+    };
+    this.UpdateTimes = function (Sender) {
+      var i = 0;
+      var d = 0.0;
+      var h = 0;
+      var mi = 0;
+      var se = 0;
+      var se1100 = 0;
+      var s = "";
+      for (var $l = 0, $end = this.FItems.GetCount() - 1; $l <= $end; $l++) {
+        i = $l;
+        if (this.FItems.GetItem$1(i).FVisible && (this.FItems.GetItem$1(i).FTime === $mod.TToastTime.ttDeltaShow)) {
+          d = pas.SysUtils.Now() - this.FItems.GetItem$1(i).FDispTime;
+          pas.SysUtils.DecodeTime(d,{get: function () {
+              return h;
+            }, set: function (v) {
+              h = v;
+            }},{get: function () {
+              return mi;
+            }, set: function (v) {
+              mi = v;
+            }},{get: function () {
+              return se;
+            }, set: function (v) {
+              se = v;
+            }},{get: function () {
+              return se1100;
+            }, set: function (v) {
+              se1100 = v;
+            }});
+          if (h > 0) {
+            s = pas.SysUtils.IntToStr(h) + "h " + pas.SysUtils.IntToStr(mi) + "m"}
+           else if (mi > 0) {
+            s = pas.SysUtils.IntToStr(h) + "m " + pas.SysUtils.IntToStr(se) + "s"}
+           else s = pas.SysUtils.IntToStr(se) + "s";
+          this.FItems.GetItem$1(i).FElementTime.innerHTML = s + " ago";
+        };
+      };
+    };
+    this.HandleClose = function (Event) {
+      var Result = false;
+      var sid = "";
+      var id = 0;
+      var e = 0;
+      var l = 0;
+      sid = Event.target.getAttribute("data-id");
+      l = this.FName.length;
+      pas.System.Delete({get: function () {
+          return sid;
+        }, set: function (v) {
+          sid = v;
+        }},1,l);
+      pas.System.val$6(sid,{get: function () {
+          return id;
+        }, set: function (v) {
+          id = v;
+        }},{get: function () {
+          return e;
+        }, set: function (v) {
+          e = v;
+        }});
+      if (e === 0) {
+        this.DoHideToast(id);
+      };
+      Result = true;
+      return Result;
+    };
+    this.DoHideToast = function (AIndex) {
+      var Idx = 0;
+      var i = 0;
+      Idx = -1;
+      for (var $l = 0, $end = this.FItems.GetCount() - 1; $l <= $end; $l++) {
+        i = $l;
+        if (this.FItems.GetItem$1(i).FID$1 === AIndex) Idx = i;
+      };
+      if (Idx === -1) return;
+      if (this.FOnHide != null) this.FOnHide(this,Idx);
+      this.FItems.GetItem$1(Idx).Hide();
+      this.FItems.Delete(Idx);
+    };
+    this.Create$1 = function (AOwner) {
+      pas.Classes.TComponent.Create$1.apply(this,arguments);
+      this.FItems = $mod.TToastCollection.$create("Create$3",[this]);
+      this.FToastContainer = null;
+      this.FTimer = pas["WEBLib.ExtCtrls"].TTimer.$create("Create$1",[this]);
+      this.FTimer.FOnTimer = rtl.createCallback(this,"UpdateTimes");
+      this.FAutoHideDelay = 5000;
+      this.FLevel = $mod.TLibraryLevel.llv5;
+      this.FClosePtr = rtl.createCallback(this,"HandleClose");
+      return this;
+    };
+    this.Destroy = function () {
+      rtl.free(this,"FTimer");
+      pas.Classes.TComponent.Destroy.call(this);
+    };
+    rtl.addIntf(this,pas.System.IUnknown);
+    var $r = this.$rtti;
+    $r.addMethod("Create$1",2,[["AOwner",pas.Classes.$rtti["TComponent"]]]);
+    $r.addProperty("AutoHideDelay",0,rtl.longint,"FAutoHideDelay","FAutoHideDelay",{Default: 5000});
+    $r.addProperty("Container",0,pas["WEBLib.Controls"].$rtti["TElementID"],"FContainer","FContainer");
+    $r.addProperty("Items",2,$mod.$rtti["TToastCollection"],"FItems","SetItems");
+    $r.addProperty("Level",0,$mod.$rtti["TLibraryLevel"],"FLevel","FLevel",{Default: $mod.TLibraryLevel.llv5});
+    $r.addProperty("Position",0,$mod.$rtti["TToastPosition"],"FPosition","FPosition");
+    $r.addProperty("X",2,rtl.longint,"FX","SetX",{Default: 0});
+    $r.addProperty("Y",2,rtl.longint,"FY","SetY",{Default: 0});
+    $r.addProperty("OnHide",0,$mod.$rtti["TToastHideEvent"],"FOnHide","FOnHide");
+    $r.addProperty("OnShow",0,$mod.$rtti["TToastShowEvent"],"FOnShow","FOnShow");
+  });
+  rtl.createClass(this,"TWebToast",this.TToast,function () {
+    rtl.addIntf(this,pas.System.IUnknown);
+  });
+  this.CreateToast = function (ATitle, ABody, AID) {
+    var Result = null;
+    var el = null;
+    var hdr = null;
+    var bdy = null;
+    el = document.createElement("DIV");
+    el.classList.add("toast");
+    el.setAttribute("data-autohide","false");
+    el.setAttribute("id",AID);
+    hdr = document.createElement("DIV");
+    hdr.setAttribute("class","toast-header");
+    hdr.innerHTML = ATitle;
+    bdy = document.createElement("DIV");
+    bdy.setAttribute("class","toast-body");
+    bdy.innerHTML = ABody;
+    el.appendChild(hdr);
+    el.appendChild(bdy);
+    Result = el;
+    return Result;
+  };
+},["WEBLib.Forms"]);
+rtl.module("Unit4",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.Controls","WEBLib.StdCtrls","WEBLib.StdCtrls"],function () {
+  "use strict";
+  var $mod = this;
+  rtl.createClass(this,"TForm4",pas["WEBLib.Forms"].TForm,function () {
+    this.$init = function () {
+      pas["WEBLib.Forms"].TForm.$init.call(this);
+      this.listaselect = null;
+    };
+    this.$final = function () {
+      this.listaselect = undefined;
+      pas["WEBLib.Forms"].TForm.$final.call(this);
+    };
+    this.listaselectClick = function (Sender) {
+      this.Close();
+    };
+    this.LoadDFMValues = function () {
+      pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
+      this.listaselect = pas["WEBLib.StdCtrls"].TListBox.$create("Create$1",[this]);
+      this.listaselect.BeforeLoadDFMValues();
+      try {
+        this.SetName("Form4");
+        this.SetWidth(246);
+        this.SetHeight(344);
+        this.SetCSSLibrary(pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap);
+        this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.FFont.FCharset = 1;
+        this.FFont.SetColor(65793);
+        this.FFont.SetHeight(-15);
+        this.FFont.SetName("Tahoma");
+        this.FFont.SetStyle({});
+        this.SetParentFont(false);
+        this.listaselect.SetParentComponent(this);
+        this.listaselect.SetName("listaselect");
+        this.listaselect.SetLeft(8);
+        this.listaselect.SetTop(8);
+        this.listaselect.SetWidth(217);
+        this.listaselect.SetHeight(305);
+        this.listaselect.SetElementClassName("form-control");
+        this.listaselect.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.listaselect.SetHeightPercent(100.000000000000000000);
+        this.listaselect.SetItemHeight(18);
+        this.listaselect.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.listaselect,this,"OnClick","listaselectClick");
+        this.listaselect.FItems.BeginUpdate();
+        try {
+          this.listaselect.FItems.Clear();
+          this.listaselect.FItems.Add("Pagado");
+          this.listaselect.FItems.Add("Entregado");
+          this.listaselect.FItems.Add("Pagado no entregado");
+          this.listaselect.FItems.Add("Entregado no pagado");
+        } finally {
+          this.listaselect.FItems.EndUpdate();
+        };
+        this.listaselect.SetItemIndex(-1);
+      } finally {
+        this.listaselect.AfterLoadDFMValues();
+      };
+    };
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+    var $r = this.$rtti;
+    $r.addField("listaselect",pas["WEBLib.StdCtrls"].$rtti["TListBox"]);
+    $r.addMethod("listaselectClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
+  });
+  this.Form4 = null;
+});
+rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.Controls","WEBLib.WebCtrls","WEBLib.StdCtrls","WEBLib.StdCtrls","WEBLib.ExtCtrls","WEBLib.Menus","WEBLib.Menus","WEBLib.ComCtrls","WEBLib.Buttons","WEBLib.Toast"],function () {
+  "use strict";
+  var $mod = this;
+  var $impl = $mod.$impl;
   rtl.createClass(this,"TForm3",pas["WEBLib.Forms"].TForm,function () {
     this.$init = function () {
       pas["WEBLib.Forms"].TForm.$init.call(this);
@@ -63270,6 +63759,11 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
       this.PagadonoEntregado1 = null;
       this.PagadonoEntregado2 = null;
       this.comppdf = null;
+      this.WebSpeedButton1 = null;
+      this.webBotonMenu = null;
+      this.WebToast1 = null;
+      this.LimpiarSeleccion1 = null;
+      this.WebEdit1 = null;
     };
     this.$final = function () {
       this.PaginasLibreta = undefined;
@@ -63296,10 +63790,19 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
       this.PagadonoEntregado1 = undefined;
       this.PagadonoEntregado2 = undefined;
       this.comppdf = undefined;
+      this.WebSpeedButton1 = undefined;
+      this.webBotonMenu = undefined;
+      this.WebToast1 = undefined;
+      this.LimpiarSeleccion1 = undefined;
+      this.WebEdit1 = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
       var i = 0;
+      var textoseleccionado = "";
+      textoseleccionado = "";
+      $impl.popmenuwidth = this.maximoPopupTexto();
+      this.webBotonMenu.SetCaption("" + "☰");
       this.PaginasLibreta.SetActivePageIndex(0);
       this.WebMemo1.SetElementClassName("ltextarea");
       this.WebMemo2.SetElementClassName("ltextarea");
@@ -63314,6 +63817,8 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
             const lineNumbers2 = document.querySelector('.line-numbers2');
             const txtnumlinea = document.getElementById('nlinea');
       
+         //   const textareaseltxt = document.getElementById('memoseltxt');
+      
       textarea.addEventListener('input', updateLineNumbers);
       textarea.addEventListener('scroll', syncScroll);
       textarea.addEventListener('keyup', () => {
@@ -63324,7 +63829,39 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
       textarea.addEventListener('mouseup', () => {
         const lineNumber = getCurrentLineNumber(textarea);
         console.log('Current Line Number:', lineNumber);
+        console.log('sel start',textarea.selectionStart,' sel end',textarea.selectionEnd);
+      
+         if (textarea.selectionStart !== textarea.selectionEnd) {
+                  // Text has been selected
+                  const selectedText = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
+                  console.log('Selected text:', selectedText);
+                  // You can now use 'selectedText' for further operations
+                 // textareaseltxt.value = selectedText;
+                  textoseleccionado =selectedText;
+      
+              } else {
+                  // No text was selected, or only the cursor moved
+                  console.log('No text selected or just cursor moved.');
+              };
+      if (pas.SysUtils.TStringHelper.GetLength.call({get: function () {
+          return textoseleccionado;
+        }, set: function (v) {
+          textoseleccionado = v;
+        }}) > 0) this.CargaFormaSeleccion(textoseleccionado);
       });
+      
+          let savedSelectionStart = 0;
+          let savedSelectionEnd = 0;
+          //const textarea = document.getElementById('textarea');
+      
+          textarea.addEventListener('blur', () => {
+              savedSelectionStart = textarea.selectionStart;
+              savedSelectionEnd = textarea.selectionEnd;
+          });
+      
+          textarea.addEventListener('focus', () => {
+            //  textarea.setSelectionRange(savedSelectionStart, savedSelectionEnd);
+          });
       
       const emptyBallotBox = "\u2610";
       const emptydiv = "-";
@@ -63428,66 +63965,6 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
           this.p = v;
         }}));
     };
-    this.WebMemo1MouseUp = function (Sender, Button, Shift, X, Y) {
-      if (this.WebMemo1.GetSelLength() > 0) {
-        this.WebPopupMenu1.Popup(X,Y);
-        this.WebMemo1.SetSelLength(0);
-      };
-    };
-    this.Pagado1Click = function (Sender) {
-      var SelectedLines = null;
-      var MemoText = "";
-      var SelectedText = "";
-      function DivAgregaTexto(eltexto)
-            {
-              const myDiv = document.getElementById('miDivTexto');
-              //const newText = document.createTextNode(' Appended text.'); // Create a text node
-             myDiv.innerHTML += '<br>';
-             const newTextElement0 = document.createElement('span');
-             newTextElement0.textContent = "\u2714"+' Pagado:';
-             newTextElement0.style.backgroundColor= 'lightblue';
-             myDiv.appendChild(newTextElement0); // Append the text node
-             myDiv.innerHTML += '<br>';
-      
-             const newTextElement = document.createElement('span');
-             newTextElement.textContent = eltexto;
-             //newTextElement.style.color = 'ligthblue';
-             newTextElement.style.backgroundColor= 'lightblue';
-      
-             //myDiv.innerHTML += '<br>';
-             //myDiv.innerHTML += "\u2714"+' Pagado:';
-             //myDiv.innerHTML += '<br>';
-      
-             myDiv.appendChild(newTextElement); // Append the text node
-             myDiv.style.textWrap = 'wrap';
-      
-            }
-      
-            function clearSelectedText() {
-          const myTextarea = document.getElementById('textarea');
-          const startPos = myTextarea.selectionStart;
-          const endPos = myTextarea.selectionEnd;
-      
-          // Only clear if there's an actual selection
-          if (startPos !== endPos) {
-              const textBeforeSelection = myTextarea.value.substring(0, startPos);
-              const textAfterSelection = myTextarea.value.substring(endPos);
-              myTextarea.value = textBeforeSelection + textAfterSelection;
-      
-              // Set cursor position
-              myTextarea.selectionStart = startPos;
-              myTextarea.selectionEnd = startPos;
-          }
-          myTextarea.focus(); // Keep focus on the textarea
-      };
-      SelectedText = pas.System.Copy(this.WebMemo1.GetText(),this.WebMemo1.GetSelStart(),this.WebMemo1.GetSelLength());
-      this.WebMemo2.FLines.Add("✔" + " Pagado:");
-      this.WebMemo2.FLines.Add(SelectedText);
-      clearSelectedText();
-      
-            const idtexto = "\u2714"+' Pagado:\n';
-            DivAgregaTexto(SelectedText);
-    };
     this.Entregado1Click = function (Sender) {
       var SelectedLines = null;
       var MemoText = "";
@@ -63539,6 +64016,7 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
       clearSelectedText();
       const idtexto = "\u2714"+' Entregado:\n';
       DivAgregaTexto(SelectedText);
+      this.WebToast1.FItems.Clear();
     };
     this.botonCompartirClick = function (Sender) {
       async function shareDivText(divId) {
@@ -63909,19 +64387,352 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
               console.error('Error generating or handling PDF:', error);
           });
     };
+    this.webBotonMenuClick = function (Sender) {
+      var r = null;
+      var vpopmenuwidth = 0.0;
+      var i = 0;
+      var w = 0.0;
+      var maxw = 0.0;
+      var s = "";
+      var SelectedText = "";
+      var lselini = 0;
+      var lsellen = 0;
+      return;
+      if (this.WebMemo1.GetSelLength() <= 0) {
+        return;
+      };
+      lselini = $impl.selini;
+      lsellen = $impl.sellen;
+      SelectedText = pas.System.Copy(this.WebMemo1.GetText(),this.WebMemo1.GetSelStart(),this.WebMemo1.GetSelLength() + 1);
+      this.WebToast1.FItems.Clear();
+      this.WebToast1.FItems.Add$1("Informacion",SelectedText);
+      this.WebToast1.FItems.GetItem$1(this.WebToast1.FItems.GetCount() - 1).FAutoHide = true;
+      this.WebToast1.FItems.GetItem$1(this.WebToast1.FItems.GetCount() - 1).Show();
+      this.WebPopupMenu1.SetVisible(true);
+      r = this.webBotonMenu.GetElementHandle().getBoundingClientRect();
+      this.WebPopupMenu1.Popup(Math.round(r.left - $impl.popmenuwidth),Math.round(r.bottom));
+    };
+    this.webBotonMenuExit = function (Sender) {
+      this.WebToast1.FItems.Clear();
+      this.WebPopupMenu1.SetVisible(false);
+    };
+    this.Pagado1Click = function (Sender) {
+      var SelectedLines = null;
+      var MemoText = "";
+      var SelectedText = "";
+      function DivAgregaTexto(eltexto)
+            {
+              const myDiv = document.getElementById('miDivTexto');
+              //const newText = document.createTextNode(' Appended text.'); // Create a text node
+             myDiv.innerHTML += '<br>';
+             const newTextElement0 = document.createElement('span');
+             newTextElement0.textContent = "\u2714"+' Pagado:';
+             newTextElement0.style.backgroundColor= 'lightblue';
+             myDiv.appendChild(newTextElement0); // Append the text node
+             myDiv.innerHTML += '<br>';
+      
+             const newTextElement = document.createElement('span');
+             newTextElement.textContent = eltexto;
+             //newTextElement.style.color = 'ligthblue';
+             newTextElement.style.backgroundColor= 'lightblue';
+      
+             //myDiv.innerHTML += '<br>';
+             //myDiv.innerHTML += "\u2714"+' Pagado:';
+             //myDiv.innerHTML += '<br>';
+      
+             myDiv.appendChild(newTextElement); // Append the text node
+             myDiv.style.textWrap = 'wrap';
+      
+            }
+      
+            function clearSelectedText() {
+          const myTextarea = document.getElementById('textarea');
+          const startPos = myTextarea.selectionStart;
+          const endPos = myTextarea.selectionEnd;
+      
+          // Only clear if there's an actual selection
+          if (startPos !== endPos) {
+              const textBeforeSelection = myTextarea.value.substring(0, startPos);
+              const textAfterSelection = myTextarea.value.substring(endPos);
+              myTextarea.value = textBeforeSelection + textAfterSelection;
+      
+              // Set cursor position
+              myTextarea.selectionStart = startPos;
+              myTextarea.selectionEnd = startPos;
+          }
+          myTextarea.focus(); // Keep focus on the textarea
+      };
+      SelectedText = pas.System.Copy(this.WebMemo1.GetText(),this.WebMemo1.GetSelStart(),this.WebMemo1.GetSelLength());
+      this.WebMemo2.FLines.Add("✔" + " Pagado:");
+      this.WebMemo2.FLines.Add(SelectedText);
+      clearSelectedText();
+      
+            const idtexto = "\u2714"+' Pagado:\n';
+           // alert(SelectedText);
+            DivAgregaTexto(SelectedText);
+      this.WebToast1.FItems.Clear();
+    };
+    this.WebMemo1MouseMove = function (Sender, Shift, X, Y) {
+      var SelectedText = "";
+      var r = null;
+    };
+    this.WebMemo1MouseUp = function (Sender, Button, Shift, X, Y) {
+      var $Self = this;
+      var MyForm = null;
+      var lselini = 0;
+      var lsellen = 0;
+      var xx = 0;
+      var yy = 0;
+      var opcion = 0;
+      function AfterCreate(AForm) {
+      };
+      function AfterShowModal(AValue) {
+        if ($impl.SelectedText !== "") {
+          opcion = MyForm.listaselect.GetItemIndex();
+          $Self.WebEdit1.SetText(pas.SysUtils.IntToStr(opcion));
+          const mitextarea = document.getElementById('textarea');
+          console.log(lselini,lsellen);
+          mitextarea.focus(); // Focus the textarea to make the visual selection appear
+          mitextarea.setSelectionRange(lselini, lsellen); // Selects the first 5 characters
+          const start = mitextarea.selectionStart;
+          const ends = mitextarea.selectionEnd;
+          const selectedText = mitextarea.value.substring(start, ends);
+          alert('borrar seleccion');
+          textarea.value = textarea.value.substring(0, start) + textarea.value.substring(ends);
+        };
+      };
+      return;
+      $impl.SelectedText = pas.System.Copy(this.WebMemo1.GetText(),this.WebMemo1.GetSelStart(),this.WebMemo1.GetSelLength());
+      xx=event.X;
+      yy=event.Y;
+      if ($impl.SelectedText !== "") {
+        $impl.selini = this.WebMemo1.GetSelStart();
+        $impl.sellen = this.WebMemo1.GetSelLength();
+        lselini = $impl.selini;
+        lsellen = $impl.sellen;
+        this.WebToast1.FItems.Clear();
+        this.WebToast1.FItems.Add$1("Informacion",$impl.SelectedText);
+        this.WebToast1.FItems.GetItem$1(this.WebToast1.FItems.GetCount() - 1).FAutoHide = true;
+        MyForm = pas.Unit4.TForm4.$create("CreateNew$3",[AfterCreate]);
+        MyForm.FPopup = true;
+        MyForm.FPopupOpacity = 0.4;
+        MyForm.SetTop(10);
+        MyForm.SetLeft(rtl.trunc(($mod.Form3.GetClientWidth() - MyForm.GetWidth()) / 2));
+        MyForm.ShowModal$1(AfterShowModal);
+      };
+    };
+    this.WebMemo1DblClick = function (Sender) {
+    };
+    this.LimpiarSeleccion1Click = function (Sender) {
+      function clearSelectedText() {
+          const myTextarea = document.getElementById('textarea');
+          const startPos = myTextarea.selectionStart;
+          const endPos = myTextarea.selectionEnd;
+      
+          // Only clear if there's an actual selection
+          if (startPos !== endPos) {
+              const textBeforeSelection = myTextarea.value.substring(0, startPos);
+              const textAfterSelection = myTextarea.value.substring(endPos);
+              myTextarea.value = textBeforeSelection + textAfterSelection;
+      
+              // Set cursor position
+              myTextarea.selectionStart = startPos;
+              myTextarea.selectionEnd = startPos;
+          }
+          myTextarea.focus(); // Keep focus on the textarea
+      }
+            clearSelectedText();
+    };
+    this.maximoPopupTexto = function () {
+      var Result = 0.0;
+      var i = 0;
+      var l = 0;
+      var maxl = 0;
+      var s = "";
+      var maxs = "";
+      var bmp = null;
+      bmp = pas["WEBLib.Graphics"].TBitmap.$create("Create$3");
+      bmp.GetCanvas().FFont.Assign($mod.Form3.FFont);
+      Result = -1;
+      maxl = 0;
+      for (var $l = 0, $end = this.WebPopupMenu1.FItems.GetCount() - 1; $l <= $end; $l++) {
+        i = $l;
+        s = this.WebPopupMenu1.FItems.GetMenuItem(i).FCaption;
+        l = s.length;
+        if (l > maxl) {
+          maxl = l;
+          maxs = s;
+        };
+      };
+      Result = bmp.GetCanvas().TextWidth(maxs);
+      return Result;
+    };
+    this.PagadoSeleccion = function (eltexto) {
+      var lSelectedText = "";
+      lSelectedText = $impl.SelectedText;
+      lSelectedText = eltexto;
+      function DivAgregaTexto(eltexto)
+            {
+              const myDiv = document.getElementById('miDivTexto');
+              //const newText = document.createTextNode(' Appended text.'); // Create a text node
+             myDiv.innerHTML += '<br>';
+             const newTextElement0 = document.createElement('span');
+             newTextElement0.textContent = "\u2714"+' Pagado:';
+             newTextElement0.style.backgroundColor= 'lightblue';
+             myDiv.appendChild(newTextElement0); // Append the text node
+             myDiv.innerHTML += '<br>';
+      
+             const newTextElement = document.createElement('span');
+             newTextElement.textContent = eltexto;
+             //newTextElement.style.color = 'ligthblue';
+             newTextElement.style.backgroundColor= 'lightblue';
+      
+             //myDiv.innerHTML += '<br>';
+             //myDiv.innerHTML += "\u2714"+' Pagado:';
+             //myDiv.innerHTML += '<br>';
+      
+             myDiv.appendChild(newTextElement); // Append the text node
+             myDiv.style.textWrap = 'wrap';
+      
+            }
+      
+            function clearSelectedText() {
+          const myTextarea = document.getElementById('textarea');
+          const startPos = myTextarea.selectionStart;
+          const endPos = myTextarea.selectionEnd;
+      
+          // If no text is selected, do nothing
+        if (startPos === endPos) {
+          return;
+        }
+      
+          // Only clear if there's an actual selection
+          if (startPos !== endPos) {
+              const textBeforeSelection = myTextarea.value.substring(0, startPos);
+             // const textAfterSelection = myTextarea.value.substring(endPos);
+      
+              const textAfterSelection = myTextarea.value.substring(endPos,myTextarea.value.length);
+      
+              myTextarea.value = textBeforeSelection + textAfterSelection;
+      
+              myTextarea.value = textAfterSelection;
+      
+              // Set cursor position
+              myTextarea.selectionStart = startPos;
+              myTextarea.selectionEnd = startPos;
+          }
+          myTextarea.focus(); // Keep focus on the textarea
+      };
+      this.WebMemo2.FLines.Add("✔" + " Pagado:");
+      this.WebMemo2.FLines.Add($impl.SelectedText);
+      clearSelectedText();
+      
+            const idtexto = "\u2714"+' Pagado:\n';
+           // alert(SelectedText);
+            DivAgregaTexto(lSelectedText);
+      this.WebToast1.FItems.Clear();
+    };
+    this.EntregadoSeleccion = function (eltexto) {
+      var lSelectedText = "";
+      lSelectedText = $impl.SelectedText;
+      lSelectedText = eltexto;
+      function DivAgregaTexto(eltexto)
+            {
+              const myDiv = document.getElementById('miDivTexto');
+              //const newText = document.createTextNode(' Appended text.'); // Create a text node
+             myDiv.innerHTML += '<br>';
+             const newTextElement0 = document.createElement('span');
+             newTextElement0.textContent = "\u2714"+' Entregado:';
+             newTextElement0.style.backgroundColor= 'lightgreen';
+             myDiv.appendChild(newTextElement0); // Append the text node
+             myDiv.innerHTML += '<br>';
+      
+             const newTextElement = document.createElement('span');
+             newTextElement.textContent = eltexto;
+            // newTextElement.style.color = 'green';
+             newTextElement.style.backgroundColor= 'lightgreen';
+            // myDiv.innerHTML += '<br>';
+            // myDiv.innerHTML += "\u2714"+' Entregado:';
+            // myDiv.innerHTML += '<br>';
+      
+             myDiv.appendChild(newTextElement); // Append the text node
+             myDiv.style.textWrap = 'wrap';
+      
+            }
+      
+            function clearSelectedText() {
+          const myTextarea = document.getElementById('textarea');
+          const startPos = myTextarea.selectionStart;
+          const endPos = myTextarea.selectionEnd;
+      
+          // Only clear if there's an actual selection
+          if (startPos !== endPos) {
+              const textBeforeSelection = myTextarea.value.substring(0, startPos);
+           //   const textAfterSelection = myTextarea.value.substring(endPos);
+      
+              const textAfterSelection = myTextarea.value.substring(endPos,myTextarea.value.length);
+      
+      
+              myTextarea.value = textBeforeSelection + textAfterSelection;
+      
+              myTextarea.value = textAfterSelection;
+      
+              // Set cursor position
+              myTextarea.selectionStart = startPos;
+              myTextarea.selectionEnd = startPos;
+          }
+          myTextarea.focus(); // Keep focus on the textarea
+      };
+      this.WebMemo2.FLines.Add("✔" + " Entregado:");
+      this.WebMemo2.FLines.Add(lSelectedText);
+      clearSelectedText();
+      const idtexto = "\u2714"+' Entregado:\n';
+      DivAgregaTexto(lSelectedText);
+      this.WebToast1.FItems.Clear();
+    };
+    this.CargaFormaSeleccion = function (eltexto) {
+      var $Self = this;
+      var MyForm = null;
+      var lSelectedText = "";
+      var opcion = 0;
+      function AfterCreate(AForm) {
+      };
+      function AfterShowModal(AValue) {
+        if (lSelectedText !== "") {
+          opcion = MyForm.listaselect.GetItemIndex();
+          $Self.WebEdit1.SetText(pas.SysUtils.IntToStr(opcion));
+          var $tmp = opcion;
+          if ($tmp === 0) {
+            $Self.PagadoSeleccion(lSelectedText)}
+           else if ($tmp === 1) $Self.EntregadoSeleccion(lSelectedText);
+        };
+      };
+      lSelectedText = eltexto;
+      if (lSelectedText !== "") {
+        MyForm = pas.Unit4.TForm4.$create("CreateNew$3",[AfterCreate]);
+        MyForm.FPopup = true;
+        MyForm.FPopupOpacity = 0.4;
+        MyForm.SetTop(10);
+        MyForm.SetLeft(rtl.trunc(($mod.Form3.GetClientWidth() - MyForm.GetWidth()) / 2));
+        MyForm.ShowModal$1(AfterShowModal);
+      };
+    };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
       this.PaginasLibreta = pas["WEBLib.ComCtrls"].TPageControl.$create("Create$1",[this]);
       this.PaginaVentas = pas["WEBLib.ComCtrls"].TTabSheet.$create("Create$1",[this]);
       this.WebHTMLDiv1 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$1",[this]);
-      this.WebHTMLDiv2 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["numerolinea"]);
       this.WebMemo1 = pas["WEBLib.StdCtrls"].TMemo.$create("Create$2",["textarea"]);
+      this.WebHTMLDiv2 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["numerolinea"]);
       this.WebHTMLDiv3 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["divChecar"]);
       this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.WebSpeedButton1 = pas["WEBLib.Buttons"].TSpeedButton.$create("Create$1",[this]);
+      this.webBotonMenu = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
       this.WebButton1 = pas["WEBLib.StdCtrls"].TButton.$create("Create$2",["btnPagado"]);
       this.WebButton2 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.txtnumlinea = pas["WEBLib.StdCtrls"].TEdit.$create("Create$2",["nlinea"]);
+      this.WebEdit1 = pas["WEBLib.StdCtrls"].TEdit.$create("Create$1",[this]);
       this.WebPanel4 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
       this.PaginaPagadoEntregado = pas["WEBLib.ComCtrls"].TTabSheet.$create("Create$1",[this]);
       this.WebMemo2 = pas["WEBLib.StdCtrls"].TMemo.$create("Create$2",["textarea2"]);
@@ -63935,17 +64746,22 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
       this.Entregado1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.PagadonoEntregado1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.PagadonoEntregado2 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.LimpiarSeleccion1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.WebToast1 = pas["WEBLib.Toast"].TToast.$create("Create$1",[this]);
       this.PaginasLibreta.BeforeLoadDFMValues();
       this.PaginaVentas.BeforeLoadDFMValues();
       this.WebHTMLDiv1.BeforeLoadDFMValues();
-      this.WebHTMLDiv2.BeforeLoadDFMValues();
       this.WebMemo1.BeforeLoadDFMValues();
+      this.WebHTMLDiv2.BeforeLoadDFMValues();
       this.WebHTMLDiv3.BeforeLoadDFMValues();
       this.WebPanel1.BeforeLoadDFMValues();
+      this.WebSpeedButton1.BeforeLoadDFMValues();
+      this.webBotonMenu.BeforeLoadDFMValues();
       this.WebPanel2.BeforeLoadDFMValues();
       this.WebButton1.BeforeLoadDFMValues();
       this.WebButton2.BeforeLoadDFMValues();
       this.txtnumlinea.BeforeLoadDFMValues();
+      this.WebEdit1.BeforeLoadDFMValues();
       this.WebPanel4.BeforeLoadDFMValues();
       this.PaginaPagadoEntregado.BeforeLoadDFMValues();
       this.WebMemo2.BeforeLoadDFMValues();
@@ -63959,6 +64775,8 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
       this.Entregado1.BeforeLoadDFMValues();
       this.PagadonoEntregado1.BeforeLoadDFMValues();
       this.PagadonoEntregado2.BeforeLoadDFMValues();
+      this.LimpiarSeleccion1.BeforeLoadDFMValues();
+      this.WebToast1.BeforeLoadDFMValues();
       try {
         this.SetName("Form3");
         this.SetWidth(598);
@@ -63984,7 +64802,7 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
         this.PaginasLibreta.FElementTabActiveClassName = "nav-link active";
         this.PaginasLibreta.FElementTabItemClassName = "nav-item";
         this.PaginasLibreta.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.PaginasLibreta.SetTabIndex(1);
+        this.PaginasLibreta.SetTabIndex(0);
         this.PaginasLibreta.SetTabOrder(0);
         this.PaginaVentas.SetParentComponent(this.PaginasLibreta);
         this.PaginaVentas.SetName("PaginaVentas");
@@ -64004,17 +64822,6 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
         this.WebHTMLDiv1.SetChildOrderEx(1);
         this.WebHTMLDiv1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.WebHTMLDiv1.SetRole("");
-        this.WebHTMLDiv2.SetParentComponent(this.WebHTMLDiv1);
-        this.WebHTMLDiv2.SetName("WebHTMLDiv2");
-        this.WebHTMLDiv2.SetLeft(33);
-        this.WebHTMLDiv2.SetTop(0);
-        this.WebHTMLDiv2.SetWidth(33);
-        this.WebHTMLDiv2.SetHeight(368);
-        this.WebHTMLDiv2.SetAlign(pas["WEBLib.Controls"].TAlign.alLeft);
-        this.WebHTMLDiv2.SetChildOrderEx(1);
-        this.WebHTMLDiv2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.WebHTMLDiv2.SetRole("");
-        this.WebHTMLDiv2.SetVisible(false);
         this.WebMemo1.SetParentComponent(this.WebHTMLDiv1);
         this.WebMemo1.SetName("WebMemo1");
         this.WebMemo1.SetLeft(66);
@@ -64036,7 +64843,19 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
         this.WebMemo1.SetSelLength(0);
         this.WebMemo1.SetSelStart(2);
         this.WebMemo1.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.WebMemo1,this,"OnDblClick","WebMemo1DblClick");
         this.SetEvent$1(this.WebMemo1,this,"OnMouseUp","WebMemo1MouseUp");
+        this.WebHTMLDiv2.SetParentComponent(this.WebHTMLDiv1);
+        this.WebHTMLDiv2.SetName("WebHTMLDiv2");
+        this.WebHTMLDiv2.SetLeft(33);
+        this.WebHTMLDiv2.SetTop(0);
+        this.WebHTMLDiv2.SetWidth(33);
+        this.WebHTMLDiv2.SetHeight(368);
+        this.WebHTMLDiv2.SetAlign(pas["WEBLib.Controls"].TAlign.alLeft);
+        this.WebHTMLDiv2.SetChildOrderEx(1);
+        this.WebHTMLDiv2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebHTMLDiv2.SetRole("");
+        this.WebHTMLDiv2.SetVisible(false);
         this.WebHTMLDiv3.SetParentComponent(this.WebHTMLDiv1);
         this.WebHTMLDiv3.SetName("WebHTMLDiv3");
         this.WebHTMLDiv3.SetLeft(0);
@@ -64061,6 +64880,43 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
         this.WebPanel1.FElementBodyClassName = "card-body";
         this.WebPanel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.WebPanel1.SetTabOrder(1);
+        this.WebSpeedButton1.SetParentComponent(this.WebPanel1);
+        this.WebSpeedButton1.SetName("WebSpeedButton1");
+        this.WebSpeedButton1.SetLeft(545);
+        this.WebSpeedButton1.SetTop(0);
+        this.WebSpeedButton1.SetWidth(53);
+        this.WebSpeedButton1.SetHeight(60);
+        this.WebSpeedButton1.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
+        this.WebSpeedButton1.SetColorEx(-1);
+        this.WebSpeedButton1.SetElementClassName("btn btn-light");
+        this.WebSpeedButton1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebSpeedButton1.SetFlat(true);
+        this.WebSpeedButton1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebSpeedButton1.SetHeightPercent(100.000000000000000000);
+        this.WebSpeedButton1.SetTabOrder(0);
+        this.WebSpeedButton1.SetWidthPercent(100.000000000000000000);
+        this.webBotonMenu.SetParentComponent(this.WebPanel1);
+        this.webBotonMenu.SetName("webBotonMenu");
+        this.webBotonMenu.SetLeft(496);
+        this.webBotonMenu.SetTop(0);
+        this.webBotonMenu.SetWidth(49);
+        this.webBotonMenu.SetHeight(60);
+        this.webBotonMenu.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
+        this.webBotonMenu.SetCaption("Menu");
+        this.webBotonMenu.SetChildOrderEx(2);
+        this.webBotonMenu.SetElementClassName("btn btn-light");
+        this.webBotonMenu.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.webBotonMenu.FFont.FCharset = 1;
+        this.webBotonMenu.FFont.SetColor(65793);
+        this.webBotonMenu.FFont.SetHeight(-15);
+        this.webBotonMenu.FFont.SetName("Tahoma");
+        this.webBotonMenu.FFont.SetStyle({});
+        this.webBotonMenu.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.webBotonMenu.SetHeightPercent(100.000000000000000000);
+        this.webBotonMenu.SetParentFont(false);
+        this.webBotonMenu.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.webBotonMenu,this,"OnClick","webBotonMenuClick");
+        this.SetEvent$1(this.webBotonMenu,this,"OnExit","webBotonMenuExit");
         this.WebPanel2.SetParentComponent(this.PaginaVentas);
         this.WebPanel2.SetName("WebPanel2");
         this.WebPanel2.SetLeft(0);
@@ -64076,8 +64932,8 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
         this.WebPanel2.SetTabOrder(2);
         this.WebButton1.SetParentComponent(this.WebPanel2);
         this.WebButton1.SetName("WebButton1");
-        this.WebButton1.SetLeft(72);
-        this.WebButton1.SetTop(0);
+        this.WebButton1.SetLeft(33);
+        this.WebButton1.SetTop(1);
         this.WebButton1.SetWidth(96);
         this.WebButton1.SetHeight(25);
         this.WebButton1.SetCaption("Pagado");
@@ -64090,8 +64946,8 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
         this.SetEvent$1(this.WebButton1,this,"OnClick","WebButton1Click");
         this.WebButton2.SetParentComponent(this.WebPanel2);
         this.WebButton2.SetName("WebButton2");
-        this.WebButton2.SetLeft(200);
-        this.WebButton2.SetTop(0);
+        this.WebButton2.SetLeft(138);
+        this.WebButton2.SetTop(1);
         this.WebButton2.SetWidth(96);
         this.WebButton2.SetHeight(25);
         this.WebButton2.SetCaption("Entregado");
@@ -64115,6 +64971,18 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
         this.txtnumlinea.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
         this.txtnumlinea.SetHeightPercent(100.000000000000000000);
         this.txtnumlinea.SetWidthPercent(100.000000000000000000);
+        this.WebEdit1.SetParentComponent(this.WebPanel2);
+        this.WebEdit1.SetName("WebEdit1");
+        this.WebEdit1.SetLeft(240);
+        this.WebEdit1.SetTop(3);
+        this.WebEdit1.SetWidth(97);
+        this.WebEdit1.SetHeight(22);
+        this.WebEdit1.SetChildOrderEx(3);
+        this.WebEdit1.SetElementClassName("form-control");
+        this.WebEdit1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebEdit1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebEdit1.SetHeightPercent(100.000000000000000000);
+        this.WebEdit1.SetWidthPercent(100.000000000000000000);
         this.WebPanel4.SetParentComponent(this.PaginaVentas);
         this.WebPanel4.SetName("WebPanel4");
         this.WebPanel4.SetLeft(578);
@@ -64246,18 +65114,31 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
         this.PagadonoEntregado2.SetParentComponent(this.WebPopupMenu1);
         this.PagadonoEntregado2.SetName("PagadonoEntregado2");
         this.PagadonoEntregado2.SetCaption("Entregado no Pagado");
+        this.LimpiarSeleccion1.SetParentComponent(this.WebPopupMenu1);
+        this.LimpiarSeleccion1.SetName("LimpiarSeleccion1");
+        this.LimpiarSeleccion1.SetCaption("Limpiar Seleccion");
+        this.SetEvent$1(this.LimpiarSeleccion1,this,"OnClick","LimpiarSeleccion1Click");
+        this.WebToast1.SetParentComponent(this);
+        this.WebToast1.SetName("WebToast1");
+        this.WebToast1.FAutoHideDelay = 6000;
+        this.WebToast1.FPosition = pas["WEBLib.Toast"].TToastPosition.tpTopLeft;
+        this.WebToast1.SetLeft(152);
+        this.WebToast1.SetTop(44);
       } finally {
         this.PaginasLibreta.AfterLoadDFMValues();
         this.PaginaVentas.AfterLoadDFMValues();
         this.WebHTMLDiv1.AfterLoadDFMValues();
-        this.WebHTMLDiv2.AfterLoadDFMValues();
         this.WebMemo1.AfterLoadDFMValues();
+        this.WebHTMLDiv2.AfterLoadDFMValues();
         this.WebHTMLDiv3.AfterLoadDFMValues();
         this.WebPanel1.AfterLoadDFMValues();
+        this.WebSpeedButton1.AfterLoadDFMValues();
+        this.webBotonMenu.AfterLoadDFMValues();
         this.WebPanel2.AfterLoadDFMValues();
         this.WebButton1.AfterLoadDFMValues();
         this.WebButton2.AfterLoadDFMValues();
         this.txtnumlinea.AfterLoadDFMValues();
+        this.WebEdit1.AfterLoadDFMValues();
         this.WebPanel4.AfterLoadDFMValues();
         this.PaginaPagadoEntregado.AfterLoadDFMValues();
         this.WebMemo2.AfterLoadDFMValues();
@@ -64271,6 +65152,8 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
         this.Entregado1.AfterLoadDFMValues();
         this.PagadonoEntregado1.AfterLoadDFMValues();
         this.PagadonoEntregado2.AfterLoadDFMValues();
+        this.LimpiarSeleccion1.AfterLoadDFMValues();
+        this.WebToast1.AfterLoadDFMValues();
       };
     };
     rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
@@ -64300,20 +65183,36 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
     $r.addField("PagadonoEntregado1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
     $r.addField("PagadonoEntregado2",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
     $r.addField("comppdf",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("WebSpeedButton1",pas["WEBLib.Buttons"].$rtti["TSpeedButton"]);
+    $r.addField("webBotonMenu",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("WebToast1",pas["WEBLib.Toast"].$rtti["TToast"]);
+    $r.addField("LimpiarSeleccion1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("WebEdit1",pas["WEBLib.StdCtrls"].$rtti["TEdit"]);
     $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebButton1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebButton2Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
-    $r.addMethod("WebMemo1MouseUp",0,[["Sender",pas.System.$rtti["TObject"]],["Button",pas["WEBLib.Controls"].$rtti["TMouseButton"]],["Shift",pas.Classes.$rtti["TShiftState"]],["X",rtl.longint],["Y",rtl.longint]]);
-    $r.addMethod("Pagado1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Entregado1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("botonCompartirClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("botonCompartirPDFClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("botoncompartirpdf2Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("comppdfClick",0,[["Sender",pas.System.$rtti["TObject"]]],null,16,{attr: [pas.JS.AsyncAttribute,"Create"]});
+    $r.addMethod("webBotonMenuClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("webBotonMenuExit",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("Pagado1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebMemo1MouseMove",0,[["Sender",pas.System.$rtti["TObject"]],["Shift",pas.Classes.$rtti["TShiftState"]],["X",rtl.longint],["Y",rtl.longint]]);
+    $r.addMethod("WebMemo1MouseUp",0,[["Sender",pas.System.$rtti["TObject"]],["Button",pas["WEBLib.Controls"].$rtti["TMouseButton"]],["Shift",pas.Classes.$rtti["TShiftState"]],["X",rtl.longint],["Y",rtl.longint]]);
+    $r.addMethod("WebMemo1DblClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("LimpiarSeleccion1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.Form3 = null;
-});
-rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","Unit1","Unit8","Unit2","Unit3"],function () {
+  $mod.$implcode = function () {
+    $impl.popmenuwidth = 0.0;
+    $impl.selini = 0;
+    $impl.sellen = 0;
+    $impl.SelectedText = "";
+  };
+},["Unit4"]);
+rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","Unit1","Unit8","Unit2","Unit3","Unit4"],function () {
   "use strict";
   var $mod = this;
   $mod.$implcode = function () {
@@ -64332,21 +65231,6 @@ rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","Unit1","Unit8","Un
         return this.p.Form3;
       }, set: function (v) {
         this.p.Form3 = v;
-      }});
-    pas["WEBLib.Forms"].Application.CreateForm(pas.Unit2.TForm2,{p: pas.Unit2, get: function () {
-        return this.p.Form2;
-      }, set: function (v) {
-        this.p.Form2 = v;
-      }});
-    pas["WEBLib.Forms"].Application.CreateForm(pas.Unit8.TForm8,{p: pas.Unit8, get: function () {
-        return this.p.Form8;
-      }, set: function (v) {
-        this.p.Form8 = v;
-      }});
-    pas["WEBLib.Forms"].Application.CreateForm(pas.Unit1.TForm1,{p: pas.Unit1, get: function () {
-        return this.p.Form1;
-      }, set: function (v) {
-        this.p.Form1 = v;
       }});
     pas["WEBLib.Forms"].Application.Run();
   };

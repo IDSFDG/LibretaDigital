@@ -63764,6 +63764,9 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
       this.WebToast1 = null;
       this.LimpiarSeleccion1 = null;
       this.WebEdit1 = null;
+      this.WebPanel5 = null;
+      this.WebMemo3 = null;
+      this.WebButton3 = null;
     };
     this.$final = function () {
       this.PaginasLibreta = undefined;
@@ -63795,6 +63798,9 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
       this.WebToast1 = undefined;
       this.LimpiarSeleccion1 = undefined;
       this.WebEdit1 = undefined;
+      this.WebPanel5 = undefined;
+      this.WebMemo3 = undefined;
+      this.WebButton3 = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
@@ -63816,6 +63822,7 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
             const lineNumbers = document.querySelector('.line-numbers');
             const lineNumbers2 = document.querySelector('.line-numbers2');
             const txtnumlinea = document.getElementById('nlinea');
+            const seltextarea = document.getElementById('seletexto');
       
          //   const textareaseltxt = document.getElementById('memoseltxt');
       
@@ -63832,13 +63839,14 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
         console.log('sel start',textarea.selectionStart,' sel end',textarea.selectionEnd);
       
          if (textarea.selectionStart !== textarea.selectionEnd) {
+      
                   // Text has been selected
                   const selectedText = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
                   console.log('Selected text:', selectedText);
                   // You can now use 'selectedText' for further operations
                  // textareaseltxt.value = selectedText;
                   textoseleccionado =selectedText;
-      
+                  seltextarea.value = textoseleccionado;
               } else {
                   // No text was selected, or only the cursor moved
                   console.log('No text selected or just cursor moved.');
@@ -63850,13 +63858,48 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
         }}) > 0) this.CargaFormaSeleccion(textoseleccionado);
       });
       
+      //textarea.addEventListener('touchend', (event) => {
+      
+          // This function runs when a selection is finished
+         // const selection = event.target.value.substring(
+         //     event.target.selectionStart,
+         //     event.target.selectionEnd
+         // );
+         // console.log('Selected text:', selection);
+          // You can also get the selected text using selectionStart and selectionEnd properties
+          // as described in the
+          //  alert('touchend');
+      //      if (textarea.selectionStart !== textarea.selectionEnd) {
+                  // Text has been selected
+      //            const selectedText = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
+      //            console.log('Selected text:', selectedText);
+                  // You can now use 'selectedText' for further operations
+                 // textareaseltxt.value = selectedText;
+      //            textoseleccionado =selectedText;
+      
+      //            seltextarea.value = textoseleccionado;
+      //        } else {
+                  // No text was selected, or only the cursor moved
+      //            console.log('No text selected or just cursor moved.');
+              }
+      //    end;
+      //       if (textoseleccionado.Length > 0) then
+      //      begin
+          //       showmessage('texto seleccionado '+textoseleccionado);
+       //          CargaFormaSeleccion(textoseleccionado);
+             //webPanel5.Visible:=true;
+      //       end;
+      //    asm
+      //});
+      
+      
           let savedSelectionStart = 0;
           let savedSelectionEnd = 0;
           //const textarea = document.getElementById('textarea');
       
           textarea.addEventListener('blur', () => {
-              savedSelectionStart = textarea.selectionStart;
-              savedSelectionEnd = textarea.selectionEnd;
+             //  savedSelectionStart = textarea.selectionStart;
+             // savedSelectionEnd = textarea.selectionEnd;
           });
       
           textarea.addEventListener('focus', () => {
@@ -63897,7 +63940,9 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
         return lines.length;
       }
       
-      updateLineNumbers(); // Initial call;
+      updateLineNumbers(); // Initial call
+      
+          textarea.focus();
     };
     this.WebButton1Click = function (Sender) {
       var nnumlinea = 0;
@@ -64543,6 +64588,9 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
       }
             clearSelectedText();
     };
+    this.WebButton3Click = function (Sender) {
+      this.WebPanel5.SetVisible(false);
+    };
     this.maximoPopupTexto = function () {
       var Result = 0.0;
       var i = 0;
@@ -64593,7 +64641,6 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
       
              myDiv.appendChild(newTextElement); // Append the text node
              myDiv.style.textWrap = 'wrap';
-      
             }
       
             function clearSelectedText() {
@@ -64686,8 +64733,9 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
       this.WebMemo2.FLines.Add("✔" + " Entregado:");
       this.WebMemo2.FLines.Add(lSelectedText);
       clearSelectedText();
-      const idtexto = "\u2714"+' Entregado:\n';
-      DivAgregaTexto(lSelectedText);
+      
+            const idtexto = "\u2714"+' Entregado:\n';
+            DivAgregaTexto(lSelectedText);
       this.WebToast1.FItems.Clear();
     };
     this.CargaFormaSeleccion = function (eltexto) {
@@ -64725,6 +64773,9 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
       this.WebMemo1 = pas["WEBLib.StdCtrls"].TMemo.$create("Create$2",["textarea"]);
       this.WebHTMLDiv2 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["numerolinea"]);
       this.WebHTMLDiv3 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["divChecar"]);
+      this.WebPanel5 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.WebMemo3 = pas["WEBLib.StdCtrls"].TMemo.$create("Create$2",["seletexto"]);
+      this.WebButton3 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
       this.WebSpeedButton1 = pas["WEBLib.Buttons"].TSpeedButton.$create("Create$1",[this]);
       this.webBotonMenu = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
@@ -64754,6 +64805,9 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
       this.WebMemo1.BeforeLoadDFMValues();
       this.WebHTMLDiv2.BeforeLoadDFMValues();
       this.WebHTMLDiv3.BeforeLoadDFMValues();
+      this.WebPanel5.BeforeLoadDFMValues();
+      this.WebMemo3.BeforeLoadDFMValues();
+      this.WebButton3.BeforeLoadDFMValues();
       this.WebPanel1.BeforeLoadDFMValues();
       this.WebSpeedButton1.BeforeLoadDFMValues();
       this.webBotonMenu.BeforeLoadDFMValues();
@@ -64866,6 +64920,44 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
         this.WebHTMLDiv3.SetChildOrderEx(1);
         this.WebHTMLDiv3.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.WebHTMLDiv3.SetRole("");
+        this.WebPanel5.SetParentComponent(this.WebHTMLDiv1);
+        this.WebPanel5.SetName("WebPanel5");
+        this.WebPanel5.SetLeft(160);
+        this.WebPanel5.SetTop(6);
+        this.WebPanel5.SetWidth(385);
+        this.WebPanel5.SetHeight(331);
+        this.WebPanel5.SetElementClassName("card");
+        this.WebPanel5.SetChildOrderEx(4);
+        this.WebPanel5.FElementBodyClassName = "card-body";
+        this.WebPanel5.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebPanel5.SetTabOrder(3);
+        this.WebPanel5.SetVisible(false);
+        this.WebMemo3.SetParentComponent(this.WebPanel5);
+        this.WebMemo3.SetName("WebMemo3");
+        this.WebMemo3.SetLeft(10);
+        this.WebMemo3.SetTop(19);
+        this.WebMemo3.SetWidth(355);
+        this.WebMemo3.SetHeight(153);
+        this.WebMemo3.SetElementClassName("form-control");
+        this.WebMemo3.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebMemo3.SetHeightPercent(100.000000000000000000);
+        this.WebMemo3.SetSelLength(0);
+        this.WebMemo3.SetSelStart(0);
+        this.WebMemo3.SetWidthPercent(100.000000000000000000);
+        this.WebButton3.SetParentComponent(this.WebPanel5);
+        this.WebButton3.SetName("WebButton3");
+        this.WebButton3.SetLeft(162);
+        this.WebButton3.SetTop(295);
+        this.WebButton3.SetWidth(96);
+        this.WebButton3.SetHeight(25);
+        this.WebButton3.SetCaption("OK");
+        this.WebButton3.SetChildOrderEx(1);
+        this.WebButton3.SetElementClassName("btn btn-light");
+        this.WebButton3.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebButton3.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebButton3.SetHeightPercent(100.000000000000000000);
+        this.WebButton3.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.WebButton3,this,"OnClick","WebButton3Click");
         this.WebPanel1.SetParentComponent(this.PaginaVentas);
         this.WebPanel1.SetName("WebPanel1");
         this.WebPanel1.SetLeft(0);
@@ -65131,6 +65223,9 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
         this.WebMemo1.AfterLoadDFMValues();
         this.WebHTMLDiv2.AfterLoadDFMValues();
         this.WebHTMLDiv3.AfterLoadDFMValues();
+        this.WebPanel5.AfterLoadDFMValues();
+        this.WebMemo3.AfterLoadDFMValues();
+        this.WebButton3.AfterLoadDFMValues();
         this.WebPanel1.AfterLoadDFMValues();
         this.WebSpeedButton1.AfterLoadDFMValues();
         this.webBotonMenu.AfterLoadDFMValues();
@@ -65188,6 +65283,9 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
     $r.addField("WebToast1",pas["WEBLib.Toast"].$rtti["TToast"]);
     $r.addField("LimpiarSeleccion1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
     $r.addField("WebEdit1",pas["WEBLib.StdCtrls"].$rtti["TEdit"]);
+    $r.addField("WebPanel5",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
+    $r.addField("WebMemo3",pas["WEBLib.StdCtrls"].$rtti["TMemo"]);
+    $r.addField("WebButton3",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebButton1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebButton2Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
@@ -65203,6 +65301,7 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
     $r.addMethod("WebMemo1MouseUp",0,[["Sender",pas.System.$rtti["TObject"]],["Button",pas["WEBLib.Controls"].$rtti["TMouseButton"]],["Shift",pas.Classes.$rtti["TShiftState"]],["X",rtl.longint],["Y",rtl.longint]]);
     $r.addMethod("WebMemo1DblClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("LimpiarSeleccion1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebButton3Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.Form3 = null;
   $mod.$implcode = function () {

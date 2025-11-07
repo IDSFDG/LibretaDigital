@@ -1,0 +1,80 @@
+﻿<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <title>TMS Web Project</title>
+    <style>
+
+ .editable-row {
+  display: flex; /* Or display: grid; for more complex layouts */
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+
+}
+.editor-container {
+    display: flex;
+    font-family: monospace; /* Monospaced font ensures line height consistency */
+    line-height: 1.5;
+    white-space: pre-wrap; /* Preserves whitespace and line breaks */
+}
+
+.line-numbers {
+    padding: 10px;
+    text-align: right;
+    border-right: 1px solid #ccc;
+    background-color: #f0f0f0;
+    color: #999;
+    /* Apply a gradient to the line numbers themselves (optional) */
+    background: linear-gradient(to bottom, #f0f0f0, #ddd);
+    user-select: none; /* Prevents users from selecting the line numbers */
+}
+
+
+.code-editor {
+    padding: 10px;
+    flex-grow: 1;
+    outline: none; /* Removes the default blue outline on focus */
+    min-height: 150px;
+     line-height: 2.5em; /* Adjust as needed for line spacing */
+//  background-image: linear-gradient(to bottom, transparent 2.4em, #ccc 2.4em, #ccc 2.5em, transparent 2.5em);
+  background-size: 100% 2.5em; /* Matches line-height */
+  background-repeat: repeat-y;
+  background-attachment: local;
+  overflow: auto;
+}
+
+.highlighted-line {
+    background-color: #e0e0ff; /* The color for the clicked line */
+}
+.gradient-editable {
+    /* Ensure line breaks are handled consistently (might need JS fallback) */
+    white-space: pre-wrap;
+
+    /* Set up a large vertical gradient background */
+    background-image: linear-gradient(to bottom, #ff0000, #00ff00); /* Red to Green */
+    background-clip: text; /* Clip the background to the shape of the text */
+    -webkit-background-clip: text; /* For Safari/older Chrome */
+    color: transparent; /* Make the actual text transparent */
+
+    /* Adjust background size to cover the entire height, matching line-height */
+    /* This might need refinement based on actual content height and number of lines */
+    background-size: 100% auto;
+    line-height: 1.5em; /* Define a consistent line height */
+    min-height: 1.5em; /* Ensure empty div has height */
+}
+
+/* For all selected text within contenteditable divs */
+div[contenteditable="true"]::selection {
+  background-color: #ff00ff; /* Magenta background */
+  color: #ffffff; /* White text */
+}
+
+/* For a specific contenteditable div with a class */
+.my-editable-div::selection {
+  background-color: #00ffff; /* Cyan background */
+  color: #000000; /* Black text */
+}
+    </style>
+  </head>
+  <body>
+  </body>
+</html>

@@ -65537,6 +65537,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.btnEntregado = null;
       this.WebButton1 = null;
       this.WebButton2 = null;
+      this.WebButton3 = null;
+      this.Abrir = null;
     };
     this.$final = function () {
       this.WebPanel1 = undefined;
@@ -65552,6 +65554,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.btnEntregado = undefined;
       this.WebButton1 = undefined;
       this.WebButton2 = undefined;
+      this.WebButton3 = undefined;
+      this.Abrir = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
@@ -65811,6 +65815,80 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
               });
         //  });
     };
+    this.WebButton3Click = function (Sender) {
+      var strdiv = "";
+      const myDiv = document.getElementById('editor');
+      
+      // Save the innerHTML
+          const savedContent = myDiv.innerHTML;
+      
+          console.log('Saved Content (including HTML and inline styles):', savedContent);
+      
+      
+      // classes
+      
+          const classes = Array.from(myDiv.classList);
+      
+      // save in LocalStorage
+      
+          localStorage.setItem('divContent', savedContent);
+          localStorage.setItem('divClasses', JSON.stringify(classes)); // Store array as JSON string
+      
+          // Get computed styles
+           const computedStyle = getComputedStyle(myDiv);
+          localStorage.setItem('computedStyle', computedStyle);
+    };
+    this.AbrirClick = function (Sender) {
+      var strDiv = "";
+      var color = "";
+      color = "lightgreen";
+      color = "lightblue";
+      color = "rgb(255, 127, 127)";
+      const myDiv = document.getElementById('editor');
+      
+      // Restore the innerHTML
+      
+      
+          const savedContent = localStorage.getItem('divContent');
+          const savedClasses = JSON.parse(localStorage.getItem('divClasses'));
+          const computedStyles = localStorage.getItem('computedStyle');
+      
+          if (savedContent) {
+            console.log(savedContent);
+              myDiv.innerHTML = savedContent;
+          }
+          if (savedClasses) {
+             console.log(savedClasses);
+              myDiv.classList.add(savedClasses); // Add all saved classes
+          }
+      
+      
+      
+          const editableDivs = document.querySelectorAll('[contenteditable="true"]');
+          editableDivs.forEach((div, index) => {
+      
+               div.addEventListener('dblclick', function() {
+                      div.style.backgroundColor = color; //'lightgreen';
+                  });
+      
+                  div.addEventListener('keydown', (event) => {
+                      if (event.key === 'Enter') {
+                          event.preventDefault(); // Prevent default Enter key behavior
+      
+                          // Find the next editable div
+                          const nextDiv = editableDivs[index + 1];
+      
+                          if (nextDiv) {
+                              nextDiv.focus(); // Move focus to the next div
+                          } else {
+                              // Optional: Handle the case where there are no more divs
+                              // For example, blur the current div or perform another action
+                              div.blur();
+                          }
+                      }
+                  });
+              });
+    };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
       this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
@@ -65823,6 +65901,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.btnEntregado = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebButton1 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebButton2 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.WebButton3 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.Abrir = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebPanel3 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
       this.divnumlineas = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["numlinea"]);
       this.diveditor = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["editor"]);
@@ -65836,6 +65916,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.btnEntregado.BeforeLoadDFMValues();
       this.WebButton1.BeforeLoadDFMValues();
       this.WebButton2.BeforeLoadDFMValues();
+      this.WebButton3.BeforeLoadDFMValues();
+      this.Abrir.BeforeLoadDFMValues();
       this.WebPanel3.BeforeLoadDFMValues();
       this.divnumlineas.BeforeLoadDFMValues();
       this.diveditor.BeforeLoadDFMValues();
@@ -65950,6 +66032,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.btnPagado.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.btnPagado.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
         this.btnPagado.SetHeightPercent(100.000000000000000000);
+        this.btnPagado.SetVisible(false);
         this.btnPagado.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.btnPagado,this,"OnClick","btnPagadoClick");
         this.btnEntregado.SetParentComponent(this.WebPanel2);
@@ -65964,6 +66047,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.btnEntregado.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.btnEntregado.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
         this.btnEntregado.SetHeightPercent(100.000000000000000000);
+        this.btnEntregado.SetVisible(false);
         this.btnEntregado.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.btnEntregado,this,"OnClick","btnEntregadoClick");
         this.WebButton1.SetParentComponent(this.WebPanel2);
@@ -65978,15 +66062,16 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebButton1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.WebButton1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
         this.WebButton1.SetHeightPercent(100.000000000000000000);
+        this.WebButton1.SetVisible(false);
         this.WebButton1.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.WebButton1,this,"OnClick","WebButton1Click");
         this.WebButton2.SetParentComponent(this.WebPanel2);
         this.WebButton2.SetName("WebButton2");
         this.WebButton2.SetLeft(48);
         this.WebButton2.SetTop(40);
-        this.WebButton2.SetWidth(129);
+        this.WebButton2.SetWidth(153);
         this.WebButton2.SetHeight(25);
-        this.WebButton2.SetCaption("Div Dinamicos");
+        this.WebButton2.SetCaption("OK Div Dinamicos");
         this.WebButton2.SetChildOrderEx(5);
         this.WebButton2.SetElementClassName("btn btn-light");
         this.WebButton2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
@@ -65994,6 +66079,34 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebButton2.SetHeightPercent(100.000000000000000000);
         this.WebButton2.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.WebButton2,this,"OnClick","WebButton2Click");
+        this.WebButton3.SetParentComponent(this.WebPanel2);
+        this.WebButton3.SetName("WebButton3");
+        this.WebButton3.SetLeft(48);
+        this.WebButton3.SetTop(71);
+        this.WebButton3.SetWidth(153);
+        this.WebButton3.SetHeight(25);
+        this.WebButton3.SetCaption("OKGuardar");
+        this.WebButton3.SetChildOrderEx(6);
+        this.WebButton3.SetElementClassName("btn btn-light");
+        this.WebButton3.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebButton3.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebButton3.SetHeightPercent(100.000000000000000000);
+        this.WebButton3.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.WebButton3,this,"OnClick","WebButton3Click");
+        this.Abrir.SetParentComponent(this.WebPanel2);
+        this.Abrir.SetName("Abrir");
+        this.Abrir.SetLeft(48);
+        this.Abrir.SetTop(102);
+        this.Abrir.SetWidth(153);
+        this.Abrir.SetHeight(25);
+        this.Abrir.SetCaption("OKAbrir");
+        this.Abrir.SetChildOrderEx(7);
+        this.Abrir.SetElementClassName("btn btn-light");
+        this.Abrir.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.Abrir.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.Abrir.SetHeightPercent(100.000000000000000000);
+        this.Abrir.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.Abrir,this,"OnClick","AbrirClick");
         this.WebPanel3.SetParentComponent(this);
         this.WebPanel3.SetName("WebPanel3");
         this.WebPanel3.SetLeft(0);
@@ -66038,6 +66151,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.btnEntregado.AfterLoadDFMValues();
         this.WebButton1.AfterLoadDFMValues();
         this.WebButton2.AfterLoadDFMValues();
+        this.WebButton3.AfterLoadDFMValues();
+        this.Abrir.AfterLoadDFMValues();
         this.WebPanel3.AfterLoadDFMValues();
         this.divnumlineas.AfterLoadDFMValues();
         this.diveditor.AfterLoadDFMValues();
@@ -66059,11 +66174,15 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addField("btnEntregado",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addField("WebButton1",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addField("WebButton2",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("WebButton3",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("Abrir",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnPagadoClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnEntregadoClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebButton1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebButton2Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebButton3Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("AbrirClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.FormaLibreta = null;
 });

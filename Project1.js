@@ -65915,6 +65915,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       var lsellen = 0;
       r = this.webBotonMenu.GetElementHandle().getBoundingClientRect();
       this.WebPopupMenu1.Popup(Math.round(r.left - $impl.popmenuwidth),Math.round(r.bottom));
+      this.WebPopupMenu1.SetVisible(true);
     };
     this.Salir1Click = function (Sender) {
       pas["WEBLib.Forms"].Application.Terminate();
@@ -65993,6 +65994,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                       }
                   });
               });
+    };
+    this.WebPanel1MouseMove = function (Sender, Shift, X, Y) {
+      this.WebPopupMenu1.SetVisible(false);
     };
     this.maximoPopupTexto = function () {
       var Result = 0.0;
@@ -66156,6 +66160,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebPanel1.FElementBodyClassName = "d-flex justify-content-center align-items-center min-vh-100";
         this.WebPanel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.WebPanel1.SetTabOrder(0);
+        this.SetEvent$1(this.WebPanel1,this,"OnMouseMove","WebPanel1MouseMove");
         this.WebSpeedButton1.SetParentComponent(this.WebPanel1);
         this.WebSpeedButton1.SetName("WebSpeedButton1");
         this.WebSpeedButton1.SetLeft(568);
@@ -66439,6 +66444,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addMethod("Salir1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Guardar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Abrir1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebPanel1MouseMove",0,[["Sender",pas.System.$rtti["TObject"]],["Shift",pas.Classes.$rtti["TShiftState"]],["X",rtl.longint],["Y",rtl.longint]]);
   });
   this.FormaLibreta = null;
   $mod.$implcode = function () {

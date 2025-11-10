@@ -64998,7 +64998,7 @@ rtl.module("Unit3",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
         this.PaginasLibreta.FElementTabActiveClassName = "nav-link active";
         this.PaginasLibreta.FElementTabItemClassName = "nav-item";
         this.PaginasLibreta.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.PaginasLibreta.SetTabIndex(0);
+        this.PaginasLibreta.SetTabIndex(1);
         this.PaginasLibreta.SetTabOrder(0);
         this.PaginaVentas.SetParentComponent(this.PaginasLibreta);
         this.PaginaVentas.SetName("PaginaVentas");
@@ -65582,6 +65582,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
             let numbersHtml = '';
             const codeEditor = document.getElementById('editor');
             const lineNumbers = document.getElementById('numlinea');
+            codeEditor.style.overscrollBehavior = 'none'; // Change overscroll
       
              codeEditor.style.textWrap = 'wrap';
              codeEditor.addEventListener('dblclick', getLineCountByNewlines);
@@ -66145,8 +66146,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebPanel1.SetLeft(0);
         this.WebPanel1.SetTop(0);
         this.WebPanel1.SetWidth(640);
-        this.WebPanel1.SetHeight(60);
-        this.WebPanel1.SetElementClassName("card text-white bg-dark mb-3");
+        this.WebPanel1.SetHeight(57);
+        this.WebPanel1.SetElementClassName("card text-white bg-secondary mb-3");
         this.WebPanel1.SetAlign(pas["WEBLib.Controls"].TAlign.alTop);
         this.WebPanel1.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
         this.WebPanel1.SetCaption("Libreta Digital");
@@ -66160,7 +66161,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebSpeedButton1.SetLeft(568);
         this.WebSpeedButton1.SetTop(0);
         this.WebSpeedButton1.SetWidth(72);
-        this.WebSpeedButton1.SetHeight(60);
+        this.WebSpeedButton1.SetHeight(57);
         this.WebSpeedButton1.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
         this.WebSpeedButton1.SetColorEx(-1);
         this.WebSpeedButton1.SetElementClassName("btn bg-transparent");
@@ -66175,11 +66176,12 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.webBotonMenu.SetLeft(519);
         this.webBotonMenu.SetTop(0);
         this.webBotonMenu.SetWidth(49);
-        this.webBotonMenu.SetHeight(60);
+        this.webBotonMenu.SetHeight(57);
         this.webBotonMenu.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
         this.webBotonMenu.SetCaption("Menu");
+        this.webBotonMenu.FCenter.SetVertical(true);
         this.webBotonMenu.SetChildOrderEx(2);
-        this.webBotonMenu.SetElementClassName("btn-outline-dark");
+        this.webBotonMenu.SetElementClassName("btn-outline-secondary");
         this.webBotonMenu.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.webBotonMenu.FFont.FCharset = 1;
         this.webBotonMenu.FFont.SetColor(65793);
@@ -66197,7 +66199,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebPanel2.SetTop(431);
         this.WebPanel2.SetWidth(640);
         this.WebPanel2.SetHeight(49);
-        this.WebPanel2.SetElementClassName("card text-white bg-dark mb-3");
+        this.WebPanel2.SetElementClassName("card text-white bg-secondary mb-3");
         this.WebPanel2.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
         this.WebPanel2.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
         this.WebPanel2.SetChildOrderEx(2);
@@ -66324,9 +66326,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebPanel3.SetParentComponent(this);
         this.WebPanel3.SetName("WebPanel3");
         this.WebPanel3.SetLeft(0);
-        this.WebPanel3.SetTop(60);
+        this.WebPanel3.SetTop(57);
         this.WebPanel3.SetWidth(640);
-        this.WebPanel3.SetHeight(371);
+        this.WebPanel3.SetHeight(374);
         this.WebPanel3.SetElementClassName("card");
         this.WebPanel3.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
         this.WebPanel3.SetChildOrderEx(2);
@@ -66338,7 +66340,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.divnumlineas.SetLeft(0);
         this.divnumlineas.SetTop(0);
         this.divnumlineas.SetWidth(57);
-        this.divnumlineas.SetHeight(371);
+        this.divnumlineas.SetHeight(374);
         this.divnumlineas.SetAlign(pas["WEBLib.Controls"].TAlign.alLeft);
         this.divnumlineas.SetChildOrderEx(1);
         this.divnumlineas.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
@@ -66349,7 +66351,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.diveditor.SetLeft(57);
         this.diveditor.SetTop(0);
         this.diveditor.SetWidth(583);
-        this.diveditor.SetHeight(371);
+        this.diveditor.SetHeight(374);
         this.diveditor.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
         this.diveditor.SetChildOrderEx(1);
         this.diveditor.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);

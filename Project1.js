@@ -66086,14 +66086,18 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
           let yPos = 10; // Initial Y position for text
       
           divsToConvert.forEach((div, index) => {
-              const text = div.textContent;
-              const divWidth  = div.clientWidth;
+              const text = div.textContent.trim();
+              const divWidth  =div.clientWidth;
               const textWidth = doc.getTextWidth(text);
               const underlineOffset = 2; // Adjust this value to control the distance of the underline from the text
-      
-              doc.text(text, 10, yPos); // Add text at X=10, current Y position
-              doc.line(10, yPos + underlineOffset, 10 + divWidth, yPos + underlineOffset);
-              yPos += 10; // Increment Y position for the next div's text
+              console.log(text.length);
+              const linewidth = 205;
+              if (text.length > 0)
+              {
+                doc.text(text, 10, yPos); // Add text at X=10, current Y position
+                doc.line(10, yPos + underlineOffset,  linewidth, yPos + underlineOffset);
+                yPos += 10; // Increment Y position for the next div's text
+              }
               if (yPos > doc.internal.pageSize.height - 20 && index < divsToConvert.length - 1) {
                   doc.addPage(); // Add a new page if content exceeds current page
                   yPos = 10; // Reset Y position for the new page
@@ -66119,14 +66123,17 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
           let yPos = 10; // Initial Y position for text
       
           divsToConvert.forEach((div, index) => {
-              const text = div.textContent;
+              const text = div.textContent.trim();
               const divWidth  = div.clientWidth;
               const textWidth = doc.getTextWidth(text);
               const underlineOffset = 2; // Adjust this value to control the distance of the underline from the text
-      
-              doc.text(text, 10, yPos); // Add text at X=10, current Y position
-              doc.line(10, yPos + underlineOffset, 10 + divWidth, yPos + underlineOffset);
-              yPos += 10; // Increment Y position for the next div's text
+              const linewidth = 205;
+              if (text.length > 0)
+              {
+               doc.text(text, 10, yPos); // Add text at X=10, current Y position
+               doc.line(10, yPos + underlineOffset, linewidth, yPos + underlineOffset);
+               yPos += 10; // Increment Y position for the next div's text
+              }
               if (yPos > doc.internal.pageSize.height - 20 && index < divsToConvert.length - 1) {
                   doc.addPage(); // Add a new page if content exceeds current page
                   yPos = 10; // Reset Y position for the new page
@@ -66159,30 +66166,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                }
          }
             CompartirPdfBlob();
-    };
-    this.maximoPopupTexto = function () {
-      var Result = 0.0;
-      var i = 0;
-      var l = 0;
-      var maxl = 0;
-      var s = "";
-      var maxs = "";
-      var bmp = null;
-      bmp = pas["WEBLib.Graphics"].TBitmap.$create("Create$3");
-      bmp.GetCanvas().FFont.Assign($mod.FormaLibreta.FFont);
-      Result = -1;
-      maxl = 0;
-      for (var $l = 0, $end = this.WebPopupMenu1.FItems.GetCount() - 1; $l <= $end; $l++) {
-        i = $l;
-        s = this.WebPopupMenu1.FItems.GetMenuItem(i).FCaption;
-        l = s.length;
-        if (l > maxl) {
-          maxl = l;
-          maxs = s;
-        };
-      };
-      Result = bmp.GetCanvas().TextWidth(maxs);
-      return Result;
     };
     this.CrearDiv_Dinamicos = function () {
       var i = 0;
@@ -66259,6 +66242,30 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                   });
               });
         //  });
+    };
+    this.maximoPopupTexto = function () {
+      var Result = 0.0;
+      var i = 0;
+      var l = 0;
+      var maxl = 0;
+      var s = "";
+      var maxs = "";
+      var bmp = null;
+      bmp = pas["WEBLib.Graphics"].TBitmap.$create("Create$3");
+      bmp.GetCanvas().FFont.Assign($mod.FormaLibreta.FFont);
+      Result = -1;
+      maxl = 0;
+      for (var $l = 0, $end = this.WebPopupMenu1.FItems.GetCount() - 1; $l <= $end; $l++) {
+        i = $l;
+        s = this.WebPopupMenu1.FItems.GetMenuItem(i).FCaption;
+        l = s.length;
+        if (l > maxl) {
+          maxl = l;
+          maxs = s;
+        };
+      };
+      Result = bmp.GetCanvas().TextWidth(maxs);
+      return Result;
     };
     this.EncontrarString = function (strBusca) {
       var buscaStr = "";
@@ -66435,9 +66442,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebPanel2.SetParentComponent(this);
         this.WebPanel2.SetName("WebPanel2");
         this.WebPanel2.SetLeft(0);
-        this.WebPanel2.SetTop(424);
+        this.WebPanel2.SetTop(400);
         this.WebPanel2.SetWidth(640);
-        this.WebPanel2.SetHeight(56);
+        this.WebPanel2.SetHeight(80);
         this.WebPanel2.SetElementClassName("card text-white bg-secondary mb-3");
         this.WebPanel2.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
         this.WebPanel2.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
@@ -66595,7 +66602,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebPanel3.SetLeft(0);
         this.WebPanel3.SetTop(57);
         this.WebPanel3.SetWidth(640);
-        this.WebPanel3.SetHeight(367);
+        this.WebPanel3.SetHeight(343);
         this.WebPanel3.SetElementClassName("card");
         this.WebPanel3.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
         this.WebPanel3.SetChildOrderEx(2);
@@ -66607,7 +66614,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.divnumlineas.SetLeft(0);
         this.divnumlineas.SetTop(0);
         this.divnumlineas.SetWidth(57);
-        this.divnumlineas.SetHeight(367);
+        this.divnumlineas.SetHeight(343);
         this.divnumlineas.SetAlign(pas["WEBLib.Controls"].TAlign.alLeft);
         this.divnumlineas.SetChildOrderEx(1);
         this.divnumlineas.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
@@ -66618,7 +66625,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.diveditor.SetLeft(57);
         this.diveditor.SetTop(0);
         this.diveditor.SetWidth(583);
-        this.diveditor.SetHeight(367);
+        this.diveditor.SetHeight(343);
         this.diveditor.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
         this.diveditor.SetChildOrderEx(1);
         this.diveditor.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);

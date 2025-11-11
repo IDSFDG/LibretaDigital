@@ -65546,10 +65546,10 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.Compartir1 = null;
       this.Salir1 = null;
       this.WebButton4 = null;
-      this.WebButton5 = null;
       this.Visualizar1 = null;
       this.Buscar1 = null;
       this.WebInputMessageDlg1 = null;
+      this.btnLimpiar = null;
     };
     this.$final = function () {
       this.WebPanel1 = undefined;
@@ -65573,10 +65573,10 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.Compartir1 = undefined;
       this.Salir1 = undefined;
       this.WebButton4 = undefined;
-      this.WebButton5 = undefined;
       this.Visualizar1 = undefined;
       this.Buscar1 = undefined;
       this.WebInputMessageDlg1 = undefined;
+      this.btnLimpiar = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
@@ -66017,13 +66017,15 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       mr = await this.WebInputMessageDlg1.ShowDialog$2("Buscar en hoja",pas["WEBLib.Dialogs"].TMsgDlgType.mtConfirmation,rtl.createSet(pas["WEBLib.Dialogs"].TMsgDlgBtn.mbOK,pas["WEBLib.Dialogs"].TMsgDlgBtn.mbCancel));
       if (mr === 1) {
         inputval = this.WebInputMessageDlg1.GetInputElementValue();
-        pas["WEBLib.Dialogs"].ShowMessage("You entered:" + this.WebInputMessageDlg1.GetInputElementValue());
       };
-      if (pas.SysUtils.TStringHelper.GetLength.call({get: function () {
-          return inputval;
+      if (pas.SysUtils.TStringHelper.GetLength.call({a: pas.SysUtils.Trim(inputval), get: function () {
+          return this.a;
         }, set: function (v) {
-          inputval = v;
-        }}) > 0) this.EncontrarString(inputval);
+          this.a = v;
+        }}) > 0) {
+        this.EncontrarString(inputval);
+        this.btnLimpiar.SetVisible(true);
+      };
     };
     this.Visualizar1Click = function (Sender) {
       async function generatePdfBlobsForDivs() {
@@ -66166,6 +66168,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                }
          }
             CompartirPdfBlob();
+    };
+    this.btnLimpiarClick = function (Sender) {
+      this.btnLimpiar.SetVisible(false);
     };
     this.CrearDiv_Dinamicos = function () {
       var i = 0;
@@ -66316,6 +66321,33 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
           contentDiv.innerHTML = originalContent; // Restore original content
           highlightedMatches = [];
           currentMatchIndex = -1;
+      
+          // restore Div Click eventos
+      
+          const editableDivs = document.querySelectorAll('[contenteditable="true"]');
+          editableDivs.forEach((div, index) => {
+      
+               div.addEventListener('dblclick', function() {
+                      div.style.backgroundColor = color; //'lightgreen';
+                  });
+      
+                  div.addEventListener('keydown', (event) => {
+                      if (event.key === 'Enter') {
+                          event.preventDefault(); // Prevent default Enter key behavior
+      
+                          // Find the next editable div
+                          const nextDiv = editableDivs[index + 1];
+      
+                          if (nextDiv) {
+                              nextDiv.focus(); // Move focus to the next div
+                          } else {
+                              // Optional: Handle the case where there are no more divs
+                              // For example, blur the current div or perform another action
+                              div.blur();
+                          }
+                      }
+                  });
+              });
       };
       // alert(buscaStr);
       document.getElementById("quitar").addEventListener("click", removeHighlights);
@@ -66326,6 +66358,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
       this.WebSpeedButton1 = pas["WEBLib.Buttons"].TSpeedButton.$create("Create$1",[this]);
       this.webBotonMenu = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.btnLimpiar = pas["WEBLib.StdCtrls"].TButton.$create("Create$2",["quitar"]);
       this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
       this.txtnumlinea = pas["WEBLib.StdCtrls"].TEdit.$create("Create$2",["nlinea"]);
       this.WebEdit1 = pas["WEBLib.StdCtrls"].TEdit.$create("Create$1",[this]);
@@ -66336,7 +66369,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.WebButton3 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.Abrir = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebButton4 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
-      this.WebButton5 = pas["WEBLib.StdCtrls"].TButton.$create("Create$2",["quitar"]);
       this.WebPanel3 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
       this.divnumlineas = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["numlinea"]);
       this.diveditor = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["editor"]);
@@ -66351,6 +66383,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.WebPanel1.BeforeLoadDFMValues();
       this.WebSpeedButton1.BeforeLoadDFMValues();
       this.webBotonMenu.BeforeLoadDFMValues();
+      this.btnLimpiar.BeforeLoadDFMValues();
       this.WebPanel2.BeforeLoadDFMValues();
       this.txtnumlinea.BeforeLoadDFMValues();
       this.WebEdit1.BeforeLoadDFMValues();
@@ -66361,7 +66394,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.WebButton3.BeforeLoadDFMValues();
       this.Abrir.BeforeLoadDFMValues();
       this.WebButton4.BeforeLoadDFMValues();
-      this.WebButton5.BeforeLoadDFMValues();
       this.WebPanel3.BeforeLoadDFMValues();
       this.divnumlineas.BeforeLoadDFMValues();
       this.diveditor.BeforeLoadDFMValues();
@@ -66439,6 +66471,22 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.webBotonMenu.SetParentFont(false);
         this.webBotonMenu.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.webBotonMenu,this,"OnClick","webBotonMenuClick");
+        this.btnLimpiar.SetParentComponent(this.WebPanel1);
+        this.btnLimpiar.SetName("btnLimpiar");
+        this.btnLimpiar.SetLeft(423);
+        this.btnLimpiar.SetTop(0);
+        this.btnLimpiar.SetWidth(96);
+        this.btnLimpiar.SetHeight(57);
+        this.btnLimpiar.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
+        this.btnLimpiar.SetCaption("Limpiar");
+        this.btnLimpiar.SetChildOrderEx(2);
+        this.btnLimpiar.SetElementClassName("btn btn-light");
+        this.btnLimpiar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.btnLimpiar.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.btnLimpiar.SetHeightPercent(100.000000000000000000);
+        this.btnLimpiar.SetVisible(false);
+        this.btnLimpiar.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.btnLimpiar,this,"OnClick","btnLimpiarClick");
         this.WebPanel2.SetParentComponent(this);
         this.WebPanel2.SetName("WebPanel2");
         this.WebPanel2.SetLeft(0);
@@ -66584,19 +66632,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebButton4.SetVisible(false);
         this.WebButton4.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.WebButton4,this,"OnClick","WebButton4Click");
-        this.WebButton5.SetParentComponent(this.WebPanel2);
-        this.WebButton5.SetName("WebButton5");
-        this.WebButton5.SetLeft(541);
-        this.WebButton5.SetTop(3);
-        this.WebButton5.SetWidth(96);
-        this.WebButton5.SetHeight(25);
-        this.WebButton5.SetCaption("Limpiar");
-        this.WebButton5.SetChildOrderEx(9);
-        this.WebButton5.SetElementClassName("btn btn-light");
-        this.WebButton5.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.WebButton5.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
-        this.WebButton5.SetHeightPercent(100.000000000000000000);
-        this.WebButton5.SetWidthPercent(100.000000000000000000);
         this.WebPanel3.SetParentComponent(this);
         this.WebPanel3.SetName("WebPanel3");
         this.WebPanel3.SetLeft(0);
@@ -66681,6 +66716,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebPanel1.AfterLoadDFMValues();
         this.WebSpeedButton1.AfterLoadDFMValues();
         this.webBotonMenu.AfterLoadDFMValues();
+        this.btnLimpiar.AfterLoadDFMValues();
         this.WebPanel2.AfterLoadDFMValues();
         this.txtnumlinea.AfterLoadDFMValues();
         this.WebEdit1.AfterLoadDFMValues();
@@ -66691,7 +66727,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebButton3.AfterLoadDFMValues();
         this.Abrir.AfterLoadDFMValues();
         this.WebButton4.AfterLoadDFMValues();
-        this.WebButton5.AfterLoadDFMValues();
         this.WebPanel3.AfterLoadDFMValues();
         this.divnumlineas.AfterLoadDFMValues();
         this.diveditor.AfterLoadDFMValues();
@@ -66729,10 +66764,10 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addField("Compartir1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
     $r.addField("Salir1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
     $r.addField("WebButton4",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
-    $r.addField("WebButton5",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addField("Visualizar1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
     $r.addField("Buscar1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
     $r.addField("WebInputMessageDlg1",pas["WEBLib.Dialogs"].$rtti["TInputMessageDlg"]);
+    $r.addField("btnLimpiar",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnPagadoClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnEntregadoClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
@@ -66749,6 +66784,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addMethod("Buscar1Click",0,[["Sender",pas.System.$rtti["TObject"]]],null,16,{attr: [pas.JS.AsyncAttribute,"Create"]});
     $r.addMethod("Visualizar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Compartir1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("btnLimpiarClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.FormaLibreta = null;
   $mod.$implcode = function () {

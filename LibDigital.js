@@ -62354,6 +62354,12 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.lblimpiar = null;
       this.Ayuda1 = null;
       this.N1 = null;
+      this.N2 = null;
+      this.Exportar1 = null;
+      this.Importar1 = null;
+      this.panelimportar = null;
+      this.memoimportar = null;
+      this.btnImportar = null;
     };
     this.$final = function () {
       this.WebPanel1 = undefined;
@@ -62378,6 +62384,12 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.lblimpiar = undefined;
       this.Ayuda1 = undefined;
       this.N1 = undefined;
+      this.N2 = undefined;
+      this.Exportar1 = undefined;
+      this.Importar1 = undefined;
+      this.panelimportar = undefined;
+      this.memoimportar = undefined;
+      this.btnImportar = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
@@ -63016,6 +63028,97 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       frmAyuda = pas.uAyuda.TfrmAyuda.$create("CreateNew$3",[AfterCreate]);
       frmAyuda.ShowModal$1(AfterShowModal);
     };
+    this.Exportar1Click = function (Sender) {
+      var i = 0;
+      i = 0;
+      async function shareDivText(divId) {
+       // const divElement = document.getElementById(divId);
+        const divElement = document.getElementById("editor");
+        if (divElement) {
+          //const textToShare = divElement.textContent; // Or customize with URL, title, etc.
+          const textToShare = divElement.innerHTML;
+          if (navigator.share) {
+            try {
+              await navigator.share({
+                title: 'Compartir venta', // Optional title
+                text: textToShare,
+                // url: 'https://example.com' // Optional URL
+              });
+              console.log('Content shared successfully!');
+            } catch (error) {
+              console.error('Error sharing content:', error);
+            }
+          } else {
+            console.warn('Web Share API not supported in this browser.');
+            // Fallback to clipboard copy or other sharing methods
+            copyDivTextToClipboard(divId);
+          }
+        } else {
+          console.error(`Div with ID '${divId}' not found.`);
+        }
+      };
+      const miDiv = document.getElementById("editor");
+      shareDivText(miDiv);
+    };
+    this.Importar1Click = function (Sender) {
+      this.panelimportar.SetVisible(true);
+    };
+    this.btnImportarClick = function (Sender) {
+      var strDiv = "";
+      var color = "";
+      var strimportar = "";
+      color = "lightgreen";
+      color = "lightblue";
+      color = "rgb(255, 127, 127)";
+      color = "yellow";
+      strimportar = this.memoimportar.GetText();
+      const myDiv = document.getElementById('editor');
+      
+      // Restore the innerHTML
+      
+      
+          const savedContent = strimportar;
+         //localStorage.getItem('divContent');
+        //  const savedClasses = JSON.parse(localStorage.getItem('divClasses'));
+        //  const computedStyles = localStorage.getItem('computedStyle');
+      
+          if (savedContent) {
+            console.log(savedContent);
+              myDiv.innerHTML = savedContent;
+          }
+         // if (savedClasses) {
+         //    console.log(savedClasses);
+         //     myDiv.classList.add(savedClasses); // Add all saved classes
+         // }
+      
+      
+      
+          const editableDivs = document.querySelectorAll('[contenteditable="true"]');
+          editableDivs.forEach((div, index) => {
+      
+               div.addEventListener('dblclick', function() {
+                      div.style.backgroundColor = color; //'lightgreen';
+                  });
+      
+                  div.addEventListener('keydown', (event) => {
+                      if (event.key === 'Enter') {
+                          event.preventDefault(); // Prevent default Enter key behavior
+      
+                          // Find the next editable div
+                          const nextDiv = editableDivs[index + 1];
+      
+                          if (nextDiv) {
+                              nextDiv.focus(); // Move focus to the next div
+                          } else {
+                              // Optional: Handle the case where there are no more divs
+                              // For example, blur the current div or perform another action
+                              div.blur();
+                          }
+                      }
+                  });
+              });
+      this.panelimportar.SetVisible(false);
+    };
     this.CrearDiv_Dinamicos = function () {
       var i = 0;
       var strlinea = "";
@@ -63213,6 +63316,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.divnumlineas = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["numlinea"]);
       this.diveditor = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["editor"]);
       this.WebInputMessageDlg1 = pas["WEBLib.Dialogs"].TInputMessageDlg.$create("Create$1",[this]);
+      this.panelimportar = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.memoimportar = pas["WEBLib.StdCtrls"].TMemo.$create("Create$1",[this]);
+      this.btnImportar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebPopupMenu1 = pas["WEBLib.Menus"].TPopupMenu.$create("Create$1",[this]);
       this.Ayuda1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.N1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
@@ -63221,6 +63327,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.Compartir1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Visualizar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Buscar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.N2 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.Exportar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.Importar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Salir1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.WebPanel1.BeforeLoadDFMValues();
       this.WebSpeedButton1.BeforeLoadDFMValues();
@@ -63235,6 +63344,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.divnumlineas.BeforeLoadDFMValues();
       this.diveditor.BeforeLoadDFMValues();
       this.WebInputMessageDlg1.BeforeLoadDFMValues();
+      this.panelimportar.BeforeLoadDFMValues();
+      this.memoimportar.BeforeLoadDFMValues();
+      this.btnImportar.BeforeLoadDFMValues();
       this.WebPopupMenu1.BeforeLoadDFMValues();
       this.Ayuda1.BeforeLoadDFMValues();
       this.N1.BeforeLoadDFMValues();
@@ -63243,6 +63355,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.Compartir1.BeforeLoadDFMValues();
       this.Visualizar1.BeforeLoadDFMValues();
       this.Buscar1.BeforeLoadDFMValues();
+      this.N2.BeforeLoadDFMValues();
+      this.Exportar1.BeforeLoadDFMValues();
+      this.Importar1.BeforeLoadDFMValues();
       this.Salir1.BeforeLoadDFMValues();
       try {
         this.SetName("FormaLibreta");
@@ -63435,6 +63550,51 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebInputMessageDlg1.FElementDialogClassName = "shadow-lg p-3 mb-5 bg-white rounded";
         this.WebInputMessageDlg1.FElementTitleClassName = "text-body";
         this.WebInputMessageDlg1.FElementContentClassName = "text-body";
+        this.panelimportar.SetParentComponent(this.diveditor);
+        this.panelimportar.SetName("panelimportar");
+        this.panelimportar.SetLeft(64);
+        this.panelimportar.SetTop(32);
+        this.panelimportar.SetWidth(369);
+        this.panelimportar.SetHeight(297);
+        this.panelimportar.SetElementClassName("card");
+        this.panelimportar.SetChildOrderEx(1);
+        this.panelimportar.FElementBodyClassName = "card-body";
+        this.panelimportar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.panelimportar.SetTabOrder(1);
+        this.panelimportar.SetVisible(false);
+        this.memoimportar.SetParentComponent(this.panelimportar);
+        this.memoimportar.SetName("memoimportar");
+        this.memoimportar.SetLeft(16);
+        this.memoimportar.SetTop(16);
+        this.memoimportar.SetWidth(337);
+        this.memoimportar.SetHeight(201);
+        this.memoimportar.SetElementClassName("form-control");
+        this.memoimportar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.memoimportar.SetHeightPercent(100.000000000000000000);
+        this.memoimportar.FLines.BeginUpdate();
+        try {
+          this.memoimportar.FLines.Clear();
+          this.memoimportar.FLines.Add("");
+        } finally {
+          this.memoimportar.FLines.EndUpdate();
+        };
+        this.memoimportar.SetSelLength(0);
+        this.memoimportar.SetSelStart(2);
+        this.memoimportar.SetWidthPercent(100.000000000000000000);
+        this.btnImportar.SetParentComponent(this.panelimportar);
+        this.btnImportar.SetName("btnImportar");
+        this.btnImportar.SetLeft(132);
+        this.btnImportar.SetTop(240);
+        this.btnImportar.SetWidth(96);
+        this.btnImportar.SetHeight(25);
+        this.btnImportar.SetCaption("Importar");
+        this.btnImportar.SetChildOrderEx(1);
+        this.btnImportar.SetElementClassName("btn btn-light");
+        this.btnImportar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.btnImportar.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.btnImportar.SetHeightPercent(100.000000000000000000);
+        this.btnImportar.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.btnImportar,this,"OnClick","btnImportarClick");
         this.WebPopupMenu1.SetParentComponent(this);
         this.WebPopupMenu1.SetName("WebPopupMenu1");
         this.WebPopupMenu1.FAppearance.FHamburgerMenu.SetCaption("Menu");
@@ -63473,6 +63633,17 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.Buscar1.SetName("Buscar1");
         this.Buscar1.SetCaption("Buscar");
         this.SetEvent$1(this.Buscar1,this,"OnClick","Buscar1Click");
+        this.N2.SetParentComponent(this.WebPopupMenu1);
+        this.N2.SetName("N2");
+        this.N2.SetCaption("-");
+        this.Exportar1.SetParentComponent(this.WebPopupMenu1);
+        this.Exportar1.SetName("Exportar1");
+        this.Exportar1.SetCaption("Exportar");
+        this.SetEvent$1(this.Exportar1,this,"OnClick","Exportar1Click");
+        this.Importar1.SetParentComponent(this.WebPopupMenu1);
+        this.Importar1.SetName("Importar1");
+        this.Importar1.SetCaption("Importar");
+        this.SetEvent$1(this.Importar1,this,"OnClick","Importar1Click");
         this.Salir1.SetParentComponent(this.WebPopupMenu1);
         this.Salir1.SetName("Salir1");
         this.Salir1.SetCaption("Salir");
@@ -63491,6 +63662,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.divnumlineas.AfterLoadDFMValues();
         this.diveditor.AfterLoadDFMValues();
         this.WebInputMessageDlg1.AfterLoadDFMValues();
+        this.panelimportar.AfterLoadDFMValues();
+        this.memoimportar.AfterLoadDFMValues();
+        this.btnImportar.AfterLoadDFMValues();
         this.WebPopupMenu1.AfterLoadDFMValues();
         this.Ayuda1.AfterLoadDFMValues();
         this.N1.AfterLoadDFMValues();
@@ -63499,6 +63673,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.Compartir1.AfterLoadDFMValues();
         this.Visualizar1.AfterLoadDFMValues();
         this.Buscar1.AfterLoadDFMValues();
+        this.N2.AfterLoadDFMValues();
+        this.Exportar1.AfterLoadDFMValues();
+        this.Importar1.AfterLoadDFMValues();
         this.Salir1.AfterLoadDFMValues();
       };
     };
@@ -63527,6 +63704,12 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addField("lblimpiar",pas["WEBLib.StdCtrls"].$rtti["TLabel"]);
     $r.addField("Ayuda1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
     $r.addField("N1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("N2",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("Exportar1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("Importar1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("panelimportar",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
+    $r.addField("memoimportar",pas["WEBLib.StdCtrls"].$rtti["TMemo"]);
+    $r.addField("btnImportar",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnPagadoClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnEntregadoClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
@@ -63546,6 +63729,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addMethod("btnLimpiarClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("lblimpiarClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Ayuda1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("Exportar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("Importar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("btnImportarClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.FormaLibreta = null;
   $mod.$implcode = function () {

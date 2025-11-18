@@ -62251,22 +62251,32 @@ rtl.module("uAyuda",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics",
     this.WebFormCreate = function (Sender) {
       const contentDiv = document.getElementById("divayuda");
           const multilineHTML = `<h3>Libreta Digital</h3>
-          <p>Escribir renglones con texto de captura mediante, el teclado o la voz</strong>.</p>
-          <p>Remarcar un renglón con color, para destacar alguno o varios de ellos.</strong>.</p>
-          <p>Menú Libreta Digital en el lado derecho de su pantalla aparece el menu de opciones </strong>.</p>
+          <p>Escriba renglones con texto  utilizando, su teclado o su voz.<br>
+          Registre sus notas, pendientes, pagos y fechas importantes, recordatorios etc.<br>
+          Escriba cualquier información relevante para usted, y llevela siempre consigo.<br>
+          Comparta la información de su libreta, mediante mensajería de texto.<br>
+          Consulte sus registros importantes, en cualquier dispositivo y en cualquier lugar.<br>
+          Remarque un renglón con color, para destacar alguno o varios de ellos.</strong>.</p>
+          <br>
+      
+          <p>Menú Libreta Digital, al lado derecho de su pantalla se encuentra, el menu de opciones </strong>.</p>
           <ul>
-           <li>Ayuda:      Esta opción habilita la ayuda del usuario.</li>
-           <li>Abrir:      Abrir una hoja de libreta registrada en su dispositivo.</li>
-           <li>Guardar:    Archivar/guardar una hoja de libreta registrada en su dispositivo</li>
-           <li>Compartir:  Compartir archivo PDF, con la hoja de la libreta, por Messanger, WhatsApp etc..</li>
-           <li>Visualizar: Visualizar/Ver una hoja de libreta registrada en su dispositivo</li>
-           <li>Buscar:     Buscar un texto en  una hoja de libreta.</li>
-           <li>Salir:      Salir de la aplicación (Libreta Digital).</li>
+           <li>Ayuda:              Esta opción habilita la ayuda del usuario.</li>
+           <li>Abrir:              Abrir una hoja de libreta registrada en su dispositivo.</li>
+           <li>Guardar:            Archivar/guardar una hoja de libreta registrada en su dispositivo</li>
+           <li>Compartir:          Compartir archivo PDF, con la hoja de la libreta, por Messanger, WhatsApp etc.</li>
+           <li>Visualizar:         Visualizar/Ver una hoja de libreta registrada en su dispositivo</li>
+           <li>Buscar:             Buscar un texto en  una hoja de libreta.</li>
+           <li>Exportar:           Copia el contenido de la hoja y compartir por Messanger, WhatsApp etc.</li>
+           <li>Exportar Archivo:   Copia el contenido de la hoja y compartir en un archivo de texto por Messanger, WhatsApp etc.</li>
+           <li>Importar:           Pegar el contenido de la hoja exportada con las opciones de expotar, en la hoja de libreta Digital.</li>
+           <li>Limpiar Hoja:       Borra el texto contenido en la hoja.</li>
+           <li>Salir:              Salir de la aplicación (Libreta Digital).</li>
           </ul>`
       
           contentDiv.innerHTML = multilineHTML;
       
-          contentDiv.innerHTML += '<p>Bienvenido a Libreta Digital.</p>';
+          contentDiv.innerHTML += '<p>Bienvenido a su Libreta Digital.</p>';
     };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
@@ -62349,7 +62359,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.Visualizar1 = null;
       this.Buscar1 = null;
       this.WebInputMessageDlg1 = null;
-      this.btnLimpiar = null;
       this.lbmarcar = null;
       this.lblimpiar = null;
       this.Ayuda1 = null;
@@ -62360,6 +62369,11 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.panelimportar = null;
       this.memoimportar = null;
       this.btnImportar = null;
+      this.ExportarArchivoTexto1 = null;
+      this.WebHTMLDiv1 = null;
+      this.WebHTMLDiv2 = null;
+      this.WebLabel1 = null;
+      this.LimpiarHoja1 = null;
     };
     this.$final = function () {
       this.WebPanel1 = undefined;
@@ -62379,7 +62393,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.Visualizar1 = undefined;
       this.Buscar1 = undefined;
       this.WebInputMessageDlg1 = undefined;
-      this.btnLimpiar = undefined;
       this.lbmarcar = undefined;
       this.lblimpiar = undefined;
       this.Ayuda1 = undefined;
@@ -62390,6 +62403,11 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.panelimportar = undefined;
       this.memoimportar = undefined;
       this.btnImportar = undefined;
+      this.ExportarArchivoTexto1 = undefined;
+      this.WebHTMLDiv1 = undefined;
+      this.WebHTMLDiv2 = undefined;
+      this.WebLabel1 = undefined;
+      this.LimpiarHoja1 = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
@@ -62402,6 +62420,10 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.diveditor.SetElementClassName("code-editor");
       const maxLines = 5;
             let numbersHtml = '';
+      
+      
+      
+      
             const codeEditor = document.getElementById('editor');
             const lineNumbers = document.getElementById('numlinea');
             codeEditor.style.overscrollBehavior = 'none'; // Change overscroll
@@ -63012,7 +63034,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
             CompartirPdfBlob();
     };
     this.btnLimpiarClick = function (Sender) {
-      this.btnLimpiar.SetVisible(false);
     };
     this.lblimpiarClick = function (Sender) {
       this.lblimpiar.SetVisible(false);
@@ -63097,7 +63118,15 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
           editableDivs.forEach((div, index) => {
       
                div.addEventListener('dblclick', function() {
-                      div.style.backgroundColor = color; //'lightgreen';
+                      const colorb = div.style.backgroundColor;
+                      //console.log('color ',colorb, colorb.length);
+                      div.style.backgroundColor="";
+                      if (colorb.length ==0)
+                      {
+                        div.style.backgroundColor = color; //'lightgreen';
+      
+                      }
+                    //  div.style.backgroundColor = color; //'lightgreen';
                   });
       
                   div.addEventListener('keydown', (event) => {
@@ -63118,6 +63147,68 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                   });
               });
       this.panelimportar.SetVisible(false);
+    };
+    this.ExportarArchivoTexto1Click = function (Sender) {
+      async function shareTextFile(shareData) {
+              if (navigator.share && navigator.canShare(shareData)) {
+                  try {
+                      await navigator.share(shareData);
+                      console.log("Text file shared successfully.");
+                  } catch (error) {
+                      console.error("Error sharing text file:", error);
+                  }
+              } else {
+                  console.log("Web Share API or file sharing not supported.");
+                  // Implement a fallback for unsupported browsers/devices
+              }
+          }
+      
+        function canBrowserShareFiles() {
+              if (!navigator.share || !navigator.canShare) {
+                  return false;
+              }
+              // Test with a dummy file to check if file sharing is supported
+              const testFile = new File(["test data"], "test.txt", { type: "text/plain" });
+              const data = { files: [testFile] };
+              return navigator.canShare(data);
+          }
+        async function shareTextFile2(data) {
+              if (canBrowserShareFiles()) {
+                  try {
+                      await navigator.share(data);
+                      console.log("File shared successfully!");
+                  } catch (error) {
+                      console.error("Error sharing file:", error);
+                  }
+              } else {
+                  console.warn("Web Share API for files is not supported in this browser.");
+                  // Provide an alternative sharing method or message to the user
+              }
+          }
+      
+        const divElement = document.getElementById("editor");
+        if (divElement) {
+          //const textToShare = divElement.textContent; // Or customize with URL, title, etc.
+          const textToShare = divElement.innerHTML;
+          const blob = new Blob([textToShare], { type: "text/plain" });
+          const textFile = new File([blob], "Archivo-Export.txt", { type: "text/plain" });
+          const shareData = {
+                          files: [textFile],
+                          title: "Share this text file",
+                          text: "Here's a text file I'm sharing.",
+                      };
+      
+          shareTextFile2(shareData);   //  OK Comparte el CSV como archivo de texto.
+      
+        };
+    };
+    this.LimpiarHoja1Click = function (Sender) {
+      const codeEditor = document.getElementById('editor');
+            const editableDivs = document.querySelectorAll('[contenteditable="true"]');
+             editableDivs.forEach((div, index) => {
+      
+                div.innerText  ='';
+          });
     };
     this.CrearDiv_Dinamicos = function () {
       var i = 0;
@@ -63306,7 +63397,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
       this.WebSpeedButton1 = pas["WEBLib.Buttons"].TSpeedButton.$create("Create$1",[this]);
       this.webBotonMenu = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
-      this.btnLimpiar = pas["WEBLib.StdCtrls"].TButton.$create("Create$2",["quitarbot"]);
+      this.WebHTMLDiv1 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$1",[this]);
+      this.WebHTMLDiv2 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$1",[this]);
       this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
       this.lbmarcar = pas["WEBLib.StdCtrls"].TLabel.$create("Create$1",[this]);
       this.lblimpiar = pas["WEBLib.StdCtrls"].TLabel.$create("Create$2",["quitar"]);
@@ -63317,6 +63409,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.diveditor = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["editor"]);
       this.WebInputMessageDlg1 = pas["WEBLib.Dialogs"].TInputMessageDlg.$create("Create$1",[this]);
       this.panelimportar = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.WebLabel1 = pas["WEBLib.StdCtrls"].TLabel.$create("Create$1",[this]);
       this.memoimportar = pas["WEBLib.StdCtrls"].TMemo.$create("Create$1",[this]);
       this.btnImportar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebPopupMenu1 = pas["WEBLib.Menus"].TPopupMenu.$create("Create$1",[this]);
@@ -63329,12 +63422,15 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.Buscar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.N2 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Exportar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.ExportarArchivoTexto1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Importar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.LimpiarHoja1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Salir1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.WebPanel1.BeforeLoadDFMValues();
       this.WebSpeedButton1.BeforeLoadDFMValues();
       this.webBotonMenu.BeforeLoadDFMValues();
-      this.btnLimpiar.BeforeLoadDFMValues();
+      this.WebHTMLDiv1.BeforeLoadDFMValues();
+      this.WebHTMLDiv2.BeforeLoadDFMValues();
       this.WebPanel2.BeforeLoadDFMValues();
       this.lbmarcar.BeforeLoadDFMValues();
       this.lblimpiar.BeforeLoadDFMValues();
@@ -63345,6 +63441,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.diveditor.BeforeLoadDFMValues();
       this.WebInputMessageDlg1.BeforeLoadDFMValues();
       this.panelimportar.BeforeLoadDFMValues();
+      this.WebLabel1.BeforeLoadDFMValues();
       this.memoimportar.BeforeLoadDFMValues();
       this.btnImportar.BeforeLoadDFMValues();
       this.WebPopupMenu1.BeforeLoadDFMValues();
@@ -63357,7 +63454,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.Buscar1.BeforeLoadDFMValues();
       this.N2.BeforeLoadDFMValues();
       this.Exportar1.BeforeLoadDFMValues();
+      this.ExportarArchivoTexto1.BeforeLoadDFMValues();
       this.Importar1.BeforeLoadDFMValues();
+      this.LimpiarHoja1.BeforeLoadDFMValues();
       this.Salir1.BeforeLoadDFMValues();
       try {
         this.SetName("FormaLibreta");
@@ -63390,9 +63489,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.SetEvent$1(this.WebPanel1,this,"OnMouseMove","WebPanel1MouseMove");
         this.WebSpeedButton1.SetParentComponent(this.WebPanel1);
         this.WebSpeedButton1.SetName("WebSpeedButton1");
-        this.WebSpeedButton1.SetLeft(555);
+        this.WebSpeedButton1.SetLeft(561);
         this.WebSpeedButton1.SetTop(0);
-        this.WebSpeedButton1.SetWidth(45);
+        this.WebSpeedButton1.SetWidth(39);
         this.WebSpeedButton1.SetHeight(57);
         this.WebSpeedButton1.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
         this.WebSpeedButton1.SetColorEx(-1);
@@ -63405,7 +63504,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebSpeedButton1.SetWidthPercent(100.000000000000000000);
         this.webBotonMenu.SetParentComponent(this.WebPanel1);
         this.webBotonMenu.SetName("webBotonMenu");
-        this.webBotonMenu.SetLeft(506);
+        this.webBotonMenu.SetLeft(512);
         this.webBotonMenu.SetTop(0);
         this.webBotonMenu.SetWidth(49);
         this.webBotonMenu.SetHeight(57);
@@ -63426,22 +63525,31 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.webBotonMenu.FPopupMenu = this.WebPopupMenu1;
         this.webBotonMenu.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.webBotonMenu,this,"OnClick","webBotonMenuClick");
-        this.btnLimpiar.SetParentComponent(this.WebPanel1);
-        this.btnLimpiar.SetName("btnLimpiar");
-        this.btnLimpiar.SetLeft(410);
-        this.btnLimpiar.SetTop(0);
-        this.btnLimpiar.SetWidth(96);
-        this.btnLimpiar.SetHeight(57);
-        this.btnLimpiar.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
-        this.btnLimpiar.SetCaption("Limpiar");
-        this.btnLimpiar.SetChildOrderEx(2);
-        this.btnLimpiar.SetElementClassName("btn btn-light");
-        this.btnLimpiar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.btnLimpiar.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
-        this.btnLimpiar.SetHeightPercent(100.000000000000000000);
-        this.btnLimpiar.SetVisible(false);
-        this.btnLimpiar.SetWidthPercent(100.000000000000000000);
-        this.SetEvent$1(this.btnLimpiar,this,"OnClick","btnLimpiarClick");
+        this.WebHTMLDiv1.SetParentComponent(this.WebPanel1);
+        this.WebHTMLDiv1.SetName("WebHTMLDiv1");
+        this.WebHTMLDiv1.SetLeft(424);
+        this.WebHTMLDiv1.SetTop(0);
+        this.WebHTMLDiv1.SetWidth(88);
+        this.WebHTMLDiv1.SetHeight(57);
+        this.WebHTMLDiv1.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
+        this.WebHTMLDiv1.SetChildOrderEx(2);
+        this.WebHTMLDiv1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebHTMLDiv1.SetRole("");
+        this.WebHTMLDiv2.SetParentComponent(this.WebHTMLDiv1);
+        this.WebHTMLDiv2.SetName("WebHTMLDiv2");
+        this.WebHTMLDiv2.SetLeft(12);
+        this.WebHTMLDiv2.SetTop(13);
+        this.WebHTMLDiv2.SetWidth(70);
+        this.WebHTMLDiv2.SetHeight(41);
+        this.WebHTMLDiv2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebHTMLDiv2.FHTML.BeginUpdate();
+        try {
+          this.WebHTMLDiv2.FHTML.Clear();
+          this.WebHTMLDiv2.FHTML.Add('<P align="center"><B>Menu:</B></P>');
+        } finally {
+          this.WebHTMLDiv2.FHTML.EndUpdate();
+        };
+        this.WebHTMLDiv2.SetRole("");
         this.WebPanel2.SetParentComponent(this);
         this.WebPanel2.SetName("WebPanel2");
         this.WebPanel2.SetLeft(0);
@@ -63562,12 +63670,23 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.panelimportar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.panelimportar.SetTabOrder(1);
         this.panelimportar.SetVisible(false);
+        this.WebLabel1.SetParentComponent(this.panelimportar);
+        this.WebLabel1.SetName("WebLabel1");
+        this.WebLabel1.SetLeft(16);
+        this.WebLabel1.SetTop(16);
+        this.WebLabel1.SetWidth(227);
+        this.WebLabel1.SetHeight(18);
+        this.WebLabel1.SetCaption("Pegar texto y oprima botón pegar.");
+        this.WebLabel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebLabel1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebLabel1.SetHeightPercent(100.000000000000000000);
+        this.WebLabel1.SetWidthPercent(100.000000000000000000);
         this.memoimportar.SetParentComponent(this.panelimportar);
         this.memoimportar.SetName("memoimportar");
         this.memoimportar.SetLeft(16);
-        this.memoimportar.SetTop(16);
+        this.memoimportar.SetTop(64);
         this.memoimportar.SetWidth(337);
-        this.memoimportar.SetHeight(201);
+        this.memoimportar.SetHeight(153);
         this.memoimportar.SetElementClassName("form-control");
         this.memoimportar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.memoimportar.SetHeightPercent(100.000000000000000000);
@@ -63587,7 +63706,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.btnImportar.SetTop(240);
         this.btnImportar.SetWidth(96);
         this.btnImportar.SetHeight(25);
-        this.btnImportar.SetCaption("Importar");
+        this.btnImportar.SetCaption("Pegar");
         this.btnImportar.SetChildOrderEx(1);
         this.btnImportar.SetElementClassName("btn btn-light");
         this.btnImportar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
@@ -63640,10 +63759,18 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.Exportar1.SetName("Exportar1");
         this.Exportar1.SetCaption("Exportar");
         this.SetEvent$1(this.Exportar1,this,"OnClick","Exportar1Click");
+        this.ExportarArchivoTexto1.SetParentComponent(this.WebPopupMenu1);
+        this.ExportarArchivoTexto1.SetName("ExportarArchivoTexto1");
+        this.ExportarArchivoTexto1.SetCaption("Exportar a Archivo");
+        this.SetEvent$1(this.ExportarArchivoTexto1,this,"OnClick","ExportarArchivoTexto1Click");
         this.Importar1.SetParentComponent(this.WebPopupMenu1);
         this.Importar1.SetName("Importar1");
         this.Importar1.SetCaption("Importar");
         this.SetEvent$1(this.Importar1,this,"OnClick","Importar1Click");
+        this.LimpiarHoja1.SetParentComponent(this.WebPopupMenu1);
+        this.LimpiarHoja1.SetName("LimpiarHoja1");
+        this.LimpiarHoja1.SetCaption("Limpiar Hoja");
+        this.SetEvent$1(this.LimpiarHoja1,this,"OnClick","LimpiarHoja1Click");
         this.Salir1.SetParentComponent(this.WebPopupMenu1);
         this.Salir1.SetName("Salir1");
         this.Salir1.SetCaption("Salir");
@@ -63652,7 +63779,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebPanel1.AfterLoadDFMValues();
         this.WebSpeedButton1.AfterLoadDFMValues();
         this.webBotonMenu.AfterLoadDFMValues();
-        this.btnLimpiar.AfterLoadDFMValues();
+        this.WebHTMLDiv1.AfterLoadDFMValues();
+        this.WebHTMLDiv2.AfterLoadDFMValues();
         this.WebPanel2.AfterLoadDFMValues();
         this.lbmarcar.AfterLoadDFMValues();
         this.lblimpiar.AfterLoadDFMValues();
@@ -63663,6 +63791,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.diveditor.AfterLoadDFMValues();
         this.WebInputMessageDlg1.AfterLoadDFMValues();
         this.panelimportar.AfterLoadDFMValues();
+        this.WebLabel1.AfterLoadDFMValues();
         this.memoimportar.AfterLoadDFMValues();
         this.btnImportar.AfterLoadDFMValues();
         this.WebPopupMenu1.AfterLoadDFMValues();
@@ -63675,7 +63804,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.Buscar1.AfterLoadDFMValues();
         this.N2.AfterLoadDFMValues();
         this.Exportar1.AfterLoadDFMValues();
+        this.ExportarArchivoTexto1.AfterLoadDFMValues();
         this.Importar1.AfterLoadDFMValues();
+        this.LimpiarHoja1.AfterLoadDFMValues();
         this.Salir1.AfterLoadDFMValues();
       };
     };
@@ -63699,7 +63830,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addField("Visualizar1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
     $r.addField("Buscar1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
     $r.addField("WebInputMessageDlg1",pas["WEBLib.Dialogs"].$rtti["TInputMessageDlg"]);
-    $r.addField("btnLimpiar",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addField("lbmarcar",pas["WEBLib.StdCtrls"].$rtti["TLabel"]);
     $r.addField("lblimpiar",pas["WEBLib.StdCtrls"].$rtti["TLabel"]);
     $r.addField("Ayuda1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
@@ -63710,6 +63840,11 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addField("panelimportar",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
     $r.addField("memoimportar",pas["WEBLib.StdCtrls"].$rtti["TMemo"]);
     $r.addField("btnImportar",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("ExportarArchivoTexto1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("WebHTMLDiv1",pas["WEBLib.WebCtrls"].$rtti["THTMLDiv"]);
+    $r.addField("WebHTMLDiv2",pas["WEBLib.WebCtrls"].$rtti["THTMLDiv"]);
+    $r.addField("WebLabel1",pas["WEBLib.StdCtrls"].$rtti["TLabel"]);
+    $r.addField("LimpiarHoja1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
     $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnPagadoClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnEntregadoClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
@@ -63732,6 +63867,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addMethod("Exportar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Importar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnImportarClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("ExportarArchivoTexto1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("LimpiarHoja1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.FormaLibreta = null;
   $mod.$implcode = function () {
@@ -64042,16 +64179,18 @@ rtl.module("WEBLib.Login",["System","Classes","SysUtils","Types","WEBLib.Control
     rtl.addIntf(this,pas.System.IUnknown);
   });
 });
-rtl.module("uLoginForma",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.Controls","WEBLib.Login"],function () {
+rtl.module("uLoginForma",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.Controls","WEBLib.Login","WEBLib.StdCtrls","WEBLib.StdCtrls","WEBLib.WebCtrls"],function () {
   "use strict";
   var $mod = this;
   rtl.createClass(this,"TfrmLogin",pas["WEBLib.Forms"].TForm,function () {
     this.$init = function () {
       pas["WEBLib.Forms"].TForm.$init.call(this);
       this.WebLoginPanel1 = null;
+      this.WebHTMLDiv1 = null;
     };
     this.$final = function () {
       this.WebLoginPanel1 = undefined;
+      this.WebHTMLDiv1 = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebLoginPanel1Login = function (Sender) {
@@ -64065,10 +64204,17 @@ rtl.module("uLoginForma",["System","SysUtils","Classes","JS","Web","WEBLib.Graph
       frmLibreta = pas.UFormaLibreta.TFormaLibreta.$create("CreateNew$3",[AfterCreate]);
       frmLibreta.ShowModal$1(AfterShowModal);
     };
+    this.WebFormCreate = function (Sender) {
+      const contentDiv = document.getElementById("divdemo");
+      const multilineHTML = `<h4>Versión demostración favor de oprimir botón, ENTRAR.</h4>`
+      contentDiv.innerHTML = multilineHTML;
+    };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
       this.WebLoginPanel1 = pas["WEBLib.Login"].TLoginPanel.$create("Create$1",[this]);
+      this.WebHTMLDiv1 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["divdemo"]);
       this.WebLoginPanel1.BeforeLoadDFMValues();
+      this.WebHTMLDiv1.BeforeLoadDFMValues();
       try {
         this.SetName("frmLogin");
         this.SetWidth(640);
@@ -64081,30 +64227,44 @@ rtl.module("uLoginForma",["System","SysUtils","Classes","JS","Web","WEBLib.Graph
         this.FFont.SetName("Tahoma");
         this.FFont.SetStyle({});
         this.SetParentFont(false);
+        this.SetEvent(this,"OnCreate","WebFormCreate");
         this.WebLoginPanel1.SetParentComponent(this);
         this.WebLoginPanel1.SetName("WebLoginPanel1");
         this.WebLoginPanel1.SetLeft(135);
         this.WebLoginPanel1.SetTop(67);
         this.WebLoginPanel1.SetWidth(369);
         this.WebLoginPanel1.SetHeight(345);
-        this.WebLoginPanel1.SetCaptionLabel("Login");
+        this.WebLoginPanel1.SetCaptionLabel("Control Acceso");
         this.WebLoginPanel1.FCenter.SetHorizontal(true);
         this.WebLoginPanel1.FCenter.SetVertical(true);
         this.WebLoginPanel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efProperty);
         this.WebLoginPanel1.SetElementPosition(pas["WEBLib.Controls"].TElementPosition.epAbsolute);
-        this.WebLoginPanel1.SetLoginLabel("Login");
-        this.WebLoginPanel1.SetPasswordLabel("Password:");
-        this.WebLoginPanel1.SetUserLabel("User:");
+        this.WebLoginPanel1.SetLoginLabel("Entrar");
+        this.WebLoginPanel1.SetPasswordLabel("Contraseña:");
+        this.WebLoginPanel1.SetUserLabel("Usuario:");
         this.SetEvent$1(this.WebLoginPanel1,this,"OnLogin","WebLoginPanel1Login");
+        this.WebHTMLDiv1.SetParentComponent(this);
+        this.WebHTMLDiv1.SetName("WebHTMLDiv1");
+        this.WebHTMLDiv1.SetLeft(0);
+        this.WebHTMLDiv1.SetTop(448);
+        this.WebHTMLDiv1.SetWidth(640);
+        this.WebHTMLDiv1.SetHeight(32);
+        this.WebHTMLDiv1.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
+        this.WebHTMLDiv1.SetChildOrderEx(1);
+        this.WebHTMLDiv1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebHTMLDiv1.SetRole("");
       } finally {
         this.WebLoginPanel1.AfterLoadDFMValues();
+        this.WebHTMLDiv1.AfterLoadDFMValues();
       };
     };
     rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
     rtl.addIntf(this,pas.System.IUnknown);
     var $r = this.$rtti;
     $r.addField("WebLoginPanel1",pas["WEBLib.Login"].$rtti["TLoginPanel"]);
+    $r.addField("WebHTMLDiv1",pas["WEBLib.WebCtrls"].$rtti["THTMLDiv"]);
     $r.addMethod("WebLoginPanel1Login",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.frmLogin = null;
 },["UFormaLibreta"]);

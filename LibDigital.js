@@ -62250,13 +62250,13 @@ rtl.module("uAyuda",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics",
     };
     this.WebFormCreate = function (Sender) {
       const contentDiv = document.getElementById("divayuda");
-          const multilineHTML = `<h3>Libreta Digital</h3>
-          <p>Escriba renglones con texto  utilizando, su teclado o su voz.<br>
-          Registre sus notas, pendientes, pagos y fechas importantes, recordatorios etc.<br>
-          Escriba cualquier información relevante para usted, y llevela siempre consigo.<br>
-          Comparta la información de su libreta, mediante mensajería de texto.<br>
-          Consulte sus registros importantes, en cualquier dispositivo y en cualquier lugar.<br>
-          Remarque un renglón con color, para destacar alguno o varios de ellos.</strong>.</p>
+          const multilineHTML = `<h6>Libreta Digital</h6>
+          <p>-Escriba renglones con texto  utilizando, su teclado o su voz.<br>
+          -Registre sus notas, pendientes, pagos y fechas importantes, recordatorios etc.<br>
+          -Escriba cualquier información relevante para usted, y llevela siempre consigo.<br>
+          -Comparta la información de su libreta, mediante mensajería de texto.<br>
+          -Consulte sus registros importantes, en cualquier dispositivo y en cualquier lugar.<br>
+          -Remarque un renglón con color, para destacar alguno o varios de ellos.</p>
           <p>Menú Libreta Digital, al lado derecho de su pantalla se encuentra, el menu de opciones </strong>.</p>
           <ul>
            <li>Ayuda:              Esta opción habilita la ayuda del usuario.</li>
@@ -62301,16 +62301,16 @@ rtl.module("uAyuda",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics",
         this.WebHTMLDiv1.SetLeft(0);
         this.WebHTMLDiv1.SetTop(0);
         this.WebHTMLDiv1.SetWidth(640);
-        this.WebHTMLDiv1.SetHeight(420);
+        this.WebHTMLDiv1.SetHeight(448);
         this.WebHTMLDiv1.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
         this.WebHTMLDiv1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.WebHTMLDiv1.SetRole("");
         this.WebPanel1.SetParentComponent(this);
         this.WebPanel1.SetName("WebPanel1");
         this.WebPanel1.SetLeft(0);
-        this.WebPanel1.SetTop(420);
+        this.WebPanel1.SetTop(448);
         this.WebPanel1.SetWidth(640);
-        this.WebPanel1.SetHeight(60);
+        this.WebPanel1.SetHeight(32);
         this.WebPanel1.SetElementClassName("card");
         this.WebPanel1.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
         this.WebPanel1.SetCaption("Salir");

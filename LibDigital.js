@@ -63208,7 +63208,13 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
             const editableDivs = document.querySelectorAll('[contenteditable="true"]');
              editableDivs.forEach((div, index) => {
       
-                div.innerText  ='';
+                //div.innerHTML  ='';
+                            // Clear text content and nested elements
+                  div.innerHTML = '';
+      
+                  // Clear all inline styles
+                  div.style.cssText = '';
+      
           });
     };
     this.Cerrar1Click = function (Sender) {
@@ -64211,6 +64217,7 @@ rtl.module("uLoginForma",["System","SysUtils","Classes","JS","Web","WEBLib.Graph
       var frmLibreta = null;
       var i = 0;
       function AfterShowModal(AValue) {
+        $Self.Close();
       };
       function AfterCreate(AForm) {
       };
@@ -64244,7 +64251,7 @@ rtl.module("uLoginForma",["System","SysUtils","Classes","JS","Web","WEBLib.Graph
         this.WebLoginPanel1.SetParentComponent(this);
         this.WebLoginPanel1.SetName("WebLoginPanel1");
         this.WebLoginPanel1.SetLeft(135);
-        this.WebLoginPanel1.SetTop(67);
+        this.WebLoginPanel1.SetTop(88);
         this.WebLoginPanel1.SetWidth(369);
         this.WebLoginPanel1.SetHeight(318);
         this.WebLoginPanel1.SetCaptionLabel("Control Acceso");

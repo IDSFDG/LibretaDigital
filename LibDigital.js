@@ -80535,7 +80535,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       alert('Suma de importes capturados: '+stotal);
     };
     this.Sumarimportes1Click = function (Sender) {
-      this.btnTotales.SetVisible(true);
+      this.btnTotalesClick(Sender);
     };
     this.CrearDiv_Dinamicos = function () {
       var i = 0;

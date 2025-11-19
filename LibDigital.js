@@ -79523,8 +79523,8 @@ rtl.module("uAyuda",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics",
            <li>Compartir:          Compartir archivo PDF, con la hoja de la libreta, por Messanger, WhatsApp etc.</li>
            <li>Visualizar:         Visualizar/Ver una hoja de libreta registrada en su dispositivo</li>
            <li>Buscar:             Buscar un texto en  una hoja de libreta.</li>
-           <li>Exportar:           Copia el contenido de la hoja y compartir por Messanger, WhatsApp etc.</li>
-           <li>Exportar Archivo:   Copia el contenido de la hoja y compartir en un archivo de texto por Messanger, WhatsApp etc.</li>
+           <li>Exportar:           Copia el contenido de la hoja y compartir por Messenger, WhatsApp etc.</li>
+           <li>Exportar Archivo:   Copia el contenido de la hoja y compartir en un archivo de texto por Messenger, WhatsApp etc.</li>
            <li>Importar:           Pegar el contenido de la hoja exportada con las opciones de expotar, en la hoja de libreta Digital.</li>
            <li>Limpiar Hoja:       Borra el texto contenido en la hoja.</li>
            <li>Salir:              Salir de la aplicación (Libreta Digital).</li>
@@ -79694,8 +79694,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       const maxLines = 5;
             let numbersHtml = '';
       
-      
-      
+             const myListBox = document.getElementById('listaabrir');
+             myListBox.size = 2;
       
             const codeEditor = document.getElementById('editor');
             const lineNumbers = document.getElementById('numlinea');
@@ -80706,7 +80706,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.WebButton1 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.panelHojas = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
       this.WebLabel2 = pas["WEBLib.StdCtrls"].TLabel.$create("Create$1",[this]);
-      this.listaHojas = pas["WEBLib.StdCtrls"].TListBox.$create("Create$1",[this]);
+      this.listaHojas = pas["WEBLib.StdCtrls"].TListBox.$create("Create$2",["listaabrir"]);
       this.btnAbrir = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.btnCancelarAbrir = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebPopupMenu1 = pas["WEBLib.Menus"].TPopupMenu.$create("Create$1",[this]);

@@ -79518,15 +79518,16 @@ rtl.module("uAyuda",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics",
           <p>Menú Libreta Digital, al lado derecho de su pantalla se encuentra, el menu de opciones </strong>.</p>
           <ul>
            <li>Ayuda:              Esta opción habilita la ayuda del usuario.</li>
-           <li>Abrir:              Abrir una hoja de libreta registrada en su dispositivo.</li>
+           <li>Nueva Hoja:         Crea una nueva hoja en blanco, para registro de información.</li>
+           <li>Abrir:              Abrir historial de registro de hojas de la libreta, registradas en su dispositivo.</li>
            <li>Guardar:            Archivar/guardar una hoja de libreta registrada en su dispositivo</li>
            <li>Compartir:          Compartir archivo PDF, con la hoja de la libreta, por Messanger, WhatsApp etc.</li>
-           <li>Visualizar:         Visualizar/Ver una hoja de libreta registrada en su dispositivo</li>
+           <li>Visualizar:         Visualizar/Ver una hoja de libreta registrada en su dispositivo.</li>
            <li>Buscar:             Buscar un texto en  una hoja de libreta.</li>
            <li>Exportar:           Copia el contenido de la hoja y compartir por Messenger, WhatsApp etc.</li>
            <li>Exportar Archivo:   Copia el contenido de la hoja y compartir en un archivo de texto por Messenger, WhatsApp etc.</li>
-           <li>Importar:           Pegar el contenido de la hoja exportada con las opciones de expotar, en la hoja de libreta Digital.</li>
-           <li>Limpiar Hoja:       Borra el texto contenido en la hoja.</li>
+           <li>Importar:           Pegar el contenido de la hoja exportada, con las opciones de exportar, en la hoja de libreta Digital.</li>
+           <li>Sumar importes:     Analiza el texto, capturado en la hoja y realiza la suma de todos los registros númericos, capturados.</li>
            <li>Salir:              Salir de la aplicación (Libreta Digital).</li>
           </ul>`
       

@@ -79639,6 +79639,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.WebButton1 = null;
       this.btnAbrir = null;
       this.btnCancelarAbrir = null;
+      this.btnTotales = null;
     };
     this.$final = function () {
       this.WebPanel1 = undefined;
@@ -79681,6 +79682,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.WebButton1 = undefined;
       this.btnAbrir = undefined;
       this.btnCancelarAbrir = undefined;
+      this.btnTotales = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
@@ -79700,6 +79702,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
             const codeEditor = document.getElementById('editor');
             const lineNumbers = document.getElementById('numlinea');
             codeEditor.style.overscrollBehavior = 'none'; // Change overscroll
+      
+          // Set overflow to 'auto' to enable scrolling only when content overflows
+             codeEditor.style.overflow = 'auto';
       
              codeEditor.style.textWrap = 'wrap';
              codeEditor.addEventListener('dblclick', getLineCountByNewlines);
@@ -80501,6 +80506,32 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         $Self.LibHojasDbClientDataset1.SetActive(true);
       });
     };
+    this.btnTotalesClick = function (Sender) {
+      var stotal = "";
+      function sumNumbersInLibreta() {
+          const mydiv = document.getElementById('editor'); // Get the textarea element by its ID
+          const text = mydiv.innerText; // Get the text content of the textarea
+      
+          // Use a regular expression to find all numbers (integers and decimals)
+          // The 'g' flag ensures all matches are found, not just the first.
+          // The regex /[+-]?(\d+(\.\d*)?|\.\d+)/g finds numbers like "123", "12.3", ".3", "-5", "+7.5"
+          const numbers = text.match(/[+-]?(\d+(\.\d*)?|\.\d+)/g);
+      
+          let sum = 0;
+      
+          if (numbers) { // Check if any numbers were found
+              for (let i = 0; i < numbers.length; i++) {
+                  // Convert each found string to a floating-point number and add to the sum
+                  sum += parseFloat(numbers[i]);
+              }
+          }
+          return sum;
+      };
+      const suma = sumNumbersInLibreta();
+      stotal = suma;
+      console.log('suma',suma);
+      alert(stotal);
+    };
     this.CrearDiv_Dinamicos = function () {
       var i = 0;
       var strlinea = "";
@@ -80695,6 +80726,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.lblimpiar = pas["WEBLib.StdCtrls"].TLabel.$create("Create$2",["quitar"]);
       this.txtnumlinea = pas["WEBLib.StdCtrls"].TEdit.$create("Create$2",["nlinea"]);
       this.WebEdit1 = pas["WEBLib.StdCtrls"].TEdit.$create("Create$1",[this]);
+      this.btnTotales = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebPanel3 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
       this.divnumlineas = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["numlinea"]);
       this.diveditor = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["editor"]);
@@ -80735,6 +80767,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.lblimpiar.BeforeLoadDFMValues();
       this.txtnumlinea.BeforeLoadDFMValues();
       this.WebEdit1.BeforeLoadDFMValues();
+      this.btnTotales.BeforeLoadDFMValues();
       this.WebPanel3.BeforeLoadDFMValues();
       this.divnumlineas.BeforeLoadDFMValues();
       this.diveditor.BeforeLoadDFMValues();
@@ -80861,9 +80894,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebPanel2.SetParentComponent(this);
         this.WebPanel2.SetName("WebPanel2");
         this.WebPanel2.SetLeft(0);
-        this.WebPanel2.SetTop(414);
+        this.WebPanel2.SetTop(400);
         this.WebPanel2.SetWidth(600);
-        this.WebPanel2.SetHeight(48);
+        this.WebPanel2.SetHeight(62);
         this.WebPanel2.SetElementClassName("card text-white bg-secondary mb-3");
         this.WebPanel2.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
         this.WebPanel2.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
@@ -80921,12 +80954,26 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebEdit1.SetHeightPercent(100.000000000000000000);
         this.WebEdit1.SetVisible(false);
         this.WebEdit1.SetWidthPercent(100.000000000000000000);
+        this.btnTotales.SetParentComponent(this.WebPanel2);
+        this.btnTotales.SetName("btnTotales");
+        this.btnTotales.SetLeft(412);
+        this.btnTotales.SetTop(0);
+        this.btnTotales.SetWidth(109);
+        this.btnTotales.SetHeight(25);
+        this.btnTotales.SetCaption("Calcular Total:");
+        this.btnTotales.SetChildOrderEx(4);
+        this.btnTotales.SetElementClassName("btn btn-light");
+        this.btnTotales.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.btnTotales.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.btnTotales.SetHeightPercent(100.000000000000000000);
+        this.btnTotales.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.btnTotales,this,"OnClick","btnTotalesClick");
         this.WebPanel3.SetParentComponent(this);
         this.WebPanel3.SetName("WebPanel3");
         this.WebPanel3.SetLeft(0);
         this.WebPanel3.SetTop(57);
         this.WebPanel3.SetWidth(600);
-        this.WebPanel3.SetHeight(357);
+        this.WebPanel3.SetHeight(343);
         this.WebPanel3.SetElementClassName("card");
         this.WebPanel3.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
         this.WebPanel3.SetChildOrderEx(2);
@@ -80938,7 +80985,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.divnumlineas.SetLeft(0);
         this.divnumlineas.SetTop(0);
         this.divnumlineas.SetWidth(57);
-        this.divnumlineas.SetHeight(357);
+        this.divnumlineas.SetHeight(343);
         this.divnumlineas.SetAlign(pas["WEBLib.Controls"].TAlign.alLeft);
         this.divnumlineas.SetChildOrderEx(1);
         this.divnumlineas.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
@@ -80949,7 +80996,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.diveditor.SetLeft(57);
         this.diveditor.SetTop(0);
         this.diveditor.SetWidth(543);
-        this.diveditor.SetHeight(357);
+        this.diveditor.SetHeight(343);
         this.diveditor.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
         this.diveditor.SetChildOrderEx(1);
         this.diveditor.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
@@ -81187,6 +81234,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.lblimpiar.AfterLoadDFMValues();
         this.txtnumlinea.AfterLoadDFMValues();
         this.WebEdit1.AfterLoadDFMValues();
+        this.btnTotales.AfterLoadDFMValues();
         this.WebPanel3.AfterLoadDFMValues();
         this.divnumlineas.AfterLoadDFMValues();
         this.diveditor.AfterLoadDFMValues();
@@ -81262,6 +81310,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addField("WebButton1",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addField("btnAbrir",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addField("btnCancelarAbrir",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("btnTotales",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnPagadoClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnEntregadoClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
@@ -81288,6 +81337,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addMethod("LimpiarHoja1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Cerrar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebFormShow",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("btnTotalesClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.FormaLibreta = null;
   $mod.$implcode = function () {

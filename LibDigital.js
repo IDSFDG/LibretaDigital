@@ -80090,7 +80090,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.listaHojas.AddItem("Hoja:" + id,itemDB);
         this.LibHojasDbClientDataset1.Next();
       };
-      this.panelHojas.SetVisible(true);
+      if (this.listaHojas.FItems.GetCount() > 0) {
+        this.panelHojas.SetVisible(true)}
+       else pas["WEBLib.Dialogs"].ShowMessage("No hay ningún registro de hojas para abrir");
       return;
       const myDiv = document.getElementById('editor');
       
@@ -80419,7 +80421,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                       div.style.backgroundColor="";
                       if (colorb.length ==0)
                       {
-                        div.style.backgroundColor = color; //'lightgreen';
+                        div.style.backgroundColor = colorb; //'lightgreen';
       
                       }
                     //  div.style.backgroundColor = color; //'lightgreen';

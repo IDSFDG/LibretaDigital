@@ -79640,6 +79640,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.btnAbrir = null;
       this.btnCancelarAbrir = null;
       this.btnTotales = null;
+      this.Sumarimportes1 = null;
     };
     this.$final = function () {
       this.WebPanel1 = undefined;
@@ -79683,6 +79684,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.btnAbrir = undefined;
       this.btnCancelarAbrir = undefined;
       this.btnTotales = undefined;
+      this.Sumarimportes1 = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
@@ -80530,7 +80532,10 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       const suma = sumNumbersInLibreta();
       stotal = suma;
       console.log('suma',suma);
-      alert('Suma de importes capturados'+stotal);
+      alert('Suma de importes capturados: '+stotal);
+    };
+    this.Sumarimportes1Click = function (Sender) {
+      this.btnTotales.SetVisible(true);
     };
     this.CrearDiv_Dinamicos = function () {
       var i = 0;
@@ -80755,6 +80760,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.Exportar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.ExportarArchivoTexto1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Importar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.Sumarimportes1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Salir1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.LibHojasDbClientDataset1 = pas["WEBLib.IndexedDb"].TIndexedDbClientDataset.$create("Create$1",[this]);
       this.WebPanel1.BeforeLoadDFMValues();
@@ -80796,6 +80802,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.Exportar1.BeforeLoadDFMValues();
       this.ExportarArchivoTexto1.BeforeLoadDFMValues();
       this.Importar1.BeforeLoadDFMValues();
+      this.Sumarimportes1.BeforeLoadDFMValues();
       this.Salir1.BeforeLoadDFMValues();
       this.LibHojasDbClientDataset1.BeforeLoadDFMValues();
       try {
@@ -80966,6 +80973,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.btnTotales.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.btnTotales.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
         this.btnTotales.SetHeightPercent(100.000000000000000000);
+        this.btnTotales.SetVisible(false);
         this.btnTotales.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.btnTotales,this,"OnClick","btnTotalesClick");
         this.WebPanel3.SetParentComponent(this);
@@ -81211,6 +81219,10 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.Importar1.SetName("Importar1");
         this.Importar1.SetCaption("Importar");
         this.SetEvent$1(this.Importar1,this,"OnClick","Importar1Click");
+        this.Sumarimportes1.SetParentComponent(this.WebPopupMenu1);
+        this.Sumarimportes1.SetName("Sumarimportes1");
+        this.Sumarimportes1.SetCaption("Sumar importes");
+        this.SetEvent$1(this.Sumarimportes1,this,"OnClick","Sumarimportes1Click");
         this.Salir1.SetParentComponent(this.WebPopupMenu1);
         this.Salir1.SetName("Salir1");
         this.Salir1.SetCaption("Salir");
@@ -81263,6 +81275,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.Exportar1.AfterLoadDFMValues();
         this.ExportarArchivoTexto1.AfterLoadDFMValues();
         this.Importar1.AfterLoadDFMValues();
+        this.Sumarimportes1.AfterLoadDFMValues();
         this.Salir1.AfterLoadDFMValues();
         this.LibHojasDbClientDataset1.AfterLoadDFMValues();
       };
@@ -81311,6 +81324,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addField("btnAbrir",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addField("btnCancelarAbrir",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addField("btnTotales",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("Sumarimportes1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
     $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnPagadoClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnEntregadoClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
@@ -81338,6 +81352,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addMethod("Cerrar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebFormShow",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnTotalesClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("Sumarimportes1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.FormaLibreta = null;
   $mod.$implcode = function () {

@@ -79636,6 +79636,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.panelHojas = null;
       this.listaHojas = null;
       this.WebLabel2 = null;
+      this.WebButton1 = null;
+      this.btnAbrir = null;
+      this.btnCancelarAbrir = null;
     };
     this.$final = function () {
       this.WebPanel1 = undefined;
@@ -79675,6 +79678,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.panelHojas = undefined;
       this.listaHojas = undefined;
       this.WebLabel2 = undefined;
+      this.WebButton1 = undefined;
+      this.btnAbrir = undefined;
+      this.btnCancelarAbrir = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
@@ -79869,6 +79875,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
           //highlightSelection('green');
     };
     this.WebButton1Click = function (Sender) {
+      this.panelimportar.SetVisible(false);
+      return;
       const codeEditor = document.getElementById('editor');
       const newParagraph = document.createElement('p');
       const initialText = document.createTextNode('Click to edit this paragraph.');
@@ -79876,97 +79884,67 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       newParagraph.setAttribute('contenteditable', 'true');
        codeEditor.appendChild(newParagraph);
     };
-    this.WebButton2Click = function (Sender) {
-      var i = 0;
-      var strlinea = "";
-      var color = "";
-      color = "lightgreen";
-      color = "lightblue";
-      color = "rgb(255, 127, 127)";
-      const targetDiv = document.getElementById('editor');
-      targetDiv.contenteditable='true';
-      const myElements = [];
-      for (i = 0; i <= 100; i++) {
-        strlinea = " ";
-        if (pas.SysUtils.TStringHelper.GetLength.call({get: function () {
-            return strlinea;
-          }, set: function (v) {
-            strlinea = v;
-          }}) > 0) {
-          strlinea = pas.SysUtils.IntToStr(i) + ".-" + strlinea;
-          // Create a paragraph element
-                  //var p1 = document.createElement('p');
-          
-                  //var p1 = document.createElement('p');
-                  //p1.setAttribute('contenteditable', 'true');
-                  //p1.textContent = strlinea;
-          
-          
-                  var p1 = document.createElement('div');
-                  p1.className = 'editable-row';
-                  p1.setAttribute('contenteditable', 'true');
-                  p1.textContent = strlinea;
-          
-                 // p1.addEventListener('click', function() {
-                 //         p1.style.backgroundColor = 'green';
-                 //     });
-                  myElements.push(p1);
-                     // targetDiv.innerHTML += '<br>';
-                    targetDiv.style.textWrap = 'wrap';
-        };
+    this.btnAbrirClick = function (Sender) {
+      var itemDB = null;
+      var indexs = "";
+      var contenido = "";
+      var clases = "";
+      var itemindex = 0;
+      var iddb = "";
+      itemindex = this.listaHojas.GetItemIndex();
+      indexs = this.listaHojas.FItems.Get(itemindex);
+      iddb = pas.System.Copy(indexs,pas.System.Pos(":",indexs) + 1,indexs.length);
+      console.log('index',iddb);
+      if (this.LibHojasDbClientDataset1.Locate("id",iddb,{})) {
+        console.log('record found');
+        contenido = this.LibHojasDbClientDataset1.FieldByName("hojacontenido").GetAsString();
+        clases = this.LibHojasDbClientDataset1.FieldByName("hojaclases").GetAsString();
+        const myDiv = document.getElementById('editor');
+               const savedContent = contenido;
+               const savedClasses = clases;
+               //console.log('contenido',contenido);
+               //console.log('clases',clases);
+        
+               if (savedContent) {
+                  //console.log(savedContent);
+                    myDiv.innerHTML = savedContent;
+               }
+               if (savedClasses) {
+               //console.log(savedClasses);
+                myDiv.classList.add(savedClasses); // Add all saved classes
+               }
+        
+        
+        
+            const editableDivs = document.querySelectorAll('[contenteditable="true"]');
+            editableDivs.forEach((div, index) => {
+        
+                 div.addEventListener('dblclick', function() {
+                        div.style.backgroundColor = color; //'lightgreen';
+                    });
+        
+                    div.addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter') {
+                            event.preventDefault(); // Prevent default Enter key behavior
+        
+                            // Find the next editable div
+                            const nextDiv = editableDivs[index + 1];
+        
+                            if (nextDiv) {
+                                nextDiv.focus(); // Move focus to the next div
+                            } else {
+                                // Optional: Handle the case where there are no more divs
+                                // For example, blur the current div or perform another action
+                                div.blur();
+                            }
+                        }
+                    });
+                });
       };
-      for (const element of myElements) {
-      element.addEventListener('dblclick', function() {
-              element.style.backgroundColor = color; //'lightgreen';
-          });
-      targetDiv.appendChild(element);
-      }
-      //targetDiv.appendChild(myElements);
-      // document.addEventListener('DOMContentLoaded', () => {
-              const editableDivs = document.querySelectorAll('[contenteditable="true"]');
-      
-              editableDivs.forEach((div, index) => {
-                  div.addEventListener('keydown', (event) => {
-                      if (event.key === 'Enter') {
-                          event.preventDefault(); // Prevent default Enter key behavior
-      
-                          // Find the next editable div
-                          const nextDiv = editableDivs[index + 1];
-      
-                          if (nextDiv) {
-                              nextDiv.focus(); // Move focus to the next div
-                          } else {
-                              // Optional: Handle the case where there are no more divs
-                              // For example, blur the current div or perform another action
-                              div.blur();
-                          }
-                      }
-                  });
-              });
-        //  });
+      this.panelHojas.SetVisible(false);
     };
-    this.WebButton3Click = function (Sender) {
-      var strdiv = "";
-      const myDiv = document.getElementById('editor');
-      
-      // Save the innerHTML
-          const savedContent = myDiv.innerHTML;
-      
-          console.log('Saved Content (including HTML and inline styles):', savedContent);
-      
-      
-      // classes
-      
-          const classes = Array.from(myDiv.classList);
-      
-      // save in LocalStorage
-      
-          localStorage.setItem('divContent', savedContent);
-          localStorage.setItem('divClasses', JSON.stringify(classes)); // Store array as JSON string
-      
-          // Get computed styles
-           const computedStyle = getComputedStyle(myDiv);
-          localStorage.setItem('computedStyle', computedStyle);
+    this.btnCancelarAbrirClick = function (Sender) {
+      this.panelHojas.SetVisible(false);
     };
     this.AbrirClick = function (Sender) {
       var strDiv = "";
@@ -80523,65 +80501,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         $Self.LibHojasDbClientDataset1.SetActive(true);
       });
     };
-    this.listaHojasClick = function (Sender) {
-      var itemDB = null;
-      var indexs = "";
-      var contenido = "";
-      var clases = "";
-      var itemindex = 0;
-      var iddb = "";
-      itemindex = this.listaHojas.GetItemIndex();
-      indexs = this.listaHojas.FItems.Get(itemindex);
-      iddb = pas.System.Copy(indexs,pas.System.Pos(":",indexs) + 1,indexs.length);
-      console.log('index',iddb);
-      if (this.LibHojasDbClientDataset1.Locate("id",iddb,{})) {
-        console.log('record found');
-        contenido = this.LibHojasDbClientDataset1.FieldByName("hojacontenido").GetAsString();
-        clases = this.LibHojasDbClientDataset1.FieldByName("hojaclases").GetAsString();
-        const myDiv = document.getElementById('editor');
-               const savedContent = contenido;
-               const savedClasses = clases;
-               //console.log('contenido',contenido);
-               //console.log('clases',clases);
-        
-               if (savedContent) {
-                  //console.log(savedContent);
-                    myDiv.innerHTML = savedContent;
-               }
-               if (savedClasses) {
-               //console.log(savedClasses);
-                myDiv.classList.add(savedClasses); // Add all saved classes
-               }
-        
-        
-        
-            const editableDivs = document.querySelectorAll('[contenteditable="true"]');
-            editableDivs.forEach((div, index) => {
-        
-                 div.addEventListener('dblclick', function() {
-                        div.style.backgroundColor = color; //'lightgreen';
-                    });
-        
-                    div.addEventListener('keydown', (event) => {
-                        if (event.key === 'Enter') {
-                            event.preventDefault(); // Prevent default Enter key behavior
-        
-                            // Find the next editable div
-                            const nextDiv = editableDivs[index + 1];
-        
-                            if (nextDiv) {
-                                nextDiv.focus(); // Move focus to the next div
-                            } else {
-                                // Optional: Handle the case where there are no more divs
-                                // For example, blur the current div or perform another action
-                                div.blur();
-                            }
-                        }
-                    });
-                });
-      };
-      this.panelHojas.SetVisible(false);
-    };
     this.CrearDiv_Dinamicos = function () {
       var i = 0;
       var strlinea = "";
@@ -80780,13 +80699,16 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.divnumlineas = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["numlinea"]);
       this.diveditor = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["editor"]);
       this.WebInputMessageDlg1 = pas["WEBLib.Dialogs"].TInputMessageDlg.$create("Create$1",[this]);
-      this.panelHojas = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
-      this.WebLabel2 = pas["WEBLib.StdCtrls"].TLabel.$create("Create$1",[this]);
-      this.listaHojas = pas["WEBLib.StdCtrls"].TListBox.$create("Create$1",[this]);
       this.panelimportar = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
       this.WebLabel1 = pas["WEBLib.StdCtrls"].TLabel.$create("Create$1",[this]);
       this.memoimportar = pas["WEBLib.StdCtrls"].TMemo.$create("Create$1",[this]);
       this.btnImportar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.WebButton1 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.panelHojas = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.WebLabel2 = pas["WEBLib.StdCtrls"].TLabel.$create("Create$1",[this]);
+      this.listaHojas = pas["WEBLib.StdCtrls"].TListBox.$create("Create$1",[this]);
+      this.btnAbrir = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.btnCancelarAbrir = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebPopupMenu1 = pas["WEBLib.Menus"].TPopupMenu.$create("Create$1",[this]);
       this.Cerrar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Ayuda1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
@@ -80817,13 +80739,16 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.divnumlineas.BeforeLoadDFMValues();
       this.diveditor.BeforeLoadDFMValues();
       this.WebInputMessageDlg1.BeforeLoadDFMValues();
-      this.panelHojas.BeforeLoadDFMValues();
-      this.WebLabel2.BeforeLoadDFMValues();
-      this.listaHojas.BeforeLoadDFMValues();
       this.panelimportar.BeforeLoadDFMValues();
       this.WebLabel1.BeforeLoadDFMValues();
       this.memoimportar.BeforeLoadDFMValues();
       this.btnImportar.BeforeLoadDFMValues();
+      this.WebButton1.BeforeLoadDFMValues();
+      this.panelHojas.BeforeLoadDFMValues();
+      this.WebLabel2.BeforeLoadDFMValues();
+      this.listaHojas.BeforeLoadDFMValues();
+      this.btnAbrir.BeforeLoadDFMValues();
+      this.btnCancelarAbrir.BeforeLoadDFMValues();
       this.WebPopupMenu1.BeforeLoadDFMValues();
       this.Cerrar1.BeforeLoadDFMValues();
       this.Ayuda1.BeforeLoadDFMValues();
@@ -81041,50 +80966,14 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebInputMessageDlg1.FElementDialogClassName = "shadow-lg p-3 mb-5 bg-white rounded";
         this.WebInputMessageDlg1.FElementTitleClassName = "text-body";
         this.WebInputMessageDlg1.FElementContentClassName = "text-body";
-        this.panelHojas.SetParentComponent(this);
-        this.panelHojas.SetName("panelHojas");
-        this.panelHojas.SetLeft(123);
-        this.panelHojas.SetTop(60);
-        this.panelHojas.SetWidth(353);
-        this.panelHojas.SetHeight(189);
-        this.panelHojas.FCenter.SetHorizontal(true);
-        this.panelHojas.SetElementClassName("card");
-        this.panelHojas.SetChildOrderEx(3);
-        this.panelHojas.FElementBodyClassName = "card-body";
-        this.panelHojas.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.panelHojas.SetTabOrder(3);
-        this.panelHojas.SetVisible(false);
-        this.WebLabel2.SetParentComponent(this.panelHojas);
-        this.WebLabel2.SetName("WebLabel2");
-        this.WebLabel2.SetLeft(16);
-        this.WebLabel2.SetTop(18);
-        this.WebLabel2.SetWidth(118);
-        this.WebLabel2.SetHeight(18);
-        this.WebLabel2.SetCaption("Hojas registradas:");
-        this.WebLabel2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.WebLabel2.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
-        this.WebLabel2.SetHeightPercent(100.000000000000000000);
-        this.WebLabel2.SetWidthPercent(100.000000000000000000);
-        this.listaHojas.SetParentComponent(this.panelHojas);
-        this.listaHojas.SetName("listaHojas");
-        this.listaHojas.SetLeft(16);
-        this.listaHojas.SetTop(42);
-        this.listaHojas.SetWidth(326);
-        this.listaHojas.SetHeight(129);
-        this.listaHojas.SetElementClassName("form-control");
-        this.listaHojas.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.listaHojas.SetHeightPercent(100.000000000000000000);
-        this.listaHojas.SetItemHeight(18);
-        this.listaHojas.SetWidthPercent(100.000000000000000000);
-        this.SetEvent$1(this.listaHojas,this,"OnClick","listaHojasClick");
-        this.listaHojas.SetItemIndex(-1);
         this.panelimportar.SetParentComponent(this);
         this.panelimportar.SetName("panelimportar");
         this.panelimportar.SetLeft(115);
-        this.panelimportar.SetTop(32);
+        this.panelimportar.SetTop(82);
         this.panelimportar.SetWidth(369);
         this.panelimportar.SetHeight(297);
         this.panelimportar.FCenter.SetHorizontal(true);
+        this.panelimportar.FCenter.SetVertical(true);
         this.panelimportar.SetElementClassName("card");
         this.panelimportar.SetChildOrderEx(1);
         this.panelimportar.FElementBodyClassName = "card-body";
@@ -81123,7 +81012,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.memoimportar.SetWidthPercent(100.000000000000000000);
         this.btnImportar.SetParentComponent(this.panelimportar);
         this.btnImportar.SetName("btnImportar");
-        this.btnImportar.SetLeft(132);
+        this.btnImportar.SetLeft(84);
         this.btnImportar.SetTop(240);
         this.btnImportar.SetWidth(96);
         this.btnImportar.SetHeight(25);
@@ -81135,6 +81024,85 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.btnImportar.SetHeightPercent(100.000000000000000000);
         this.btnImportar.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.btnImportar,this,"OnClick","btnImportarClick");
+        this.WebButton1.SetParentComponent(this.panelimportar);
+        this.WebButton1.SetName("WebButton1");
+        this.WebButton1.SetLeft(200);
+        this.WebButton1.SetTop(240);
+        this.WebButton1.SetWidth(96);
+        this.WebButton1.SetHeight(25);
+        this.WebButton1.SetCaption("Cancelar");
+        this.WebButton1.SetChildOrderEx(3);
+        this.WebButton1.SetElementClassName("btn btn-light");
+        this.WebButton1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebButton1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebButton1.SetHeightPercent(100.000000000000000000);
+        this.WebButton1.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.WebButton1,this,"OnClick","WebButton1Click");
+        this.panelHojas.SetParentComponent(this);
+        this.panelHojas.SetName("panelHojas");
+        this.panelHojas.SetLeft(123);
+        this.panelHojas.SetTop(120);
+        this.panelHojas.SetWidth(353);
+        this.panelHojas.SetHeight(222);
+        this.panelHojas.FCenter.SetHorizontal(true);
+        this.panelHojas.FCenter.SetVertical(true);
+        this.panelHojas.SetElementClassName("card");
+        this.panelHojas.SetChildOrderEx(3);
+        this.panelHojas.FElementBodyClassName = "card-body";
+        this.panelHojas.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.panelHojas.SetTabOrder(3);
+        this.panelHojas.SetVisible(false);
+        this.WebLabel2.SetParentComponent(this.panelHojas);
+        this.WebLabel2.SetName("WebLabel2");
+        this.WebLabel2.SetLeft(16);
+        this.WebLabel2.SetTop(18);
+        this.WebLabel2.SetWidth(118);
+        this.WebLabel2.SetHeight(18);
+        this.WebLabel2.SetCaption("Hojas registradas:");
+        this.WebLabel2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebLabel2.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebLabel2.SetHeightPercent(100.000000000000000000);
+        this.WebLabel2.SetWidthPercent(100.000000000000000000);
+        this.listaHojas.SetParentComponent(this.panelHojas);
+        this.listaHojas.SetName("listaHojas");
+        this.listaHojas.SetLeft(16);
+        this.listaHojas.SetTop(42);
+        this.listaHojas.SetWidth(326);
+        this.listaHojas.SetHeight(129);
+        this.listaHojas.SetElementClassName("form-control");
+        this.listaHojas.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.listaHojas.SetHeightPercent(100.000000000000000000);
+        this.listaHojas.SetItemHeight(18);
+        this.listaHojas.SetWidthPercent(100.000000000000000000);
+        this.listaHojas.SetItemIndex(-1);
+        this.btnAbrir.SetParentComponent(this.panelHojas);
+        this.btnAbrir.SetName("btnAbrir");
+        this.btnAbrir.SetLeft(72);
+        this.btnAbrir.SetTop(179);
+        this.btnAbrir.SetWidth(96);
+        this.btnAbrir.SetHeight(25);
+        this.btnAbrir.SetCaption("Abrir");
+        this.btnAbrir.SetChildOrderEx(2);
+        this.btnAbrir.SetElementClassName("btn btn-light");
+        this.btnAbrir.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.btnAbrir.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.btnAbrir.SetHeightPercent(100.000000000000000000);
+        this.btnAbrir.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.btnAbrir,this,"OnClick","btnAbrirClick");
+        this.btnCancelarAbrir.SetParentComponent(this.panelHojas);
+        this.btnCancelarAbrir.SetName("btnCancelarAbrir");
+        this.btnCancelarAbrir.SetLeft(184);
+        this.btnCancelarAbrir.SetTop(179);
+        this.btnCancelarAbrir.SetWidth(96);
+        this.btnCancelarAbrir.SetHeight(25);
+        this.btnCancelarAbrir.SetCaption("Cancelar");
+        this.btnCancelarAbrir.SetChildOrderEx(2);
+        this.btnCancelarAbrir.SetElementClassName("btn btn-light");
+        this.btnCancelarAbrir.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.btnCancelarAbrir.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.btnCancelarAbrir.SetHeightPercent(100.000000000000000000);
+        this.btnCancelarAbrir.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.btnCancelarAbrir,this,"OnClick","btnCancelarAbrirClick");
         this.WebPopupMenu1.SetParentComponent(this);
         this.WebPopupMenu1.SetName("WebPopupMenu1");
         this.WebPopupMenu1.FAppearance.FHamburgerMenu.SetCaption("Menu");
@@ -81223,13 +81191,16 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.divnumlineas.AfterLoadDFMValues();
         this.diveditor.AfterLoadDFMValues();
         this.WebInputMessageDlg1.AfterLoadDFMValues();
-        this.panelHojas.AfterLoadDFMValues();
-        this.WebLabel2.AfterLoadDFMValues();
-        this.listaHojas.AfterLoadDFMValues();
         this.panelimportar.AfterLoadDFMValues();
         this.WebLabel1.AfterLoadDFMValues();
         this.memoimportar.AfterLoadDFMValues();
         this.btnImportar.AfterLoadDFMValues();
+        this.WebButton1.AfterLoadDFMValues();
+        this.panelHojas.AfterLoadDFMValues();
+        this.WebLabel2.AfterLoadDFMValues();
+        this.listaHojas.AfterLoadDFMValues();
+        this.btnAbrir.AfterLoadDFMValues();
+        this.btnCancelarAbrir.AfterLoadDFMValues();
         this.WebPopupMenu1.AfterLoadDFMValues();
         this.Cerrar1.AfterLoadDFMValues();
         this.Ayuda1.AfterLoadDFMValues();
@@ -81288,12 +81259,15 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addField("panelHojas",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
     $r.addField("listaHojas",pas["WEBLib.StdCtrls"].$rtti["TListBox"]);
     $r.addField("WebLabel2",pas["WEBLib.StdCtrls"].$rtti["TLabel"]);
+    $r.addField("WebButton1",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("btnAbrir",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("btnCancelarAbrir",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnPagadoClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnEntregadoClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebButton1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
-    $r.addMethod("WebButton2Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
-    $r.addMethod("WebButton3Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("btnAbrirClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("btnCancelarAbrirClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("AbrirClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("webBotonMenuClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Salir1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
@@ -81314,7 +81288,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addMethod("LimpiarHoja1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Cerrar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebFormShow",0,[["Sender",pas.System.$rtti["TObject"]]]);
-    $r.addMethod("listaHojasClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.FormaLibreta = null;
   $mod.$implcode = function () {

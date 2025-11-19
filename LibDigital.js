@@ -79700,7 +79700,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
              const myListBox = document.getElementById('listaabrir');
              myListBox.size = 2;
-      
+             myListBox.multiple = true;
             const codeEditor = document.getElementById('editor');
             const lineNumbers = document.getElementById('numlinea');
             codeEditor.style.overscrollBehavior = 'none'; // Change overscroll
@@ -80076,8 +80076,12 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.LibHojasDbClientDataset1.Next();
       };
       if (this.listaHojas.FItems.GetCount() > 0) {
-        this.panelHojas.SetVisible(true)}
-       else pas["WEBLib.Dialogs"].ShowMessage("No hay ningún registro de hojas para abrir");
+        this.panelHojas.SetVisible(true);
+        const llista = document.getElementById('listaabrir');
+        document.getElementById('listaabrir').focus();
+        //const targetOption = llista.querySelector('option[value="Hoja:1"]');
+        llista.click();
+      } else pas["WEBLib.Dialogs"].ShowMessage("No hay ningún registro de hojas para abrir");
       return;
       const myDiv = document.getElementById('editor');
       
@@ -81123,7 +81127,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.listaHojas.SetLeft(16);
         this.listaHojas.SetTop(42);
         this.listaHojas.SetWidth(326);
-        this.listaHojas.SetHeight(129);
+        this.listaHojas.SetHeight(128);
         this.listaHojas.SetElementClassName("form-control");
         this.listaHojas.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.listaHojas.SetHeightPercent(100.000000000000000000);

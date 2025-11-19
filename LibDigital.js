@@ -80530,7 +80530,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       const suma = sumNumbersInLibreta();
       stotal = suma;
       console.log('suma',suma);
-      alert(stotal);
+      alert('Suma de importes capturados'+stotal);
     };
     this.CrearDiv_Dinamicos = function () {
       var i = 0;
@@ -80956,9 +80956,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebEdit1.SetWidthPercent(100.000000000000000000);
         this.btnTotales.SetParentComponent(this.WebPanel2);
         this.btnTotales.SetName("btnTotales");
-        this.btnTotales.SetLeft(412);
+        this.btnTotales.SetLeft(351);
         this.btnTotales.SetTop(0);
-        this.btnTotales.SetWidth(109);
+        this.btnTotales.SetWidth(146);
         this.btnTotales.SetHeight(25);
         this.btnTotales.SetCaption("Calcular Total:");
         this.btnTotales.SetChildOrderEx(4);

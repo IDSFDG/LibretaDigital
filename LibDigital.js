@@ -79528,7 +79528,8 @@ rtl.module("uAyuda",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics",
            <li>Exportar Archivo:   Copia el contenido de la hoja y compartir en un archivo de texto por Messenger, WhatsApp etc.</li>
            <li>Importar:           Pegar el contenido de la hoja exportada, con las opciones de exportar, en la hoja de libreta Digital.</li>
            <li>Sumar importes:     Analiza el texto, capturado en la hoja y realiza la suma de todos los registros númericos, capturados.</li>
-           <li>Salir:              Salir de la aplicación (Libreta Digital).</li>
+           <li>Hoja tabular:       Libreta Digital tabular similar a MS-Excel para registro de datos tabulares.</li>
+          <li>Salir:              Salir de la aplicación (Libreta Digital).</li>
           </ul>`
       
           contentDiv.innerHTML = multilineHTML;
@@ -79570,7 +79571,7 @@ rtl.module("uAyuda",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics",
         this.WebPanel1.SetTop(448);
         this.WebPanel1.SetWidth(640);
         this.WebPanel1.SetHeight(32);
-        this.WebPanel1.SetElementClassName("card");
+        this.WebPanel1.SetElementClassName("card text-white bg-secondary mb-3");
         this.WebPanel1.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
         this.WebPanel1.SetCaption("Salir");
         this.WebPanel1.SetChildOrderEx(1);
@@ -79593,6 +79594,475 @@ rtl.module("uAyuda",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics",
   });
   this.frmAyuda = null;
 });
+rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.WebCtrls","WEBLib.StdCtrls","WEBLib.StdCtrls","WEBLib.Buttons","WEBLib.Controls","WEBLib.ExtCtrls","WEBLib.Menus","WEBLib.Menus"],function () {
+  "use strict";
+  var $mod = this;
+  rtl.createClass(this,"TfrmTabulator",pas["WEBLib.Forms"].TForm,function () {
+    this.$init = function () {
+      pas["WEBLib.Forms"].TForm.$init.call(this);
+      this.WebPanel1 = null;
+      this.WebSpeedButton1 = null;
+      this.webBotonMenu = null;
+      this.WebHTMLDiv1 = null;
+      this.WebHTMLDiv2 = null;
+      this.WebPanel2 = null;
+      this.divTabulator = null;
+      this.WebPopupMenu1 = null;
+      this.Cerrar1 = null;
+      this.Ayuda1 = null;
+      this.N1 = null;
+      this.LimpiarHoja1 = null;
+      this.Abrir1 = null;
+      this.Guardar1 = null;
+      this.Compartir1 = null;
+      this.Visualizar1 = null;
+      this.N2 = null;
+      this.Exportar1 = null;
+      this.ExportarArchivoTexto1 = null;
+      this.Salir1 = null;
+    };
+    this.$final = function () {
+      this.WebPanel1 = undefined;
+      this.WebSpeedButton1 = undefined;
+      this.webBotonMenu = undefined;
+      this.WebHTMLDiv1 = undefined;
+      this.WebHTMLDiv2 = undefined;
+      this.WebPanel2 = undefined;
+      this.divTabulator = undefined;
+      this.WebPopupMenu1 = undefined;
+      this.Cerrar1 = undefined;
+      this.Ayuda1 = undefined;
+      this.N1 = undefined;
+      this.LimpiarHoja1 = undefined;
+      this.Abrir1 = undefined;
+      this.Guardar1 = undefined;
+      this.Compartir1 = undefined;
+      this.Visualizar1 = undefined;
+      this.N2 = undefined;
+      this.Exportar1 = undefined;
+      this.ExportarArchivoTexto1 = undefined;
+      this.Salir1 = undefined;
+      pas["WEBLib.Forms"].TForm.$final.call(this);
+    };
+    this.WebFormCreate = function (Sender) {
+      this.webBotonMenu.SetCaption("" + "☰");
+      function customEditor(cell, onRendered, success, cancel) {
+       // const input = document.createElement('input')
+        const input = document.createElement('textarea')
+      
+        //input.style.width = "100%";
+        //input.style.height = "100%";
+        //input.style.boxSizing = "border-box";
+        input.value = cell.getValue()
+        //input.selectionStart = input.value.length
+        //input.selectionEnd = input.value.length;
+      
+        input.value= input.value.trim()
+         if (input.value === 'undefined')
+        {
+           //console.log('undefined');
+           input.value='';
+        }
+        onRendered(() => {
+      
+          input.focus()
+         // input.select()
+      
+        })
+      
+        function onChange() {
+          if (input.value != cell.getValue()) {
+            success(input.value)
+          } else {
+            cancel()
+          }
+        }
+      
+        input.addEventListener('blur', onChange)
+      
+        input.addEventListener('keydown', (e) => {
+         // alert(e.keyCode);
+          if (e.keyCode == 13) {
+            table.navigateNext()
+      
+            onChange()
+          }
+      
+          if (e.keyCode == 27) {
+            cancel()
+          }
+        })
+      
+        return input
+      }
+       var editCheck = function(cell){
+          //cell - the cell component for the editable cell
+          //get row data
+          var data = cell.getRow().getData();
+         // return data.age > 18; // only allow the name cell to be edited if the age is over 18
+        // return false // no editable
+        return true // editable
+      }
+      
+        var sheetData = [
+        [9937,	"",	"",	7749,	9816,	4355,	8279,	"",	""],
+        [2380,	"",	6977,	8896,	4012,	3803,	5408,	3415,	3056],
+        [9180,	"",	39,	9445,	3917,	"",	18,	5239,	2516],
+        [1924,	8734,	1819,	1838,	2330,	7921,	9219,	"",	3537],
+        ["",	8665,	5875,	9732,	1926,	"",	9743,	8388,   ""],
+        [7040,	4861,	2988,	5584,	2344,	9749,	8872,	9177,	6246],
+        [6334,	1674,	2967,	"",	9353,	396,	6006,	8572 , ""],
+        [6359,	"",	2580,	5723,	9801,	554,	1044,	5266,	8532],
+        [7278,	6971,	2232,	5720,	5665,	7231,	1165,	"",	168],
+      ];
+      
+      
+        var sheets = [
+          {
+            name:'huno',
+            title:"Hoja1",
+            key:"uno",
+            rows:15,
+            //rows:0,
+            columns:7,
+            data:[],
+        },
+      
+         {
+            name:'hdos',
+            title:"Hoja2",
+            key:"dos",
+           // rows:10,
+            rows:10,
+            columns:3,
+            data:[],
+        },
+      
+      ];
+      
+      //Build Tabulator
+      var table = new Tabulator("#eletabulator", {
+        height:"311px",
+        height:"90%",
+       // spreadsheetRows:15,
+       // spreadsheetColumns:10,
+        //spreadsheetColumnDefinition:{editor:"input"},
+      
+        spreadsheet:true,
+        //spreadsheetData:sheetData,
+        spreadsheetSheets:sheets,        // DEFINICION HOJAS ARREGLO
+        spreadsheetSheetTabs:true,
+      
+        rowHeader:{field:"_id", hozAlign:"center", headerSort:false, frozen:true},
+      
+        editorEmptyValue:undefined, //ensure empty values are set to undefined so they arent included in spreadsheet output data
+      
+      
+      
+       spreadsheetColumnDefinition:{editable:editCheck,editor:customEditor},
+      
+        });
+    };
+    this.webBotonMenuClick = function (Sender) {
+      var r = null;
+      var vpopmenuwidth = 0.0;
+      var i = 0;
+      var w = 0.0;
+      var maxw = 0.0;
+      var s = "";
+      var SelectedText = "";
+      var lselini = 0;
+      var lsellen = 0;
+      var popmenuwidth = 0;
+      this.WebPopupMenu1.SetVisible(true);
+      popmenuwidth = 180;
+      r = this.webBotonMenu.GetElementHandle().getBoundingClientRect();
+      this.WebPopupMenu1.Popup(Math.round(r.left - popmenuwidth),Math.round(r.bottom));
+    };
+    this.Cerrar1Click = function (Sender) {
+      this.WebPopupMenu1.SetVisible(false);
+    };
+    this.Salir1Click = function (Sender) {
+      this.Close();
+    };
+    this.Ayuda1Click = function (Sender) {
+      var $Self = this;
+      var frmAyuda = null;
+      var i = 0;
+      function AfterShowModal(AValue) {
+      };
+      function AfterCreate(AForm) {
+      };
+      frmAyuda = pas.uAyuda.TfrmAyuda.$create("CreateNew$3",[AfterCreate]);
+      frmAyuda.ShowModal$1(AfterShowModal);
+    };
+    this.LoadDFMValues = function () {
+      pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
+      this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.WebSpeedButton1 = pas["WEBLib.Buttons"].TSpeedButton.$create("Create$1",[this]);
+      this.webBotonMenu = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.WebHTMLDiv1 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$1",[this]);
+      this.WebHTMLDiv2 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$1",[this]);
+      this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.divTabulator = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["eletabulator"]);
+      this.WebPopupMenu1 = pas["WEBLib.Menus"].TPopupMenu.$create("Create$1",[this]);
+      this.Cerrar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.Ayuda1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.N1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.LimpiarHoja1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.Abrir1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.Guardar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.Compartir1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.Visualizar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.N2 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.Exportar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.ExportarArchivoTexto1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.Salir1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.WebPanel1.BeforeLoadDFMValues();
+      this.WebSpeedButton1.BeforeLoadDFMValues();
+      this.webBotonMenu.BeforeLoadDFMValues();
+      this.WebHTMLDiv1.BeforeLoadDFMValues();
+      this.WebHTMLDiv2.BeforeLoadDFMValues();
+      this.WebPanel2.BeforeLoadDFMValues();
+      this.divTabulator.BeforeLoadDFMValues();
+      this.WebPopupMenu1.BeforeLoadDFMValues();
+      this.Cerrar1.BeforeLoadDFMValues();
+      this.Ayuda1.BeforeLoadDFMValues();
+      this.N1.BeforeLoadDFMValues();
+      this.LimpiarHoja1.BeforeLoadDFMValues();
+      this.Abrir1.BeforeLoadDFMValues();
+      this.Guardar1.BeforeLoadDFMValues();
+      this.Compartir1.BeforeLoadDFMValues();
+      this.Visualizar1.BeforeLoadDFMValues();
+      this.N2.BeforeLoadDFMValues();
+      this.Exportar1.BeforeLoadDFMValues();
+      this.ExportarArchivoTexto1.BeforeLoadDFMValues();
+      this.Salir1.BeforeLoadDFMValues();
+      try {
+        this.SetName("frmTabulator");
+        this.SetWidth(640);
+        this.SetHeight(480);
+        this.SetCSSLibrary(pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap);
+        this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.FFont.FCharset = 1;
+        this.FFont.SetColor(65793);
+        this.FFont.SetHeight(-15);
+        this.FFont.SetName("Tahoma");
+        this.FFont.SetStyle({});
+        this.SetParentFont(false);
+        this.SetEvent(this,"OnCreate","WebFormCreate");
+        this.WebPanel1.SetParentComponent(this);
+        this.WebPanel1.SetName("WebPanel1");
+        this.WebPanel1.SetLeft(0);
+        this.WebPanel1.SetTop(0);
+        this.WebPanel1.SetWidth(640);
+        this.WebPanel1.SetHeight(57);
+        this.WebPanel1.SetElementClassName("card text-white bg-secondary mb-3");
+        this.WebPanel1.SetAlign(pas["WEBLib.Controls"].TAlign.alTop);
+        this.WebPanel1.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
+        this.WebPanel1.SetCaption("Libreta Digital Tabular");
+        this.WebPanel1.SetChildOrderEx(1);
+        this.WebPanel1.SetColor(16770250);
+        this.WebPanel1.FElementBodyClassName = "d-flex justify-content-center align-items-center min-vh-100";
+        this.WebPanel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebPanel1.SetTabOrder(0);
+        this.WebSpeedButton1.SetParentComponent(this.WebPanel1);
+        this.WebSpeedButton1.SetName("WebSpeedButton1");
+        this.WebSpeedButton1.SetLeft(601);
+        this.WebSpeedButton1.SetTop(0);
+        this.WebSpeedButton1.SetWidth(39);
+        this.WebSpeedButton1.SetHeight(57);
+        this.WebSpeedButton1.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
+        this.WebSpeedButton1.SetColorEx(-1);
+        this.WebSpeedButton1.SetElementClassName("btn bg-transparent");
+        this.WebSpeedButton1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebSpeedButton1.SetFlat(true);
+        this.WebSpeedButton1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebSpeedButton1.SetHeightPercent(100.000000000000000000);
+        this.WebSpeedButton1.SetTabOrder(0);
+        this.WebSpeedButton1.SetWidthPercent(100.000000000000000000);
+        this.webBotonMenu.SetParentComponent(this.WebPanel1);
+        this.webBotonMenu.SetName("webBotonMenu");
+        this.webBotonMenu.SetLeft(552);
+        this.webBotonMenu.SetTop(0);
+        this.webBotonMenu.SetWidth(49);
+        this.webBotonMenu.SetHeight(57);
+        this.webBotonMenu.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
+        this.webBotonMenu.SetCaption("Menu");
+        this.webBotonMenu.FCenter.SetVertical(true);
+        this.webBotonMenu.SetChildOrderEx(2);
+        this.webBotonMenu.SetElementClassName("btn-outline-secondary");
+        this.webBotonMenu.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.webBotonMenu.FFont.FCharset = 1;
+        this.webBotonMenu.FFont.SetColor(65793);
+        this.webBotonMenu.FFont.SetHeight(-15);
+        this.webBotonMenu.FFont.SetName("Tahoma");
+        this.webBotonMenu.FFont.SetStyle({});
+        this.webBotonMenu.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.webBotonMenu.SetHeightPercent(100.000000000000000000);
+        this.webBotonMenu.SetParentFont(false);
+        this.webBotonMenu.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.webBotonMenu,this,"OnClick","webBotonMenuClick");
+        this.WebHTMLDiv1.SetParentComponent(this.WebPanel1);
+        this.WebHTMLDiv1.SetName("WebHTMLDiv1");
+        this.WebHTMLDiv1.SetLeft(464);
+        this.WebHTMLDiv1.SetTop(0);
+        this.WebHTMLDiv1.SetWidth(88);
+        this.WebHTMLDiv1.SetHeight(57);
+        this.WebHTMLDiv1.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
+        this.WebHTMLDiv1.SetChildOrderEx(2);
+        this.WebHTMLDiv1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebHTMLDiv1.SetRole("");
+        this.WebHTMLDiv2.SetParentComponent(this.WebHTMLDiv1);
+        this.WebHTMLDiv2.SetName("WebHTMLDiv2");
+        this.WebHTMLDiv2.SetLeft(12);
+        this.WebHTMLDiv2.SetTop(13);
+        this.WebHTMLDiv2.SetWidth(70);
+        this.WebHTMLDiv2.SetHeight(41);
+        this.WebHTMLDiv2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebHTMLDiv2.FHTML.BeginUpdate();
+        try {
+          this.WebHTMLDiv2.FHTML.Clear();
+          this.WebHTMLDiv2.FHTML.Add('<P align="center"><B>Menú:</B></P>');
+        } finally {
+          this.WebHTMLDiv2.FHTML.EndUpdate();
+        };
+        this.WebHTMLDiv2.SetRole("");
+        this.WebPanel2.SetParentComponent(this);
+        this.WebPanel2.SetName("WebPanel2");
+        this.WebPanel2.SetLeft(0);
+        this.WebPanel2.SetTop(416);
+        this.WebPanel2.SetWidth(640);
+        this.WebPanel2.SetHeight(64);
+        this.WebPanel2.SetElementClassName("card text-white bg-secondary mb-3");
+        this.WebPanel2.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
+        this.WebPanel2.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
+        this.WebPanel2.SetChildOrderEx(2);
+        this.WebPanel2.SetColor(16770250);
+        this.WebPanel2.FElementBodyClassName = "d-flex justify-content-center align-items-center min-vh-100";
+        this.WebPanel2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebPanel2.SetTabOrder(1);
+        this.divTabulator.SetParentComponent(this);
+        this.divTabulator.SetName("divTabulator");
+        this.divTabulator.SetLeft(0);
+        this.divTabulator.SetTop(57);
+        this.divTabulator.SetWidth(640);
+        this.divTabulator.SetHeight(359);
+        this.divTabulator.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
+        this.divTabulator.SetChildOrderEx(2);
+        this.divTabulator.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.divTabulator.SetRole("");
+        this.WebPopupMenu1.SetParentComponent(this);
+        this.WebPopupMenu1.SetName("WebPopupMenu1");
+        this.WebPopupMenu1.FAppearance.FHamburgerMenu.SetCaption("Menu");
+        this.WebPopupMenu1.FAppearance.SetSubmenuIndicator("&#9658;");
+        this.WebPopupMenu1.FFont.FCharset = 1;
+        this.WebPopupMenu1.FFont.SetColor(65793);
+        this.WebPopupMenu1.FFont.SetHeight(-12);
+        this.WebPopupMenu1.FFont.SetName("Segoe UI");
+        this.WebPopupMenu1.FFont.SetStyle({});
+        this.WebPopupMenu1.SetLeft(457);
+        this.WebPopupMenu1.SetTop(92);
+        this.Cerrar1.SetParentComponent(this.WebPopupMenu1);
+        this.Cerrar1.SetName("Cerrar1");
+        this.Cerrar1.SetCaption("Cerrar menú");
+        this.SetEvent$1(this.Cerrar1,this,"OnClick","Cerrar1Click");
+        this.Ayuda1.SetParentComponent(this.WebPopupMenu1);
+        this.Ayuda1.SetName("Ayuda1");
+        this.Ayuda1.SetCaption("Ayuda");
+        this.SetEvent$1(this.Ayuda1,this,"OnClick","Ayuda1Click");
+        this.N1.SetParentComponent(this.WebPopupMenu1);
+        this.N1.SetName("N1");
+        this.N1.SetCaption("-");
+        this.LimpiarHoja1.SetParentComponent(this.WebPopupMenu1);
+        this.LimpiarHoja1.SetName("LimpiarHoja1");
+        this.LimpiarHoja1.SetCaption("Nueva Hoja");
+        this.LimpiarHoja1.SetEnabled(false);
+        this.Abrir1.SetParentComponent(this.WebPopupMenu1);
+        this.Abrir1.SetName("Abrir1");
+        this.Abrir1.SetCaption("Abrir");
+        this.Abrir1.SetEnabled(false);
+        this.Guardar1.SetParentComponent(this.WebPopupMenu1);
+        this.Guardar1.SetName("Guardar1");
+        this.Guardar1.SetCaption("Guardar");
+        this.Guardar1.SetEnabled(false);
+        this.Compartir1.SetParentComponent(this.WebPopupMenu1);
+        this.Compartir1.SetName("Compartir1");
+        this.Compartir1.SetCaption("Compartir");
+        this.Compartir1.SetEnabled(false);
+        this.Visualizar1.SetParentComponent(this.WebPopupMenu1);
+        this.Visualizar1.SetName("Visualizar1");
+        this.Visualizar1.SetCaption("Visualizar");
+        this.Visualizar1.SetEnabled(false);
+        this.N2.SetParentComponent(this.WebPopupMenu1);
+        this.N2.SetName("N2");
+        this.N2.SetCaption("-");
+        this.Exportar1.SetParentComponent(this.WebPopupMenu1);
+        this.Exportar1.SetName("Exportar1");
+        this.Exportar1.SetCaption("Exportar");
+        this.Exportar1.SetEnabled(false);
+        this.ExportarArchivoTexto1.SetParentComponent(this.WebPopupMenu1);
+        this.ExportarArchivoTexto1.SetName("ExportarArchivoTexto1");
+        this.ExportarArchivoTexto1.SetCaption("Exportar a Archivo");
+        this.ExportarArchivoTexto1.SetEnabled(false);
+        this.Salir1.SetParentComponent(this.WebPopupMenu1);
+        this.Salir1.SetName("Salir1");
+        this.Salir1.SetCaption("Salir");
+        this.SetEvent$1(this.Salir1,this,"OnClick","Salir1Click");
+      } finally {
+        this.WebPanel1.AfterLoadDFMValues();
+        this.WebSpeedButton1.AfterLoadDFMValues();
+        this.webBotonMenu.AfterLoadDFMValues();
+        this.WebHTMLDiv1.AfterLoadDFMValues();
+        this.WebHTMLDiv2.AfterLoadDFMValues();
+        this.WebPanel2.AfterLoadDFMValues();
+        this.divTabulator.AfterLoadDFMValues();
+        this.WebPopupMenu1.AfterLoadDFMValues();
+        this.Cerrar1.AfterLoadDFMValues();
+        this.Ayuda1.AfterLoadDFMValues();
+        this.N1.AfterLoadDFMValues();
+        this.LimpiarHoja1.AfterLoadDFMValues();
+        this.Abrir1.AfterLoadDFMValues();
+        this.Guardar1.AfterLoadDFMValues();
+        this.Compartir1.AfterLoadDFMValues();
+        this.Visualizar1.AfterLoadDFMValues();
+        this.N2.AfterLoadDFMValues();
+        this.Exportar1.AfterLoadDFMValues();
+        this.ExportarArchivoTexto1.AfterLoadDFMValues();
+        this.Salir1.AfterLoadDFMValues();
+      };
+    };
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+    var $r = this.$rtti;
+    $r.addField("WebPanel1",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
+    $r.addField("WebSpeedButton1",pas["WEBLib.Buttons"].$rtti["TSpeedButton"]);
+    $r.addField("webBotonMenu",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("WebHTMLDiv1",pas["WEBLib.WebCtrls"].$rtti["THTMLDiv"]);
+    $r.addField("WebHTMLDiv2",pas["WEBLib.WebCtrls"].$rtti["THTMLDiv"]);
+    $r.addField("WebPanel2",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
+    $r.addField("divTabulator",pas["WEBLib.WebCtrls"].$rtti["THTMLDiv"]);
+    $r.addField("WebPopupMenu1",pas["WEBLib.Menus"].$rtti["TPopupMenu"]);
+    $r.addField("Cerrar1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("Ayuda1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("N1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("LimpiarHoja1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("Abrir1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("Guardar1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("Compartir1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("Visualizar1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("N2",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("Exportar1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("ExportarArchivoTexto1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("Salir1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("webBotonMenuClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("Cerrar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("Salir1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("Ayuda1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+  });
+  this.frmTabulator = null;
+},["uAyuda"]);
 rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.StdCtrls","WEBLib.StdCtrls","WEBLib.Buttons","WEBLib.Controls","WEBLib.ExtCtrls","WEBLib.WebCtrls","WEBLib.Menus","WEBLib.Menus","DB","WEBLib.IndexedDb"],function () {
   "use strict";
   var $mod = this;
@@ -79642,6 +80112,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.btnCancelarAbrir = null;
       this.btnTotales = null;
       this.Sumarimportes1 = null;
+      this.HojaTabular1 = null;
     };
     this.$final = function () {
       this.WebPanel1 = undefined;
@@ -79686,6 +80157,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.btnCancelarAbrir = undefined;
       this.btnTotales = undefined;
       this.Sumarimportes1 = undefined;
+      this.HojaTabular1 = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
@@ -80567,6 +81039,17 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     this.Sumarimportes1Click = function (Sender) {
       this.btnTotalesClick(Sender);
     };
+    this.HojaTabular1Click = function (Sender) {
+      var $Self = this;
+      var frmTab = null;
+      var i = 0;
+      function AfterShowModal(AValue) {
+      };
+      function AfterCreate(AForm) {
+      };
+      frmTab = pas.uTabulator.TfrmTabulator.$create("CreateNew$3",[AfterCreate]);
+      frmTab.ShowModal$1(AfterShowModal);
+    };
     this.CrearDiv_Dinamicos = function () {
       var i = 0;
       var strlinea = "";
@@ -80792,6 +81275,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.ExportarArchivoTexto1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Importar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Sumarimportes1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.HojaTabular1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Salir1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.LibHojasDbClientDataset1 = pas["WEBLib.IndexedDb"].TIndexedDbClientDataset.$create("Create$1",[this]);
       this.WebPanel1.BeforeLoadDFMValues();
@@ -80834,6 +81318,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.ExportarArchivoTexto1.BeforeLoadDFMValues();
       this.Importar1.BeforeLoadDFMValues();
       this.Sumarimportes1.BeforeLoadDFMValues();
+      this.HojaTabular1.BeforeLoadDFMValues();
       this.Salir1.BeforeLoadDFMValues();
       this.LibHojasDbClientDataset1.BeforeLoadDFMValues();
       try {
@@ -81254,6 +81739,10 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.Sumarimportes1.SetName("Sumarimportes1");
         this.Sumarimportes1.SetCaption("Sumar importes");
         this.SetEvent$1(this.Sumarimportes1,this,"OnClick","Sumarimportes1Click");
+        this.HojaTabular1.SetParentComponent(this.WebPopupMenu1);
+        this.HojaTabular1.SetName("HojaTabular1");
+        this.HojaTabular1.SetCaption("Hoja Tabular");
+        this.SetEvent$1(this.HojaTabular1,this,"OnClick","HojaTabular1Click");
         this.Salir1.SetParentComponent(this.WebPopupMenu1);
         this.Salir1.SetName("Salir1");
         this.Salir1.SetCaption("Salir");
@@ -81307,6 +81796,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.ExportarArchivoTexto1.AfterLoadDFMValues();
         this.Importar1.AfterLoadDFMValues();
         this.Sumarimportes1.AfterLoadDFMValues();
+        this.HojaTabular1.AfterLoadDFMValues();
         this.Salir1.AfterLoadDFMValues();
         this.LibHojasDbClientDataset1.AfterLoadDFMValues();
       };
@@ -81356,6 +81846,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addField("btnCancelarAbrir",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addField("btnTotales",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addField("Sumarimportes1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("HojaTabular1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
     $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnPagadoClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnEntregadoClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
@@ -81384,6 +81875,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addMethod("WebFormShow",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnTotalesClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Sumarimportes1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("HojaTabular1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.FormaLibreta = null;
   $mod.$implcode = function () {
@@ -81402,7 +81894,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     });
     $impl.popmenuwidth = 0.0;
   };
-},["uAyuda"]);
+},["uAyuda","uTabulator"]);
 rtl.module("WEBLib.Login",["System","Classes","SysUtils","Types","WEBLib.Controls","WEBLib.StdCtrls","WEBLib.Graphics","WEBLib.Dialogs","Web"],function () {
   "use strict";
   var $mod = this;
@@ -81797,7 +82289,7 @@ rtl.module("uLoginForma",["System","SysUtils","Classes","JS","Web","WEBLib.Graph
   });
   this.frmLogin = null;
 },["UFormaLibreta"]);
-rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","UFormaLibreta","uLoginForma","uAyuda"],function () {
+rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","UFormaLibreta","uLoginForma","uAyuda","uTabulator"],function () {
   "use strict";
   var $mod = this;
   $mod.$implcode = function () {
@@ -81820,6 +82312,11 @@ rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","UFormaLibreta","uL
         return this.p.frmLogin;
       }, set: function (v) {
         this.p.frmLogin = v;
+      }});
+    pas["WEBLib.Forms"].Application.CreateForm(pas.uTabulator.TfrmTabulator,{p: pas.uTabulator, get: function () {
+        return this.p.frmTabulator;
+      }, set: function (v) {
+        this.p.frmTabulator = v;
       }});
     pas["WEBLib.Forms"].Application.Run();
   };

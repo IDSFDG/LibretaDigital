@@ -80220,7 +80220,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
               const linewidth = 205;
               const rectwidth = 195;
               const fontSize = 12; // Adjust as needed for your text
-      
+              const maxwidth = 190;
+              const lineHeight = 7;
               doc.setFontSize(fontSize);
       
               if (text.length > 0)
@@ -80229,12 +80230,24 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                 //doc.setFillColor(255, 255, 0); // Yellow
                 doc.setFillColor(divbackcolor);
                 console.log('backcolor',divbackcolor);
+               // if (divbackcolor.length >0)
+               // {
+                 // doc.rect(10, yPos - fontSize * 0.7, textWidth-200, fontSize * 1.1, "F");
+               //   doc.rect(10, yPos - fontSize * 0.3, rectwidth, fontSize * 0.5, "F");
+               // }
+               // doc.text(text, 10, yPos); // Add text at X=10, current Y position
+                const wrappedText = doc.splitTextToSize(text, maxwidth);
+      
+                wrappedText.forEach((line) => {
                 if (divbackcolor.length >0)
                 {
-                 // doc.rect(10, yPos - fontSize * 0.7, textWidth-200, fontSize * 1.1, "F");
+                  doc.setFillColor(divbackcolor);
                   doc.rect(10, yPos - fontSize * 0.3, rectwidth, fontSize * 0.5, "F");
                 }
-                doc.text(text, 10, yPos); // Add text at X=10, current Y position
+                  doc.text(line, 10, yPos); // 10 is the X position
+                  yPos += lineHeight;
+                });
+      
                 doc.line(10, yPos + underlineOffset,  linewidth, yPos + underlineOffset);
                 yPos += 10; // Increment Y position for the next div's text
               }
@@ -80264,7 +80277,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
       
           divsToConvert.forEach((div, index) => {
-      
+              const maxwidth = 190;
+              const lineHeight = 7;
               const divbackcolor = div.style.backgroundColor;
               const text = div.textContent.trim();
               const divWidth  = div.clientWidth;
@@ -80278,13 +80292,24 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
               if (text.length > 0)
               {
                 console.log('backcolor',divbackcolor);
+                //if (divbackcolor.length >0)
+               // {
+               //   doc.setFillColor(divbackcolor);
+                 // doc.rect(10, yPos - fontSize * 0.7, textWidth-200, fontSize * 1.1, "F");
+              //    doc.rect(10, yPos - fontSize * 0.3, rectwidth, fontSize * 0.5, "F");
+               // }
+               //doc.text(text, 10, yPos); // Add text at X=10, current Y position
+               const wrappedText = doc.splitTextToSize(text, maxwidth);
+      
+                wrappedText.forEach((line) => {
                 if (divbackcolor.length >0)
                 {
                   doc.setFillColor(divbackcolor);
-                 // doc.rect(10, yPos - fontSize * 0.7, textWidth-200, fontSize * 1.1, "F");
                   doc.rect(10, yPos - fontSize * 0.3, rectwidth, fontSize * 0.5, "F");
                 }
-               doc.text(text, 10, yPos); // Add text at X=10, current Y position
+                  doc.text(line, 10, yPos); // 10 is the X position
+                  yPos += lineHeight;
+                });
                doc.line(10, yPos + underlineOffset, linewidth, yPos + underlineOffset);
                yPos += 10; // Increment Y position for the next div's text
               }
@@ -80571,6 +80596,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                   var p1 = document.createElement('div');
                   p1.className = 'editable-row';
                   p1.setAttribute('contenteditable', 'true');
+                  p1.style.overflowWrap = 'break-word';
                   p1.textContent = strlinea;
           
                  // p1.addEventListener('click', function() {

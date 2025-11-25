@@ -79620,6 +79620,8 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
       this.Exportar1 = null;
       this.ExportarArchivoTexto1 = null;
       this.Salir1 = null;
+      this.WebButton1 = null;
+      this.divcontainer = null;
     };
     this.$final = function () {
       this.WebPanel1 = undefined;
@@ -79642,6 +79644,8 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
       this.Exportar1 = undefined;
       this.ExportarArchivoTexto1 = undefined;
       this.Salir1 = undefined;
+      this.WebButton1 = undefined;
+      this.divcontainer = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
@@ -79724,7 +79728,8 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
             key:"uno",
             rows:15,
             //rows:0,
-            columns:7,
+           // columns:7,
+            columns:2,
             data:[],
         },
       
@@ -79762,6 +79767,24 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
        spreadsheetColumnDefinition:{editable:editCheck,editor:customEditor},
       
         });
+      
+        table.on("rowDblClick", function(e, row){
+          //e - the click event object
+          //row - row component
+      
+              // Reset background color of previously selected row (optional)
+              // If you want only one row highlighted at a time
+              if (table.selectedRow) {
+             //     table.selectedRow.getElement().style.backgroundColor = ""; // Reset to default
+              }
+      
+          console.log(row.getElement().style.backgroundColor);
+              // Change background color of the clicked row
+              row.getElement().style.backgroundColor = "yellow"; // Or any other color
+      
+              // Store the currently selected row (optional)
+              table.selectedRow = row;
+      });
     };
     this.webBotonMenuClick = function (Sender) {
       var r = null;
@@ -79796,6 +79819,114 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
       frmAyuda = pas.uAyuda.TfrmAyuda.$create("CreateNew$3",[AfterCreate]);
       frmAyuda.ShowModal$1(AfterShowModal);
     };
+    this.WebButton1Click = function (Sender) {
+      var headerPopupFormatter = function(e, column, onRendered){
+              const clientX = event.clientX;
+              const clientY = event.clientY;
+              console.log(`Client X: ${clientX}, Client Y: ${clientY}`);
+          var container = document.createElement("div");
+      
+          var label = document.createElement("label");
+          label.innerHTML = "Nombre Columna:";
+          label.style.display = "block";
+          label.style.fontSize = ".7em";
+      
+          var input = document.createElement("input");
+          input.placeholder = "Nombre Columna...";
+         // input.value = column.getHeaderFilterValue() || "";
+      
+          input.addEventListener("keyup", (e) => {
+              //column.setHeaderFilterValue(input.value);
+             if (e.keyCode == 13) {
+               console.log('columna',column);
+               column.updateDefinition({title:input.value});
+               const containerdivt = document.getElementById('contenedor');
+               containerdivt.innerHTML = '';
+               containerdivt.style.display = 'none';
+             }
+          });
+      
+          container.appendChild(label);
+          container.appendChild(input);
+          return container;
+      }
+      function customEditor(cell, onRendered, success, cancel) {
+       // const input = document.createElement('input')
+        const input = document.createElement('textarea')
+      
+        //input.style.width = "100%";
+        //input.style.height = "100%";
+        //input.style.boxSizing = "border-box";
+        input.value = cell.getValue()
+        //input.selectionStart = input.value.length
+        //input.selectionEnd = input.value.length;
+      
+        input.value= input.value.trim()
+         if (input.value === 'undefined')
+        {
+           //console.log('undefined');
+           input.value='';
+        }
+        onRendered(() => {
+      
+          input.focus()
+         // input.select()
+      
+        })
+      
+        function onChange() {
+          if (input.value != cell.getValue()) {
+            success(input.value)
+          } else {
+            cancel()
+          }
+        }
+      
+        input.addEventListener('blur', onChange)
+      
+        input.addEventListener('keydown', (e) => {
+         // alert(e.keyCode);
+          if (e.keyCode == 13) {
+            table.navigateNext()
+      
+            onChange()
+          }
+      
+          if (e.keyCode == 27) {
+            cancel()
+          }
+        })
+      
+        return input
+      }
+      
+                var titcolumna = 'nombre';
+                var table = Tabulator.findTable("#eletabulator")[0];
+      
+      
+                table.addColumn({title:titcolumna, field:"name"})
+                     .then(function(column){
+                            //column - the component for the newly created column
+      
+                      //run code after column has been added
+                        column.updateDefinition({editable:true,editor:customEditor,
+                        headerClick: function(e, column){
+                  // e - the click event object
+                  // column - column component
+                  console.log("Header clicked for column:", column.getDefinition().field);
+                  const mydiv = headerPopupFormatter(this,column);
+                  console.log(mydiv);
+                  const containerdiv = document.getElementById('contenedor');
+                  console.log(containerdiv);
+                  containerdiv.appendChild(mydiv);
+                  containerdiv.style.display = 'block';
+              }}); //change the column editor
+      
+                    })
+                  .catch(function(error){
+                         //handle error adding column
+                });
+    };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
       this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
@@ -79803,8 +79934,10 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
       this.webBotonMenu = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebHTMLDiv1 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$1",[this]);
       this.WebHTMLDiv2 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$1",[this]);
+      this.WebButton1 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
       this.divTabulator = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["eletabulator"]);
+      this.divcontainer = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["contenedor"]);
       this.WebPopupMenu1 = pas["WEBLib.Menus"].TPopupMenu.$create("Create$1",[this]);
       this.Cerrar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Ayuda1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
@@ -79823,8 +79956,10 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
       this.webBotonMenu.BeforeLoadDFMValues();
       this.WebHTMLDiv1.BeforeLoadDFMValues();
       this.WebHTMLDiv2.BeforeLoadDFMValues();
+      this.WebButton1.BeforeLoadDFMValues();
       this.WebPanel2.BeforeLoadDFMValues();
       this.divTabulator.BeforeLoadDFMValues();
+      this.divcontainer.BeforeLoadDFMValues();
       this.WebPopupMenu1.BeforeLoadDFMValues();
       this.Cerrar1.BeforeLoadDFMValues();
       this.Ayuda1.BeforeLoadDFMValues();
@@ -79928,12 +80063,26 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
           this.WebHTMLDiv2.FHTML.EndUpdate();
         };
         this.WebHTMLDiv2.SetRole("");
+        this.WebButton1.SetParentComponent(this.WebPanel1);
+        this.WebButton1.SetName("WebButton1");
+        this.WebButton1.SetLeft(24);
+        this.WebButton1.SetTop(16);
+        this.WebButton1.SetWidth(96);
+        this.WebButton1.SetHeight(25);
+        this.WebButton1.SetCaption("+ Columna");
+        this.WebButton1.SetChildOrderEx(3);
+        this.WebButton1.SetElementClassName("btn btn-light");
+        this.WebButton1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebButton1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebButton1.SetHeightPercent(100.000000000000000000);
+        this.WebButton1.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.WebButton1,this,"OnClick","WebButton1Click");
         this.WebPanel2.SetParentComponent(this);
         this.WebPanel2.SetName("WebPanel2");
         this.WebPanel2.SetLeft(0);
-        this.WebPanel2.SetTop(416);
+        this.WebPanel2.SetTop(440);
         this.WebPanel2.SetWidth(640);
-        this.WebPanel2.SetHeight(64);
+        this.WebPanel2.SetHeight(40);
         this.WebPanel2.SetElementClassName("card text-white bg-secondary mb-3");
         this.WebPanel2.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
         this.WebPanel2.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
@@ -79947,11 +80096,20 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
         this.divTabulator.SetLeft(0);
         this.divTabulator.SetTop(57);
         this.divTabulator.SetWidth(640);
-        this.divTabulator.SetHeight(359);
+        this.divTabulator.SetHeight(383);
         this.divTabulator.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
         this.divTabulator.SetChildOrderEx(2);
         this.divTabulator.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.divTabulator.SetRole("");
+        this.divcontainer.SetParentComponent(this);
+        this.divcontainer.SetName("divcontainer");
+        this.divcontainer.SetLeft(418);
+        this.divcontainer.SetTop(8);
+        this.divcontainer.SetWidth(177);
+        this.divcontainer.SetHeight(57);
+        this.divcontainer.SetChildOrderEx(3);
+        this.divcontainer.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.divcontainer.SetRole("");
         this.WebPopupMenu1.SetParentComponent(this);
         this.WebPopupMenu1.SetName("WebPopupMenu1");
         this.WebPopupMenu1.FAppearance.FHamburgerMenu.SetCaption("Menu");
@@ -80015,8 +80173,10 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
         this.webBotonMenu.AfterLoadDFMValues();
         this.WebHTMLDiv1.AfterLoadDFMValues();
         this.WebHTMLDiv2.AfterLoadDFMValues();
+        this.WebButton1.AfterLoadDFMValues();
         this.WebPanel2.AfterLoadDFMValues();
         this.divTabulator.AfterLoadDFMValues();
+        this.divcontainer.AfterLoadDFMValues();
         this.WebPopupMenu1.AfterLoadDFMValues();
         this.Cerrar1.AfterLoadDFMValues();
         this.Ayuda1.AfterLoadDFMValues();
@@ -80055,11 +80215,14 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
     $r.addField("Exportar1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
     $r.addField("ExportarArchivoTexto1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
     $r.addField("Salir1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("WebButton1",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("divcontainer",pas["WEBLib.WebCtrls"].$rtti["THTMLDiv"]);
     $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("webBotonMenuClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Cerrar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Salir1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Ayuda1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebButton1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.frmTabulator = null;
 },["uAyuda"]);
@@ -80161,10 +80324,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
-      var color = "";
-      color = "lightgreen";
-      color = "lightblue";
-      color = "rgb(255, 127, 127)";
+      $impl.colorren = "yellow";
       this.webBotonMenu.SetCaption("" + "☰");
       this.divnumlineas.SetElementClassName("line-numbers");
       this.diveditor.SetElementClassName("code-editor");
@@ -80175,8 +80335,12 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
              myListBox.size = 2;
              myListBox.multiple = true;
             const codeEditor = document.getElementById('editor');
+      
+            codeEditor.setAttribute('contenteditable', 'true');
+      
             const lineNumbers = document.getElementById('numlinea');
-            codeEditor.style.overscrollBehavior = 'none'; // Change overscroll
+          //  codeEditor.style.overscrollBehavior = 'none'; // Change overscroll
+            codeEditor.style.overscrollBehavior = 'contain'; // Change overscroll
       
           // Set overflow to 'auto' to enable scrolling only when content overflows
              codeEditor.style.overflow = 'auto';
@@ -80371,9 +80535,12 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       var clases = "";
       var itemindex = 0;
       var iddb = "";
+      var colorlib = "";
+      colorlib = $impl.colorren;
       itemindex = this.listaHojas.GetItemIndex();
       indexs = this.listaHojas.FItems.Get(itemindex);
       iddb = pas.System.Copy(indexs,pas.System.Pos(":",indexs) + 1,indexs.length);
+      this.WebEdit1.SetText(iddb);
       console.log('index',iddb);
       if (this.LibHojasDbClientDataset1.Locate("id",iddb,{})) {
         console.log('record found');
@@ -80395,44 +80562,36 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                }
         
         
-        
-            const editableDivs = document.querySelectorAll('[contenteditable="true"]');
+              //const editableDivs = document.querySelectorAll('[contenteditable="true"]');
+            const editableDivs = document.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
+            //console.log(editableDivs);
             editableDivs.forEach((div, index) => {
-        
+                 const divId = div.id;
                  div.addEventListener('dblclick', function() {
-                        div.style.backgroundColor = color; //'lightgreen';
-                    });
+                        const colorb = div.style.backgroundColor;
+                        //console.log('color ',colorb, colorb.length);
+                        div.style.backgroundColor="";
+                        if (colorb.length ==0)
+                        {
+                          div.style.backgroundColor = colorlib;
         
-                    div.addEventListener('keydown', (event) => {
-                        if (event.key === 'Enter') {
-                            event.preventDefault(); // Prevent default Enter key behavior
-        
-                            // Find the next editable div
-                            const nextDiv = editableDivs[index + 1];
-        
-                            if (nextDiv) {
-                                nextDiv.focus(); // Move focus to the next div
-                            } else {
-                                // Optional: Handle the case where there are no more divs
-                                // For example, blur the current div or perform another action
-                                div.blur();
-                            }
                         }
+                      //  div.style.backgroundColor = colorlib; //'lightgreen';
                     });
+        
                 });
       };
       this.panelHojas.SetVisible(false);
+      this.CrearDiv_Dinamicos_Eventos();
     };
     this.btnCancelarAbrirClick = function (Sender) {
       this.panelHojas.SetVisible(false);
     };
     this.AbrirClick = function (Sender) {
       var strDiv = "";
-      var color = "";
       var id = "";
-      color = "lightgreen";
-      color = "lightblue";
-      color = "rgb(255, 127, 127)";
+      var colorlib = "";
+      colorlib = $impl.colorren;
       const myDiv = document.getElementById('editor');
       
       // Restore the innerHTML
@@ -80453,18 +80612,33 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
       
       
-          const editableDivs = document.querySelectorAll('[contenteditable="true"]');
+         // const editableDivs = document.querySelectorAll('[contenteditable="true"]');
+      
+          const editableDivs = document.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
           editableDivs.forEach((div, index) => {
+             const divId = div.id;
+      
       
                div.addEventListener('dblclick', function() {
-                      div.style.backgroundColor = color; //'lightgreen';
+                      const colorb = div.style.backgroundColor;
+                      //console.log('color ',colorb, colorb.length);
+                      div.style.backgroundColor="";
+                      if (colorb.length ==0)
+                      {
+                        div.style.backgroundColor = colorb; //'lightgreen';
+      
+                      }
+                    //  div.style.backgroundColor = colorlib; //'lightgreen';
                   });
+      
       
                   div.addEventListener('keydown', (event) => {
                       if (event.key === 'Enter') {
+                      if (divId != 'editor')
+            {
                           event.preventDefault(); // Prevent default Enter key behavior
       
-                          // Find the next editable div
+            }              // Find the next editable div
                           const nextDiv = editableDivs[index + 1];
       
                           if (nextDiv) {
@@ -80501,6 +80675,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       var strdiv = "";
       var contenido = "";
       var clases = "";
+      var iddb = "";
       const myDiv = document.getElementById('editor');
       
       // Save the innerHTML
@@ -80522,21 +80697,30 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
           // Get computed styles
            const computedStyle = getComputedStyle(myDiv);
           localStorage.setItem('computedStyle', computedStyle);
-      this.LibHojasDbClientDataset1.Append();
-      this.LibHojasDbClientDataset1.FieldByName("hojacontenido").SetAsString(contenido);
-      this.LibHojasDbClientDataset1.FieldByName("hojaclases").SetAsString(clases);
-      this.LibHojasDbClientDataset1.FieldByName("fecha").SetAsString(pas.SysUtils.DateToStr(pas.SysUtils.Now()));
-      this.LibHojasDbClientDataset1.Post();
+      iddb = this.WebEdit1.GetText();
+      if (!this.LibHojasDbClientDataset1.Locate("id",iddb,{})) {
+        this.LibHojasDbClientDataset1.Append();
+        this.LibHojasDbClientDataset1.FieldByName("hojacontenido").SetAsString(contenido);
+        this.LibHojasDbClientDataset1.FieldByName("hojaclases").SetAsString(clases);
+        this.LibHojasDbClientDataset1.FieldByName("fecha").SetAsString(pas.SysUtils.DateToStr(pas.SysUtils.Now()));
+        this.LibHojasDbClientDataset1.Post();
+      } else {
+        pas["WEBLib.Dialogs"].ShowMessage("Hoja existe, actualizar.");
+        this.LibHojasDbClientDataset1.Edit();
+        this.LibHojasDbClientDataset1.FieldByName("hojacontenido").SetAsString(contenido);
+        this.LibHojasDbClientDataset1.FieldByName("hojaclases").SetAsString(clases);
+        this.LibHojasDbClientDataset1.FieldByName("fecha").SetAsString(pas.SysUtils.DateToStr(pas.SysUtils.Now()));
+        this.LibHojasDbClientDataset1.UpdateRecord();
+        this.LibHojasDbClientDataset1.Post();
+      };
     };
     this.Abrir1Click = function (Sender) {
       var strDiv = "";
       var color = "";
       var id = "";
       var itemDB = null;
-      color = "lightgreen";
-      color = "lightblue";
-      color = "rgb(255, 127, 127)";
-      color = "yellow";
+      var colorlib = "";
+      colorlib = $impl.colorren;
       this.listaHojas.FItems.Clear();
       this.LibHojasDbClientDataset1.First();
       while (!this.LibHojasDbClientDataset1.GetEOF()) {
@@ -80574,32 +80758,28 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
               myDiv.classList.add(savedClasses); // Add all saved classes
           }
       
+       //const editableDivs = document.querySelectorAll('[contenteditable="true"]');
       
-      
-          const editableDivs = document.querySelectorAll('[contenteditable="true"]');
+          const editableDivs = document.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
           editableDivs.forEach((div, index) => {
+          console.log('entro');
+                const divId = div.id;
       
+               div.setAttribute('tabindex', '0');
                div.addEventListener('dblclick', function() {
-                      div.style.backgroundColor = color; //'lightgreen';
-                  });
+                      const colorb = div.style.backgroundColor;
+                      console.log('color ++++ ',colorb, colorb.length);
+                      div.style.backgroundColor="";
+                      if (colorb.length ==0)
+                      {
+                        div.style.backgroundColor = colorb; //'lightgreen';
       
-                  div.addEventListener('keydown', (event) => {
-                      if (event.key === 'Enter') {
-                          event.preventDefault(); // Prevent default Enter key behavior
-      
-                          // Find the next editable div
-                          const nextDiv = editableDivs[index + 1];
-      
-                          if (nextDiv) {
-                              nextDiv.focus(); // Move focus to the next div
-                          } else {
-                              // Optional: Handle the case where there are no more divs
-                              // For example, blur the current div or perform another action
-                              div.blur();
-                          }
                       }
+                    //  div.style.backgroundColor = colorlib; //'lightgreen';
                   });
+      
               });
+      this.CrearDiv_Dinamicos_Eventos();
     };
     this.WebPanel1MouseMove = function (Sender, Shift, X, Y) {
     };
@@ -80873,10 +81053,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       var strDiv = "";
       var color = "";
       var strimportar = "";
-      color = "lightgreen";
-      color = "lightblue";
-      color = "rgb(255, 127, 127)";
-      color = "yellow";
+      var colorlib = "";
+      colorlib = $impl.colorren;
       strimportar = this.memoimportar.GetText();
       const myDiv = document.getElementById('editor');
       
@@ -80899,8 +81077,11 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
       
       
-          const editableDivs = document.querySelectorAll('[contenteditable="true"]');
+         // const editableDivs = document.querySelectorAll('[contenteditable="true"]');
+      
+          const editableDivs = document.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
           editableDivs.forEach((div, index) => {
+             const divId = div.id;
       
                div.addEventListener('dblclick', function() {
                       const colorb = div.style.backgroundColor;
@@ -80908,30 +81089,16 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                       div.style.backgroundColor="";
                       if (colorb.length ==0)
                       {
-                        div.style.backgroundColor = colorb; //'lightgreen';
+                        div.style.backgroundColor = colorlib; //'lightgreen';
       
                       }
-                    //  div.style.backgroundColor = color; //'lightgreen';
+                    //  div.style.backgroundColor = colorlib; //'lightgreen';
                   });
       
-                  div.addEventListener('keydown', (event) => {
-                      if (event.key === 'Enter') {
-                          event.preventDefault(); // Prevent default Enter key behavior
       
-                          // Find the next editable div
-                          const nextDiv = editableDivs[index + 1];
-      
-                          if (nextDiv) {
-                              nextDiv.focus(); // Move focus to the next div
-                          } else {
-                              // Optional: Handle the case where there are no more divs
-                              // For example, blur the current div or perform another action
-                              div.blur();
-                          }
-                      }
-                  });
-              });
+             });
       this.panelimportar.SetVisible(false);
+      this.CrearDiv_Dinamicos_Eventos();
     };
     this.ExportarArchivoTexto1Click = function (Sender) {
       async function shareTextFile(shareData) {
@@ -80990,6 +81157,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     this.LimpiarHoja1Click = function (Sender) {
       const codeEditor = document.getElementById('editor');
             const editableDivs = document.querySelectorAll('[contenteditable="true"]');
+           // const editableDivs = document.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
              editableDivs.forEach((div, index) => {
       
                 //div.innerHTML  ='';
@@ -81000,6 +81168,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                   div.style.cssText = '';
       
           });
+      this.CrearDiv_Dinamicos();
+      this.CrearDiv_Dinamicos_Eventos();
     };
     this.Cerrar1Click = function (Sender) {
       this.WebPopupMenu1.SetVisible(false);
@@ -81053,15 +81223,12 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     this.CrearDiv_Dinamicos = function () {
       var i = 0;
       var strlinea = "";
-      var color = "";
-      color = "lightgreen";
-      color = "lightblue";
-      color = "rgb(255, 127, 127)";
-      color = "yellow";
+      var colorlib = "";
+      colorlib = $impl.colorren;
       const targetDiv = document.getElementById('editor');
       targetDiv.contenteditable='true';
       const myElements = [];
-      for (i = 0; i <= 100; i++) {
+      for (i = 1; i <= 100; i++) {
         strlinea = " ";
         if (pas.SysUtils.TStringHelper.GetLength.call({get: function () {
             return strlinea;
@@ -81079,9 +81246,19 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                   var p1 = document.createElement('div');
                   p1.className = 'editable-row';
                   p1.setAttribute('contenteditable', 'true');
+                  p1.setAttribute('tabindex', '0');
                   p1.style.overflowWrap = 'break-word';
+                  p1.style.height = '40px';
                   p1.textContent = strlinea;
           
+                  // -------------
+                    const newSpan = document.createElement('span');
+                    newSpan.setAttribute('contenteditable', 'false');
+                    var numren = i;
+                    newSpan.textContent = numren.toString()+'-'; //'Read-only content';
+                    p1.appendChild(newSpan);
+          
+                 //--------------
                  // p1.addEventListener('click', function() {
                  //         p1.style.backgroundColor = 'green';
                  //     });
@@ -81097,35 +81274,76 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                       element.style.backgroundColor="";
                       if (colorb.length ==0)
                       {
-                        element.style.backgroundColor = color; //'lightgreen';
+                        element.style.backgroundColor = colorlib; //'lightgreen';
       
                       } 
                   });
               targetDiv.appendChild(element);
               }
               //targetDiv.appendChild(myElements);
-      // document.addEventListener('DOMContentLoaded', () => {
-              const editableDivs = document.querySelectorAll('[contenteditable="true"]');
+      this.CrearDiv_Dinamicos_Eventos();
+      this.WebEdit1.SetText("");
+    };
+    this.CrearDiv_Dinamicos_Eventos = function () {
+      function setCaretAtEnd(element) {
+        const range = document.createRange();
+        const selection = window.getSelection();
       
-              editableDivs.forEach((div, index) => {
-                  div.addEventListener('keydown', (event) => {
-                      if (event.key === 'Enter') {
-                          event.preventDefault(); // Prevent default Enter key behavior
+        // Set the range to cover the entire content of the element
+        range.selectNodeContents(element);
       
-                          // Find the next editable div
-                          const nextDiv = editableDivs[index + 1];
+        // Collapse the range to the end, effectively placing the caret at the last character
+        range.collapse(false); // false collapses to the end, true collapses to the start
       
-                          if (nextDiv) {
-                              nextDiv.focus(); // Move focus to the next div
-                          } else {
-                              // Optional: Handle the case where there are no more divs
-                              // For example, blur the current div or perform another action
-                              div.blur();
-                          }
-                      }
-                  });
-              });
-        //  });
+        // Clear any existing selections
+        selection.removeAllRanges();
+      
+        // Add the new range to the selection
+        selection.addRange(range);
+      
+        // Focus the element to make the caret visible
+        element.focus();
+      }
+      
+          const codeEditor = document.getElementById('editor');
+          const focusableDivs = codeEditor.querySelectorAll('[contenteditable="true"]');
+          const divCount = focusableDivs.length;
+          console.log('count',divCount);
+          let currentFocusIndex = -1;
+        // Set initial focus
+         focusableDivs[currentFocusIndex+1].focus();
+          codeEditor.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+               //console.log('entro');
+               currentFocusIndex = (currentFocusIndex + 1);
+               if (currentFocusIndex <  divCount)
+               {
+                 focusableDivs[currentFocusIndex].focus();
+                 setCaretAtEnd(focusableDivs[currentFocusIndex]);
+               } else
+               {
+                 currentFocusIndex  = -1;
+               }
+              event.preventDefault(); // Prevent default Enter key behavior
+            } // if Enter
+           }); // keydown
+      
+      
+          codeEditor.addEventListener('focusin', (event) => {
+            const focusedDiv = event.target;
+      
+            // Ensure the focused element is one of our focusable divs
+            //if (focusedDiv.classList.contains('focusable-div')) {
+              const childrenArray = Array.from(codeEditor.children);
+              const index = childrenArray.indexOf(focusedDiv);
+              console.log(`Focused div index: ${index}`);
+              if (index >= 0)
+              {
+                currentFocusIndex = index;
+                console.log(`currentFocusIndex div index: ${currentFocusIndex}`);
+              }
+            //}
+          });
     };
     this.maximoPopupTexto = function () {
       var Result = 0.0;
@@ -81154,6 +81372,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     };
     this.EncontrarString = function (strBusca) {
       var buscaStr = "";
+      var colorlib = "";
+      colorlib = $impl.colorren;
       buscaStr = strBusca;
       let originalContent = ""; // Stores the original content for removing highlights
       let highlightedMatches = []; // Stores the highlighted elements
@@ -81204,34 +81424,31 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
           // restore Div Click eventos
       
-          const editableDivs = document.querySelectorAll('[contenteditable="true"]');
+          //const editableDivs = document.querySelectorAll('[contenteditable="true"]');
+      
+          const editableDivs = document.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
           editableDivs.forEach((div, index) => {
+             const divId = div.id;
       
-               div.addEventListener('dblclick', function() {
-                      div.style.backgroundColor = color; //'lightgreen';
-                  });
+              div.addEventListener('dblclick', function() {
+                      const colorb = div.style.backgroundColor;
+                      //console.log('color ',colorb, colorb.length);
+                      div.style.backgroundColor="";
+                      if (colorb.length ==0)
+                      {
+                        div.style.backgroundColor = colorb; //'lightgreen';
       
-                  div.addEventListener('keydown', (event) => {
-                      if (event.key === 'Enter') {
-                          event.preventDefault(); // Prevent default Enter key behavior
-      
-                          // Find the next editable div
-                          const nextDiv = editableDivs[index + 1];
-      
-                          if (nextDiv) {
-                              nextDiv.focus(); // Move focus to the next div
-                          } else {
-                              // Optional: Handle the case where there are no more divs
-                              // For example, blur the current div or perform another action
-                              div.blur();
-                          }
                       }
+                    //  div.style.backgroundColor = colorlib; //'lightgreen';
                   });
+      
+      
               });
-      };
+       };
       // alert(buscaStr);
       document.getElementById("quitar").addEventListener("click", removeHighlights);
       highlightAll(buscaStr);
+      this.CrearDiv_Dinamicos_Eventos();
     };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
@@ -81263,6 +81480,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.WebPopupMenu1 = pas["WEBLib.Menus"].TPopupMenu.$create("Create$1",[this]);
       this.Cerrar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Ayuda1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.HojaTabular1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.N1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.LimpiarHoja1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Abrir1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
@@ -81275,7 +81493,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.ExportarArchivoTexto1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Importar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Sumarimportes1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
-      this.HojaTabular1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Salir1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.LibHojasDbClientDataset1 = pas["WEBLib.IndexedDb"].TIndexedDbClientDataset.$create("Create$1",[this]);
       this.WebPanel1.BeforeLoadDFMValues();
@@ -81306,6 +81523,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.WebPopupMenu1.BeforeLoadDFMValues();
       this.Cerrar1.BeforeLoadDFMValues();
       this.Ayuda1.BeforeLoadDFMValues();
+      this.HojaTabular1.BeforeLoadDFMValues();
       this.N1.BeforeLoadDFMValues();
       this.LimpiarHoja1.BeforeLoadDFMValues();
       this.Abrir1.BeforeLoadDFMValues();
@@ -81318,7 +81536,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.ExportarArchivoTexto1.BeforeLoadDFMValues();
       this.Importar1.BeforeLoadDFMValues();
       this.Sumarimportes1.BeforeLoadDFMValues();
-      this.HojaTabular1.BeforeLoadDFMValues();
       this.Salir1.BeforeLoadDFMValues();
       this.LibHojasDbClientDataset1.BeforeLoadDFMValues();
       try {
@@ -81693,6 +81910,10 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.Ayuda1.SetName("Ayuda1");
         this.Ayuda1.SetCaption("Ayuda");
         this.SetEvent$1(this.Ayuda1,this,"OnClick","Ayuda1Click");
+        this.HojaTabular1.SetParentComponent(this.WebPopupMenu1);
+        this.HojaTabular1.SetName("HojaTabular1");
+        this.HojaTabular1.SetCaption("Hoja Tabular");
+        this.SetEvent$1(this.HojaTabular1,this,"OnClick","HojaTabular1Click");
         this.N1.SetParentComponent(this.WebPopupMenu1);
         this.N1.SetName("N1");
         this.N1.SetCaption("-");
@@ -81739,10 +81960,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.Sumarimportes1.SetName("Sumarimportes1");
         this.Sumarimportes1.SetCaption("Sumar importes");
         this.SetEvent$1(this.Sumarimportes1,this,"OnClick","Sumarimportes1Click");
-        this.HojaTabular1.SetParentComponent(this.WebPopupMenu1);
-        this.HojaTabular1.SetName("HojaTabular1");
-        this.HojaTabular1.SetCaption("Hoja Tabular");
-        this.SetEvent$1(this.HojaTabular1,this,"OnClick","HojaTabular1Click");
         this.Salir1.SetParentComponent(this.WebPopupMenu1);
         this.Salir1.SetName("Salir1");
         this.Salir1.SetCaption("Salir");
@@ -81784,6 +82001,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebPopupMenu1.AfterLoadDFMValues();
         this.Cerrar1.AfterLoadDFMValues();
         this.Ayuda1.AfterLoadDFMValues();
+        this.HojaTabular1.AfterLoadDFMValues();
         this.N1.AfterLoadDFMValues();
         this.LimpiarHoja1.AfterLoadDFMValues();
         this.Abrir1.AfterLoadDFMValues();
@@ -81796,7 +82014,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.ExportarArchivoTexto1.AfterLoadDFMValues();
         this.Importar1.AfterLoadDFMValues();
         this.Sumarimportes1.AfterLoadDFMValues();
-        this.HojaTabular1.AfterLoadDFMValues();
         this.Salir1.AfterLoadDFMValues();
         this.LibHojasDbClientDataset1.AfterLoadDFMValues();
       };
@@ -81893,6 +82110,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       };
     });
     $impl.popmenuwidth = 0.0;
+    $impl.colorren = "";
   };
 },["uAyuda","uTabulator"]);
 rtl.module("WEBLib.Login",["System","Classes","SysUtils","Types","WEBLib.Controls","WEBLib.StdCtrls","WEBLib.Graphics","WEBLib.Dialogs","Web"],function () {

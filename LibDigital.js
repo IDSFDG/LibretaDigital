@@ -80351,6 +80351,33 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         // Focus the element to make the caret visible
         element.focus();
       }
+      
+      function getFocusedDivIndexInContainer(containerId) {
+          const container = document.getElementById(containerId);
+          if (!container) {
+              console.error("Container not found with ID:", containerId);
+              return -1;
+          }
+      
+          // Get all direct child div elements of the container
+          const childDivs = Array.from(container.children).filter(
+              element => element.tagName === 'DIV'
+          );
+          //console.log(childDivs);
+          // Find the currently focused element within the document
+          const focusedElement = document.activeElement;
+         // console.log('focusedElement',focusedElement);
+          // Check if the focused element is one of the child divs and is a descendant of the container
+          if (focusedElement && focusedElement.tagName === 'DIV' && container.contains(focusedElement)) {
+              // Find the index of the focused div within the childDivs array
+              const indexd = childDivs.indexOf(focusedElement);
+      
+              return indexd;
+          }
+      
+          // If no div within the container is focused, return -1
+          return -1;
+      }
             const maxLines = 5;
             let numbersHtml = '';
       
@@ -80360,7 +80387,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
             const codeEditor = document.getElementById('editor');
             const lineNumbers = document.getElementById('numlinea');
             codeEditor.style.overscrollBehavior = 'none'; // Change overscroll
-      
             codeEditor.setAttribute('contenteditable', 'true');
           // Set overflow to 'auto' to enable scrolling only when content overflows
              codeEditor.style.overflow = 'auto';
@@ -80371,30 +80397,66 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         // Select all elements with the class 'row'
       const rows = document.querySelectorAll('.row-item');
       ///-------------------------------------------------------
+      ///-------------------------------------------------------
       
-          const focusableDivs = codeEditor.querySelectorAll('[contenteditable="true"]');
+          codeEditor.addEventListener('focus', (event) => {
+            const container = document.getElementById('editor');
+           if (!container) {
+              console.error("Container not found with ID:", containerId);
+              return -1;
+           }
+      
+          // Get all direct child div elements of the container
+           const childDivsCont = Array.from(container.children).filter(
+              element => element.tagName === 'DIV'
+           );
+           const divCountCont = childDivsCont.length;
+           if (childDivsCont && index >= 0 && index < divCountCont ) {
+                childDivsCont[index].focus();
+              }
+      
+       });
+          codeEditor.addEventListener('focusin', (event) => {
+             //const index = -1;
+             const focusedElement = event.target;
+             const className = focusedElement.className;
+             //console.log('Div received focus!', event.target, className);
+           // You can add your desired actions here, e.g., change background color
+           if (className ==='editable-row') {
+            //event.target.style.backgroundColor = 'lightblue';
+            // Find the index of the focused element in the array
+           index = getFocusedDivIndexInContainer('editor');
+           console.log('index',index);
+           }
+      });
+      
+          const focusableDivs = codeEditor.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
           const divCount = focusableDivs.length;
           console.log('count',divCount);
-          let currentFocusIndex = -1;
+          //let currentFocusIndex = -1;
+          let index = 0;
         // Set initial focus
-         focusableDivs[currentFocusIndex+1].focus();
+        // codeEditor.focus();
+        // focusableDivs[index].focus();
           codeEditor.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
-               currentFocusIndex = (currentFocusIndex + 1);
-               if (currentFocusIndex <  divCount)
+               if (index <  divCount)
                {
-                 focusableDivs[currentFocusIndex].focus();
-                 setCaretAtEnd(focusableDivs[currentFocusIndex]);
+                 focusableDivs[index].focus();
+                 setCaretAtEnd(focusableDivs[index]);
                }
                else
                {
-                 currentFocusIndex  = -1;
+                 index = 0;
+                 focusableDivs[index].focus();
+                 setCaretAtEnd(focusableDivs[index]);
                }
               event.preventDefault(); // Prevent default Enter key behavior
             } // if Enter
       
            }); // keydown
       
+      ///-------------------------------------------------------
       ///-------------------------------------------------------
       
            function getLineCountByNewlines(divId) {

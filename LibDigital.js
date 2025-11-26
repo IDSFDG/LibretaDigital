@@ -80324,24 +80324,44 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
-      $impl.colorren = "yellow";
+      var color = "";
+      color = "lightgreen";
+      color = "lightblue";
+      color = "rgb(255, 127, 127)";
       this.webBotonMenu.SetCaption("" + "☰");
       this.divnumlineas.SetElementClassName("line-numbers");
       this.diveditor.SetElementClassName("code-editor");
-      const maxLines = 5;
+      this.CrearDiv_Dinamicos();
+      function setCaretAtEnd(element) {
+        const range = document.createRange();
+        const selection = window.getSelection();
+      
+        // Set the range to cover the entire content of the element
+        range.selectNodeContents(element);
+      
+        // Collapse the range to the end, effectively placing the caret at the last character
+        range.collapse(false); // false collapses to the end, true collapses to the start
+      
+        // Clear any existing selections
+        selection.removeAllRanges();
+      
+        // Add the new range to the selection
+        selection.addRange(range);
+      
+        // Focus the element to make the caret visible
+        element.focus();
+      }
+            const maxLines = 5;
             let numbersHtml = '';
       
              const myListBox = document.getElementById('listaabrir');
              myListBox.size = 2;
              myListBox.multiple = true;
             const codeEditor = document.getElementById('editor');
+            const lineNumbers = document.getElementById('numlinea');
+            codeEditor.style.overscrollBehavior = 'none'; // Change overscroll
       
             codeEditor.setAttribute('contenteditable', 'true');
-      
-            const lineNumbers = document.getElementById('numlinea');
-          //  codeEditor.style.overscrollBehavior = 'none'; // Change overscroll
-            codeEditor.style.overscrollBehavior = 'contain'; // Change overscroll
-      
           // Set overflow to 'auto' to enable scrolling only when content overflows
              codeEditor.style.overflow = 'auto';
       
@@ -80350,7 +80370,32 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
         // Select all elements with the class 'row'
       const rows = document.querySelectorAll('.row-item');
+      ///-------------------------------------------------------
       
+          const focusableDivs = codeEditor.querySelectorAll('[contenteditable="true"]');
+          const divCount = focusableDivs.length;
+          console.log('count',divCount);
+          let currentFocusIndex = -1;
+        // Set initial focus
+         focusableDivs[currentFocusIndex+1].focus();
+          codeEditor.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+               currentFocusIndex = (currentFocusIndex + 1);
+               if (currentFocusIndex <  divCount)
+               {
+                 focusableDivs[currentFocusIndex].focus();
+                 setCaretAtEnd(focusableDivs[currentFocusIndex]);
+               }
+               else
+               {
+                 currentFocusIndex  = -1;
+               }
+              event.preventDefault(); // Prevent default Enter key behavior
+            } // if Enter
+      
+           }); // keydown
+      
+      ///-------------------------------------------------------
       
            function getLineCountByNewlines(divId) {
         const div = document.getElementById('editor');
@@ -80423,7 +80468,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
           document.execCommand('insertHTML', false, '<br>');
         };
       // updateLineNumbers();
-      this.CrearDiv_Dinamicos();
       this.LibHojasDbClientDataset1.FFieldDefs.Clear();
       this.LibHojasDbClientDataset1.FFieldDefs.Add$5("id",pas.DB.TFieldType.ftInteger);
       this.LibHojasDbClientDataset1.FFieldDefs.Add$5("hojacontenido",pas.DB.TFieldType.ftString);
@@ -80535,12 +80579,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       var clases = "";
       var itemindex = 0;
       var iddb = "";
-      var colorlib = "";
-      colorlib = $impl.colorren;
       itemindex = this.listaHojas.GetItemIndex();
       indexs = this.listaHojas.FItems.Get(itemindex);
       iddb = pas.System.Copy(indexs,pas.System.Pos(":",indexs) + 1,indexs.length);
-      this.WebEdit1.SetText(iddb);
       console.log('index',iddb);
       if (this.LibHojasDbClientDataset1.Locate("id",iddb,{})) {
         console.log('record found');
@@ -80562,36 +80603,45 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                }
         
         
-              //const editableDivs = document.querySelectorAll('[contenteditable="true"]');
-            const editableDivs = document.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
-            //console.log(editableDivs);
-            editableDivs.forEach((div, index) => {
-                 const divId = div.id;
-                 div.addEventListener('dblclick', function() {
-                        const colorb = div.style.backgroundColor;
-                        //console.log('color ',colorb, colorb.length);
-                        div.style.backgroundColor="";
-                        if (colorb.length ==0)
-                        {
-                          div.style.backgroundColor = colorlib;
+            //const editableDivs = document.querySelectorAll('[contenteditable="true"]');
         
-                        }
-                      //  div.style.backgroundColor = colorlib; //'lightgreen';
+            const editableDivs = document.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
+            editableDivs.forEach((div, index) => {
+        
+                 div.addEventListener('dblclick', function() {
+                        div.style.backgroundColor = color; //'lightgreen';
                     });
         
+                    div.addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter') {
+                            event.preventDefault(); // Prevent default Enter key behavior
+        
+                            // Find the next editable div
+                            const nextDiv = editableDivs[index + 1];
+        
+                            if (nextDiv) {
+                                nextDiv.focus(); // Move focus to the next div
+                            } else {
+                                // Optional: Handle the case where there are no more divs
+                                // For example, blur the current div or perform another action
+                                div.blur();
+                            }
+                        }
+                    });
                 });
       };
       this.panelHojas.SetVisible(false);
-      this.CrearDiv_Dinamicos_Eventos();
     };
     this.btnCancelarAbrirClick = function (Sender) {
       this.panelHojas.SetVisible(false);
     };
     this.AbrirClick = function (Sender) {
       var strDiv = "";
+      var color = "";
       var id = "";
-      var colorlib = "";
-      colorlib = $impl.colorren;
+      color = "lightgreen";
+      color = "lightblue";
+      color = "rgb(255, 127, 127)";
       const myDiv = document.getElementById('editor');
       
       // Restore the innerHTML
@@ -80616,29 +80666,16 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
           const editableDivs = document.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
           editableDivs.forEach((div, index) => {
-             const divId = div.id;
-      
       
                div.addEventListener('dblclick', function() {
-                      const colorb = div.style.backgroundColor;
-                      //console.log('color ',colorb, colorb.length);
-                      div.style.backgroundColor="";
-                      if (colorb.length ==0)
-                      {
-                        div.style.backgroundColor = colorb; //'lightgreen';
-      
-                      }
-                    //  div.style.backgroundColor = colorlib; //'lightgreen';
+                      div.style.backgroundColor = color; //'lightgreen';
                   });
-      
       
                   div.addEventListener('keydown', (event) => {
                       if (event.key === 'Enter') {
-                      if (divId != 'editor')
-            {
                           event.preventDefault(); // Prevent default Enter key behavior
       
-            }              // Find the next editable div
+                          // Find the next editable div
                           const nextDiv = editableDivs[index + 1];
       
                           if (nextDiv) {
@@ -80675,7 +80712,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       var strdiv = "";
       var contenido = "";
       var clases = "";
-      var iddb = "";
       const myDiv = document.getElementById('editor');
       
       // Save the innerHTML
@@ -80697,30 +80733,21 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
           // Get computed styles
            const computedStyle = getComputedStyle(myDiv);
           localStorage.setItem('computedStyle', computedStyle);
-      iddb = this.WebEdit1.GetText();
-      if (!this.LibHojasDbClientDataset1.Locate("id",iddb,{})) {
-        this.LibHojasDbClientDataset1.Append();
-        this.LibHojasDbClientDataset1.FieldByName("hojacontenido").SetAsString(contenido);
-        this.LibHojasDbClientDataset1.FieldByName("hojaclases").SetAsString(clases);
-        this.LibHojasDbClientDataset1.FieldByName("fecha").SetAsString(pas.SysUtils.DateToStr(pas.SysUtils.Now()));
-        this.LibHojasDbClientDataset1.Post();
-      } else {
-        pas["WEBLib.Dialogs"].ShowMessage("Hoja existe, actualizar.");
-        this.LibHojasDbClientDataset1.Edit();
-        this.LibHojasDbClientDataset1.FieldByName("hojacontenido").SetAsString(contenido);
-        this.LibHojasDbClientDataset1.FieldByName("hojaclases").SetAsString(clases);
-        this.LibHojasDbClientDataset1.FieldByName("fecha").SetAsString(pas.SysUtils.DateToStr(pas.SysUtils.Now()));
-        this.LibHojasDbClientDataset1.UpdateRecord();
-        this.LibHojasDbClientDataset1.Post();
-      };
+      this.LibHojasDbClientDataset1.Append();
+      this.LibHojasDbClientDataset1.FieldByName("hojacontenido").SetAsString(contenido);
+      this.LibHojasDbClientDataset1.FieldByName("hojaclases").SetAsString(clases);
+      this.LibHojasDbClientDataset1.FieldByName("fecha").SetAsString(pas.SysUtils.DateToStr(pas.SysUtils.Now()));
+      this.LibHojasDbClientDataset1.Post();
     };
     this.Abrir1Click = function (Sender) {
       var strDiv = "";
       var color = "";
       var id = "";
       var itemDB = null;
-      var colorlib = "";
-      colorlib = $impl.colorren;
+      color = "lightgreen";
+      color = "lightblue";
+      color = "rgb(255, 127, 127)";
+      color = "yellow";
       this.listaHojas.FItems.Clear();
       this.LibHojasDbClientDataset1.First();
       while (!this.LibHojasDbClientDataset1.GetEOF()) {
@@ -80758,28 +80785,34 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
               myDiv.classList.add(savedClasses); // Add all saved classes
           }
       
-       //const editableDivs = document.querySelectorAll('[contenteditable="true"]');
+      
+      
+           //const editableDivs = document.querySelectorAll('[contenteditable="true"]');
       
           const editableDivs = document.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
           editableDivs.forEach((div, index) => {
-          console.log('entro');
-                const divId = div.id;
       
-               div.setAttribute('tabindex', '0');
                div.addEventListener('dblclick', function() {
-                      const colorb = div.style.backgroundColor;
-                      console.log('color ++++ ',colorb, colorb.length);
-                      div.style.backgroundColor="";
-                      if (colorb.length ==0)
-                      {
-                        div.style.backgroundColor = colorb; //'lightgreen';
-      
-                      }
-                    //  div.style.backgroundColor = colorlib; //'lightgreen';
+                      div.style.backgroundColor = color; //'lightgreen';
                   });
       
+                  div.addEventListener('keydown', (event) => {
+                      if (event.key === 'Enter') {
+                          event.preventDefault(); // Prevent default Enter key behavior
+      
+                          // Find the next editable div
+                          const nextDiv = editableDivs[index + 1];
+      
+                          if (nextDiv) {
+                              nextDiv.focus(); // Move focus to the next div
+                          } else {
+                              // Optional: Handle the case where there are no more divs
+                              // For example, blur the current div or perform another action
+                              div.blur();
+                          }
+                      }
+                  });
               });
-      this.CrearDiv_Dinamicos_Eventos();
     };
     this.WebPanel1MouseMove = function (Sender, Shift, X, Y) {
     };
@@ -81053,8 +81086,10 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       var strDiv = "";
       var color = "";
       var strimportar = "";
-      var colorlib = "";
-      colorlib = $impl.colorren;
+      color = "lightgreen";
+      color = "lightblue";
+      color = "rgb(255, 127, 127)";
+      color = "yellow";
       strimportar = this.memoimportar.GetText();
       const myDiv = document.getElementById('editor');
       
@@ -81081,7 +81116,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
           const editableDivs = document.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
           editableDivs.forEach((div, index) => {
-             const divId = div.id;
       
                div.addEventListener('dblclick', function() {
                       const colorb = div.style.backgroundColor;
@@ -81089,16 +81123,30 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                       div.style.backgroundColor="";
                       if (colorb.length ==0)
                       {
-                        div.style.backgroundColor = colorlib; //'lightgreen';
+                        div.style.backgroundColor = colorb; //'lightgreen';
       
                       }
-                    //  div.style.backgroundColor = colorlib; //'lightgreen';
+                    //  div.style.backgroundColor = color; //'lightgreen';
                   });
       
+                  div.addEventListener('keydown', (event) => {
+                      if (event.key === 'Enter') {
+                          event.preventDefault(); // Prevent default Enter key behavior
       
-             });
+                          // Find the next editable div
+                          const nextDiv = editableDivs[index + 1];
+      
+                          if (nextDiv) {
+                              nextDiv.focus(); // Move focus to the next div
+                          } else {
+                              // Optional: Handle the case where there are no more divs
+                              // For example, blur the current div or perform another action
+                              div.blur();
+                          }
+                      }
+                  });
+              });
       this.panelimportar.SetVisible(false);
-      this.CrearDiv_Dinamicos_Eventos();
     };
     this.ExportarArchivoTexto1Click = function (Sender) {
       async function shareTextFile(shareData) {
@@ -81157,7 +81205,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     this.LimpiarHoja1Click = function (Sender) {
       const codeEditor = document.getElementById('editor');
             const editableDivs = document.querySelectorAll('[contenteditable="true"]');
-           // const editableDivs = document.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
              editableDivs.forEach((div, index) => {
       
                 //div.innerHTML  ='';
@@ -81168,8 +81215,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                   div.style.cssText = '';
       
           });
-      this.CrearDiv_Dinamicos();
-      this.CrearDiv_Dinamicos_Eventos();
     };
     this.Cerrar1Click = function (Sender) {
       this.WebPopupMenu1.SetVisible(false);
@@ -81223,8 +81268,11 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     this.CrearDiv_Dinamicos = function () {
       var i = 0;
       var strlinea = "";
-      var colorlib = "";
-      colorlib = $impl.colorren;
+      var color = "";
+      color = "lightgreen";
+      color = "lightblue";
+      color = "rgb(255, 127, 127)";
+      color = "yellow";
       const targetDiv = document.getElementById('editor');
       targetDiv.contenteditable='true';
       const myElements = [];
@@ -81248,10 +81296,13 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                   p1.setAttribute('contenteditable', 'true');
                   p1.setAttribute('tabindex', '0');
                   p1.style.overflowWrap = 'break-word';
-                  p1.style.height = '40px';
                   p1.textContent = strlinea;
           
-                  // -------------
+                 // p1.addEventListener('click', function() {
+                 //         p1.style.backgroundColor = 'green';
+                 //     });
+          
+                   // -------------
                     const newSpan = document.createElement('span');
                     newSpan.setAttribute('contenteditable', 'false');
                     var numren = i;
@@ -81259,9 +81310,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                     p1.appendChild(newSpan);
           
                  //--------------
-                 // p1.addEventListener('click', function() {
-                 //         p1.style.backgroundColor = 'green';
-                 //     });
                   myElements.push(p1);
                      // targetDiv.innerHTML += '<br>';
                     targetDiv.style.textWrap = 'wrap';
@@ -81274,76 +81322,37 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                       element.style.backgroundColor="";
                       if (colorb.length ==0)
                       {
-                        element.style.backgroundColor = colorlib; //'lightgreen';
+                        element.style.backgroundColor = color; //'lightgreen';
       
                       } 
                   });
               targetDiv.appendChild(element);
               }
               //targetDiv.appendChild(myElements);
-      this.CrearDiv_Dinamicos_Eventos();
-      this.WebEdit1.SetText("");
-    };
-    this.CrearDiv_Dinamicos_Eventos = function () {
-      function setCaretAtEnd(element) {
-        const range = document.createRange();
-        const selection = window.getSelection();
+      // document.addEventListener('DOMContentLoaded', () => {
+              // const editableDivs = document.querySelectorAll('[contenteditable="true"]');
       
-        // Set the range to cover the entire content of the element
-        range.selectNodeContents(element);
+              const editableDivs = document.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
       
-        // Collapse the range to the end, effectively placing the caret at the last character
-        range.collapse(false); // false collapses to the end, true collapses to the start
+              editableDivs.forEach((div, index) => {
+                  div.addEventListener('keydown', (event) => {
+                      if (event.key === 'Enter') {
+                          event.preventDefault(); // Prevent default Enter key behavior
       
-        // Clear any existing selections
-        selection.removeAllRanges();
+                          // Find the next editable div
+                          const nextDiv = editableDivs[index + 1];
       
-        // Add the new range to the selection
-        selection.addRange(range);
-      
-        // Focus the element to make the caret visible
-        element.focus();
-      }
-      
-          const codeEditor = document.getElementById('editor');
-          const focusableDivs = codeEditor.querySelectorAll('[contenteditable="true"]');
-          const divCount = focusableDivs.length;
-          console.log('count',divCount);
-          let currentFocusIndex = -1;
-        // Set initial focus
-         focusableDivs[currentFocusIndex+1].focus();
-          codeEditor.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-               //console.log('entro');
-               currentFocusIndex = (currentFocusIndex + 1);
-               if (currentFocusIndex <  divCount)
-               {
-                 focusableDivs[currentFocusIndex].focus();
-                 setCaretAtEnd(focusableDivs[currentFocusIndex]);
-               } else
-               {
-                 currentFocusIndex  = -1;
-               }
-              event.preventDefault(); // Prevent default Enter key behavior
-            } // if Enter
-           }); // keydown
-      
-      
-          codeEditor.addEventListener('focusin', (event) => {
-            const focusedDiv = event.target;
-      
-            // Ensure the focused element is one of our focusable divs
-            //if (focusedDiv.classList.contains('focusable-div')) {
-              const childrenArray = Array.from(codeEditor.children);
-              const index = childrenArray.indexOf(focusedDiv);
-              console.log(`Focused div index: ${index}`);
-              if (index >= 0)
-              {
-                currentFocusIndex = index;
-                console.log(`currentFocusIndex div index: ${currentFocusIndex}`);
-              }
-            //}
-          });
+                          if (nextDiv) {
+                              nextDiv.focus(); // Move focus to the next div
+                          } else {
+                              // Optional: Handle the case where there are no more divs
+                              // For example, blur the current div or perform another action
+                              div.blur();
+                          }
+                      }
+                  });
+              });
+        //  });
     };
     this.maximoPopupTexto = function () {
       var Result = 0.0;
@@ -81372,8 +81381,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     };
     this.EncontrarString = function (strBusca) {
       var buscaStr = "";
-      var colorlib = "";
-      colorlib = $impl.colorren;
       buscaStr = strBusca;
       let originalContent = ""; // Stores the original content for removing highlights
       let highlightedMatches = []; // Stores the highlighted elements
@@ -81428,27 +81435,32 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
           const editableDivs = document.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
           editableDivs.forEach((div, index) => {
-             const divId = div.id;
       
-              div.addEventListener('dblclick', function() {
-                      const colorb = div.style.backgroundColor;
-                      //console.log('color ',colorb, colorb.length);
-                      div.style.backgroundColor="";
-                      if (colorb.length ==0)
-                      {
-                        div.style.backgroundColor = colorb; //'lightgreen';
-      
-                      }
-                    //  div.style.backgroundColor = colorlib; //'lightgreen';
+               div.addEventListener('dblclick', function() {
+                      div.style.backgroundColor = color; //'lightgreen';
                   });
       
+                  div.addEventListener('keydown', (event) => {
+                      if (event.key === 'Enter') {
+                          event.preventDefault(); // Prevent default Enter key behavior
       
+                          // Find the next editable div
+                          const nextDiv = editableDivs[index + 1];
+      
+                          if (nextDiv) {
+                              nextDiv.focus(); // Move focus to the next div
+                          } else {
+                              // Optional: Handle the case where there are no more divs
+                              // For example, blur the current div or perform another action
+                              div.blur();
+                          }
+                      }
+                  });
               });
-       };
+      };
       // alert(buscaStr);
       document.getElementById("quitar").addEventListener("click", removeHighlights);
       highlightAll(buscaStr);
-      this.CrearDiv_Dinamicos_Eventos();
     };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
@@ -82110,7 +82122,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       };
     });
     $impl.popmenuwidth = 0.0;
-    $impl.colorren = "";
   };
 },["uAyuda","uTabulator"]);
 rtl.module("WEBLib.Login",["System","Classes","SysUtils","Types","WEBLib.Controls","WEBLib.StdCtrls","WEBLib.Graphics","WEBLib.Dialogs","Web"],function () {

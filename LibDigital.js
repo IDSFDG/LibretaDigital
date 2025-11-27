@@ -80332,62 +80332,19 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.divnumlineas.SetElementClassName("line-numbers");
       this.diveditor.SetElementClassName("code-editor");
       this.CrearDiv_Dinamicos();
-      function setCaretAtEnd(element) {
-        const range = document.createRange();
-        const selection = window.getSelection();
-      
-        // Set the range to cover the entire content of the element
-        range.selectNodeContents(element);
-      
-        // Collapse the range to the end, effectively placing the caret at the last character
-        range.collapse(false); // false collapses to the end, true collapses to the start
-      
-        // Clear any existing selections
-        selection.removeAllRanges();
-      
-        // Add the new range to the selection
-        selection.addRange(range);
-      
-        // Focus the element to make the caret visible
-        element.focus();
-      }
-      
-      function getFocusedDivIndexInContainer(containerId) {
-          const container = document.getElementById(containerId);
-          if (!container) {
-              console.error("Container not found with ID:", containerId);
-              return -1;
-          }
-      
-          // Get all direct child div elements of the container
-          const childDivs = Array.from(container.children).filter(
-              element => element.tagName === 'DIV'
-          );
-          //console.log(childDivs);
-          // Find the currently focused element within the document
-          const focusedElement = document.activeElement;
-         // console.log('focusedElement',focusedElement);
-          // Check if the focused element is one of the child divs and is a descendant of the container
-          if (focusedElement && focusedElement.tagName === 'DIV' && container.contains(focusedElement)) {
-              // Find the index of the focused div within the childDivs array
-              const indexd = childDivs.indexOf(focusedElement);
-      
-              return indexd;
-          }
-      
-          // If no div within the container is focused, return -1
-          return -1;
-      }
+      this.EditorConfigurar();
+      const codeEditor = document.getElementById('editor');
+            codeEditor.setAttribute('contenteditable', 'true');
             const maxLines = 5;
             let numbersHtml = '';
       
              const myListBox = document.getElementById('listaabrir');
              myListBox.size = 2;
              myListBox.multiple = true;
-            const codeEditor = document.getElementById('editor');
+           // const codeEditor = document.getElementById('editor');
             const lineNumbers = document.getElementById('numlinea');
             codeEditor.style.overscrollBehavior = 'none'; // Change overscroll
-            codeEditor.setAttribute('contenteditable', 'true');
+           // codeEditor.setAttribute('contenteditable', 'true');
           // Set overflow to 'auto' to enable scrolling only when content overflows
              codeEditor.style.overflow = 'auto';
       
@@ -80396,66 +80353,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
         // Select all elements with the class 'row'
       const rows = document.querySelectorAll('.row-item');
-      ///-------------------------------------------------------
-      ///-------------------------------------------------------
-      
-          codeEditor.addEventListener('focus', (event) => {
-            const container = document.getElementById('editor');
-           if (!container) {
-              console.error("Container not found with ID:", containerId);
-              return -1;
-           }
-      
-          // Get all direct child div elements of the container
-           const childDivsCont = Array.from(container.children).filter(
-              element => element.tagName === 'DIV'
-           );
-           const divCountCont = childDivsCont.length;
-           if (childDivsCont && index >= 0 && index < divCountCont ) {
-                childDivsCont[index].focus();
-              }
-      
-       });
-          codeEditor.addEventListener('focusin', (event) => {
-             //const index = -1;
-             const focusedElement = event.target;
-             const className = focusedElement.className;
-             //console.log('Div received focus!', event.target, className);
-           // You can add your desired actions here, e.g., change background color
-           if (className ==='editable-row') {
-            //event.target.style.backgroundColor = 'lightblue';
-            // Find the index of the focused element in the array
-           index = getFocusedDivIndexInContainer('editor');
-           console.log('index',index);
-           }
-      });
-      
-          const focusableDivs = codeEditor.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
-          const divCount = focusableDivs.length;
-          console.log('count',divCount);
-          //let currentFocusIndex = -1;
-          let index = 0;
-        // Set initial focus
-        // codeEditor.focus();
-        // focusableDivs[index].focus();
-          codeEditor.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-               if (index <  divCount)
-               {
-                 focusableDivs[index].focus();
-                 setCaretAtEnd(focusableDivs[index]);
-               }
-               else
-               {
-                 index = 0;
-                 focusableDivs[index].focus();
-                 setCaretAtEnd(focusableDivs[index]);
-               }
-              event.preventDefault(); // Prevent default Enter key behavior
-            } // if Enter
-      
-           }); // keydown
-      
       ///-------------------------------------------------------
       ///-------------------------------------------------------
       
@@ -80641,15 +80538,44 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       var clases = "";
       var itemindex = 0;
       var iddb = "";
+      var color = "";
+      var colorb = "";
+      color = "lightgreen";
+      color = "lightblue";
+      color = "rgb(255, 127, 127)";
+      color = "yellow";
       itemindex = this.listaHojas.GetItemIndex();
       indexs = this.listaHojas.FItems.Get(itemindex);
       iddb = pas.System.Copy(indexs,pas.System.Pos(":",indexs) + 1,indexs.length);
+      this.WebEdit1.SetText(iddb);
       console.log('index',iddb);
       if (this.LibHojasDbClientDataset1.Locate("id",iddb,{})) {
         console.log('record found');
         contenido = this.LibHojasDbClientDataset1.FieldByName("hojacontenido").GetAsString();
         clases = this.LibHojasDbClientDataset1.FieldByName("hojaclases").GetAsString();
-        const myDiv = document.getElementById('editor');
+        function moveFocusToNextDiv(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+        
+            const focusableDivs = Array.from(container.querySelectorAll('div[tabindex="0"], div[tabindex="-1"]'));
+            if (focusableDivs.length === 0) return;
+        
+            const currentFocusedElement = document.activeElement;
+            let currentIndex = focusableDivs.indexOf(currentFocusedElement);
+        
+            let nextIndex;
+            if (currentIndex === -1 || currentIndex === focusableDivs.length - 1) {
+                // If no div in the container is currently focused, or it's the last one,
+                // move focus to the first div.
+                nextIndex = 0;
+            } else {
+                // Move focus to the next div in sequence.
+                nextIndex = currentIndex + 1;
+            }
+        
+            focusableDivs[nextIndex].focus();
+        }
+               const myDiv = document.getElementById('editor');
                const savedContent = contenido;
                const savedClasses = clases;
                //console.log('contenido',contenido);
@@ -80665,33 +80591,37 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                }
         
         
-            //const editableDivs = document.querySelectorAll('[contenteditable="true"]');
         
-            const editableDivs = document.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
+           // const editableDivs = document.querySelectorAll('[contenteditable="true"]');
+        
+          //  const editableDivs = document.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
+          const editableDivs = Array.from(myDiv.querySelectorAll('div[tabindex="0"], div[tabindex="-1"]'));
+        
             editableDivs.forEach((div, index) => {
         
                  div.addEventListener('dblclick', function() {
-                        div.style.backgroundColor = color; //'lightgreen';
-                    });
+                       const colorb = div.style.backgroundColor;
+                        console.log('color ',colorb, colorb.length);
+                        div.style.backgroundColor="";
+                        if (colorb.length ==0)
+                        {
+                          div.style.backgroundColor = color; //'lightgreen';
         
-                    div.addEventListener('keydown', (event) => {
-                        if (event.key === 'Enter') {
-                            event.preventDefault(); // Prevent default Enter key behavior
-        
-                            // Find the next editable div
-                            const nextDiv = editableDivs[index + 1];
-        
-                            if (nextDiv) {
-                                nextDiv.focus(); // Move focus to the next div
-                            } else {
-                                // Optional: Handle the case where there are no more divs
-                                // For example, blur the current div or perform another action
-                                div.blur();
-                            }
                         }
                     });
-                });
+             div.addEventListener('keydown', (event) => {
+               //alert('entro');
+        
+              if (event.key === 'Enter') {
+                moveFocusToNextDiv('editor');
+        
+                event.preventDefault(); // Prevent default Enter key behavior
+              } // if Enter
+        
+                }); // keydown
+              });  //forEach;
       };
+      this.EditorConfigurar();
       this.panelHojas.SetVisible(false);
     };
     this.btnCancelarAbrirClick = function (Sender) {
@@ -80774,6 +80704,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       var strdiv = "";
       var contenido = "";
       var clases = "";
+      var iddb = "";
       const myDiv = document.getElementById('editor');
       
       // Save the innerHTML
@@ -80795,11 +80726,21 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
           // Get computed styles
            const computedStyle = getComputedStyle(myDiv);
           localStorage.setItem('computedStyle', computedStyle);
-      this.LibHojasDbClientDataset1.Append();
-      this.LibHojasDbClientDataset1.FieldByName("hojacontenido").SetAsString(contenido);
-      this.LibHojasDbClientDataset1.FieldByName("hojaclases").SetAsString(clases);
-      this.LibHojasDbClientDataset1.FieldByName("fecha").SetAsString(pas.SysUtils.DateToStr(pas.SysUtils.Now()));
-      this.LibHojasDbClientDataset1.Post();
+      iddb = this.WebEdit1.GetText();
+      if (!this.LibHojasDbClientDataset1.Locate("id",iddb,{})) {
+        this.LibHojasDbClientDataset1.Append();
+        this.LibHojasDbClientDataset1.FieldByName("hojacontenido").SetAsString(contenido);
+        this.LibHojasDbClientDataset1.FieldByName("hojaclases").SetAsString(clases);
+        this.LibHojasDbClientDataset1.FieldByName("fecha").SetAsString(pas.SysUtils.DateToStr(pas.SysUtils.Now()));
+        this.LibHojasDbClientDataset1.Post();
+      } else {
+        this.LibHojasDbClientDataset1.Edit();
+        this.LibHojasDbClientDataset1.FieldByName("hojacontenido").SetAsString(contenido);
+        this.LibHojasDbClientDataset1.FieldByName("hojaclases").SetAsString(clases);
+        this.LibHojasDbClientDataset1.FieldByName("fecha").SetAsString(pas.SysUtils.DateToStr(pas.SysUtils.Now()));
+        this.LibHojasDbClientDataset1.UpdateRecord();
+        this.LibHojasDbClientDataset1.Post();
+      };
     };
     this.Abrir1Click = function (Sender) {
       var strDiv = "";
@@ -81147,13 +81088,36 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     this.btnImportarClick = function (Sender) {
       var strDiv = "";
       var color = "";
+      var colorb = "";
       var strimportar = "";
       color = "lightgreen";
       color = "lightblue";
       color = "rgb(255, 127, 127)";
       color = "yellow";
       strimportar = this.memoimportar.GetText();
-      const myDiv = document.getElementById('editor');
+      function moveFocusToNextDiv(containerId) {
+          const container = document.getElementById(containerId);
+          if (!container) return;
+      
+          const focusableDivs = Array.from(container.querySelectorAll('div[tabindex="0"], div[tabindex="-1"]'));
+          if (focusableDivs.length === 0) return;
+      
+          const currentFocusedElement = document.activeElement;
+          let currentIndex = focusableDivs.indexOf(currentFocusedElement);
+      
+          let nextIndex;
+          if (currentIndex === -1 || currentIndex === focusableDivs.length - 1) {
+              // If no div in the container is currently focused, or it's the last one,
+              // move focus to the first div.
+              nextIndex = 0;
+          } else {
+              // Move focus to the next div in sequence.
+              nextIndex = currentIndex + 1;
+          }
+      
+          focusableDivs[nextIndex].focus();
+      }
+         const myDiv = document.getElementById('editor');
       
       // Restore the innerHTML
       
@@ -81176,38 +81140,41 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
          // const editableDivs = document.querySelectorAll('[contenteditable="true"]');
       
-          const editableDivs = document.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
+        //  const editableDivs = document.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
+        const editableDivs = Array.from(myDiv.querySelectorAll('div[tabindex="0"], div[tabindex="-1"]'));
+      
           editableDivs.forEach((div, index) => {
       
                div.addEventListener('dblclick', function() {
                       const colorb = div.style.backgroundColor;
-                      //console.log('color ',colorb, colorb.length);
+                      console.log('color ',colorb, colorb.length);
                       div.style.backgroundColor="";
                       if (colorb.length ==0)
                       {
-                        div.style.backgroundColor = colorb; //'lightgreen';
+                        div.style.backgroundColor = color; //'lightgreen';
       
                       }
-                    //  div.style.backgroundColor = color; //'lightgreen';
                   });
       
                   div.addEventListener('keydown', (event) => {
                       if (event.key === 'Enter') {
+                          moveFocusToNextDiv('editor');
                           event.preventDefault(); // Prevent default Enter key behavior
       
                           // Find the next editable div
-                          const nextDiv = editableDivs[index + 1];
+                          //const nextDiv = editableDivs[index + 1];
       
-                          if (nextDiv) {
-                              nextDiv.focus(); // Move focus to the next div
-                          } else {
+                         // if (nextDiv) {
+                         //     nextDiv.focus(); // Move focus to the next div
+                         // } else {
                               // Optional: Handle the case where there are no more divs
                               // For example, blur the current div or perform another action
-                              div.blur();
-                          }
+                         //     div.blur();
+                         // }
                       }
                   });
               });
+      this.EditorConfigurar();
       this.panelimportar.SetVisible(false);
     };
     this.ExportarArchivoTexto1Click = function (Sender) {
@@ -81266,17 +81233,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     };
     this.LimpiarHoja1Click = function (Sender) {
       const codeEditor = document.getElementById('editor');
-            const editableDivs = document.querySelectorAll('[contenteditable="true"]');
-             editableDivs.forEach((div, index) => {
-      
-                //div.innerHTML  ='';
-                            // Clear text content and nested elements
-                  div.innerHTML = '';
-      
-                  // Clear all inline styles
-                  div.style.cssText = '';
-      
-          });
+      codeEditor.innerHTML = '';
+      this.CrearDiv_Dinamicos();
+      this.EditorConfigurar();
     };
     this.Cerrar1Click = function (Sender) {
       this.WebPopupMenu1.SetVisible(false);
@@ -81335,9 +81294,53 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       color = "lightblue";
       color = "rgb(255, 127, 127)";
       color = "yellow";
-      const targetDiv = document.getElementById('editor');
-      targetDiv.contenteditable='true';
-      const myElements = [];
+      this.WebEdit1.SetText("");
+      function setCaretAtEnd(element) {
+        const range = document.createRange();
+        const selection = window.getSelection();
+      
+        // Set the range to cover the entire content of the element
+        range.selectNodeContents(element);
+      
+        // Collapse the range to the end, effectively placing the caret at the last character
+        range.collapse(false); // false collapses to the end, true collapses to the start
+      
+        // Clear any existing selections
+        selection.removeAllRanges();
+      
+        // Add the new range to the selection
+        selection.addRange(range);
+      
+        // Focus the element to make the caret visible
+        element.focus();
+      }
+      
+      function moveFocusToNextDiv(containerId) {
+          const container = document.getElementById(containerId);
+          if (!container) return;
+      
+          const focusableDivs = Array.from(container.querySelectorAll('div[tabindex="0"], div[tabindex="-1"]'));
+          if (focusableDivs.length === 0) return;
+      
+          const currentFocusedElement = document.activeElement;
+          let currentIndex = focusableDivs.indexOf(currentFocusedElement);
+      
+          let nextIndex;
+          if (currentIndex === -1 || currentIndex === focusableDivs.length - 1) {
+              // If no div in the container is currently focused, or it's the last one,
+              // move focus to the first div.
+              nextIndex = 0;
+          } else {
+              // Move focus to the next div in sequence.
+              nextIndex = currentIndex + 1;
+          }
+      
+          focusableDivs[nextIndex].focus();
+      }
+              const targetDiv = document.getElementById('editor');
+              targetDiv.contenteditable='true';
+              const myElements = [];
+              let index = 0;
       for (i = 1; i <= 100; i++) {
         strlinea = " ";
         if (pas.SysUtils.TStringHelper.GetLength.call({get: function () {
@@ -81345,7 +81348,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
           }, set: function (v) {
             strlinea = v;
           }}) > 0) {
-          // Create a paragraph element
+          const divCount = 100;
+              // Create a paragraph element
                   //var p1 = document.createElement('p');
           
                   //var p1 = document.createElement('p');
@@ -81355,7 +81359,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
           
                   var p1 = document.createElement('div');
                   p1.className = 'editable-row';
-                  p1.setAttribute('contenteditable', 'true');
+                 // p1.setAttribute('contenteditable', 'true'); // Container (editor) editable=true, para copy/paste
                   p1.setAttribute('tabindex', '0');
                   p1.style.overflowWrap = 'break-word';
                   p1.textContent = strlinea;
@@ -81364,14 +81368,34 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                  //         p1.style.backgroundColor = 'green';
                  //     });
           
-                   // -------------
-                    const newSpan = document.createElement('span');
-                    newSpan.setAttribute('contenteditable', 'false');
-                    var numren = i;
-                    newSpan.textContent = numren.toString()+'-'; //'Read-only content';
-                    p1.appendChild(newSpan);
+                   // -------------  span
+                      const newSpan = document.createElement('span');
+                    // newSpan.setAttribute('contenteditable', 'true');   // copy paste mobile
+                     newSpan.setAttribute('contenteditable', 'false');   // not copy paste mobile
+                    //   newSpan.classList.add('readonly-span');
+                     var numren = i;
+                     newSpan.textContent = numren.toString()+'-'; //'Read-only content';
+                     p1.appendChild(newSpan);
           
                  //--------------
+          
+                //------------ textarea
+                //   const textarea = document.createElement('textarea');
+          
+              // 3. Set properties
+             // textarea.value = numren.toString()+'-'; ; // Set the content
+             // textarea.readOnly = true;     // Make it read-only
+          
+              // 4. Set width and height using CSS styles
+             // textarea.style.width = '70px';
+             // textarea.style.height = '70px' ;
+          
+              // Optional: Add some additional styling to make it look like plain text and prevent user resizing
+             // textarea.style.border = 'none';
+             // textarea.style.padding = '10px';
+             // textarea.style.resize = 'none'; // Disable user resizing
+              //p1.appendChild(textarea);
+          
                   myElements.push(p1);
                      // targetDiv.innerHTML += '<br>';
                     targetDiv.style.textWrap = 'wrap';
@@ -81388,6 +81412,18 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
                       } 
                   });
+      
+      element.addEventListener('keydown', (event) => {
+         // alert('entro');
+      
+            if (event.key === 'Enter') {
+              moveFocusToNextDiv('editor');
+      
+              event.preventDefault(); // Prevent default Enter key behavior
+            } // if Enter
+      
+           }); // keydown
+      
               targetDiv.appendChild(element);
               }
               //targetDiv.appendChild(myElements);
@@ -81523,6 +81559,125 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       // alert(buscaStr);
       document.getElementById("quitar").addEventListener("click", removeHighlights);
       highlightAll(buscaStr);
+    };
+    this.EditorConfigurar = function () {
+      const codeEditor = document.getElementById('editor');
+            codeEditor.setAttribute('contenteditable', 'true');
+      
+            function setCaretAtEnd(element) {
+        const range = document.createRange();
+        const selection = window.getSelection();
+      
+        // Set the range to cover the entire content of the element
+        range.selectNodeContents(element);
+      
+        // Collapse the range to the end, effectively placing the caret at the last character
+        range.collapse(false); // false collapses to the end, true collapses to the start
+      
+        // Clear any existing selections
+        selection.removeAllRanges();
+      
+        // Add the new range to the selection
+        selection.addRange(range);
+      
+        // Focus the element to make the caret visible
+        element.focus();
+      }
+      
+      function getFocusedDivIndexInContainer(containerId) {
+          const container = document.getElementById(containerId);
+          if (!container) {
+              console.error("Container not found with ID:", containerId);
+              return -1;
+          }
+      
+          // Get all direct child div elements of the container
+          const childDivs = Array.from(container.children).filter(
+              element => element.tagName === 'DIV'
+          );
+          //console.log(childDivs);
+          // Find the currently focused element within the document
+          const focusedElement = document.activeElement;
+         // console.log('focusedElement',focusedElement);
+          // Check if the focused element is one of the child divs and is a descendant of the container
+          if (focusedElement && focusedElement.tagName === 'DIV' && container.contains(focusedElement)) {
+              // Find the index of the focused div within the childDivs array
+              const indexd = childDivs.indexOf(focusedElement);
+      
+              return indexd;
+          }
+      
+          // If no div within the container is focused, return -1
+          return -1;
+      }
+           ///-------------------------------------------------------
+      
+          codeEditor.addEventListener('focus', (event) => {
+            const container = document.getElementById('editor');
+           if (!container) {
+              console.error("Container not found with ID:", containerId);
+              return -1;
+           }
+      
+          // Get all direct child div elements of the container
+           const childDivsCont = Array.from(container.children).filter(
+              element => element.tagName === 'DIV'
+           );
+           const divCountCont = childDivsCont.length;
+           if (childDivsCont && index >= 0 && index < divCountCont ) {
+                childDivsCont[index].focus();
+              }
+      
+       });
+          codeEditor.addEventListener('focusin', (event) => {
+             //const index = -1;
+             const focusedElement = event.target;
+             const className = focusedElement.className;
+             //console.log('Div received focus!', event.target, className);
+           // You can add your desired actions here, e.g., change background color
+           if (className ==='editable-row') {
+            //event.target.style.backgroundColor = 'lightblue';
+            // Find the index of the focused element in the array
+           index = getFocusedDivIndexInContainer('editor');
+           console.log('index',index);
+           }
+      });
+      
+          //const focusableDivs = codeEditor.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
+          const focusableDivs = Array.from(codeEditor.children).filter(
+              element => element.tagName === 'DIV'
+          );
+          const divCount = focusableDivs.length;
+          console.log('count',divCount);
+          //let currentFocusIndex = -1;
+          let index = 0;
+        // Set initial focus
+        // codeEditor.focus();
+        // focusableDivs[index].focus();
+          codeEditor.addEventListener('keydown', (event) => {
+         // alert('entro');
+            if (event.key === 'Enter') {
+         // alert('entro enter key');
+      
+               if (index <  divCount)
+               {
+         // alert('entro enter key index <  divCount');
+          console.log(index);
+                 focusableDivs[index].focus();
+                // setCaretAtEnd(focusableDivs[index]);
+               }
+               else
+               {
+                 index = 0;
+                 focusableDivs[index].focus();
+                // setCaretAtEnd(focusableDivs[index]);
+               }
+              event.preventDefault(); // Prevent default Enter key behavior
+            } // if Enter
+      
+           }); // keydown
+      
+      ///-------------------------------------------------------;
     };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);

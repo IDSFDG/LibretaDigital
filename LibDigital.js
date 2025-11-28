@@ -80553,42 +80553,39 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         console.log('record found');
         contenido = this.LibHojasDbClientDataset1.FieldByName("hojacontenido").GetAsString();
         clases = this.LibHojasDbClientDataset1.FieldByName("hojaclases").GetAsString();
-        function moveFocusToNextDiv(containerId) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
+        const myDiv = document.getElementById('editor');
         
-            const focusableDivs = Array.from(container.querySelectorAll('div[tabindex="0"], div[tabindex="-1"]'));
-            if (focusableDivs.length === 0) return;
-        
-            const currentFocusedElement = document.activeElement;
-            let currentIndex = focusableDivs.indexOf(currentFocusedElement);
-        
-            let nextIndex;
-            if (currentIndex === -1 || currentIndex === focusableDivs.length - 1) {
-                // If no div in the container is currently focused, or it's the last one,
-                // move focus to the first div.
-                nextIndex = 0;
-            } else {
-                // Move focus to the next div in sequence.
-                nextIndex = currentIndex + 1;
-            }
-        
-            focusableDivs[nextIndex].focus();
-        }
-               const myDiv = document.getElementById('editor');
                const savedContent = contenido;
                const savedClasses = clases;
-               //console.log('contenido',contenido);
-               //console.log('clases',clases);
+               console.log('contenido',contenido);
+               console.log('clases',clases);
         
                if (savedContent) {
-                  //console.log(savedContent);
-                    myDiv.innerHTML = savedContent;
+                const storedData = JSON.parse(savedContent);
+                const container = document.getElementById('editor');
+        
+                const children = container.children;
+                var i =0;
+                console.log('storedData',storedData);
+                console.log('children',children);
+        
+                 for (const child of children) {
+                    const item  = storedData[i];
+                    console.log('item',item);
+                    i = i+1;
+                    child.innerHTML =item.content;
+                    child.classList.add(item.classes);
+                    child.style.backgroundColor = item.backgroundColor;
+                    child.tabindex = item.tabindex;
+                 }
+        
                }
-               if (savedClasses) {
-               //console.log(savedClasses);
-                myDiv.classList.add(savedClasses); // Add all saved classes
-               }
+        
+               
+               //if (savedClasses) {
+               //console.log('savedClasses',savedClasses);
+               // myDiv.classList.add(savedClasses); // Add all saved classes
+               //}
         
         
         
@@ -80609,19 +80606,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         
                         }
                     });
-             div.addEventListener('keydown', (event) => {
-               //alert('entro');
-        
-              if (event.key === 'Enter') {
-                moveFocusToNextDiv('editor');
-        
-                event.preventDefault(); // Prevent default Enter key behavior
-              } // if Enter
-        
-                }); // keydown
+             // Key Down EditorConfigurar
               });  //forEach;
       };
-      this.EditorConfigurar();
       this.panelHojas.SetVisible(false);
     };
     this.btnCancelarAbrirClick = function (Sender) {
@@ -80700,46 +80687,57 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       pas["WEBLib.Forms"].Application.Terminate();
       this.Close();
     };
-    this.Guardar1Click = function (Sender) {
-      var strdiv = "";
-      var contenido = "";
-      var clases = "";
+    this.GuardarHojaClick = function (Sender) {
       var iddb = "";
-      const myDiv = document.getElementById('editor');
+      var datosHoja = "";
+      function prepareDataForStorage(containerId) {
+          const container = document.getElementById(containerId);
+          const children = container.children;
+          const dataToStore = [];
+          console.log('childrens',container.children[0] );
       
-      // Save the innerHTML
-          const savedContent = myDiv.innerHTML;
+          for (const child of children) {
+              dataToStore.push({
+                  content: child.innerHTML,
+                  classes: Array.from(child.classList), // Convert the class list to an array
+                  backgroundColor: child.style.backgroundColor,
+                  //color: child.color,
+                  tabindex:'0'
+              });
+          }
       
-          console.log('Saved Content (including HTML and inline styles):', savedContent);
-          contenido = savedContent;
-      
-      // classes
-      
-          const classes = Array.from(myDiv.classList);
-          clases = classes;
-      
-      // save in LocalStorage
-      
-          localStorage.setItem('divContent', savedContent);
-          localStorage.setItem('divClasses', JSON.stringify(classes)); // Store array as JSON string
-      
-          // Get computed styles
-           const computedStyle = getComputedStyle(myDiv);
-          localStorage.setItem('computedStyle', computedStyle);
-      iddb = this.WebEdit1.GetText();
-      if (!this.LibHojasDbClientDataset1.Locate("id",iddb,{})) {
-        this.LibHojasDbClientDataset1.Append();
-        this.LibHojasDbClientDataset1.FieldByName("hojacontenido").SetAsString(contenido);
-        this.LibHojasDbClientDataset1.FieldByName("hojaclases").SetAsString(clases);
-        this.LibHojasDbClientDataset1.FieldByName("fecha").SetAsString(pas.SysUtils.DateToStr(pas.SysUtils.Now()));
-        this.LibHojasDbClientDataset1.Post();
-      } else {
-        this.LibHojasDbClientDataset1.Edit();
-        this.LibHojasDbClientDataset1.FieldByName("hojacontenido").SetAsString(contenido);
-        this.LibHojasDbClientDataset1.FieldByName("hojaclases").SetAsString(clases);
-        this.LibHojasDbClientDataset1.FieldByName("fecha").SetAsString(pas.SysUtils.DateToStr(pas.SysUtils.Now()));
-        this.LibHojasDbClientDataset1.UpdateRecord();
-        this.LibHojasDbClientDataset1.Post();
+          return dataToStore;
+      }
+      function saveToLocalStorage(key, data) {
+          try {
+              localStorage.setItem(key, JSON.stringify(data));
+              console.log("Data saved to localStorage.");
+          } catch (error) {
+              console.error("Error saving to localStorage:", error);
+          }
+      };
+      const divData = prepareDataForStorage('editor');
+       console.log('data hoja',divData);
+       const datosHojaJSON = JSON.stringify(divData);
+      datosHoja=datosHojaJSON;
+       //saveToLocalStorage('savedDivs', divData);
+       // saveToIndexDB('contenido',divData);
+      if (datosHoja.length > 0) {
+        iddb = this.WebEdit1.GetText();
+        if (!this.LibHojasDbClientDataset1.Locate("id",iddb,{})) {
+          this.LibHojasDbClientDataset1.Append();
+          this.LibHojasDbClientDataset1.FieldByName("hojacontenido").SetAsString(datosHoja);
+          this.LibHojasDbClientDataset1.FieldByName("hojaclases").SetAsString("");
+          this.LibHojasDbClientDataset1.FieldByName("fecha").SetAsString(pas.SysUtils.DateToStr(pas.SysUtils.Now()));
+          this.LibHojasDbClientDataset1.Post();
+        } else {
+          this.LibHojasDbClientDataset1.Edit();
+          this.LibHojasDbClientDataset1.FieldByName("hojacontenido").SetAsString(datosHoja);
+          this.LibHojasDbClientDataset1.FieldByName("hojaclases").SetAsString("");
+          this.LibHojasDbClientDataset1.FieldByName("fecha").SetAsString(pas.SysUtils.DateToStr(pas.SysUtils.Now()));
+          this.LibHojasDbClientDataset1.UpdateRecord();
+          this.LibHojasDbClientDataset1.Post();
+        };
       };
     };
     this.Abrir1Click = function (Sender) {
@@ -81052,13 +81050,16 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     };
     this.Exportar1Click = function (Sender) {
       var i = 0;
-      i = 0;
-      async function shareDivText(divId) {
+      var UltimoIndex = 0;
+      var iddb = "";
+      var strconntenidoHoja = "";
+      async function shareDivText(divId, hojacontenido) {
        // const divElement = document.getElementById(divId);
         const divElement = document.getElementById("editor");
         if (divElement) {
           //const textToShare = divElement.textContent; // Or customize with URL, title, etc.
-          const textToShare = divElement.innerHTML;
+          //const textToShare = divElement.innerHTML;
+          const textToShare = hojacontenido;
           if (navigator.share) {
             try {
               await navigator.share({
@@ -81079,8 +81080,24 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
           console.error(`Div with ID '${divId}' not found.`);
         }
       };
-      const miDiv = document.getElementById("editor");
-      shareDivText(miDiv);
+      i = 0;
+      strconntenidoHoja = "";
+      this.GuardarHojaClick(Sender);
+      iddb = this.WebEdit1.GetText();
+      if (pas.SysUtils.TStringHelper.GetLength.call({get: function () {
+          return iddb;
+        }, set: function (v) {
+          iddb = v;
+        }}) === 0) {
+        this.LibHojasDbClientDataset1.Last();
+        UltimoIndex = this.LibHojasDbClientDataset1.FieldByName("id").GetAsInteger();
+        iddb = pas.SysUtils.IntToStr(UltimoIndex);
+      };
+      if (this.LibHojasDbClientDataset1.Locate("id",iddb,{})) {
+        strconntenidoHoja = this.LibHojasDbClientDataset1.FieldByName("hojacontenido").GetAsString();
+        const miDiv = document.getElementById("editor");
+        shareDivText(miDiv,strconntenidoHoja);
+      };
     };
     this.Importar1Click = function (Sender) {
       this.panelimportar.SetVisible(true);
@@ -81095,46 +81112,33 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       color = "rgb(255, 127, 127)";
       color = "yellow";
       strimportar = this.memoimportar.GetText();
-      function moveFocusToNextDiv(containerId) {
-          const container = document.getElementById(containerId);
-          if (!container) return;
-      
-          const focusableDivs = Array.from(container.querySelectorAll('div[tabindex="0"], div[tabindex="-1"]'));
-          if (focusableDivs.length === 0) return;
-      
-          const currentFocusedElement = document.activeElement;
-          let currentIndex = focusableDivs.indexOf(currentFocusedElement);
-      
-          let nextIndex;
-          if (currentIndex === -1 || currentIndex === focusableDivs.length - 1) {
-              // If no div in the container is currently focused, or it's the last one,
-              // move focus to the first div.
-              nextIndex = 0;
-          } else {
-              // Move focus to the next div in sequence.
-              nextIndex = currentIndex + 1;
-          }
-      
-          focusableDivs[nextIndex].focus();
-      }
-         const myDiv = document.getElementById('editor');
+      const myDiv = document.getElementById('editor');
       
       // Restore the innerHTML
       
       
           const savedContent = strimportar;
-         //localStorage.getItem('divContent');
-        //  const savedClasses = JSON.parse(localStorage.getItem('divClasses'));
-        //  const computedStyles = localStorage.getItem('computedStyle');
-      
           if (savedContent) {
-            console.log(savedContent);
-              myDiv.innerHTML = savedContent;
-          }
-         // if (savedClasses) {
-         //    console.log(savedClasses);
-         //     myDiv.classList.add(savedClasses); // Add all saved classes
-         // }
+              const storedData = JSON.parse(savedContent);
+              const container = document.getElementById('editor');
+      
+              const children = container.children;
+              var i =0;
+              console.log('storedData',storedData);
+              console.log('children',children);
+      
+               for (const child of children) {
+                  const item  = storedData[i];
+                  console.log('item',item);
+                  i = i+1;
+                  child.innerHTML =item.content;
+                  child.classList.add(item.classes);
+                  child.style.backgroundColor = item.backgroundColor;
+                  child.tabindex = item.tabindex;
+               }
+      
+             }
+      
       
       
       
@@ -81156,28 +81160,15 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                       }
                   });
       
-                  div.addEventListener('keydown', (event) => {
-                      if (event.key === 'Enter') {
-                          moveFocusToNextDiv('editor');
-                          event.preventDefault(); // Prevent default Enter key behavior
-      
-                          // Find the next editable div
-                          //const nextDiv = editableDivs[index + 1];
-      
-                         // if (nextDiv) {
-                         //     nextDiv.focus(); // Move focus to the next div
-                         // } else {
-                              // Optional: Handle the case where there are no more divs
-                              // For example, blur the current div or perform another action
-                         //     div.blur();
-                         // }
-                      }
-                  });
+                 // KeyDown Editor Configurar
               });
-      this.EditorConfigurar();
       this.panelimportar.SetVisible(false);
     };
     this.ExportarArchivoTexto1Click = function (Sender) {
+      var i = 0;
+      var UltimoIndex = 0;
+      var iddb = "";
+      var strconntenidoHoja = "";
       async function shareTextFile(shareData) {
               if (navigator.share && navigator.canShare(shareData)) {
                   try {
@@ -81213,29 +81204,44 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                   console.warn("Web Share API for files is not supported in this browser.");
                   // Provide an alternative sharing method or message to the user
               }
-          }
-      
+          };
+      i = 0;
+      strconntenidoHoja = "";
+      this.GuardarHojaClick(Sender);
+      iddb = this.WebEdit1.GetText();
+      if (pas.SysUtils.TStringHelper.GetLength.call({get: function () {
+          return iddb;
+        }, set: function (v) {
+          iddb = v;
+        }}) === 0) {
+        this.LibHojasDbClientDataset1.Last();
+        UltimoIndex = this.LibHojasDbClientDataset1.FieldByName("id").GetAsInteger();
+        iddb = pas.SysUtils.IntToStr(UltimoIndex);
+      };
+      if (this.LibHojasDbClientDataset1.Locate("id",iddb,{})) {
+        strconntenidoHoja = this.LibHojasDbClientDataset1.FieldByName("hojacontenido").GetAsString();
         const divElement = document.getElementById("editor");
-        if (divElement) {
-          //const textToShare = divElement.textContent; // Or customize with URL, title, etc.
-          const textToShare = divElement.innerHTML;
-          const blob = new Blob([textToShare], { type: "text/plain" });
-          const textFile = new File([blob], "Archivo-Export.txt", { type: "text/plain" });
-          const shareData = {
-                          files: [textFile],
-                          title: "Share this text file",
-                          text: "Here's a text file I'm sharing.",
-                      };
-      
-          shareTextFile2(shareData);   //  OK Comparte el CSV como archivo de texto.
-      
-        };
+             if (divElement) {
+                //const textToShare = divElement.textContent; // Or customize with URL, title, etc.
+            //const textToShare = divElement.innerHTML;
+              const textToShare = strconntenidoHoja;
+              const blob = new Blob([textToShare], { type: "text/plain" });
+              const textFile = new File([blob], "Archivo-Export.txt", { type: "text/plain" });
+              const shareData = {
+                            files: [textFile],
+                            title: "Share this text file",
+                            text: "Here's a text file I'm sharing.",
+                        };
+        
+              shareTextFile2(shareData);   //  OK Comparte el CSV como archivo de texto.
+        
+             };
+      };
     };
     this.LimpiarHoja1Click = function (Sender) {
       const codeEditor = document.getElementById('editor');
       codeEditor.innerHTML = '';
       this.CrearDiv_Dinamicos();
-      this.EditorConfigurar();
     };
     this.Cerrar1Click = function (Sender) {
       this.WebPopupMenu1.SetVisible(false);
@@ -81296,6 +81302,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       color = "yellow";
       this.WebEdit1.SetText("");
       function setCaretAtEnd(element) {
+      
+      
         const range = document.createRange();
         const selection = window.getSelection();
       
@@ -81358,6 +81366,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
           
           
                   var p1 = document.createElement('div');
+                  var divid = 'divren'+i.toString()
+                  p1.setAttribute('id', divid);   // not copy paste mobile
                   p1.className = 'editable-row';
                  // p1.setAttribute('contenteditable', 'true'); // Container (editor) editable=true, para copy/paste
                   p1.setAttribute('tabindex', '0');
@@ -81374,9 +81384,11 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                      newSpan.setAttribute('contenteditable', 'false');   // not copy paste mobile
                     //   newSpan.classList.add('readonly-span');
                      var numren = i;
+                     var spanid = 'span'+numren.toString()
                      newSpan.textContent = numren.toString()+'-'; //'Read-only content';
+                     newSpan.setAttribute('id', spanid);   // not copy paste mobile
                      p1.appendChild(newSpan);
-          
+                    // console.log('span', newSpan);
                  //--------------
           
                 //------------ textarea
@@ -81564,8 +81576,13 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       const codeEditor = document.getElementById('editor');
             codeEditor.setAttribute('contenteditable', 'true');
       
+      
             function setCaretAtEnd(element) {
+        //  alert('setCaretAtEndAbir EditorConfigurar');
+            console.log('EditorConfigurar element',element);
+        //return;
         const range = document.createRange();
+            console.log('EditorConfigurar range',range);
         const selection = window.getSelection();
       
         // Set the range to cover the entire content of the element
@@ -81578,7 +81595,16 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         selection.removeAllRanges();
       
         // Add the new range to the selection
-        selection.addRange(range);
+        if (document.body.contains(range.commonAncestorContainer)) {
+              selection.addRange(range);
+        }
+        else
+        {
+           console.log('error: ',range.commonAncestorContainer);
+            selection.removeAllRanges(); // Clear existing ranges
+          selection.addRange(range);
+          }
+        //selection.addRange(range);
       
         // Focus the element to make the caret visible
         element.focus();
@@ -81613,6 +81639,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
            ///-------------------------------------------------------
       
           codeEditor.addEventListener('focus', (event) => {
+      
             const container = document.getElementById('editor');
            if (!container) {
               console.error("Container not found with ID:", containerId);
@@ -81626,6 +81653,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
            const divCountCont = childDivsCont.length;
            if (childDivsCont && index >= 0 && index < divCountCont ) {
                 childDivsCont[index].focus();
+      
               }
       
        });
@@ -81644,9 +81672,12 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       });
       
           //const focusableDivs = codeEditor.querySelectorAll('[contenteditable="true"]:not(.code-editor)');
-          const focusableDivs = Array.from(codeEditor.children).filter(
-              element => element.tagName === 'DIV'
-          );
+         // const focusableDivs = Array.from(codeEditor.children).filter(
+         //     element => element.tagName === 'DIV'
+         // );
+      
+           const focusableDivs = Array.from(codeEditor.querySelectorAll('div[tabindex="0"], div[tabindex="-1"]'));
+      
           const divCount = focusableDivs.length;
           console.log('count',divCount);
           //let currentFocusIndex = -1;
@@ -81659,18 +81690,19 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
             if (event.key === 'Enter') {
          // alert('entro enter key');
       
+         //console.log('****** entro enter key index <  divCount', index,divCount);
                if (index <  divCount)
                {
          // alert('entro enter key index <  divCount');
-          console.log(index);
-                 focusableDivs[index].focus();
-                // setCaretAtEnd(focusableDivs[index]);
+        //  console.log('***** editor configurar',index,focusableDivs[index]);
+                  //   focusableDivs[index].focus();
+                 setCaretAtEnd(focusableDivs[index]);
                }
                else
                {
                  index = 0;
                  focusableDivs[index].focus();
-                // setCaretAtEnd(focusableDivs[index]);
+                 setCaretAtEnd(focusableDivs[index]);
                }
               event.preventDefault(); // Prevent default Enter key behavior
             } // if Enter
@@ -82058,9 +82090,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.panelHojas.SetParentComponent(this);
         this.panelHojas.SetName("panelHojas");
         this.panelHojas.SetLeft(123);
-        this.panelHojas.SetTop(120);
+        this.panelHojas.SetTop(126);
         this.panelHojas.SetWidth(353);
-        this.panelHojas.SetHeight(222);
+        this.panelHojas.SetHeight(209);
         this.panelHojas.FCenter.SetHorizontal(true);
         this.panelHojas.FCenter.SetVertical(true);
         this.panelHojas.SetElementClassName("card");
@@ -82085,7 +82117,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.listaHojas.SetLeft(16);
         this.listaHojas.SetTop(42);
         this.listaHojas.SetWidth(326);
-        this.listaHojas.SetHeight(128);
+        this.listaHojas.SetHeight(119);
         this.listaHojas.SetElementClassName("form-control");
         this.listaHojas.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.listaHojas.SetHeightPercent(100.000000000000000000);
@@ -82094,8 +82126,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.listaHojas.SetItemIndex(-1);
         this.btnAbrir.SetParentComponent(this.panelHojas);
         this.btnAbrir.SetName("btnAbrir");
-        this.btnAbrir.SetLeft(72);
-        this.btnAbrir.SetTop(179);
+        this.btnAbrir.SetLeft(76);
+        this.btnAbrir.SetTop(167);
         this.btnAbrir.SetWidth(96);
         this.btnAbrir.SetHeight(25);
         this.btnAbrir.SetCaption("Abrir");
@@ -82108,8 +82140,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.SetEvent$1(this.btnAbrir,this,"OnClick","btnAbrirClick");
         this.btnCancelarAbrir.SetParentComponent(this.panelHojas);
         this.btnCancelarAbrir.SetName("btnCancelarAbrir");
-        this.btnCancelarAbrir.SetLeft(184);
-        this.btnCancelarAbrir.SetTop(179);
+        this.btnCancelarAbrir.SetLeft(192);
+        this.btnCancelarAbrir.SetTop(167);
         this.btnCancelarAbrir.SetWidth(96);
         this.btnCancelarAbrir.SetHeight(25);
         this.btnCancelarAbrir.SetCaption("Cancelar");
@@ -82157,7 +82189,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.Guardar1.SetParentComponent(this.WebPopupMenu1);
         this.Guardar1.SetName("Guardar1");
         this.Guardar1.SetCaption("Guardar");
-        this.SetEvent$1(this.Guardar1,this,"OnClick","Guardar1Click");
+        this.SetEvent$1(this.Guardar1,this,"OnClick","GuardarHojaClick");
         this.Compartir1.SetParentComponent(this.WebPopupMenu1);
         this.Compartir1.SetName("Compartir1");
         this.Compartir1.SetCaption("Compartir");
@@ -82302,7 +82334,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addMethod("AbrirClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("webBotonMenuClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Salir1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
-    $r.addMethod("Guardar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("GuardarHojaClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Abrir1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebPanel1MouseMove",0,[["Sender",pas.System.$rtti["TObject"]],["Shift",pas.Classes.$rtti["TShiftState"]],["X",rtl.longint],["Y",rtl.longint]]);
     $r.addMethod("WebButton4Click",0,[["Sender",pas.System.$rtti["TObject"]]]);

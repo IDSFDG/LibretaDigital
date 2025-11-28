@@ -81240,8 +81240,20 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     };
     this.LimpiarHoja1Click = function (Sender) {
       const codeEditor = document.getElementById('editor');
-      codeEditor.innerHTML = '';
+            codeEditor.innerHTML = '';
+      
+      
+      
+       //const children = codeEditor.children;
+       //for (const child of children) {
+      
+        //    child.textContent ='';
+        //      child.classList.add(item.classes);
+       //           child.style.backgroundColor = '';
+       // child.tabindex = item.tabindex;
+       //    };
       this.CrearDiv_Dinamicos();
+      this.EditorConfigurar();
     };
     this.Cerrar1Click = function (Sender) {
       this.WebPopupMenu1.SetVisible(false);
@@ -82127,7 +82139,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.btnAbrir.SetParentComponent(this.panelHojas);
         this.btnAbrir.SetName("btnAbrir");
         this.btnAbrir.SetLeft(76);
-        this.btnAbrir.SetTop(167);
+        this.btnAbrir.SetTop(165);
         this.btnAbrir.SetWidth(96);
         this.btnAbrir.SetHeight(25);
         this.btnAbrir.SetCaption("Abrir");

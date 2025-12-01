@@ -79975,8 +79975,8 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
       this.Salir1.BeforeLoadDFMValues();
       try {
         this.SetName("frmTabulator");
-        this.SetWidth(640);
-        this.SetHeight(480);
+        this.SetWidth(600);
+        this.SetHeight(462);
         this.SetCSSLibrary(pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap);
         this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.FFont.FCharset = 1;
@@ -79990,7 +79990,7 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
         this.WebPanel1.SetName("WebPanel1");
         this.WebPanel1.SetLeft(0);
         this.WebPanel1.SetTop(0);
-        this.WebPanel1.SetWidth(640);
+        this.WebPanel1.SetWidth(600);
         this.WebPanel1.SetHeight(57);
         this.WebPanel1.SetElementClassName("card text-white bg-secondary mb-3");
         this.WebPanel1.SetAlign(pas["WEBLib.Controls"].TAlign.alTop);
@@ -80003,7 +80003,7 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
         this.WebPanel1.SetTabOrder(0);
         this.WebSpeedButton1.SetParentComponent(this.WebPanel1);
         this.WebSpeedButton1.SetName("WebSpeedButton1");
-        this.WebSpeedButton1.SetLeft(601);
+        this.WebSpeedButton1.SetLeft(561);
         this.WebSpeedButton1.SetTop(0);
         this.WebSpeedButton1.SetWidth(39);
         this.WebSpeedButton1.SetHeight(57);
@@ -80018,7 +80018,7 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
         this.WebSpeedButton1.SetWidthPercent(100.000000000000000000);
         this.webBotonMenu.SetParentComponent(this.WebPanel1);
         this.webBotonMenu.SetName("webBotonMenu");
-        this.webBotonMenu.SetLeft(552);
+        this.webBotonMenu.SetLeft(512);
         this.webBotonMenu.SetTop(0);
         this.webBotonMenu.SetWidth(49);
         this.webBotonMenu.SetHeight(57);
@@ -80040,7 +80040,7 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
         this.SetEvent$1(this.webBotonMenu,this,"OnClick","webBotonMenuClick");
         this.WebHTMLDiv1.SetParentComponent(this.WebPanel1);
         this.WebHTMLDiv1.SetName("WebHTMLDiv1");
-        this.WebHTMLDiv1.SetLeft(464);
+        this.WebHTMLDiv1.SetLeft(424);
         this.WebHTMLDiv1.SetTop(0);
         this.WebHTMLDiv1.SetWidth(88);
         this.WebHTMLDiv1.SetHeight(57);
@@ -80080,8 +80080,8 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
         this.WebPanel2.SetParentComponent(this);
         this.WebPanel2.SetName("WebPanel2");
         this.WebPanel2.SetLeft(0);
-        this.WebPanel2.SetTop(440);
-        this.WebPanel2.SetWidth(640);
+        this.WebPanel2.SetTop(422);
+        this.WebPanel2.SetWidth(600);
         this.WebPanel2.SetHeight(40);
         this.WebPanel2.SetElementClassName("card text-white bg-secondary mb-3");
         this.WebPanel2.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
@@ -80095,15 +80095,15 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
         this.divTabulator.SetName("divTabulator");
         this.divTabulator.SetLeft(0);
         this.divTabulator.SetTop(57);
-        this.divTabulator.SetWidth(640);
-        this.divTabulator.SetHeight(383);
+        this.divTabulator.SetWidth(600);
+        this.divTabulator.SetHeight(365);
         this.divTabulator.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
         this.divTabulator.SetChildOrderEx(2);
         this.divTabulator.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.divTabulator.SetRole("");
         this.divcontainer.SetParentComponent(this);
         this.divcontainer.SetName("divcontainer");
-        this.divcontainer.SetLeft(418);
+        this.divcontainer.SetLeft(162);
         this.divcontainer.SetTop(8);
         this.divcontainer.SetWidth(177);
         this.divcontainer.SetHeight(57);

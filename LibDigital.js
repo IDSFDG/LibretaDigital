@@ -79622,6 +79622,15 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
       this.Salir1 = null;
       this.WebButton1 = null;
       this.divcontainer = null;
+      this.panelColumnas = null;
+      this.btnAgregarCol = null;
+      this.btnAgregarColCerrar = null;
+      this.AgregarColumna1 = null;
+      this.WebLabel1 = null;
+      this.WebLabel2 = null;
+      this.columna_nom = null;
+      this.columna_tit = null;
+      this.WebLabel3 = null;
     };
     this.$final = function () {
       this.WebPanel1 = undefined;
@@ -79646,6 +79655,15 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
       this.Salir1 = undefined;
       this.WebButton1 = undefined;
       this.divcontainer = undefined;
+      this.panelColumnas = undefined;
+      this.btnAgregarCol = undefined;
+      this.btnAgregarColCerrar = undefined;
+      this.AgregarColumna1 = undefined;
+      this.WebLabel1 = undefined;
+      this.WebLabel2 = undefined;
+      this.columna_nom = undefined;
+      this.columna_tit = undefined;
+      this.WebLabel3 = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
@@ -79927,6 +79945,90 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
                          //handle error adding column
                 });
     };
+    this.btnAgregarColCerrarClick = function (Sender) {
+      this.panelColumnas.SetVisible(false);
+    };
+    this.AgregarColumna1Click = function (Sender) {
+      this.panelColumnas.SetVisible(true);
+    };
+    this.btnAgregarColClick = function (Sender) {
+      var col_tit = "";
+      var col_nom = "";
+      col_tit = this.columna_tit.GetText();
+      col_nom = this.columna_nom.GetText();
+      function customEditor(cell, onRendered, success, cancel) {
+       // const input = document.createElement('input')
+        const input = document.createElement('textarea')
+      
+        //input.style.width = "100%";
+        //input.style.height = "100%";
+        //input.style.boxSizing = "border-box";
+        input.value = cell.getValue()
+        //input.selectionStart = input.value.length
+        //input.selectionEnd = input.value.length;
+      
+        input.value= input.value.trim()
+         if (input.value === 'undefined')
+        {
+           //console.log('undefined');
+           input.value='';
+        }
+        onRendered(() => {
+      
+          input.focus()
+         // input.select()
+      
+        })
+      
+        function onChange() {
+          if (input.value != cell.getValue()) {
+            success(input.value)
+          } else {
+            cancel()
+          }
+        }
+      
+        input.addEventListener('blur', onChange)
+      
+        input.addEventListener('keydown', (e) => {
+         // alert(e.keyCode);
+          if (e.keyCode == 13) {
+            table.navigateNext()
+      
+            onChange()
+          }
+      
+          if (e.keyCode == 27) {
+            cancel()
+          }
+        })
+      
+        return input
+      }
+      
+      
+          var table = Tabulator.findTable("#eletabulator")[0];
+          var titcolumna = 'titulo';
+          var nomcolumna = 'nombre';
+          titcolumna=col_tit;
+          nomcolumna=col_nom;
+          table.addColumn({title:titcolumna, field:nomcolumna})
+                     .then(function(column){
+      
+                     //column - the component for the newly created column
+      
+                      //run code after column has been added
+                     column.updateDefinition({editable:true,editor:customEditor}
+                      ); //change the column editor
+      
+                    })
+                  .catch(function(error){
+                         //handle error adding column
+                });
+      this.columna_tit.SetText("");
+      this.columna_nom.SetText("");
+      this.columna_nom.SetFocus();
+    };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
       this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
@@ -79938,10 +80040,19 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
       this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
       this.divTabulator = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["eletabulator"]);
       this.divcontainer = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["contenedor"]);
+      this.panelColumnas = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.WebLabel1 = pas["WEBLib.StdCtrls"].TLabel.$create("Create$1",[this]);
+      this.WebLabel2 = pas["WEBLib.StdCtrls"].TLabel.$create("Create$1",[this]);
+      this.WebLabel3 = pas["WEBLib.StdCtrls"].TLabel.$create("Create$1",[this]);
+      this.btnAgregarCol = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.btnAgregarColCerrar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.columna_nom = pas["WEBLib.StdCtrls"].TEdit.$create("Create$1",[this]);
+      this.columna_tit = pas["WEBLib.StdCtrls"].TEdit.$create("Create$1",[this]);
       this.WebPopupMenu1 = pas["WEBLib.Menus"].TPopupMenu.$create("Create$1",[this]);
       this.Cerrar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Ayuda1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.N1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.AgregarColumna1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.LimpiarHoja1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Abrir1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Guardar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
@@ -79960,10 +80071,19 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
       this.WebPanel2.BeforeLoadDFMValues();
       this.divTabulator.BeforeLoadDFMValues();
       this.divcontainer.BeforeLoadDFMValues();
+      this.panelColumnas.BeforeLoadDFMValues();
+      this.WebLabel1.BeforeLoadDFMValues();
+      this.WebLabel2.BeforeLoadDFMValues();
+      this.WebLabel3.BeforeLoadDFMValues();
+      this.btnAgregarCol.BeforeLoadDFMValues();
+      this.btnAgregarColCerrar.BeforeLoadDFMValues();
+      this.columna_nom.BeforeLoadDFMValues();
+      this.columna_tit.BeforeLoadDFMValues();
       this.WebPopupMenu1.BeforeLoadDFMValues();
       this.Cerrar1.BeforeLoadDFMValues();
       this.Ayuda1.BeforeLoadDFMValues();
       this.N1.BeforeLoadDFMValues();
+      this.AgregarColumna1.BeforeLoadDFMValues();
       this.LimpiarHoja1.BeforeLoadDFMValues();
       this.Abrir1.BeforeLoadDFMValues();
       this.Guardar1.BeforeLoadDFMValues();
@@ -80075,6 +80195,7 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
         this.WebButton1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.WebButton1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
         this.WebButton1.SetHeightPercent(100.000000000000000000);
+        this.WebButton1.SetVisible(false);
         this.WebButton1.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.WebButton1,this,"OnClick","WebButton1Click");
         this.WebPanel2.SetParentComponent(this);
@@ -80110,6 +80231,105 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
         this.divcontainer.SetChildOrderEx(3);
         this.divcontainer.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.divcontainer.SetRole("");
+        this.panelColumnas.SetParentComponent(this);
+        this.panelColumnas.SetName("panelColumnas");
+        this.panelColumnas.SetLeft(136);
+        this.panelColumnas.SetTop(112);
+        this.panelColumnas.SetWidth(289);
+        this.panelColumnas.SetHeight(201);
+        this.panelColumnas.SetElementClassName("card");
+        this.panelColumnas.SetChildOrderEx(4);
+        this.panelColumnas.FElementBodyClassName = "card-body";
+        this.panelColumnas.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.panelColumnas.SetTabOrder(4);
+        this.panelColumnas.SetVisible(false);
+        this.WebLabel1.SetParentComponent(this.panelColumnas);
+        this.WebLabel1.SetName("WebLabel1");
+        this.WebLabel1.SetLeft(32);
+        this.WebLabel1.SetTop(40);
+        this.WebLabel1.SetWidth(57);
+        this.WebLabel1.SetHeight(18);
+        this.WebLabel1.SetCaption("Nombre:");
+        this.WebLabel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebLabel1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebLabel1.SetHeightPercent(100.000000000000000000);
+        this.WebLabel1.SetWidthPercent(100.000000000000000000);
+        this.WebLabel2.SetParentComponent(this.panelColumnas);
+        this.WebLabel2.SetName("WebLabel2");
+        this.WebLabel2.SetLeft(32);
+        this.WebLabel2.SetTop(80);
+        this.WebLabel2.SetWidth(40);
+        this.WebLabel2.SetHeight(18);
+        this.WebLabel2.SetCaption("Titulo:");
+        this.WebLabel2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebLabel2.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebLabel2.SetHeightPercent(100.000000000000000000);
+        this.WebLabel2.SetWidthPercent(100.000000000000000000);
+        this.WebLabel3.SetParentComponent(this.panelColumnas);
+        this.WebLabel3.SetName("WebLabel3");
+        this.WebLabel3.SetLeft(83);
+        this.WebLabel3.SetTop(3);
+        this.WebLabel3.SetWidth(112);
+        this.WebLabel3.SetHeight(18);
+        this.WebLabel3.SetCaption("Agregar Columna");
+        this.WebLabel3.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebLabel3.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebLabel3.SetHeightPercent(100.000000000000000000);
+        this.WebLabel3.SetWidthPercent(100.000000000000000000);
+        this.btnAgregarCol.SetParentComponent(this.panelColumnas);
+        this.btnAgregarCol.SetName("btnAgregarCol");
+        this.btnAgregarCol.SetLeft(48);
+        this.btnAgregarCol.SetTop(144);
+        this.btnAgregarCol.SetWidth(96);
+        this.btnAgregarCol.SetHeight(25);
+        this.btnAgregarCol.SetCaption("Agregar");
+        this.btnAgregarCol.SetElementClassName("btn btn-light");
+        this.btnAgregarCol.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.btnAgregarCol.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.btnAgregarCol.SetHeightPercent(100.000000000000000000);
+        this.btnAgregarCol.SetTabOrder(2);
+        this.btnAgregarCol.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.btnAgregarCol,this,"OnClick","btnAgregarColClick");
+        this.btnAgregarColCerrar.SetParentComponent(this.panelColumnas);
+        this.btnAgregarColCerrar.SetName("btnAgregarColCerrar");
+        this.btnAgregarColCerrar.SetLeft(160);
+        this.btnAgregarColCerrar.SetTop(144);
+        this.btnAgregarColCerrar.SetWidth(96);
+        this.btnAgregarColCerrar.SetHeight(25);
+        this.btnAgregarColCerrar.SetCaption("Cerrar");
+        this.btnAgregarColCerrar.SetChildOrderEx(1);
+        this.btnAgregarColCerrar.SetElementClassName("btn btn-light");
+        this.btnAgregarColCerrar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.btnAgregarColCerrar.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.btnAgregarColCerrar.SetHeightPercent(100.000000000000000000);
+        this.btnAgregarColCerrar.SetTabOrder(3);
+        this.btnAgregarColCerrar.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.btnAgregarColCerrar,this,"OnClick","btnAgregarColCerrarClick");
+        this.columna_nom.SetParentComponent(this.panelColumnas);
+        this.columna_nom.SetName("columna_nom");
+        this.columna_nom.SetLeft(112);
+        this.columna_nom.SetTop(40);
+        this.columna_nom.SetWidth(121);
+        this.columna_nom.SetHeight(22);
+        this.columna_nom.SetChildOrderEx(4);
+        this.columna_nom.SetElementClassName("form-control");
+        this.columna_nom.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.columna_nom.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.columna_nom.SetHeightPercent(100.000000000000000000);
+        this.columna_nom.SetWidthPercent(100.000000000000000000);
+        this.columna_tit.SetParentComponent(this.panelColumnas);
+        this.columna_tit.SetName("columna_tit");
+        this.columna_tit.SetLeft(112);
+        this.columna_tit.SetTop(80);
+        this.columna_tit.SetWidth(121);
+        this.columna_tit.SetHeight(22);
+        this.columna_tit.SetChildOrderEx(4);
+        this.columna_tit.SetElementClassName("form-control");
+        this.columna_tit.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.columna_tit.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.columna_tit.SetHeightPercent(100.000000000000000000);
+        this.columna_tit.SetTabOrder(1);
+        this.columna_tit.SetWidthPercent(100.000000000000000000);
         this.WebPopupMenu1.SetParentComponent(this);
         this.WebPopupMenu1.SetName("WebPopupMenu1");
         this.WebPopupMenu1.FAppearance.FHamburgerMenu.SetCaption("Menu");
@@ -80132,6 +80352,10 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
         this.N1.SetParentComponent(this.WebPopupMenu1);
         this.N1.SetName("N1");
         this.N1.SetCaption("-");
+        this.AgregarColumna1.SetParentComponent(this.WebPopupMenu1);
+        this.AgregarColumna1.SetName("AgregarColumna1");
+        this.AgregarColumna1.SetCaption("Agregar Columna");
+        this.SetEvent$1(this.AgregarColumna1,this,"OnClick","AgregarColumna1Click");
         this.LimpiarHoja1.SetParentComponent(this.WebPopupMenu1);
         this.LimpiarHoja1.SetName("LimpiarHoja1");
         this.LimpiarHoja1.SetCaption("Nueva Hoja");
@@ -80177,10 +80401,19 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
         this.WebPanel2.AfterLoadDFMValues();
         this.divTabulator.AfterLoadDFMValues();
         this.divcontainer.AfterLoadDFMValues();
+        this.panelColumnas.AfterLoadDFMValues();
+        this.WebLabel1.AfterLoadDFMValues();
+        this.WebLabel2.AfterLoadDFMValues();
+        this.WebLabel3.AfterLoadDFMValues();
+        this.btnAgregarCol.AfterLoadDFMValues();
+        this.btnAgregarColCerrar.AfterLoadDFMValues();
+        this.columna_nom.AfterLoadDFMValues();
+        this.columna_tit.AfterLoadDFMValues();
         this.WebPopupMenu1.AfterLoadDFMValues();
         this.Cerrar1.AfterLoadDFMValues();
         this.Ayuda1.AfterLoadDFMValues();
         this.N1.AfterLoadDFMValues();
+        this.AgregarColumna1.AfterLoadDFMValues();
         this.LimpiarHoja1.AfterLoadDFMValues();
         this.Abrir1.AfterLoadDFMValues();
         this.Guardar1.AfterLoadDFMValues();
@@ -80217,12 +80450,24 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
     $r.addField("Salir1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
     $r.addField("WebButton1",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addField("divcontainer",pas["WEBLib.WebCtrls"].$rtti["THTMLDiv"]);
+    $r.addField("panelColumnas",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
+    $r.addField("btnAgregarCol",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("btnAgregarColCerrar",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("AgregarColumna1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("WebLabel1",pas["WEBLib.StdCtrls"].$rtti["TLabel"]);
+    $r.addField("WebLabel2",pas["WEBLib.StdCtrls"].$rtti["TLabel"]);
+    $r.addField("columna_nom",pas["WEBLib.StdCtrls"].$rtti["TEdit"]);
+    $r.addField("columna_tit",pas["WEBLib.StdCtrls"].$rtti["TEdit"]);
+    $r.addField("WebLabel3",pas["WEBLib.StdCtrls"].$rtti["TLabel"]);
     $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("webBotonMenuClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Cerrar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Salir1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Ayuda1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebButton1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("btnAgregarColCerrarClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("AgregarColumna1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("btnAgregarColClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.frmTabulator = null;
 },["uAyuda"]);

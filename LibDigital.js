@@ -79796,12 +79796,24 @@ rtl.module("uTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
              //     table.selectedRow.getElement().style.backgroundColor = ""; // Reset to default
               }
       
-          console.log(row.getElement().style.backgroundColor);
+          console.log('color', row.getElement().style.backgroundColor);
               // Change background color of the clicked row
-              row.getElement().style.backgroundColor = "yellow"; // Or any other color
-      
+              if (row.getElement().style.backgroundColor =='')
+              {
+               row.getElement().style.backgroundColor = "yellow"; // Or any other color
+              }
+              else if (row.getElement().style.backgroundColor =='yellow')
+              {
+                  row.getElement().style.backgroundColor ="";
+              }
               // Store the currently selected row (optional)
               table.selectedRow = row;
+      });
+      table.on("headerClick", function(e, column){
+          //e - the click event object
+          //column - column component
+      
+          column.updateDefinition({ title: 'nuevo titulo' });
       });
     };
     this.webBotonMenuClick = function (Sender) {
@@ -80574,7 +80586,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       color = "lightblue";
       color = "rgb(255, 127, 127)";
       this.webBotonMenu.SetCaption("" + "☰");
-      this.divnumlineas.SetElementClassName("line-numbers");
       this.diveditor.SetElementClassName("code-editor");
       this.CrearDiv_Dinamicos();
       this.EditorConfigurar();
@@ -83024,7 +83035,10630 @@ rtl.module("uLoginForma",["System","SysUtils","Classes","JS","Web","WEBLib.Graph
   });
   this.frmLogin = null;
 },["UFormaLibreta"]);
-rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","UFormaLibreta","uLoginForma","uAyuda","uTabulator"],function () {
+rtl.module("jsdelphisystem",["System"],function () {
+  "use strict";
+  var $mod = this;
+});
+rtl.module("StrUtils",["System","SysUtils","Types"],function () {
+  "use strict";
+  var $mod = this;
+  var $impl = $mod.$impl;
+  this.AnsiResemblesText = function (AText, AOther) {
+    var Result = false;
+    if ($mod.AnsiResemblesProc != null) {
+      Result = $mod.AnsiResemblesProc(AText,AOther)}
+     else Result = false;
+    return Result;
+  };
+  this.AnsiContainsText = function (AText, ASubText) {
+    var Result = false;
+    Result = pas.System.Pos(pas.SysUtils.UpperCase(ASubText),pas.SysUtils.UpperCase(AText)) > 0;
+    return Result;
+  };
+  this.AnsiStartsText = function (ASubText, AText) {
+    var Result = false;
+    if ((AText.length >= ASubText.length) && (ASubText !== "")) {
+      Result = pas.SysUtils.SameText(ASubText,pas.System.Copy(AText,1,ASubText.length))}
+     else Result = false;
+    return Result;
+  };
+  this.AnsiEndsText = function (ASubText, AText) {
+    var Result = false;
+    if (AText.length >= ASubText.length) {
+      Result = pas.SysUtils.SameText(ASubText,$mod.RightStr(AText,ASubText.length))}
+     else Result = false;
+    return Result;
+  };
+  this.AnsiReplaceText = function (AText, AFromText, AToText) {
+    var Result = "";
+    Result = pas.SysUtils.StringReplace(AText,AFromText,AToText,rtl.createSet(pas.SysUtils.TStringReplaceFlag.rfReplaceAll,pas.SysUtils.TStringReplaceFlag.rfIgnoreCase));
+    return Result;
+  };
+  this.AnsiMatchText = function (AText, AValues) {
+    var Result = false;
+    Result = $mod.AnsiIndexText(AText,AValues) !== -1;
+    return Result;
+  };
+  this.AnsiIndexText = function (AText, AValues) {
+    var Result = 0;
+    var i = 0;
+    Result = -1;
+    if (((rtl.length(AValues) - 1) === -1) || ((rtl.length(AValues) - 1) > 2147483647)) return Result;
+    for (var $l = 0, $end = rtl.length(AValues) - 1; $l <= $end; $l++) {
+      i = $l;
+      if (pas.SysUtils.CompareText(AValues[i],AText) === 0) return i;
+    };
+    return Result;
+  };
+  this.StartsText = function (ASubText, AText) {
+    var Result = false;
+    Result = $mod.AnsiStartsText(ASubText,AText);
+    return Result;
+  };
+  this.EndsText = function (ASubText, AText) {
+    var Result = false;
+    Result = $mod.AnsiEndsText(ASubText,AText);
+    return Result;
+  };
+  this.ResemblesText = function (AText, AOther) {
+    var Result = false;
+    if ($mod.ResemblesProc != null) {
+      Result = $mod.ResemblesProc(AText,AOther)}
+     else Result = false;
+    return Result;
+  };
+  this.ContainsText = function (AText, ASubText) {
+    var Result = false;
+    Result = $mod.AnsiContainsText(AText,ASubText);
+    return Result;
+  };
+  this.MatchText = function (AText, AValues) {
+    var Result = false;
+    Result = $mod.AnsiMatchText(AText,AValues);
+    return Result;
+  };
+  this.IndexText = function (AText, AValues) {
+    var Result = 0;
+    Result = $mod.AnsiIndexText(AText,AValues);
+    return Result;
+  };
+  this.AnsiContainsStr = function (AText, ASubText) {
+    var Result = false;
+    Result = pas.System.Pos(ASubText,AText) > 0;
+    return Result;
+  };
+  this.AnsiStartsStr = function (ASubText, AText) {
+    var Result = false;
+    if ((AText.length >= ASubText.length) && (ASubText !== "")) {
+      Result = ASubText === pas.System.Copy(AText,1,ASubText.length)}
+     else Result = false;
+    return Result;
+  };
+  this.AnsiEndsStr = function (ASubText, AText) {
+    var Result = false;
+    if (AText.length >= ASubText.length) {
+      Result = ASubText === $mod.RightStr(AText,ASubText.length)}
+     else Result = false;
+    return Result;
+  };
+  this.AnsiReplaceStr = function (AText, AFromText, AToText) {
+    var Result = "";
+    Result = pas.SysUtils.StringReplace(AText,AFromText,AToText,rtl.createSet(pas.SysUtils.TStringReplaceFlag.rfReplaceAll));
+    return Result;
+  };
+  this.AnsiMatchStr = function (AText, AValues) {
+    var Result = false;
+    Result = $mod.AnsiIndexStr(AText,AValues) !== -1;
+    return Result;
+  };
+  this.AnsiIndexStr = function (AText, AValues) {
+    var Result = 0;
+    var i = 0;
+    Result = -1;
+    if (((rtl.length(AValues) - 1) === -1) || ((rtl.length(AValues) - 1) > 2147483647)) return Result;
+    for (var $l = 0, $end = rtl.length(AValues) - 1; $l <= $end; $l++) {
+      i = $l;
+      if (AValues[i] === AText) return i;
+    };
+    return Result;
+  };
+  this.MatchStr = function (AText, AValues) {
+    var Result = false;
+    Result = $mod.IndexStr(AText,AValues) !== -1;
+    return Result;
+  };
+  this.IndexStr = function (AText, AValues) {
+    var Result = 0;
+    var i = 0;
+    Result = -1;
+    if (((rtl.length(AValues) - 1) === -1) || ((rtl.length(AValues) - 1) > 2147483647)) return Result;
+    for (var $l = 0, $end = rtl.length(AValues) - 1; $l <= $end; $l++) {
+      i = $l;
+      if (AValues[i] === AText) return i;
+    };
+    return Result;
+  };
+  this.ContainsStr = function (AText, ASubText) {
+    var Result = false;
+    Result = $mod.AnsiContainsStr(AText,ASubText);
+    return Result;
+  };
+  this.StartsStr = function (ASubText, AText) {
+    var Result = false;
+    Result = $mod.AnsiStartsStr(ASubText,AText);
+    return Result;
+  };
+  this.EndsStr = function (ASubText, AText) {
+    var Result = false;
+    Result = $mod.AnsiEndsStr(ASubText,AText);
+    return Result;
+  };
+  this.DupeString = function (AText, ACount) {
+    var Result = "";
+    var i = 0;
+    Result = "";
+    for (var $l = 1, $end = ACount; $l <= $end; $l++) {
+      i = $l;
+      Result = Result + AText;
+    };
+    return Result;
+  };
+  this.ReverseString = function (AText) {
+    var Result = "";
+    var i = 0;
+    var j = 0;
+    Result = rtl.strSetLength(Result,AText.length);
+    i = 1;
+    j = AText.length;
+    while (i <= j) {
+      Result = rtl.setCharAt(Result,i - 1,AText.charAt(((j - i) + 1) - 1));
+      i += 1;
+    };
+    return Result;
+  };
+  this.AnsiReverseString = function (AText) {
+    var Result = "";
+    Result = $mod.ReverseString(AText);
+    return Result;
+  };
+  this.StuffString = function (AText, AStart, ALength, ASubText) {
+    var Result = "";
+    var i = 0;
+    var j = 0;
+    var k = 0;
+    j = ASubText.length;
+    i = AText.length;
+    if (AStart > i) AStart = i + 1;
+    k = (i + 1) - AStart;
+    if (ALength > k) ALength = k;
+    Result = rtl.strSetLength(Result,(i + j) - ALength);
+    Result = pas.System.Copy(AText,1,AStart - 1) + pas.System.Copy(ASubText,1,j) + pas.System.Copy(AText,AStart + ALength,(i + 1) - AStart - ALength);
+    return Result;
+  };
+  this.RandomFrom = function (AValues) {
+    var Result = "";
+    if ((rtl.length(AValues) - 1) === -1) return "";
+    Result = AValues[pas.System.Random((rtl.length(AValues) - 1) + 1)];
+    return Result;
+  };
+  this.IfThen = function (AValue, ATrue, AFalse) {
+    var Result = "";
+    if (AValue) {
+      Result = ATrue}
+     else Result = AFalse;
+    return Result;
+  };
+  this.NaturalCompareText = function (S1, S2) {
+    var Result = 0;
+    Result = $mod.NaturalCompareText$1(S1,S2,pas.SysUtils.FormatSettings.DecimalSeparator,pas.SysUtils.FormatSettings.ThousandSeparator);
+    return Result;
+  };
+  this.NaturalCompareText$1 = function (Str1, Str2, ADecSeparator, AThousandSeparator) {
+    var Result = 0;
+    var Num1 = 0.0;
+    var Num2 = 0.0;
+    var pStr1 = 0;
+    var pStr2 = 0;
+    var Len1 = 0;
+    var Len2 = 0;
+    var TextLen1 = 0;
+    var TextLen2 = 0;
+    var TextStr1 = "";
+    var TextStr2 = "";
+    var i = 0;
+    var j = 0;
+    function Sign(AValue) {
+      var Result = 0;
+      if (AValue < 0) {
+        Result = -1}
+       else if (AValue > 0) {
+        Result = 1}
+       else Result = 0;
+      return Result;
+    };
+    function IsNumber(ch) {
+      var Result = false;
+      Result = ch.charCodeAt() in rtl.createSet(null,48,57);
+      return Result;
+    };
+    function GetInteger(aString, pch, Len) {
+      var Result = 0.0;
+      Result = 0;
+      while ((pch.get() <= aString.length) && IsNumber(aString.charAt(pch.get() - 1))) {
+        Result = ((Result * 10) + aString.charCodeAt(pch.get() - 1)) - 48;
+        Len.set(Len.get() + 1);
+        pch.set(pch.get() + 1);
+      };
+      return Result;
+    };
+    function GetChars() {
+      TextLen1 = 0;
+      while (!(Str1.charCodeAt((pStr1 + TextLen1) - 1) in rtl.createSet(null,48,57)) && ((pStr1 + TextLen1) <= Str1.length)) TextLen1 += 1;
+      TextStr1 = "";
+      i = 1;
+      j = 0;
+      while (i <= TextLen1) {
+        TextStr1 = TextStr1 + Str1.charAt((pStr1 + j) - 1);
+        i += 1;
+        j += 1;
+      };
+      TextLen2 = 0;
+      while (!(Str2.charCodeAt((pStr2 + TextLen2) - 1) in rtl.createSet(null,48,57)) && ((pStr2 + TextLen2) <= Str2.length)) TextLen2 += 1;
+      i = 1;
+      j = 0;
+      while (i <= TextLen2) {
+        TextStr2 = TextStr2 + Str2.charAt((pStr2 + j) - 1);
+        i += 1;
+        j += 1;
+      };
+    };
+    if ((Str1 !== "") && (Str2 !== "")) {
+      pStr1 = 1;
+      pStr2 = 1;
+      Result = 0;
+      while ((pStr1 <= Str1.length) && (pStr2 <= Str2.length)) {
+        TextLen1 = 1;
+        TextLen2 = 1;
+        Len1 = 0;
+        Len2 = 0;
+        while (Str1.charAt(pStr1 - 1) === " ") {
+          pStr1 += 1;
+          Len1 += 1;
+        };
+        while (Str2.charAt(pStr2 - 1) === " ") {
+          pStr2 += 1;
+          Len2 += 1;
+        };
+        if (IsNumber(Str1.charAt(pStr1 - 1)) && IsNumber(Str2.charAt(pStr2 - 1))) {
+          Num1 = GetInteger(Str1,{get: function () {
+              return pStr1;
+            }, set: function (v) {
+              pStr1 = v;
+            }},{get: function () {
+              return Len1;
+            }, set: function (v) {
+              Len1 = v;
+            }});
+          Num2 = GetInteger(Str2,{get: function () {
+              return pStr2;
+            }, set: function (v) {
+              pStr2 = v;
+            }},{get: function () {
+              return Len2;
+            }, set: function (v) {
+              Len2 = v;
+            }});
+          if (Num1 < Num2) {
+            Result = -1}
+           else if (Num1 > Num2) {
+            Result = 1}
+           else {
+            Result = Sign(Len1 - Len2);
+          };
+          pStr1 -= 1;
+          pStr2 -= 1;
+        } else {
+          GetChars();
+          if (TextStr1 !== TextStr2) {
+            Result = pas.SysUtils.CompareText(TextStr1,TextStr2)}
+           else Result = 0;
+        };
+        if (Result !== 0) break;
+        pStr1 += TextLen1;
+        pStr2 += TextLen2;
+      };
+    };
+    Num1 = Str1.length;
+    Num2 = Str2.length;
+    if ((Result === 0) && (Num1 !== Num2)) {
+      if (Num1 < Num2) {
+        Result = -1}
+       else Result = 1;
+    };
+    if (ADecSeparator === "") ;
+    if (AThousandSeparator === "") ;
+    return Result;
+  };
+  this.LeftStr = function (AText, ACount) {
+    var Result = "";
+    Result = pas.System.Copy(AText,1,ACount);
+    return Result;
+  };
+  this.RightStr = function (AText, ACount) {
+    var Result = "";
+    var j = 0;
+    var l = 0;
+    l = AText.length;
+    j = ACount;
+    if (j > l) j = l;
+    Result = pas.System.Copy(AText,(l - j) + 1,j);
+    return Result;
+  };
+  this.MidStr = function (AText, AStart, ACount) {
+    var Result = "";
+    if ((ACount === 0) || (AStart > AText.length)) return "";
+    Result = pas.System.Copy(AText,AStart,ACount);
+    return Result;
+  };
+  this.RightBStr = function (AText, AByteCount) {
+    var Result = "";
+    Result = $mod.RightStr(AText,AByteCount);
+    return Result;
+  };
+  this.MidBStr = function (AText, AByteStart, AByteCount) {
+    var Result = "";
+    Result = $mod.MidStr(AText,AByteStart,AByteCount);
+    return Result;
+  };
+  this.AnsiLeftStr = function (AText, ACount) {
+    var Result = "";
+    Result = pas.System.Copy(AText,1,ACount);
+    return Result;
+  };
+  this.AnsiRightStr = function (AText, ACount) {
+    var Result = "";
+    Result = pas.System.Copy(AText,(AText.length - ACount) + 1,ACount);
+    return Result;
+  };
+  this.AnsiMidStr = function (AText, AStart, ACount) {
+    var Result = "";
+    Result = pas.System.Copy(AText,AStart,ACount);
+    return Result;
+  };
+  this.LeftBStr = function (AText, AByteCount) {
+    var Result = "";
+    Result = $mod.LeftStr(AText,AByteCount);
+    return Result;
+  };
+  this.$rtti.$DynArray("WordDelimiters$a",{eltype: rtl.char});
+  this.WordDelimiters = [];
+  this.SErrAmountStrings = "Amount of search and replace strings don't match";
+  this.SInvalidRomanNumeral = "%s is not a valid Roman numeral";
+  this.TStringSearchOption = {"0": "soDown", soDown: 0, "1": "soMatchCase", soMatchCase: 1, "2": "soWholeWord", soWholeWord: 2};
+  this.$rtti.$Enum("TStringSearchOption",{minvalue: 0, maxvalue: 2, ordtype: 1, enumtype: this.TStringSearchOption});
+  this.$rtti.$Set("TStringSearchOptions",{comptype: this.$rtti["TStringSearchOption"]});
+  this.PosEx = function (SubStr, S, Offset) {
+    var Result = 0;
+    Result = (new String(S)).indexOf(SubStr,Offset - 1) + 1;
+    return Result;
+  };
+  this.PosEx$1 = function (SubStr, S) {
+    var Result = 0;
+    Result = $mod.PosEx(SubStr,S,1);
+    return Result;
+  };
+  this.PosEx$2 = function (c, S, Offset) {
+    var Result = 0;
+    Result = (new String(S)).indexOf(c,Offset - 1) + 1;
+    return Result;
+  };
+  this.StringsReplace = function (S, OldPattern, NewPattern, Flags) {
+    var Result = "";
+    var pc = 0;
+    var pcc = 0;
+    var lastpc = 0;
+    var strcount = 0;
+    var ResStr = "";
+    var CompStr = "";
+    var Found = false;
+    var sc = 0;
+    sc = rtl.length(OldPattern);
+    if (sc !== rtl.length(NewPattern)) throw pas.SysUtils.Exception.$create("Create$1",[$mod.SErrAmountStrings]);
+    sc -= 1;
+    if (pas.SysUtils.TStringReplaceFlag.rfIgnoreCase in Flags) {
+      CompStr = pas.SysUtils.UpperCase(S);
+      for (var $l = 0, $end = sc; $l <= $end; $l++) {
+        strcount = $l;
+        OldPattern[strcount] = pas.SysUtils.UpperCase(OldPattern[strcount]);
+      };
+    } else CompStr = S;
+    ResStr = "";
+    pc = 1;
+    pcc = 1;
+    lastpc = pc + S.length;
+    while (pc < lastpc) {
+      Found = false;
+      for (var $l1 = 0, $end1 = sc; $l1 <= $end1; $l1++) {
+        strcount = $l1;
+        if (pas.System.Copy(CompStr,pc,OldPattern[strcount].length) === OldPattern[strcount]) {
+          ResStr = ResStr + NewPattern[strcount];
+          pc = pc + OldPattern[strcount].length;
+          pcc = pcc + OldPattern[strcount].length;
+          Found = true;
+        };
+      };
+      if (!Found) {
+        ResStr = ResStr + S.charAt(pcc - 1);
+        pc += 1;
+        pcc += 1;
+      } else if (!(pas.SysUtils.TStringReplaceFlag.rfReplaceAll in Flags)) {
+        ResStr = ResStr + pas.System.Copy(S,pcc,(S.length - pcc) + 1);
+        break;
+      };
+    };
+    Result = ResStr;
+    return Result;
+  };
+  this.ReplaceStr = function (AText, AFromText, AToText) {
+    var Result = "";
+    Result = $mod.AnsiReplaceStr(AText,AFromText,AToText);
+    return Result;
+  };
+  this.ReplaceText = function (AText, AFromText, AToText) {
+    var Result = "";
+    Result = $mod.AnsiReplaceText(AText,AFromText,AToText);
+    return Result;
+  };
+  this.$rtti.$Int("TSoundexLength",{minvalue: 1, maxvalue: 2147483647, ordtype: 5});
+  this.Soundex = function (AText, ALength) {
+    var Result = "";
+    var S = "\x00";
+    var PS = "\x00";
+    var I = 0;
+    var L = 0;
+    Result = "";
+    PS = "\x00";
+    if (AText.length > 0) {
+      Result = pas.System.upcase(AText.charAt(0));
+      I = 2;
+      L = AText.length;
+      while ((I <= L) && (Result.length < ALength)) {
+        S = $impl.SScore.charAt(AText.charCodeAt(I - 1) - 1);
+        if (!(S.charCodeAt() in rtl.createSet(48,105,PS.charCodeAt()))) Result = Result + S;
+        if (S !== "i") PS = S;
+        I += 1;
+      };
+    };
+    L = Result.length;
+    if (L < ALength) Result = Result + pas.System.StringOfChar("0",ALength - L);
+    return Result;
+  };
+  this.Soundex$1 = function (AText) {
+    var Result = "";
+    Result = $mod.Soundex(AText,4);
+    return Result;
+  };
+  this.$rtti.$Int("TSoundexIntLength",{minvalue: 1, maxvalue: 8, ordtype: 1});
+  this.SoundexInt = function (AText, ALength) {
+    var Result = 0;
+    var SE = "";
+    var I = 0;
+    Result = -1;
+    SE = $mod.Soundex(AText,ALength);
+    if (SE.length > 0) {
+      Result = SE.charCodeAt(1 - 1) - 65;
+      if (ALength > 1) {
+        Result = (Result * 26) + (SE.charCodeAt(2 - 1) - 48);
+        for (var $l = 3, $end = ALength; $l <= $end; $l++) {
+          I = $l;
+          Result = (SE.charCodeAt(I - 1) - 48) + (Result * 7);
+        };
+      };
+      Result = ALength + (Result * 9);
+    };
+    return Result;
+  };
+  this.SoundexInt$1 = function (AText) {
+    var Result = 0;
+    Result = $mod.SoundexInt(AText,4);
+    return Result;
+  };
+  this.DecodeSoundexInt = function (AValue) {
+    var Result = "";
+    var I = 0;
+    var Len = 0;
+    Result = "";
+    Len = AValue % 9;
+    AValue = rtl.trunc(AValue / 9);
+    for (var $l = Len; $l >= 3; $l--) {
+      I = $l;
+      Result = String.fromCharCode(48 + (AValue % 7)) + Result;
+      AValue = rtl.trunc(AValue / 7);
+    };
+    if (Len > 1) {
+      Result = String.fromCharCode(48 + (AValue % 26)) + Result;
+      AValue = rtl.trunc(AValue / 26);
+    };
+    Result = String.fromCharCode(65 + AValue) + Result;
+    return Result;
+  };
+  this.SoundexWord = function (AText) {
+    var Result = 0;
+    var S = "";
+    S = $mod.Soundex(AText,4);
+    Result = S.charCodeAt(1 - 1) - 65;
+    Result = ((Result * 26) + S.charCodeAt(2 - 1)) - 48;
+    Result = ((Result * 7) + S.charCodeAt(3 - 1)) - 48;
+    Result = ((Result * 7) + S.charCodeAt(4 - 1)) - 48;
+    return Result;
+  };
+  this.DecodeSoundexWord = function (AValue) {
+    var Result = "";
+    Result = String.fromCharCode(48 + (AValue % 7));
+    AValue = rtl.trunc(AValue / 7);
+    Result = String.fromCharCode(48 + (AValue % 7)) + Result;
+    AValue = rtl.trunc(AValue / 7);
+    Result = pas.SysUtils.IntToStr(AValue % 26) + Result;
+    AValue = rtl.trunc(AValue / 26);
+    Result = String.fromCharCode(65 + AValue) + Result;
+    return Result;
+  };
+  this.SoundexSimilar = function (AText, AOther, ALength) {
+    var Result = false;
+    Result = $mod.Soundex(AText,ALength) === $mod.Soundex(AOther,ALength);
+    return Result;
+  };
+  this.SoundexSimilar$1 = function (AText, AOther) {
+    var Result = false;
+    Result = $mod.SoundexSimilar(AText,AOther,4);
+    return Result;
+  };
+  this.SoundexCompare = function (AText, AOther, ALength) {
+    var Result = 0;
+    Result = pas.SysUtils.AnsiCompareStr($mod.Soundex(AText,ALength),$mod.Soundex(AOther,ALength));
+    return Result;
+  };
+  this.SoundexCompare$1 = function (AText, AOther) {
+    var Result = 0;
+    Result = $mod.SoundexCompare(AText,AOther,4);
+    return Result;
+  };
+  this.SoundexProc = function (AText, AOther) {
+    var Result = false;
+    Result = $mod.SoundexSimilar$1(AText,AOther);
+    return Result;
+  };
+  this.$rtti.$ProcVar("TCompareTextProc",{procsig: rtl.newTIProcSig([["AText",rtl.string,2],["AOther",rtl.string,2]],rtl.boolean)});
+  this.AnsiResemblesProc = null;
+  this.ResemblesProc = null;
+  this.TRomanConversionStrictness = {"0": "rcsStrict", rcsStrict: 0, "1": "rcsRelaxed", rcsRelaxed: 1, "2": "rcsDontCare", rcsDontCare: 2};
+  this.$rtti.$Enum("TRomanConversionStrictness",{minvalue: 0, maxvalue: 2, ordtype: 1, enumtype: this.TRomanConversionStrictness});
+  this.IsEmptyStr = function (S, EmptyChars) {
+    var Result = false;
+    var i = 0;
+    var l = 0;
+    l = S.length;
+    i = 1;
+    Result = true;
+    while (Result && (i <= l)) {
+      Result = pas.SysUtils.CharInSet(S.charAt(i - 1),EmptyChars);
+      i += 1;
+    };
+    return Result;
+  };
+  this.DelSpace = function (S) {
+    var Result = "";
+    Result = $mod.DelChars(S," ");
+    return Result;
+  };
+  this.DelChars = function (S, Chr) {
+    var Result = "";
+    var I = 0;
+    var J = 0;
+    Result = S;
+    I = Result.length;
+    while (I > 0) {
+      if (Result.charAt(I - 1) === Chr) {
+        J = I - 1;
+        while ((J > 0) && (Result.charAt(J - 1) === Chr)) J -= 1;
+        pas.System.Delete({get: function () {
+            return Result;
+          }, set: function (v) {
+            Result = v;
+          }},J + 1,I - J);
+        I = J + 1;
+      };
+      I -= 1;
+    };
+    return Result;
+  };
+  this.DelSpace1 = function (S) {
+    var Result = "";
+    var I = 0;
+    Result = S;
+    for (var $l = Result.length; $l >= 2; $l--) {
+      I = $l;
+      if ((Result.charAt(I - 1) === " ") && (Result.charAt(I - 1 - 1) === " ")) pas.System.Delete({get: function () {
+          return Result;
+        }, set: function (v) {
+          Result = v;
+        }},I,1);
+    };
+    return Result;
+  };
+  this.Tab2Space = function (S, Numb) {
+    var Result = "";
+    var I = 0;
+    I = 1;
+    Result = S;
+    while (I <= Result.length) if (Result.charAt(I - 1) !== String.fromCharCode(9)) {
+      I += 1}
+     else {
+      Result = rtl.setCharAt(Result,I - 1," ");
+      if (Numb > 1) pas.System.Insert(pas.System.StringOfChar(" ",Numb - 1),{get: function () {
+          return Result;
+        }, set: function (v) {
+          Result = v;
+        }},I);
+      I += Numb;
+    };
+    return Result;
+  };
+  this.NPos = function (C, S, N) {
+    var Result = 0;
+    var i = 0;
+    var p = 0;
+    var k = 0;
+    Result = 0;
+    if (N < 1) return Result;
+    k = 0;
+    i = 1;
+    do {
+      p = pas.System.Pos(C,S);
+      k += p;
+      if (p > 0) pas.System.Delete({get: function () {
+          return S;
+        }, set: function (v) {
+          S = v;
+        }},1,p);
+      i += 1;
+    } while (!((i > N) || (p === 0)));
+    if (p > 0) Result = k;
+    return Result;
+  };
+  this.RPosEX = function (C, S, offs) {
+    var Result = 0;
+    Result = (new String(S)).lastIndexOf(C,offs - 1) + 1;
+    return Result;
+  };
+  this.RPosex$1 = function (Substr, Source, offs) {
+    var Result = 0;
+    Result = (new String(Source)).lastIndexOf(Substr,offs - 1) + 1;
+    return Result;
+  };
+  this.RPos = function (c, S) {
+    var Result = 0;
+    Result = $mod.RPosex$1(c,S,S.length);
+    return Result;
+  };
+  this.RPos$1 = function (Substr, Source) {
+    var Result = 0;
+    Result = $mod.RPosex$1(Substr,Source,Source.length);
+    return Result;
+  };
+  this.AddChar = function (C, S, N) {
+    var Result = "";
+    var l = 0;
+    Result = S;
+    l = Result.length;
+    if (l < N) Result = pas.System.StringOfChar(C,N - l) + Result;
+    return Result;
+  };
+  this.AddCharR = function (C, S, N) {
+    var Result = "";
+    var l = 0;
+    Result = S;
+    l = Result.length;
+    if (l < N) Result = Result + pas.System.StringOfChar(C,N - l);
+    return Result;
+  };
+  this.PadLeft = function (S, N) {
+    var Result = "";
+    Result = $mod.AddChar(" ",S,N);
+    return Result;
+  };
+  this.PadRight = function (S, N) {
+    var Result = "";
+    Result = $mod.AddCharR(" ",S,N);
+    return Result;
+  };
+  this.PadCenter = function (S, Len) {
+    var Result = "";
+    if (S.length < Len) {
+      Result = pas.System.StringOfChar(" ",rtl.trunc(Len / 2) - rtl.trunc(S.length / 2)) + S;
+      Result = Result + pas.System.StringOfChar(" ",Len - Result.length);
+    } else Result = S;
+    return Result;
+  };
+  this.Copy2Symb = function (S, Symb) {
+    var Result = "";
+    var p = 0;
+    p = pas.System.Pos(Symb,S);
+    if (p === 0) p = S.length + 1;
+    Result = pas.System.Copy(S,1,p - 1);
+    return Result;
+  };
+  this.Copy2SymbDel = function (S, Symb) {
+    var Result = "";
+    var p = 0;
+    p = pas.System.Pos(Symb,S.get());
+    if (p === 0) {
+      Result = S.get();
+      S.set("");
+    } else {
+      Result = pas.System.Copy(S.get(),1,p - 1);
+      pas.System.Delete(S,1,p);
+    };
+    return Result;
+  };
+  this.Copy2Space = function (S) {
+    var Result = "";
+    Result = $mod.Copy2Symb(S," ");
+    return Result;
+  };
+  this.Copy2SpaceDel = function (S) {
+    var Result = "";
+    Result = $mod.Copy2SymbDel(S," ");
+    return Result;
+  };
+  this.AnsiProperCase = function (S, WordDelims) {
+    var Result = "";
+    var P = 0;
+    var L = 0;
+    Result = pas.SysUtils.LowerCase(S);
+    P = 1;
+    L = Result.length;
+    while (P <= L) {
+      while ((P <= L) && pas.SysUtils.CharInSet(Result.charAt(P - 1),WordDelims)) P += 1;
+      if (P <= L) Result = rtl.setCharAt(Result,P - 1,pas.System.upcase(Result.charAt(P - 1)));
+      while ((P <= L) && !pas.SysUtils.CharInSet(Result.charAt(P - 1),WordDelims)) P += 1;
+    };
+    return Result;
+  };
+  this.WordCount = function (S, WordDelims) {
+    var Result = 0;
+    var P = 0;
+    var L = 0;
+    Result = 0;
+    P = 1;
+    L = S.length;
+    while (P <= L) {
+      while ((P <= L) && pas.SysUtils.CharInSet(S.charAt(P - 1),WordDelims)) P += 1;
+      if (P <= L) Result += 1;
+      while ((P <= L) && !pas.SysUtils.CharInSet(S.charAt(P - 1),WordDelims)) P += 1;
+    };
+    return Result;
+  };
+  this.WordPosition = function (N, S, WordDelims) {
+    var Result = 0;
+    var PS = 0;
+    var P = 0;
+    var PE = 0;
+    var Count = 0;
+    Result = 0;
+    Count = 0;
+    PS = 1;
+    PE = S.length;
+    P = PS;
+    while ((P <= PE) && (Count !== N)) {
+      while ((P <= PE) && pas.SysUtils.CharInSet(S.charAt(P - 1),WordDelims)) P += 1;
+      if (P <= PE) Count += 1;
+      if (Count !== N) {
+        while ((P <= PE) && !pas.SysUtils.CharInSet(S.charAt(P - 1),WordDelims)) P += 1}
+       else Result = (P - PS) + 1;
+    };
+    return Result;
+  };
+  this.ExtractWord = function (N, S, WordDelims) {
+    var Result = "";
+    var i = 0;
+    Result = $mod.ExtractWordPos(N,S,WordDelims,{get: function () {
+        return i;
+      }, set: function (v) {
+        i = v;
+      }});
+    return Result;
+  };
+  this.ExtractWordPos = function (N, S, WordDelims, Pos) {
+    var Result = "";
+    var i = 0;
+    var j = 0;
+    var l = 0;
+    j = 0;
+    i = $mod.WordPosition(N,S,WordDelims);
+    if (i > 2147483647) {
+      Result = "";
+      Pos.set(-1);
+      return Result;
+    };
+    Pos.set(i);
+    if (i !== 0) {
+      j = i;
+      l = S.length;
+      while ((j <= l) && !pas.SysUtils.CharInSet(S.charAt(j - 1),WordDelims)) j += 1;
+    };
+    Result = pas.System.Copy(S,i,j - i);
+    return Result;
+  };
+  this.ExtractDelimited = function (N, S, Delims) {
+    var Result = "";
+    var w = 0;
+    var i = 0;
+    var l = 0;
+    var len = 0;
+    w = 0;
+    i = 1;
+    l = 0;
+    len = S.length;
+    Result = rtl.strSetLength(Result,0);
+    while ((i <= len) && (w !== N)) {
+      if (pas.SysUtils.CharInSet(S.charAt(i - 1),Delims)) {
+        w += 1}
+       else {
+        if ((N - 1) === w) {
+          l += 1;
+          Result = Result + S.charAt(i - 1);
+        };
+      };
+      i += 1;
+    };
+    return Result;
+  };
+  this.ExtractSubstr = function (S, Pos, Delims) {
+    var Result = "";
+    var i = 0;
+    var l = 0;
+    i = Pos.get();
+    l = S.length;
+    while ((i <= l) && !pas.SysUtils.CharInSet(S.charAt(i - 1),Delims)) i += 1;
+    Result = pas.System.Copy(S,Pos.get(),i - Pos.get());
+    while ((i <= l) && pas.SysUtils.CharInSet(S.charAt(i - 1),Delims)) i += 1;
+    if (i > 2147483647) {
+      Pos.set(2147483647)}
+     else Pos.set(i);
+    return Result;
+  };
+  this.IsWordPresent = function (W, S, WordDelims) {
+    var Result = false;
+    var i = 0;
+    var Count = 0;
+    Result = false;
+    Count = $mod.WordCount(S,WordDelims);
+    i = 1;
+    while (!Result && (i <= Count)) {
+      Result = $mod.ExtractWord(i,S,WordDelims) === W;
+      i += 1;
+    };
+    return Result;
+  };
+  this.FindPart = function (HelpWilds, InputStr) {
+    var Result = 0;
+    var Diff = 0;
+    var i = 0;
+    var J = 0;
+    Result = 0;
+    i = pas.System.Pos("?",HelpWilds);
+    if (i === 0) {
+      Result = pas.System.Pos(HelpWilds,InputStr)}
+     else {
+      Diff = InputStr.length - HelpWilds.length;
+      for (var $l = 0, $end = Diff; $l <= $end; $l++) {
+        i = $l;
+        for (var $l1 = 1, $end1 = HelpWilds.length; $l1 <= $end1; $l1++) {
+          J = $l1;
+          if ((InputStr.charAt((i + J) - 1) === HelpWilds.charAt(J - 1)) || (HelpWilds.charAt(J - 1) === "?")) {
+            if (J === HelpWilds.length) {
+              Result = i + 1;
+              return Result;
+            };
+          } else break;
+        };
+      };
+    };
+    return Result;
+  };
+  this.IsWild = function (InputStr, Wilds, IgnoreCase) {
+    var Result = false;
+    var i = 0;
+    var MaxinputWord = 0;
+    var MaxWilds = 0;
+    var eos = false;
+    Result = true;
+    if (Wilds === InputStr) return Result;
+    i = pas.System.Pos("**",Wilds);
+    while (i > 0) {
+      pas.System.Delete({get: function () {
+          return Wilds;
+        }, set: function (v) {
+          Wilds = v;
+        }},i,1);
+      i = pas.System.Pos("**",Wilds);
+    };
+    if (Wilds === "*") return Result;
+    MaxinputWord = InputStr.length;
+    MaxWilds = Wilds.length;
+    if ((MaxWilds === 0) || (MaxinputWord === 0)) {
+      Result = false;
+      return Result;
+    };
+    if (IgnoreCase) {
+      InputStr = pas.SysUtils.UpperCase(InputStr);
+      Wilds = pas.SysUtils.UpperCase(Wilds);
+    };
+    Result = $impl.isMatch(1,InputStr,Wilds,1,1,MaxinputWord,MaxWilds,{get: function () {
+        return eos;
+      }, set: function (v) {
+        eos = v;
+      }});
+    return Result;
+  };
+  this.XorString = function (Key, Src) {
+    var Result = "";
+    var i = 0;
+    Result = Src;
+    if (Key.length > 0) for (var $l = 1, $end = Src.length; $l <= $end; $l++) {
+      i = $l;
+      Result = rtl.setCharAt(Result,i - 1,String.fromCharCode(Key.charCodeAt((1 + ((i - 1) % Key.length)) - 1) ^ Src.charCodeAt(i - 1)));
+    };
+    return Result;
+  };
+  this.XorEncode = function (Key, Source) {
+    var Result = "";
+    var i = 0;
+    var C = 0;
+    Result = "";
+    for (var $l = 1, $end = Source.length; $l <= $end; $l++) {
+      i = $l;
+      if (Key.length > 0) {
+        C = Key.charCodeAt((1 + ((i - 1) % Key.length)) - 1) ^ Source.charCodeAt(i - 1)}
+       else C = Source.charCodeAt(i - 1);
+      Result = Result + pas.SysUtils.LowerCase(pas.SysUtils.IntToHex(C,2));
+    };
+    return Result;
+  };
+  this.XorDecode = function (Key, Source) {
+    var Result = "";
+    var i = 0;
+    var C = "\x00";
+    Result = "";
+    for (var $l = 0, $end = rtl.trunc(Source.length / 2) - 1; $l <= $end; $l++) {
+      i = $l;
+      C = String.fromCharCode(pas.SysUtils.StrToIntDef("$" + pas.System.Copy(Source,(i * 2) + 1,2),32));
+      if (Key.length > 0) C = String.fromCharCode(Key.charCodeAt((1 + (i % Key.length)) - 1) ^ C.charCodeAt());
+      Result = Result + C;
+    };
+    return Result;
+  };
+  this.GetCmdLineArg = function (Switch, SwitchChars) {
+    var Result = "";
+    var i = 0;
+    var S = "";
+    i = 1;
+    Result = "";
+    while ((Result === "") && (i <= pas.System.ParamCount())) {
+      S = pas.System.ParamStr(i);
+      if ((rtl.length(SwitchChars) === 0) || (pas.SysUtils.CharInSet(S.charAt(0),SwitchChars) && (S.length > 1) && (pas.SysUtils.CompareText(pas.System.Copy(S,2,S.length - 1),Switch) === 0))) {
+        i += 1;
+        if (i <= pas.System.ParamCount()) Result = pas.System.ParamStr(i);
+      };
+      i += 1;
+    };
+    return Result;
+  };
+  this.Numb2USA = function (S) {
+    var Result = "";
+    var i = 0;
+    var NA = 0;
+    i = S.length;
+    Result = S;
+    NA = 0;
+    while (i > 0) {
+      if ((((((Result.length - i) + 1) - NA) % 3) === 0) && (i !== 1)) {
+        pas.System.Insert(",",{get: function () {
+            return Result;
+          }, set: function (v) {
+            Result = v;
+          }},i);
+        NA += 1;
+      };
+      i -= 1;
+    };
+    return Result;
+  };
+  this.Hex2Dec = function (S) {
+    var Result = 0;
+    var HexStr = "";
+    if (pas.System.Pos("$",S) === 0) {
+      HexStr = "$" + S}
+     else HexStr = S;
+    Result = pas.SysUtils.StrToInt(HexStr);
+    return Result;
+  };
+  this.Dec2Numb = function (N, Len, Base) {
+    var Result = "";
+    var C = 0;
+    var number = 0;
+    if (N === 0) {
+      Result = "0"}
+     else {
+      number = N;
+      Result = "";
+      while (number > 0) {
+        C = number % Base;
+        if (C > 9) {
+          C = C + 55}
+         else C = C + 48;
+        Result = String.fromCharCode(C) + Result;
+        number = rtl.trunc(number / Base);
+      };
+    };
+    if (Result !== "") Result = $mod.AddChar("0",Result,Len);
+    return Result;
+  };
+  this.Numb2Dec = function (S, Base) {
+    var Result = 0;
+    var i = 0;
+    var P = 0;
+    i = S.length;
+    Result = 0;
+    S = pas.SysUtils.UpperCase(S);
+    P = 1;
+    while (i >= 1) {
+      if (S.charAt(i - 1) > "@") {
+        Result = Result + ((S.charCodeAt(i - 1) - 55) * P)}
+       else Result = Result + ((S.charCodeAt(i - 1) - 48) * P);
+      i -= 1;
+      P = P * Base;
+    };
+    return Result;
+  };
+  this.IntToBin = function (Value, Digits, Spaces) {
+    var Result = "";
+    var endpos = 0;
+    var p = 0;
+    var p2 = 0;
+    var k = 0;
+    Result = "";
+    if (Digits > 32) Digits = 32;
+    if (Spaces === 0) {
+      Result = $mod.IntToBin$1(Value,Digits);
+      return Result;
+    };
+    endpos = Digits + rtl.trunc((Digits - 1) / Spaces);
+    Result = rtl.strSetLength(Result,endpos);
+    p = endpos;
+    p2 = 1;
+    k = Spaces;
+    while (p >= p2) {
+      if (k === 0) {
+        Result = rtl.setCharAt(Result,p - 1," ");
+        p -= 1;
+        k = Spaces;
+      };
+      Result = rtl.setCharAt(Result,p - 1,String.fromCharCode(48 + ((Value >>> 0) & 1)));
+      Value = rtl.lw((Value >>> 0) >>> 1);
+      p -= 1;
+      k -= 1;
+    };
+    return Result;
+  };
+  this.IntToBin$1 = function (Value, Digits) {
+    var Result = "";
+    var p = 0;
+    var p2 = 0;
+    Result = "";
+    if (Digits <= 0) return Result;
+    Result = rtl.strSetLength(Result,Digits);
+    p = Digits;
+    p2 = 1;
+    while ((p >= p2) && ((Value >>> 0) > 0)) {
+      Result = rtl.setCharAt(Result,p - 1,String.fromCharCode(48 + ((Value >>> 0) & 1)));
+      Value = rtl.lw((Value >>> 0) >>> 1);
+      p -= 1;
+    };
+    Digits = (p - p2) + 1;
+    while (Digits > 0) {
+      Result = rtl.setCharAt(Result,Digits - 1,String.fromCharCode(48));
+      Digits -= 1;
+    };
+    return Result;
+  };
+  this.IntToBin$2 = function (Value, Digits) {
+    var Result = "";
+    var p = 0;
+    var p2 = 0;
+    Result = "";
+    if (Digits <= 0) return Result;
+    Result = rtl.strSetLength(Result,Digits);
+    p = Digits;
+    p2 = 1;
+    while ((p >= p2) && (Value > 0)) {
+      Result = rtl.setCharAt(Result,p - 1,String.fromCharCode(48 + ((Value >>> 0) & 1)));
+      Value = rtl.trunc(Value / 2);
+      p -= 1;
+    };
+    Digits = (p - p2) + 1;
+    while (Digits > 0) Result = rtl.setCharAt(Result,Digits - 1,"0");
+    return Result;
+  };
+  var Arabics = [1,4,5,9,10,40,50,90,100,400,500,900,1000];
+  var Romans = ["I","IV","V","IX","X","XL","L","XC","C","CD","D","CM","M"];
+  this.IntToRoman = function (Value) {
+    var Result = "";
+    var i = 0;
+    Result = "";
+    for (var $l = 13; $l >= 1; $l--) {
+      i = $l;
+      while (Value >= Arabics[i - 1]) {
+        Value = Value - Arabics[i - 1];
+        Result = Result + Romans[i - 1];
+      };
+    };
+    return Result;
+  };
+  this.TryRomanToInt = function (S, N, Strictness) {
+    var Result = false;
+    var i = 0;
+    var Len = 0;
+    var Terminated = false;
+    Result = false;
+    S = pas.SysUtils.UpperCase(S);
+    Len = S.length;
+    if (Strictness === $mod.TRomanConversionStrictness.rcsDontCare) {
+      N.set($impl.RomanToIntDontCare(S));
+      if (N.get() === 0) {
+        Result = Len === 0;
+      } else Result = true;
+      return Result;
+    };
+    if (Len === 0) return Result;
+    i = 1;
+    N.set(0);
+    Terminated = false;
+    while ((i <= Len) && ((Strictness !== $mod.TRomanConversionStrictness.rcsStrict) || (i < 4)) && (S.charAt(i - 1) === "M")) {
+      i += 1;
+      N.set(N.get() + 1000);
+    };
+    if ((i <= Len) && (S.charAt(i - 1) === "D")) {
+      i += 1;
+      N.set(N.get() + 500);
+    } else if (((i + 1) <= Len) && (S.charAt(i - 1) === "C")) {
+      if (S.charAt((i + 1) - 1) === "M") {
+        i += 2;
+        N.set(N.get() + 900);
+      } else if (S.charAt((i + 1) - 1) === "D") {
+        i += 2;
+        N.set(N.get() + 400);
+      };
+    };
+    if ((i <= Len) && (S.charAt(i - 1) === "C")) {
+      i += 1;
+      N.set(N.get() + 100);
+      if ((i <= Len) && (S.charAt(i - 1) === "C")) {
+        i += 1;
+        N.set(N.get() + 100);
+      };
+      if ((i <= Len) && (S.charAt(i - 1) === "C")) {
+        i += 1;
+        N.set(N.get() + 100);
+      };
+      if ((Strictness !== $mod.TRomanConversionStrictness.rcsStrict) && (i <= Len) && (S.charAt(i - 1) === "C")) {
+        i += 1;
+        N.set(N.get() + 100);
+      };
+    };
+    if (((i + 1) <= Len) && (S.charAt(i - 1) === "X")) {
+      if (S.charAt((i + 1) - 1) === "C") {
+        i += 2;
+        N.set(N.get() + 90);
+      } else if (S.charAt((i + 1) - 1) === "L") {
+        i += 2;
+        N.set(N.get() + 40);
+      };
+    };
+    if ((i <= Len) && (S.charAt(i - 1) === "L")) {
+      i += 1;
+      N.set(N.get() + 50);
+    };
+    if ((i <= Len) && (S.charAt(i - 1) === "X")) {
+      i += 1;
+      N.set(N.get() + 10);
+      if ((i <= Len) && (S.charAt(i - 1) === "X")) {
+        i += 1;
+        N.set(N.get() + 10);
+      };
+      if ((i <= Len) && (S.charAt(i - 1) === "X")) {
+        i += 1;
+        N.set(N.get() + 10);
+      };
+      if ((Strictness !== $mod.TRomanConversionStrictness.rcsStrict) && (i <= Len) && (S.charAt(i - 1) === "X")) {
+        i += 1;
+        N.set(N.get() + 10);
+      };
+    };
+    if (((i + 1) <= Len) && (S.charAt(i - 1) === "I")) {
+      if (S.charAt((i + 1) - 1) === "X") {
+        Terminated = true;
+        i += 2;
+        N.set(N.get() + 9);
+      } else if (S.charAt((i + 1) - 1) === "V") {
+        Terminated = true;
+        i += 2;
+        N.set(N.get() + 4);
+      };
+    };
+    if (!Terminated && (i <= Len) && (S.charAt(i - 1) === "V")) {
+      i += 1;
+      N.set(N.get() + 5);
+    };
+    if (!Terminated && (i <= Len) && (S.charAt(i - 1) === "I")) {
+      Terminated = true;
+      i += 1;
+      N.set(N.get() + 1);
+      if ((i <= Len) && (S.charAt(i - 1) === "I")) {
+        i += 1;
+        N.set(N.get() + 1);
+      };
+      if ((i <= Len) && (S.charAt(i - 1) === "I")) {
+        i += 1;
+        N.set(N.get() + 1);
+      };
+      if ((Strictness !== $mod.TRomanConversionStrictness.rcsStrict) && (i <= Len) && (S.charAt(i - 1) === "I")) {
+        i += 1;
+        N.set(N.get() + 1);
+      };
+    };
+    Result = i > Len;
+    return Result;
+  };
+  this.RomanToInt = function (S, Strictness) {
+    var Result = 0;
+    if (!$mod.TryRomanToInt(S,{get: function () {
+        return Result;
+      }, set: function (v) {
+        Result = v;
+      }},Strictness)) throw pas.SysUtils.EConvertError.$create("CreateFmt",[$mod.SInvalidRomanNumeral,pas.System.VarRecs(18,S)]);
+    return Result;
+  };
+  this.RomanToIntDef = function (S, ADefault, Strictness) {
+    var Result = 0;
+    if (!$mod.TryRomanToInt(S,{get: function () {
+        return Result;
+      }, set: function (v) {
+        Result = v;
+      }},Strictness)) Result = ADefault;
+    return Result;
+  };
+  this.DigitChars = rtl.createSet(null,48,57);
+  this.Brackets = rtl.createSet(40,41,91,93,123,125);
+  this.StdWordDelims = rtl.unionSet(rtl.createSet(null,0,32,44,46,59,47,92,58,39,34,96),this.Brackets);
+  this.StdSwitchChars = rtl.createSet(45,47);
+  this.PosSet = function (c, s) {
+    var Result = 0;
+    Result = $mod.PosSetEx(c,s,1);
+    return Result;
+  };
+  this.PosSet$1 = function (c, s) {
+    var Result = 0;
+    Result = $mod.PosSetEx$1(c,s,1);
+    return Result;
+  };
+  this.PosSetEx = function (c, s, count) {
+    var Result = 0;
+    var i = 0;
+    var j = 0;
+    if (s === "") {
+      j = 0}
+     else {
+      i = s.length;
+      j = count;
+      if (j > i) {
+        Result = 0;
+        return Result;
+      };
+      while ((j <= i) && !pas.SysUtils.CharInSet(s.charAt(j - 1),c)) j += 1;
+      if (j > i) j = 0;
+    };
+    Result = j;
+    return Result;
+  };
+  this.PosSetEx$1 = function (c, s, count) {
+    var Result = 0;
+    var cset = [];
+    var i = 0;
+    var l = 0;
+    l = c.length;
+    cset = rtl.arraySetLength(cset,"\x00",l);
+    if (l > 0) for (var $l = 1, $end = l; $l <= $end; $l++) {
+      i = $l;
+      cset[i - 1] = c.charAt(i - 1);
+    };
+    Result = $mod.PosSetEx(cset,s,count);
+    return Result;
+  };
+  this.Removeleadingchars = function (S, CSet) {
+    var I = 0;
+    var J = 0;
+    I = S.get().length;
+    if (I > 0) {
+      J = 1;
+      while ((J <= I) && pas.SysUtils.CharInSet(S.get().charAt(J - 1),CSet)) J += 1;
+      if (J > 1) pas.System.Delete(S,1,J - 1);
+    };
+  };
+  this.RemoveTrailingChars = function (S, CSet) {
+    var i = 0;
+    var j = 0;
+    i = S.get().length;
+    if (i > 0) {
+      j = i;
+      while ((j > 0) && pas.SysUtils.CharInSet(S.get().charAt(j - 1),CSet)) j -= 1;
+      if (j !== i) S.set(rtl.strSetLength(S.get(),j));
+    };
+  };
+  this.RemovePadChars = function (S, CSet) {
+    var I = 0;
+    var J = 0;
+    var K = 0;
+    I = S.get().length;
+    if (I === 0) return;
+    J = I;
+    while ((J > 0) && pas.SysUtils.CharInSet(S.get().charAt(J - 1),CSet)) J -= 1;
+    if (J === 0) {
+      S.set("");
+      return;
+    };
+    S.set(rtl.strSetLength(S.get(),J));
+    I = J;
+    K = 1;
+    while ((K <= I) && pas.SysUtils.CharInSet(S.get().charAt(K - 1),CSet)) K += 1;
+    if (K > 1) pas.System.Delete(S,1,K - 1);
+  };
+  this.TrimLeftSet = function (S, CSet) {
+    var Result = "";
+    Result = S;
+    $mod.Removeleadingchars({get: function () {
+        return Result;
+      }, set: function (v) {
+        Result = v;
+      }},CSet);
+    return Result;
+  };
+  this.TrimRightSet = function (S, CSet) {
+    var Result = "";
+    Result = S;
+    $mod.RemoveTrailingChars({get: function () {
+        return Result;
+      }, set: function (v) {
+        Result = v;
+      }},CSet);
+    return Result;
+  };
+  this.TrimSet = function (S, CSet) {
+    var Result = "";
+    Result = S;
+    $mod.RemovePadChars({get: function () {
+        return Result;
+      }, set: function (v) {
+        Result = v;
+      }},CSet);
+    return Result;
+  };
+  this.SplitString = function (S, Delimiters) {
+    var Result = [];
+    Result = pas.SysUtils.TStringHelper.Split.call({get: function () {
+        return S;
+      }, set: function (v) {
+        rtl.raiseE("EPropReadOnly");
+      }},Delimiters);
+    return Result;
+  };
+  this.$rtti.$DynArray("SizeIntArray",{eltype: rtl.nativeint});
+  $mod.$implcode = function () {
+    $impl.SScore = "00000000000000000000000000000000" + "00000000000000000000000000000000" + "0123012i02245501262301i2i2" + "000000" + "0123012i02245501262301i2i2" + "00000000000000000000000000000000" + "00000000000000000000000000000000" + "00000000000000000000000000000000" + "00000000000000000000000000000000" + "00000";
+    $impl.Ord0 = 48;
+    $impl.OrdA = 65;
+    $impl.RomanValues = function (C) {
+      var Result = 0;
+      var $tmp = C;
+      if ($tmp === "C") {
+        Result = 100}
+       else if ($tmp === "D") {
+        Result = 500}
+       else if ($tmp === "I") {
+        Result = 1}
+       else if ($tmp === "L") {
+        Result = 50}
+       else if ($tmp === "M") {
+        Result = 1000}
+       else if ($tmp === "V") {
+        Result = 5}
+       else if ($tmp === "X") {
+        Result = 10}
+       else {
+        Result = 0;
+      };
+      return Result;
+    };
+    var RomanChars = rtl.createSet(67,68,73,76,77,86,88);
+    $impl.RomanToIntDontCare = function (S) {
+      var Result = 0;
+      var index = "\x00";
+      var Next = "\x00";
+      var i = 0;
+      var l = 0;
+      var Negative = false;
+      Result = 0;
+      i = 0;
+      Negative = (S.length > 0) && (S.charAt(0) === "-");
+      if (Negative) i += 1;
+      l = S.length;
+      while (i < l) {
+        i += 1;
+        index = pas.System.upcase(S.charAt(i - 1));
+        if (index.charCodeAt() in RomanChars) {
+          if ((i + 1) <= l) {
+            Next = pas.System.upcase(S.charAt((i + 1) - 1))}
+           else Next = "\x00";
+          if ((Next.charCodeAt() in RomanChars) && ($impl.RomanValues(index) < $impl.RomanValues(Next))) {
+            Result += $impl.RomanValues(Next);
+            Result -= $impl.RomanValues(index);
+            i += 1;
+          } else Result += $impl.RomanValues(index);
+        } else {
+          Result = 0;
+          return Result;
+        };
+      };
+      if (Negative) Result = -Result;
+      return Result;
+    };
+    $impl.isMatch = function (level, inputstr, wilds, CWild, CinputWord, MaxInputword, maxwilds, EOS) {
+      var Result = false;
+      EOS.set(false);
+      Result = true;
+      do {
+        if (wilds.charAt(CWild - 1) === "*") {
+          CWild += 1;
+          while (wilds.charAt(CWild - 1) === "?") {
+            CWild += 1;
+            CinputWord += 1;
+          };
+          do {
+            while ((inputstr.charAt(CinputWord - 1) !== wilds.charAt(CWild - 1)) && (CinputWord <= MaxInputword)) CinputWord += 1;
+            Result = $impl.isMatch(level + 1,inputstr,wilds,CWild,CinputWord,MaxInputword,maxwilds,EOS);
+            if (!Result) CinputWord += 1;
+          } while (!(Result || (CinputWord >= MaxInputword)));
+          if (Result && EOS.get()) return Result;
+          continue;
+        };
+        if (wilds.charAt(CWild - 1) === "?") {
+          CWild += 1;
+          CinputWord += 1;
+          continue;
+        };
+        if (inputstr.charAt(CinputWord - 1) === wilds.charAt(CWild - 1)) {
+          CWild += 1;
+          CinputWord += 1;
+          continue;
+        };
+        Result = false;
+        return Result;
+      } while (!((CinputWord > MaxInputword) || (CWild > maxwilds)));
+      if ((CinputWord <= MaxInputword) || (CWild < maxwilds)) {
+        Result = false}
+       else if (CWild > maxwilds) {
+        EOS.set(false)}
+       else {
+        EOS.set(wilds.charAt(CWild - 1) === "*");
+        if (!EOS.get()) Result = false;
+      };
+      return Result;
+    };
+  };
+  $mod.$init = function () {
+    $mod.AnsiResemblesProc = $mod.SoundexProc;
+    $mod.ResemblesProc = $mod.SoundexProc;
+  };
+},["JS"]);
+rtl.module("WEBLib.Mask",["System","Classes","SysUtils","StrUtils","WEBLib.Controls","WEBLib.StdCtrls","Web"],function () {
+  "use strict";
+  var $mod = this;
+  var $impl = $mod.$impl;
+  this.TMaskedState$a = {"0": "mStateMasked", mStateMasked: 0, "1": "mStateReEnter", mStateReEnter: 1, "2": "mStateDBSetText", mStateDBSetText: 2};
+  this.$rtti.$Enum("TMaskedState$a",{minvalue: 0, maxvalue: 2, ordtype: 1, enumtype: this.TMaskedState$a});
+  this.$rtti.$Set("TMaskedState",{comptype: this.$rtti["TMaskedState$a"]});
+  this.$rtti.$inherited("TMaskedText",rtl.string,{});
+  this.$rtti.$inherited("TEditMask",rtl.string,{});
+  rtl.createClass(this,"TCustomMaskEdit",pas["WEBLib.StdCtrls"].TEdit,function () {
+    this.$init = function () {
+      pas["WEBLib.StdCtrls"].TEdit.$init.call(this);
+      this.FEditMask = "";
+      this.FMaskBlank = "\x00";
+      this.FMaxChars = 0;
+      this.FMaskState = {};
+      this.FCaretPos = 0;
+      this.FOldValue = "";
+      this.FEditText = "";
+    };
+    this.$final = function () {
+      this.FMaskState = undefined;
+      pas["WEBLib.StdCtrls"].TEdit.$final.call(this);
+    };
+    this.GetEditText = function () {
+      var Result = "";
+      Result = this.RemoveEditFormat(this.GetText());
+      return Result;
+    };
+    this.SetEditText = function (Value) {
+      this.FEditText = this.AddEditFormat(Value,true);
+      this.SetText(this.FEditText);
+    };
+    this.AddEditFormat = function (Value, Active) {
+      var Result = "";
+      if (!Active) {
+        Result = $impl.FormatMaskedText(this.FEditMask,Value," ")}
+       else Result = $impl.FormatMaskedText(this.FEditMask,Value,this.FMaskBlank);
+      return Result;
+    };
+    this.RemoveEditFormat = function (Value) {
+      var Result = "";
+      var I = 0;
+      var OldLen = 0;
+      var Offset = 0;
+      var MaskOffset = 0;
+      var CType = 0;
+      var Dir = {};
+      Offset = 1;
+      Result = Value;
+      for (var $l = 1, $end = this.FEditMask.length; $l <= $end; $l++) {
+        MaskOffset = $l;
+        CType = $impl.GetMaskCharType(this.FEditMask,MaskOffset);
+        if (CType in rtl.createSet($impl.TMaskCharType.mcLiteral,$impl.TMaskCharType.mcIntlLiteral)) Result = pas.System.Copy(Result,1,Offset - 1) + pas.System.Copy(Result,Offset + 1,Result.length - Offset);
+        if (CType in rtl.createSet($impl.TMaskCharType.mcMask,$impl.TMaskCharType.mcMaskOpt)) Offset += 1;
+      };
+      Dir = rtl.refSet($impl.GetMaskInstructions(this.FEditMask,1));
+      if ($impl.TMaskInstructions$a.miReverseDir in Dir) {
+        Offset = 1;
+        for (var $l1 = 1, $end1 = Result.length; $l1 <= $end1; $l1++) {
+          I = $l1;
+          if (Result.charAt(I - 1) === this.FMaskBlank) {
+            Offset += 1}
+           else break;
+        };
+        if (Offset !== 1) Result = pas.System.Copy(Result,Offset,(Result.length - Offset) + 1);
+      } else {
+        OldLen = Result.length;
+        for (var $l2 = 1, $end2 = OldLen; $l2 <= $end2; $l2++) {
+          I = $l2;
+          if (Result.charAt(((OldLen - I) + 1) - 1) === this.FMaskBlank) {
+            Result = rtl.strSetLength(Result,Result.length - 1)}
+           else break;
+        };
+      };
+      if (this.FMaskBlank !== " ") {
+        OldLen = Result.length;
+        for (var $l3 = 1, $end3 = OldLen; $l3 <= $end3; $l3++) {
+          I = $l3;
+          if (Result.charAt(I - 1) === this.FMaskBlank) Result = rtl.setCharAt(Result,I - 1," ");
+          if (I > OldLen) break;
+        };
+      };
+      return Result;
+    };
+    this.ArrowKeys = function (CharCode, Shift) {
+      var ASelStart = 0;
+      var ASelStop = 0;
+      if (pas.Classes.TShiftState$a.ssCtrl in Shift) return;
+      this.GetSel({get: function () {
+          return ASelStart;
+        }, set: function (v) {
+          ASelStart = v;
+        }},{get: function () {
+          return ASelStop;
+        }, set: function (v) {
+          ASelStop = v;
+        }});
+      if (pas.Classes.TShiftState$a.ssShift in Shift) {
+        if (CharCode === 39) {
+          this.FCaretPos += 1;
+          if (ASelStop === (ASelStart + 1)) {
+            this.SetSel(ASelStart,ASelStop);
+            this.FCaretPos += 1;
+          };
+          if (this.FCaretPos > this.FMaxChars) this.FCaretPos = this.FMaxChars;
+        } else {
+          this.FCaretPos -= 1;
+          if ((ASelStop === (ASelStart + 2)) && (this.FCaretPos > ASelStart)) {
+            this.SetSel(ASelStart + 1,ASelStart + 1);
+            this.FCaretPos -= 1;
+          };
+          if (this.FCaretPos < 0) this.FCaretPos = 0;
+        };
+      } else {
+        if ((ASelStop - ASelStart) > 1) {
+          if (ASelStop === this.FCaretPos) this.FCaretPos -= 1;
+          this.SetCursor(this.FCaretPos);
+        } else if (CharCode === 37) {
+          this.CursorDec(ASelStart)}
+         else {
+          if (ASelStop === ASelStart) {
+            this.SetCursor(ASelStart)}
+           else this.CursorInc(ASelStart,1);
+        };
+      };
+    };
+    this.CursorInc = function (CursorPos, Incr) {
+      var NuPos = 0;
+      if (CursorPos < this.GetText().length) {
+        NuPos = CursorPos + Incr;
+        NuPos = this.GetNextEditChar(NuPos);
+        if ($impl.IsLiteralChar(this.FEditMask,NuPos)) NuPos = CursorPos;
+        this.SetCursor(NuPos);
+      };
+    };
+    this.CursorDec = function (CursorPos) {
+      var Result = 0;
+      var nuPos = 0;
+      Result = 0;
+      if (CursorPos > 0) {
+        nuPos = CursorPos;
+        nuPos -= 1;
+        nuPos = this.GetPriorEditChar(nuPos);
+        this.SetCursor(nuPos);
+        Result = nuPos;
+      };
+      return Result;
+    };
+    this.DeleteKeys = function (CharCode) {
+      var ASelStart = 0;
+      var ASelStop = 0;
+      var Str = "";
+      var Orig = "";
+      this.GetSel({get: function () {
+          return ASelStart;
+        }, set: function (v) {
+          ASelStart = v;
+        }},{get: function () {
+          return ASelStop;
+        }, set: function (v) {
+          ASelStop = v;
+        }});
+      if ((ASelStop - ASelStart) < 1) return;
+      Str = this.GetText();
+      Orig = this.GetText();
+      this.DeleteSelection({get: function () {
+          return Str;
+        }, set: function (v) {
+          Str = v;
+        }},ASelStart,ASelStop - ASelStart);
+      Str = pas.System.Copy(Str,ASelStart + 1,ASelStop - ASelStart);
+      Str = pas.System.Copy(Orig,1,ASelStart) + Str + pas.System.Copy(Orig,ASelStop + 1,Orig.length);
+      this.SetText(Str);
+      this.SetCursor(ASelStart);
+      this.Change();
+    };
+    this.DeleteSelection = function (Value, Offset, Len) {
+      var Result = false;
+      var EndDel = 0;
+      var StrOffset = 0;
+      var MaskOffset = 0;
+      var Temp = 0;
+      var CType = 0;
+      Result = true;
+      if (Len === 0) return Result;
+      StrOffset = Offset + 1;
+      EndDel = StrOffset + Len;
+      Temp = $impl.OffsetToMaskOffset(this.FEditMask,Offset);
+      if (Temp < 0) return Result;
+      for (var $l = Temp, $end = this.FEditMask.length; $l <= $end; $l++) {
+        MaskOffset = $l;
+        CType = $impl.GetMaskCharType(this.FEditMask,MaskOffset);
+        if (CType in rtl.createSet($impl.TMaskCharType.mcLiteral,$impl.TMaskCharType.mcIntlLiteral)) {
+          StrOffset += 1}
+         else if (CType in rtl.createSet($impl.TMaskCharType.mcMask,$impl.TMaskCharType.mcMaskOpt)) {
+          Value.set(rtl.setCharAt(Value.get(),StrOffset - 1,this.FMaskBlank));
+          StrOffset += 1;
+        };
+        if (StrOffset >= EndDel) break;
+      };
+      return Result;
+    };
+    this.HomeEndKeys = function (CharCode, Shift) {
+      var ASelStart = 0;
+      var ASelStop = 0;
+      this.GetSel({get: function () {
+          return ASelStart;
+        }, set: function (v) {
+          ASelStart = v;
+        }},{get: function () {
+          return ASelStop;
+        }, set: function (v) {
+          ASelStop = v;
+        }});
+      if (CharCode === 36) {
+        if (pas.Classes.TShiftState$a.ssShift in Shift) {
+          if ((ASelStart !== this.FCaretPos) && (ASelStop !== (ASelStart + 1))) ASelStop = ASelStart + 1;
+          this.SetSel(0,ASelStop);
+          this.CheckCursor();
+        } else this.SetCursor(0);
+        this.FCaretPos = 0;
+      } else {
+        if (pas.Classes.TShiftState$a.ssShift in Shift) {
+          if ((ASelStop !== this.FCaretPos) && (ASelStop !== (ASelStart + 1))) ASelStart = ASelStop - 1;
+          this.SetSel(ASelStart,this.FMaxChars);
+          this.CheckCursor();
+        } else this.SetCursor(this.FMaxChars - 1);
+        this.FCaretPos = this.FMaxChars;
+      };
+    };
+    this.CharKeys = function (CharCode) {
+      var Result = false;
+      var ASelStart = 0;
+      var ASelStop = 0;
+      var Txt = "";
+      Result = false;
+      this.GetSel({get: function () {
+          return ASelStart;
+        }, set: function (v) {
+          ASelStart = v;
+        }},{get: function () {
+          return ASelStop;
+        }, set: function (v) {
+          ASelStop = v;
+        }});
+      if ((ASelStop - ASelStart) > 1) {
+        this.DeleteKeys(46);
+        ASelStart = this.GetNextEditChar(ASelStart);
+        this.SetCursor(ASelStart);
+      };
+      Result = this.InputChar(CharCode,ASelStart);
+      if (Result) {
+        Txt = CharCode.get();
+        this.SetText(pas.System.Copy(this.GetText(),1,ASelStart) + Txt + pas.System.Copy(this.GetText(),ASelStop + 1,this.GetText().length));
+        this.CursorInc(ASelStart,1);
+      };
+      return Result;
+    };
+    this.InputChar = function (NewChar, Offset) {
+      var Result = false;
+      var MaskOffset = 0;
+      var CType = 0;
+      var InChar = "\x00";
+      Result = true;
+      if (this.FEditMask !== "") {
+        Result = false;
+        if (Offset < this.FMaxChars) {
+          MaskOffset = $impl.OffsetToMaskOffset(this.FEditMask,Offset);
+          if (MaskOffset >= 0) {
+            CType = $impl.GetMaskCharType(this.FEditMask,MaskOffset);
+            InChar = NewChar.get();
+            Result = this.DoInputChar(NewChar,MaskOffset);
+            if (!Result && (CType in rtl.createSet($impl.TMaskCharType.mcMask,$impl.TMaskCharType.mcMaskOpt))) {
+              MaskOffset = this.FindLiteralChar(MaskOffset,InChar);
+              if (MaskOffset > 0) {
+                MaskOffset = $impl.MaskOffsetToOffset(this.FEditMask,MaskOffset);
+                this.SetCursor(MaskOffset);
+                return Result;
+              };
+            };
+          };
+        };
+      };
+      if (!Result && (NewChar.get() !== "\r") && (NewChar.get() !== "\x1B")) {
+        pas["WEBLib.WebTools"].MessageBeep(0);
+      } else this.Change();
+      return Result;
+    };
+    this.DoInputChar = function (NewChar, MaskOffset) {
+      var Result = false;
+      var Instr = {};
+      var Str = "";
+      var CType = 0;
+      Result = true;
+      CType = $impl.GetMaskCharType(this.FEditMask,MaskOffset);
+      if (CType in rtl.createSet($impl.TMaskCharType.mcLiteral,$impl.TMaskCharType.mcIntlLiteral)) {
+        NewChar.set($impl.GetFormatSettingsChar(this.FEditMask.charAt(MaskOffset - 1)))}
+       else {
+        Instr = rtl.refSet($impl.GetMaskInstructions(this.FEditMask,MaskOffset));
+        var $tmp = this.FEditMask.charAt(MaskOffset - 1);
+        if (($tmp === $impl.cMaskNumeric) || ($tmp === $impl.cMaskNumericOpt)) {
+          if (!((NewChar.get() >= "0") && (NewChar.get() <= "9"))) Result = false;
+        } else if ($tmp === $impl.cMaskNumSymOpt) {
+          if (!(((NewChar.get() >= "0") && (NewChar.get() <= "9")) || (NewChar.get() === " ") || (NewChar.get() === "+") || (NewChar.get() === "-"))) Result = false;
+        } else if (($tmp === $impl.cMaskAscii) || ($tmp === $impl.cMaskAsciiOpt)) {
+          if ($impl.IsCharAlpha(NewChar.get())) {
+            Str = " ";
+            Str = rtl.setCharAt(Str,0,NewChar.get());
+            if ($impl.TMaskInstructions$a.miUpperCase in Instr) {
+              Str = pas.SysUtils.UpperCase(Str)}
+             else if ($impl.TMaskInstructions$a.miLowerCase in Instr) Str = pas.SysUtils.LowerCase(Str);
+            NewChar.set(Str.charAt(0));
+          };
+        } else if (($tmp === $impl.cMaskAlpha) || ($tmp === $impl.cMaskAlphaOpt) || ($tmp === $impl.cMaskAlphaNum) || ($tmp === $impl.cMaskAlphaNumOpt)) {
+          Str = " ";
+          Str = rtl.setCharAt(Str,0,NewChar.get());
+          if (!$impl.IsCharAlpha(NewChar.get())) {
+            Result = false;
+            if (((this.FEditMask.charAt(MaskOffset - 1) === $impl.cMaskAlphaNum) || (this.FEditMask.charAt(MaskOffset - 1) === $impl.cMaskAlphaNumOpt)) && $impl.IsCharAlphaNumeric(NewChar.get())) Result = true;
+          } else if ($impl.TMaskInstructions$a.miUpperCase in Instr) {
+            Str = pas.SysUtils.UpperCase(Str)}
+           else if ($impl.TMaskInstructions$a.miLowerCase in Instr) Str = pas.SysUtils.LowerCase(Str);
+          NewChar.set(Str.charAt(0));
+        };
+      };
+      return Result;
+    };
+    this.FindLiteralChar = function (MaskOffset, InChar) {
+      var Result = 0;
+      var CType = 0;
+      var LitChar = "\x00";
+      Result = -1;
+      while (MaskOffset < this.FEditMask.length) {
+        MaskOffset += 1;
+        CType = $impl.GetMaskCharType(this.FEditMask,MaskOffset);
+        if (CType in rtl.createSet($impl.TMaskCharType.mcLiteral,$impl.TMaskCharType.mcIntlLiteral)) {
+          LitChar = this.FEditMask.charAt(MaskOffset - 1);
+          if (CType === $impl.TMaskCharType.mcIntlLiteral) LitChar = $impl.GetFormatSettingsChar(LitChar);
+          if (LitChar === InChar) Result = MaskOffset;
+          return Result;
+        };
+      };
+      return Result;
+    };
+    this.SetEditMask = function (Value) {
+      var SelStart = 0;
+      var SelStop = 0;
+      if (Value !== this.FEditMask) {
+        if ((pas.Classes.TComponentStateItem.csDesigning in this.FComponentState) && (Value !== "") && !(pas.Classes.TComponentStateItem.csLoading in this.FComponentState)) this.SetEditText("");
+        if (this.HandleAllocated()) this.GetSel({get: function () {
+            return SelStart;
+          }, set: function (v) {
+            SelStart = v;
+          }},{get: function () {
+            return SelStop;
+          }, set: function (v) {
+            SelStop = v;
+          }});
+        this.ReformatText(Value);
+        this.FMaskState = rtl.excludeSet(this.FMaskState,$mod.TMaskedState$a.mStateMasked);
+        if (this.FEditMask !== "") this.FMaskState = rtl.includeSet(this.FMaskState,$mod.TMaskedState$a.mStateMasked);
+        this.SetMaxLength(0);
+        if (this.GetMasked() && (this.FMaxChars > 0)) {
+          this.SetMaxLength(this.FMaxChars);
+        };
+        if (this.HandleAllocated() && this.Focused() && !(pas.Classes.TComponentStateItem.csDesigning in this.FComponentState)) this.SetCursor(SelStart);
+      };
+    };
+    this.GetMasked = function () {
+      var Result = false;
+      Result = this.FEditMask !== "";
+      return Result;
+    };
+    this.GetTextLen = function () {
+      var Result = 0;
+      Result = this.GetText().length;
+      return Result;
+    };
+    this.EditCanModify = function () {
+      var Result = false;
+      Result = !this.FReadOnly;
+      return Result;
+    };
+    this.ReformatText = function (NewMask) {
+      var OldText = "";
+      OldText = this.RemoveEditFormat(this.GetEditText());
+      this.FEditMask = NewMask;
+      this.FMaxChars = $impl.MaskOffsetToOffset(this.FEditMask,NewMask.length);
+      this.FMaskBlank = $impl.GetMaskBlank(NewMask);
+      this.SetEditText(OldText);
+    };
+    this.KeyDown = function (Key, Shift) {
+      pas["WEBLib.Controls"].TControl.KeyDown.call(this,Key,rtl.refSet(Shift));
+      if (Key.get() in rtl.createSet(37,39,36,35)) {
+        this.PreventDefault();
+        this.StopPropagation();
+      };
+      if (this.GetMasked() && (Key.get() !== 0) && !(pas.Classes.TShiftState$a.ssAlt in Shift)) {
+        if (!(Key.get() in rtl.createSet(37,39,36,35))) {
+          if (this.GetSelLength() > 1) {
+            this.SetSelStart(0);
+            this.SetSelLength(1);
+          };
+        };
+        if ((Key.get() === 37) || (Key.get() === 39)) {
+          this.ArrowKeys(Key.get(),rtl.refSet(Shift));
+          if (!((pas.Classes.TShiftState$a.ssShift in Shift) || (pas.Classes.TShiftState$a.ssCtrl in Shift))) Key.set(0);
+          return;
+        } else if ((Key.get() === 38) || (Key.get() === 40)) {
+          Key.set(0);
+          return;
+        } else if ((Key.get() === 36) || (Key.get() === 35)) {
+          this.HomeEndKeys(Key.get(),rtl.refSet(Shift));
+          Key.set(0);
+          return;
+        } else if (((Key.get() === 46) && !(pas.Classes.TShiftState$a.ssShift in Shift)) || (Key.get() === 8)) {
+          if (this.EditCanModify()) this.DeleteKeys(Key.get());
+          if (!(Key.get() === 8)) {
+            Key.set(0);
+            this.PreventDefault();
+            this.StopPropagation();
+          };
+          return;
+        };
+        this.CheckCursor();
+      };
+    };
+    this.KeyUp = function (Key, Shift) {
+      pas["WEBLib.Controls"].TControl.KeyUp.call(this,Key,rtl.refSet(Shift));
+      if (this.GetMasked() && (Key.get() !== 0)) {
+        if (((Key.get() === 37) || (Key.get() === 39)) && (pas.Classes.TShiftState$a.ssCtrl in Shift)) this.CheckCursor();
+      };
+    };
+    this.KeyPress = function (Key) {
+      pas["WEBLib.StdCtrls"].TCustomEdit.KeyPress.call(this,Key);
+      if (this.GetMasked() && (Key.get() !== "\x00") && !pas.SysUtils.CharInSet(Key.get(),["\x16","\x18","\x03","\b"])) {
+        this.CharKeys(Key);
+        Key.set("\x00");
+        this.PreventDefault();
+        this.StopPropagation();
+      };
+    };
+    this.MouseUp = function (Button, Shift, X, Y) {
+      pas["WEBLib.Controls"].TControl.MouseUp.apply(this,arguments);
+    };
+    this.CheckCursor = function () {
+      var ASelStart = 0;
+      var ASelStop = 0;
+      if (!this.HandleAllocated()) return;
+      if (this.GetMasked()) {
+        this.GetSel({get: function () {
+            return ASelStart;
+          }, set: function (v) {
+            ASelStart = v;
+          }},{get: function () {
+            return ASelStop;
+          }, set: function (v) {
+            ASelStop = v;
+          }});
+        if (ASelStart === ASelStop) this.SetCursor(ASelStart);
+      };
+    };
+    this.Reset = function () {
+      this.SetEditText(this.FOldValue);
+    };
+    this.Loaded = function () {
+      pas["WEBLib.Controls"].TCustomControl.Loaded.call(this);
+    };
+    this.DoEnter = function () {
+      pas["WEBLib.StdCtrls"].TCustomEdit.DoEnter.call(this);
+      this.SetSelStart(0);
+      this.SetSelLength(1);
+    };
+    this.InitCSSLibrary = function (ALibrary) {
+      if (ALibrary === pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap) {
+        this.SetElementClassName("form-control");
+        this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+      };
+    };
+    this.CreateInitialize = function () {
+      pas["WEBLib.StdCtrls"].TCustomEdit.CreateInitialize.call(this);
+      this.SetHeight(25);
+    };
+    this.GetSel = function (ASelStart, ASelStop) {
+      ASelStart.set(this.GetSelStart());
+      ASelStop.set(this.GetSelStart() + this.GetSelLength());
+    };
+    this.SetSel = function (ASelStart, ASelStop) {
+      this.SetSelStart(ASelStart);
+      this.SetSelLength(Math.max(1,ASelStop - ASelStart));
+    };
+    this.SetCursor = function (Pos) {
+      this.SetSel(Pos,Pos + 1);
+    };
+    this.GetFirstEditChar = function () {
+      var Result = 0;
+      Result = 0;
+      if (this.GetMasked()) Result = this.GetNextEditChar(0);
+      return Result;
+    };
+    this.GetLastEditChar = function () {
+      var Result = 0;
+      Result = this.GetMaxChars();
+      if (this.GetMasked()) Result = this.GetPriorEditChar(Result - 1);
+      return Result;
+    };
+    this.GetNextEditChar = function (Offset) {
+      var Result = 0;
+      Result = Offset;
+      while ((Result < this.FMaxChars) && $impl.IsLiteralChar(this.FEditMask,Result)) Result += 1;
+      return Result;
+    };
+    this.GetPriorEditChar = function (Offset) {
+      var Result = 0;
+      Result = Offset;
+      while ((Result >= 0) && $impl.IsLiteralChar(this.FEditMask,Result)) Result -= 1;
+      if (Result < 0) Result = this.GetNextEditChar(Result);
+      return Result;
+    };
+    this.GetMaxChars = function () {
+      var Result = 0;
+      if (this.GetMasked()) {
+        Result = this.FMaxChars}
+       else Result = this.GetTextLen();
+      return Result;
+    };
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+  });
+  rtl.createClass(this,"TMaskEdit",this.TCustomMaskEdit,function () {
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+    var $r = this.$rtti;
+    $r.addProperty("EditMask",2,$mod.$rtti["TEditMask"],"FEditMask","SetEditMask");
+    $r.addProperty("ElementClassName",2,pas["WEBLib.Controls"].$rtti["TElementClassName"],"FElementClassName","SetElementClassName");
+    $r.addProperty("ElementID",3,pas["WEBLib.Controls"].$rtti["TElementID"],"GetID","SetID");
+    $r.addProperty("ElementFont",2,pas["WEBLib.Controls"].$rtti["TElementFont"],"FElementFont","SetElementFont",{Default: pas["WEBLib.Controls"].TElementFont.efProperty});
+    $r.addProperty("ElementPosition",2,pas["WEBLib.Controls"].$rtti["TElementPosition"],"FElementPosition","SetElementPosition",{Default: pas["WEBLib.Controls"].TElementPosition.epAbsolute});
+  });
+  rtl.createClass(this,"TWebMaskEdit",this.TMaskEdit,function () {
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+  });
+  $mod.$implcode = function () {
+    $impl.TMaskCharType = {"0": "mcNone", mcNone: 0, "1": "mcLiteral", mcLiteral: 1, "2": "mcIntlLiteral", mcIntlLiteral: 2, "3": "mcDirective", mcDirective: 3, "4": "mcMask", mcMask: 4, "5": "mcMaskOpt", mcMaskOpt: 5, "6": "mcFieldSeparator", mcFieldSeparator: 6, "7": "mcField", mcField: 7};
+    $mod.$rtti.$Enum("TMaskCharType",{minvalue: 0, maxvalue: 7, ordtype: 1, enumtype: $impl.TMaskCharType});
+    $impl.TMaskInstructions$a = {"0": "miReverseDir", miReverseDir: 0, "1": "miUpperCase", miUpperCase: 1, "2": "miLowerCase", miLowerCase: 2, "3": "miLiteralChar", miLiteralChar: 3};
+    $mod.$rtti.$Enum("TMaskInstructions$a",{minvalue: 0, maxvalue: 3, ordtype: 1, enumtype: $impl.TMaskInstructions$a});
+    $mod.$rtti.$Set("TMaskInstructions",{comptype: $mod.$rtti["TMaskInstructions$a"]});
+    $impl.dMaskReverse = "!";
+    $impl.dMaskUpperCase = ">";
+    $impl.dMaskLowerCase = "<";
+    $impl.dMaskLiteral = "\\";
+    $impl.cMaskAlpha = "L";
+    $impl.cMaskAlphaOpt = "l";
+    $impl.cMaskAlphaNum = "A";
+    $impl.cMaskAlphaNumOpt = "a";
+    $impl.cMaskAscii = "C";
+    $impl.cMaskAsciiOpt = "c";
+    $impl.cMaskNumeric = "0";
+    $impl.cMaskNumericOpt = "9";
+    $impl.cMaskNumSymOpt = "#";
+    $impl.cMaskTimeSeparator = ":";
+    $impl.cMaskDateSeparator = "/";
+    $impl.mskSeparator = ";";
+    $impl.mskBlank = "_";
+    $impl.IsCharAlpha = function (IChar) {
+      var Result = false;
+      Result = ((IChar >= "a") && (IChar <= "z")) || ((IChar >= "A") && (IChar <= "Z"));
+      return Result;
+    };
+    $impl.IsCharAlphaNumeric = function (IChar) {
+      var Result = false;
+      Result = ((IChar >= "a") && (IChar <= "z")) || ((IChar >= "A") && (IChar <= "Z")) || ((IChar >= "0") && (IChar <= "9"));
+      return Result;
+    };
+    $impl.GetMaskCharType = function (EditMask, MaskOffset) {
+      var Result = 0;
+      var MaskChar = "\x00";
+      Result = $impl.TMaskCharType.mcLiteral;
+      MaskChar = "\x00";
+      if (MaskOffset <= EditMask.length) MaskChar = EditMask.charAt(MaskOffset - 1);
+      if (MaskOffset > EditMask.length) {
+        Result = $impl.TMaskCharType.mcNone}
+       else if ((MaskOffset > 1) && (EditMask.charAt(MaskOffset - 1 - 1) === $impl.dMaskLiteral) && !((MaskOffset > 2) && (EditMask.charAt(MaskOffset - 2 - 1) === $impl.dMaskLiteral))) {
+        Result = $impl.TMaskCharType.mcLiteral}
+       else if ((MaskChar === $impl.mskSeparator) && (EditMask.length >= 4) && (MaskOffset > (EditMask.length - 4))) {
+        Result = $impl.TMaskCharType.mcFieldSeparator}
+       else if ((EditMask.length >= 4) && (MaskOffset > (EditMask.length - 4)) && (EditMask.charAt(MaskOffset - 1 - 1) === $impl.mskSeparator) && !((MaskOffset > 2) && (EditMask.charAt(MaskOffset - 2 - 1) === $impl.dMaskLiteral))) {
+        Result = $impl.TMaskCharType.mcField}
+       else if (MaskChar.charCodeAt() in rtl.createSet($impl.cMaskTimeSeparator.charCodeAt(),$impl.cMaskDateSeparator.charCodeAt())) {
+        Result = $impl.TMaskCharType.mcIntlLiteral}
+       else if (MaskChar.charCodeAt() in rtl.createSet($impl.dMaskReverse.charCodeAt(),$impl.dMaskUpperCase.charCodeAt(),$impl.dMaskLowerCase.charCodeAt(),$impl.dMaskLiteral.charCodeAt())) {
+        Result = $impl.TMaskCharType.mcDirective}
+       else if (MaskChar.charCodeAt() in rtl.createSet($impl.cMaskAlphaOpt.charCodeAt(),$impl.cMaskAlphaNumOpt.charCodeAt(),$impl.cMaskAsciiOpt.charCodeAt(),$impl.cMaskNumSymOpt.charCodeAt(),$impl.cMaskNumericOpt.charCodeAt())) {
+        Result = $impl.TMaskCharType.mcMaskOpt}
+       else if (MaskChar.charCodeAt() in rtl.createSet($impl.cMaskAlpha.charCodeAt(),$impl.cMaskAlphaNum.charCodeAt(),$impl.cMaskAscii.charCodeAt(),$impl.cMaskNumeric.charCodeAt())) Result = $impl.TMaskCharType.mcMask;
+      return Result;
+    };
+    $impl.GetMaskInstructions = function (EditMask, MaskOffset) {
+      var Result = {};
+      var I = 0;
+      var MaskChar = "\x00";
+      Result = {};
+      for (var $l = 0, $end = EditMask.length - 1; $l <= $end; $l++) {
+        I = $l;
+        MaskChar = EditMask.charAt((I + 1) - 1);
+        if (MaskChar === $impl.dMaskReverse) {
+          Result = rtl.unionSet(Result,rtl.createSet($impl.TMaskInstructions$a.miReverseDir))}
+         else if ((MaskChar === $impl.dMaskLowerCase) && (I < (MaskOffset - 1))) {
+          Result = rtl.unionSet(rtl.diffSet(Result,rtl.createSet($impl.TMaskInstructions$a.miUpperCase)),rtl.createSet($impl.TMaskInstructions$a.miLowerCase));
+        } else if ((MaskChar === $impl.dMaskUpperCase) && (I < (MaskOffset - 1))) {
+          Result = rtl.diffSet(Result,rtl.createSet($impl.TMaskInstructions$a.miLowerCase));
+          if (!((I > 0) && (EditMask.charAt(I - 1) === $impl.dMaskLowerCase))) Result = rtl.unionSet(Result,rtl.createSet($impl.TMaskInstructions$a.miUpperCase));
+        };
+      };
+      if ($impl.GetMaskCharType(EditMask,MaskOffset) === $impl.TMaskCharType.mcLiteral) Result = rtl.unionSet(Result,rtl.createSet($impl.TMaskInstructions$a.miLiteralChar));
+      return Result;
+    };
+    $impl.GetFormatSettingsChar = function (IChar) {
+      var Result = "\x00";
+      Result = IChar;
+      var $tmp = IChar;
+      if ($tmp === $impl.cMaskTimeSeparator) {
+        Result = pas.SysUtils.FormatSettings.TimeSeparator}
+       else if ($tmp === $impl.cMaskDateSeparator) Result = pas.SysUtils.FormatSettings.DateSeparator;
+      return Result;
+    };
+    $impl.MaskOffsetToString = function (EditMask, MaskOffset) {
+      var Result = "";
+      var I = 0;
+      var CType = 0;
+      Result = "";
+      for (var $l = 1, $end = MaskOffset; $l <= $end; $l++) {
+        I = $l;
+        CType = $impl.GetMaskCharType(EditMask,I);
+        if (!(CType in rtl.createSet($impl.TMaskCharType.mcDirective,$impl.TMaskCharType.mcField,$impl.TMaskCharType.mcFieldSeparator))) Result = Result + EditMask.charAt(I - 1);
+      };
+      return Result;
+    };
+    $impl.MaskOffsetToOffset = function (EditMask, MaskOffset) {
+      var Result = 0;
+      Result = $impl.MaskOffsetToString(EditMask,MaskOffset).length;
+      return Result;
+    };
+    $impl.OffsetToMaskOffset = function (EditMask, Offset) {
+      var Result = 0;
+      var I = 0;
+      var Count = 0;
+      var MaxChars = 0;
+      MaxChars = $impl.MaskOffsetToOffset(EditMask,EditMask.length);
+      if (Offset > MaxChars) {
+        Result = -1;
+        return Result;
+      };
+      Result = 0;
+      Count = Offset;
+      for (var $l = 1, $end = EditMask.length; $l <= $end; $l++) {
+        I = $l;
+        Result += 1;
+        if (!($impl.TMaskCharType.mcDirective === $impl.GetMaskCharType(EditMask,I))) {
+          Count -= 1;
+          if (Count < 0) return Result;
+        };
+      };
+      return Result;
+    };
+    $impl.FormatMaskedText = function (EditMask, Value, Blank) {
+      var Result = "";
+      var I = 0;
+      var Offset = 0;
+      var MaskOffset = 0;
+      var CType = 0;
+      var Dir = {};
+      Result = Value;
+      Dir = rtl.refSet($impl.GetMaskInstructions(EditMask,1));
+      if (!($impl.TMaskInstructions$a.miReverseDir in Dir)) {
+        Offset = 1;
+        for (var $l = 1, $end = EditMask.length; $l <= $end; $l++) {
+          MaskOffset = $l;
+          CType = $impl.GetMaskCharType(EditMask,MaskOffset);
+          if (CType in rtl.createSet($impl.TMaskCharType.mcLiteral,$impl.TMaskCharType.mcIntlLiteral)) {
+            Result = pas.System.Copy(Result,1,Offset - 1) + $impl.GetFormatSettingsChar(EditMask.charAt(MaskOffset - 1)) + pas.System.Copy(Result,Offset,(Result.length - Offset) + 1);
+            Offset += 1;
+          } else if (CType in rtl.createSet($impl.TMaskCharType.mcMask,$impl.TMaskCharType.mcMaskOpt)) {
+            if (Offset > Result.length) Result = Result + Blank;
+            Offset += 1;
+          };
+        };
+      } else {
+        Offset = Result.length;
+        for (var $l1 = 0, $end1 = EditMask.length - 1; $l1 <= $end1; $l1++) {
+          I = $l1;
+          MaskOffset = EditMask.length - I;
+          CType = $impl.GetMaskCharType(EditMask,MaskOffset);
+          if (CType in rtl.createSet($impl.TMaskCharType.mcLiteral,$impl.TMaskCharType.mcIntlLiteral)) {
+            Result = pas.System.Copy(Result,1,Offset) + $impl.GetFormatSettingsChar(EditMask.charAt(MaskOffset - 1)) + pas.System.Copy(Result,Offset + 1,Result.length - Offset);
+          } else if (CType in rtl.createSet($impl.TMaskCharType.mcMask,$impl.TMaskCharType.mcMaskOpt)) {
+            if (Offset < 1) {
+              Result = Blank + Result}
+             else Offset -= 1;
+          };
+        };
+      };
+      return Result;
+    };
+    $impl.IsLiteralChar = function (EditMask, Offset) {
+      var Result = false;
+      var MaskOffset = 0;
+      var CType = 0;
+      Result = false;
+      MaskOffset = $impl.OffsetToMaskOffset(EditMask,Offset);
+      if (MaskOffset >= 0) {
+        CType = $impl.GetMaskCharType(EditMask,MaskOffset);
+        Result = CType in rtl.createSet($impl.TMaskCharType.mcLiteral,$impl.TMaskCharType.mcIntlLiteral);
+      };
+      return Result;
+    };
+    $impl.GetMaskBlank = function (EditMask) {
+      var Result = "\x00";
+      Result = $impl.mskBlank;
+      if (EditMask.length >= 4) {
+        if ($impl.GetMaskCharType(EditMask,EditMask.length - 1) === $impl.TMaskCharType.mcFieldSeparator) {
+          if (($impl.GetMaskCharType(EditMask,EditMask.length - 2) === $impl.TMaskCharType.mcFieldSeparator) || ($impl.GetMaskCharType(EditMask,EditMask.length - 3) === $impl.TMaskCharType.mcFieldSeparator)) {
+            Result = EditMask.charAt(EditMask.length - 1);
+          };
+        };
+      };
+      return Result;
+    };
+  };
+},["Math","WEBLib.WebTools"]);
+rtl.module("WEBLib.Ctrls.SVG",["System"],function () {
+  "use strict";
+  var $mod = this;
+  this.ICON_SEARCH = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAPJJREFUOE+l0i0sR1EUAPDfv0ka0UemEhUzhU0yjea" + "j0YxJiCrDRqFoPpqPbjRTbHRVQLO73bfd//Mue3s3nt3zO+eee1oanlbDfFXAJFYwFPF77OCyqlgZ2MYqXnEdE8bQjy2sl5EUCJXPcYQlfMXLHdjFHMKdtk5S4A49GEiSi4IBecYbRtMu" + "UuADJ1jIDHYfM+j8CzjFfAY4wBS6csAtev95wgvGc8AELnCMxdIQ9zCLaZzlgBDfxFocVvqNfTHpKQ7xvUCqFil0soxhfOMRh9jAINqQOqvcjZuIPBSbWgcIXQfkCp8YCYG6wK8fbgz8A" + "H9+LhG4lkRRAAAAAElFTkSuQmCC";
+  this.ICON_SEARCH_SVG = "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMzIgMzIiIGlkPSJHbHlwaCIgdmV" + "yc2lvbj0iMS4xIiB2aWV3Qm94PSIwIDAgMzIgMzIiIHhtbDpzcGFjZT0icHJlc2VydmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6" + "Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxwYXRoIGQ9Ik0yNy40MTQsMjQuNTg2bC01LjA3Ny01LjA3N0MyMy4zODYsMTcuOTI4LDI0LDE2LjAzNSwyNCwxNGMwLTUuNTE0LTQuNDg2L" + "TEwLTEwLTEwUzQsOC40ODYsNCwxNCAgczQuNDg2LDEwLDEwLDEwYzIuMDM1LDAsMy45MjgtMC42MTQsNS41MDktMS42NjNsNS4wNzcsNS4wNzdjMC43OCwwLjc4MSwyLjA0OCwwLjc4MS" + "wyLjgyOCwwICBDMjguMTk1LDI2LjYzMywyOC4xOTUsMjUuMzY3LDI3LjQxNCwyNC41ODZ6IE03LDE0YzAtMy44NiwzLjE0LTcsNy03czcsMy4xNCw3LDdzLTMuMTQsNy03LDdTNywxNy4" + "4Niw3LDE0eiIgaWQ9IlhNTElEXzIyM18iLz48L3N2Zz4=";
+  this.ICON_FILTER = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAPhJREFUOE/N078rxWEUx/HXpYz+ABN2A4q6ZTBZkCy" + "3rMomm7qDukWxir9BpKRYLW7Rne5kpvwHRj+io+dbt2/fr68fi7M9z/mcd+d8zvPU/DFqGMYu+n/IekMzAKPoYgAX34Qs4BnjAYiYwyW2sFcBaWIbS1GTAaJmHftYwXEJZBmn2MBhaHoB" + "cT7AKmbRyUEmcI0jrGW5PCCMPMckpvGYhEMJeId5vJYB4n4QN8mkmSRsJ5PreOrtLN9BlovV3iNmjjjDCB7y3pQBQveORio4KfDrM/W/AS+4wi1avxlhETsYSz4UjvuVB1HXlzYxhc2i1" + "1kFqPxbH57RKFOftCADAAAAAElFTkSuQmCC";
+  this.ICON_FILTER_SVG = "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgaWQ9IkxheWVyXzEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDI0" + "IDI0OyIgdmVyc2lvbj0iMS4xIiB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbDpzcGFjZT0icHJlc2VydmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpb" + "ms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+Cgkuc3Qwe2ZpbGw6bm9uZTtzdHJva2U6IzAwMDAwMDtzdHJva2Utd2lkdGg6MS42Nz" + "I0O3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3Qxe2ZpbGw6bm9uZTtzdHJva2U6IzAwMDAwMDtzdHJva2U" + "td2lkdGg6MS41O3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3Qye2ZpbGw6bm9uZTtzdHJva2U6IzAwMDAw" + "MDtzdHJva2Utd2lkdGg6MS41O3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cjwvc3R5bGU+PGc+PGc+PGc+PHBhdGggZD0iTTIyLjIsMS41bC04LjUsM" + "TEuMmMtMC4yLDAuMy0wLjMsMC42LTAuMywwLjl2Ny44bC0yLjcsMC44di04LjZjMC0wLjMtMC4xLTAuNi0wLjMtMC45TDEuOCwxLjVIMjIuMiBNMjIuOCwwSDEuMiAgICAgYy0xLDAtMS" + "41LDEuMS0wLjksMS45bDguOSwxMS44djkuNmMwLDAuNCwwLjMsMC43LDAuNywwLjdjMC4xLDAsMC4xLDAsMC4yLDBsNC4zLTEuM2MwLjMtMC4xLDAuNS0wLjQsMC41LTAuN3YtOC4zbDg" + "uOS0xMS44ICAgICBDMjQuMywxLjEsMjMuOCwwLDIyLjgsMEwyMi44LDB6Ii8+PC9nPjwvZz48L2c+PC9zdmc+";
+  this.ICON_EYE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAQJJREFUOE+1080qxVEUBfDfnZABGWNCyUDJSDyCJ2BiJu" + "V7aoKYMJCirq8p5QV4CMxkyIjyBsiEto7a3e4tt5sz+f/P3uuss9Y651S0OCotrvcvBN1YwBQG8YUnXOEYz1l1rYJZ7KOzgbU3rBfMDyQTbGCrLPwswIsyn8E22sr8EKuZYBqXadc1POC" + "0WJjDCHYTZhFHoWAIt+hKzZ5S6yu18D2G14T5wHgQDOMOHanZixtkggm81COI2goOaizc4yxZGMVOwiyh+htifE8QXmNEiBHqeYMQq1gO8nwK8R/hbaK9wTG+l/5eUVb3JvZjHpMYKESP" + "uP7LRWr6afzLW2hKxTf9UTFvsYQFoAAAAABJRU5ErkJggg==";
+  this.ICON_EYE_SVG = "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjwhRE9DVFlQRSBzdmcgIFBVQkxJQyAnLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4nICAnaHR0cD" + "ovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkJz48c3ZnIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDI0IDI0IiBoZWlnaHQ9IjI0cHgiIGlkPSJMYXl" + "lcl8xIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0cHgiIHhtbDpzcGFjZT0icHJlc2VydmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2" + "ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxnPjxnPjxwYXRoIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTEyLDRDNC4wNjMsNC0wLjAxMiwxMi0wL" + "jAxMiwxMlMzLjA2MywyMCwxMiwyMCAgICBjOC4wOTMsMCwxMi4wMTEtNy45NjksMTIuMDExLTcuOTY5UzIwLjA2Miw0LDEyLDR6IE0xMi4wMTgsMTdjLTIuOTAyLDAtNS0yLjE4OC01LT" + "VjMC0yLjgxMywyLjA5OC01LDUtNWMyLjkwMiwwLDUsMi4xODcsNSw1ICAgIEMxNy4wMTgsMTQuODEyLDE0LjkyLDE3LDEyLjAxOCwxN3ogTTEyLjAxOCw5Yy0xLjY1OCwwLjAwMy0zLDE" + "uMzkzLTMsM2MwLDEuNjA2LDEuMzQyLDMsMywzYzEuNjU4LDAsMy0xLjM5NSwzLTMgICAgQzE1LjAxOCwxMC4zOTIsMTMuNjc2LDguOTk3LDEyLjAxOCw5eiIgZmlsbC1ydWxlPSJldmVu" + "b2RkIi8+PC9nPjwvZz48L3N2Zz4=";
+});
+rtl.module("WEBLib.Grids",["System","Classes","JS","WEBLib.Controls","WEBLib.Graphics","Web","DB","jsdelphisystem","WEBLib.Menus","WEBLib.StdCtrls","WEBLib.Mask","WEBLib.Ctrls.SVG","Types"],function () {
+  "use strict";
+  var $mod = this;
+  var $impl = $mod.$impl;
+  this.TInitMethod = {"0": "imRandom", imRandom: 0, "1": "imLinear", imLinear: 1};
+  this.$rtti.$Enum("TInitMethod",{minvalue: 0, maxvalue: 1, ordtype: 1, enumtype: this.TInitMethod});
+  rtl.recNewT(this,"TGridRect",function () {
+    this.Left = 0;
+    this.Top = 0;
+    this.Right = 0;
+    this.Bottom = 0;
+    this.$eq = function (b) {
+      return (this.Left === b.Left) && (this.Top === b.Top) && (this.Right === b.Right) && (this.Bottom === b.Bottom);
+    };
+    this.$assign = function (s) {
+      this.Left = s.Left;
+      this.Top = s.Top;
+      this.Right = s.Right;
+      this.Bottom = s.Bottom;
+      return this;
+    };
+    var $r = $mod.$rtti.$Record("TGridRect",{});
+    $r.addField("Left",rtl.longint);
+    $r.addField("Top",rtl.longint);
+    $r.addField("Right",rtl.longint);
+    $r.addField("Bottom",rtl.longint);
+  });
+  rtl.recNewT(this,"TGridCoord",function () {
+    this.X = 0;
+    this.Y = 0;
+    this.$eq = function (b) {
+      return (this.X === b.X) && (this.Y === b.Y);
+    };
+    this.$assign = function (s) {
+      this.X = s.X;
+      this.Y = s.Y;
+      return this;
+    };
+    var $r = $mod.$rtti.$Record("TGridCoord",{});
+    $r.addField("X",rtl.longint);
+    $r.addField("Y",rtl.longint);
+  });
+  this.TGridOption = {"0": "goFixedVertLine", goFixedVertLine: 0, "1": "goFixedHorzLine", goFixedHorzLine: 1, "2": "goVertLine", goVertLine: 2, "3": "goHorzLine", goHorzLine: 3, "4": "goRangeSelect", goRangeSelect: 4, "5": "goDrawFocusSelected", goDrawFocusSelected: 5, "6": "goRowSizing", goRowSizing: 6, "7": "goColSizing", goColSizing: 7, "8": "goRowMoving", goRowMoving: 8, "9": "goColMoving", goColMoving: 9, "10": "goEditing", goEditing: 10, "11": "goTabs", goTabs: 11, "12": "goRowSelect", goRowSelect: 12, "13": "goAlwaysShowEditor", goAlwaysShowEditor: 13, "14": "goThumbTracking", goThumbTracking: 14, "15": "goFixedColClick", goFixedColClick: 15, "16": "goFixedRowClick", goFixedRowClick: 16, "17": "goFixedHotTrack", goFixedHotTrack: 17, "18": "goFixedRowDefAlign", goFixedRowDefAlign: 18};
+  this.$rtti.$Enum("TGridOption",{minvalue: 0, maxvalue: 18, ordtype: 1, enumtype: this.TGridOption});
+  this.TGridDrawState$a = {"0": "gdSelected", gdSelected: 0, "1": "gdFocused", gdFocused: 1, "2": "gdFixed", gdFixed: 2, "3": "gdRowSelected", gdRowSelected: 3, "4": "gdHotTrack", gdHotTrack: 4, "5": "gdPressed", gdPressed: 5};
+  this.$rtti.$Enum("TGridDrawState$a",{minvalue: 0, maxvalue: 5, ordtype: 1, enumtype: this.TGridDrawState$a});
+  this.$rtti.$Set("TGridDrawState",{comptype: this.$rtti["TGridDrawState$a"]});
+  this.TGridSortIndicator = {"0": "siNone", siNone: 0, "1": "siAscending", siAscending: 1, "2": "siDescending", siDescending: 2};
+  this.$rtti.$Enum("TGridSortIndicator",{minvalue: 0, maxvalue: 2, ordtype: 1, enumtype: this.TGridSortIndicator});
+  this.TGridCellEditor = {"0": "geText", geText: 0, "1": "geNumber", geNumber: 1, "2": "geDate", geDate: 2, "3": "geTime", geTime: 3, "4": "geRange", geRange: 4, "5": "geColor", geColor: 5, "6": "geWeek", geWeek: 6, "7": "geMonth", geMonth: 7, "8": "geURL", geURL: 8, "9": "geEmail", geEmail: 9, "10": "geTel", geTel: 10, "11": "geMask", geMask: 11, "12": "geCombo", geCombo: 12, "13": "geMemo", geMemo: 13, "14": "geNone", geNone: 14, "15": "geCustom", geCustom: 15};
+  this.$rtti.$Enum("TGridCellEditor",{minvalue: 0, maxvalue: 15, ordtype: 1, enumtype: this.TGridCellEditor});
+  this.$rtti.$Set("TGridOptions",{comptype: this.$rtti["TGridOption"]});
+  this.$rtti.$MethodVar("TGridGetCellDataEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["ACol",rtl.longint],["ARow",rtl.longint],["AField",pas.DB.$rtti["TField"]],["AValue",rtl.string,1]]), methodkind: 0});
+  this.$rtti.$MethodVar("TGridGetCellClassEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["ACol",rtl.longint],["ARow",rtl.longint],["AField",pas.DB.$rtti["TField"]],["AValue",rtl.string],["AClassName",rtl.string,1]]), methodkind: 0});
+  this.$rtti.$MethodVar("TGridGetCellChildrenEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["ACol",rtl.longint],["ARow",rtl.longint],["AField",pas.DB.$rtti["TField"]],["AValue",rtl.string],["AElement",pas["WEBLib.Controls"].$rtti["TJSHTMLElementRecord"]]]), methodkind: 0});
+  this.$rtti.$MethodVar("TGridGetCellEditorEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["ACol",rtl.longint],["ARow",rtl.longint],["AEditor",this.$rtti["TGridCellEditor"],1]]), methodkind: 0});
+  this.$rtti.$MethodVar("TGridRequestEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["ARequest",pas["WEBLib.Controls"].$rtti["TJSXMLHttpRequestRecord"]]]), methodkind: 0});
+  this.$rtti.$MethodVar("TGridSortClickEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["ACol",rtl.longint],["ARow",rtl.longint],["ASortIndicator",this.$rtti["TGridSortIndicator"]]]), methodkind: 0});
+  this.$rtti.$MethodVar("TDrawCellEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["ACol",rtl.longint],["ARow",rtl.longint],["Rect",pas.Types.$rtti["TRect"]],["State",this.$rtti["TGridDrawState"]]]), methodkind: 0});
+  this.$rtti.$MethodVar("TGetEditEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["ACol",rtl.longint],["ARow",rtl.longint],["Value",rtl.string,1]]), methodkind: 0});
+  this.$rtti.$MethodVar("TSetEditEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["ACol",rtl.longint],["ARow",rtl.longint],["Value",rtl.string,2]]), methodkind: 0});
+  this.$rtti.$MethodVar("TSetEditControlValueEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["ACol",rtl.longint],["ARow",rtl.longint],["AControl",pas["WEBLib.Controls"].$rtti["TControl"]],["Value",rtl.string,2]]), methodkind: 0});
+  this.$rtti.$MethodVar("TGetEditControlValueEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["ACol",rtl.longint],["ARow",rtl.longint],["AControl",pas["WEBLib.Controls"].$rtti["TControl"]],["Value",rtl.string,1]]), methodkind: 0});
+  rtl.createClass(this,"TCustomGrid",pas["WEBLib.Menus"].TWebCustomControl,function () {
+    this.$init = function () {
+      pas["WEBLib.Menus"].TWebCustomControl.$init.call(this);
+      this.FRowCount = 0;
+      this.FColCount = 0;
+    };
+    this.GetCells = function (ACol, ARow) {
+      var Result = "";
+      Result = "";
+      return Result;
+    };
+    this.SetCells = function (ACol, ARow, Value) {
+    };
+    this.GetCellsArray = function () {
+      var Result = null;
+      var i = 0;
+      var j = 0;
+      var row = null;
+      var s = "";
+      Result = new Array();
+      for (var $l = this.RowOffset(), $end = this.FRowCount - 1; $l <= $end; $l++) {
+        i = $l;
+        row = new Array();
+        for (var $l1 = this.ColOffset(), $end1 = this.FColCount - 1; $l1 <= $end1; $l1++) {
+          j = $l1;
+          s = this.GetCells(j,i);
+          row.push(s);
+        };
+        Result.push(row);
+      };
+      return Result;
+    };
+    this.SetCellsArray = function (Value) {
+      var i = 0;
+      var j = 0;
+      var ja = null;
+      var jv = undefined;
+      if ((Value.length + this.RowOffset()) > this.FRowCount) this.SetRowCount(Value.length + this.RowOffset());
+      for (var $l = 0, $end = Value.length - 1; $l <= $end; $l++) {
+        i = $l;
+        ja = Value[i];
+        if (rtl.isExt(ja,Array)) {
+          if ((ja.length + this.ColOffset()) > this.FColCount) this.SetColCount(ja.length + this.ColOffset());
+          for (var $l1 = 0, $end1 = ja.length - 1; $l1 <= $end1; $l1++) {
+            j = $l1;
+            jv = ja[j];
+            this.SetCells(j + this.ColOffset(),i + this.RowOffset(),pas.JS.ToString(jv));
+          };
+        };
+      };
+    };
+    this.ColOffset = function () {
+      var Result = 0;
+      Result = 0;
+      return Result;
+    };
+    this.RowOffset = function () {
+      var Result = 0;
+      Result = 0;
+      return Result;
+    };
+    this.SetColCount = function (Value) {
+      var delta = 0;
+      if ((this.FColCount !== Value) && (Value >= 0)) {
+        delta = Value - this.FColCount;
+        this.FColCount = Value;
+        if (this.GetElementHandle() != null) {
+          this.ColCountChanged(delta);
+          this.GridChanged();
+        };
+      };
+    };
+    this.SetRowCount = function (Value) {
+      var delta = 0;
+      if ((this.FRowCount !== Value) && (Value >= 0)) {
+        delta = Value - this.FRowCount;
+        this.FRowCount = Value;
+        if (this.GetElementHandle() != null) {
+          this.RowCountChanged(delta);
+          this.GridChanged();
+        };
+      };
+    };
+    this.GridChanged = function () {
+    };
+    this.RowCountChanged = function (delta) {
+    };
+    this.ColCountChanged = function (delta) {
+    };
+    this.Clear = function () {
+    };
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+  });
+  this.TGridDrawingStyle = {"0": "gdsClassic", gdsClassic: 0, "1": "gdsThemed", gdsThemed: 1, "2": "gdsGradient", gdsGradient: 2};
+  this.$rtti.$Enum("TGridDrawingStyle",{minvalue: 0, maxvalue: 2, ordtype: 1, enumtype: this.TGridDrawingStyle});
+  this.$rtti.$MethodVar("TCellEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["ACol",rtl.longint],["ARow",rtl.longint]]), methodkind: 0});
+  this.$rtti.$MethodVar("TCellCheckEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["ACol",rtl.longint],["ARow",rtl.longint],["Checked",rtl.boolean]]), methodkind: 0});
+  this.$rtti.$MethodVar("TCellCanEditEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["ACol",rtl.longint],["ARow",rtl.longint],["CanEdit",rtl.boolean,1]]), methodkind: 0});
+  this.$rtti.$MethodVar("TSelectCellEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["ACol",rtl.longint],["ARow",rtl.longint],["CanSelect",rtl.boolean,1]]), methodkind: 0});
+  this.$rtti.$MethodVar("TColumnSizedEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["ACol",rtl.longint]]), methodkind: 0});
+  rtl.createClass(this,"TGridRange",pas.Classes.TPersistent,function () {
+    this.$init = function () {
+      pas.Classes.TPersistent.$init.call(this);
+      this.FMax = 0.0;
+      this.FMin = 0.0;
+      this.FStep = 0.0;
+    };
+    this.Create$1 = function () {
+      pas.System.TObject.Create.call(this);
+      this.FMin = 0;
+      this.FMax = 100;
+      this.FStep = 1;
+      return this;
+    };
+    this.Assign = function (Source) {
+      if ($mod.TGridRange.isPrototypeOf(Source)) {
+        this.FMax = rtl.as(Source,$mod.TGridRange).FMax;
+        this.FMin = rtl.as(Source,$mod.TGridRange).FMin;
+        this.FStep = rtl.as(Source,$mod.TGridRange).FStep;
+      };
+    };
+    var $r = this.$rtti;
+    $r.addMethod("Create$1",2,[]);
+    $r.addProperty("Min",0,rtl.double,"FMin","FMin",{Default: 0});
+    $r.addProperty("Max",0,rtl.double,"FMax","FMax",{Default: 100});
+    $r.addProperty("Step",0,rtl.double,"FStep","FStep",{Default: 1});
+  });
+  rtl.createClass(this,"TCustomStringGrid",this.TCustomGrid,function () {
+    this.$init = function () {
+      $mod.TCustomGrid.$init.call(this);
+      this.FReq = null;
+      this.FDataNode = "";
+      this.FOrigVal = "";
+      this.FGrid = null;
+      this.FFixedColor = 0;
+      this.FFixedColRow = null;
+      this.FFixedRow = null;
+      this.FFixedCol = null;
+      this.FNormalCells = null;
+      this.FDefaultColAlignment = 0;
+      this.FDefaultRowHeight = 0;
+      this.FDefaultColWidth = 0;
+      this.FColWidths = null;
+      this.FRowHeights = null;
+      this.FColAlignments = null;
+      this.FSelectedCell = null;
+      this.FEdit = null;
+      this.FFixedCols = 0;
+      this.FFixedRows = 0;
+      this.FEditMode = false;
+      this.FBlockFocus = false;
+      this.FOnSelectCell = null;
+      this.FOnTopLeftChanged = null;
+      this.FOptions = {};
+      this.FDelimiter = "\x00";
+      this.FLoadFixed = false;
+      this.FSelection = $mod.TGridRect.$new();
+      this.FStartCell = $mod.TGridCoord.$new();
+      this.FOnHttpRequestError = null;
+      this.FOnHttpRequestSuccess = null;
+      this.FOnGetCellClass = null;
+      this.FOnGetCellData = null;
+      this.FOnGetCellChildren = null;
+      this.FScrollBars = 0;
+      this.FSelMouseDown = false;
+      this.FStyleElements = {};
+      this.FDefaultDrawing = false;
+      this.FDragCursor = 0;
+      this.FDragKind = 0;
+      this.FGradientStartColor = 0;
+      this.FGradientEndColor = 0;
+      this.FEditCol = 0;
+      this.FEditRow = 0;
+      this.FEditType = 0;
+      this.FFixedFont = null;
+      this.FCtl3D$1 = false;
+      this.FParentCtl3D$1 = false;
+      this.FOnGetEditText = null;
+      this.FOnSetEditText = null;
+      this.FOnHttpRequest = null;
+      this.FOnCheckClick = null;
+      this.FOnFixedCellClick = null;
+      this.FOnValidateEdit = null;
+      this.FHandleEditBlurPtr = null;
+      this.FHandleEditKeypressPtr = null;
+      this.FHandleCheckClickPtr = null;
+      this.FHandleButtonClickPtr = null;
+      this.FHandleMouseDownPtr = null;
+      this.FHandleMouseMovePtr = null;
+      this.FHandleMouseUpPtr = null;
+      this.FHandleFocusPtr = null;
+      this.FHandleBlurPtr = null;
+      this.FHandleFixedClickPtr = null;
+      this.FHandleClickPtr = null;
+      this.FDrawingStyle = 0;
+      this.FOnCanEditCell = null;
+      this.FOnColumnSized = null;
+      this.FRows = null;
+      this.FRowsIndex = 0;
+      this.FOnGetCellEditor = null;
+      this.FCombo = null;
+      this.FMemo = null;
+      this.FMask = null;
+      this.FEditMask = "";
+      this.FComboBoxItems = null;
+      this.FRange = null;
+      this.FShowSelection = false;
+      this.FOnClickCell = null;
+      this.FElementTableClassName = "";
+      this.FGridLineColor = 0;
+      this.FSelectionTextColor = 0;
+      this.FSelectionColor = 0;
+      this.FWordWrap = false;
+      this.FOnButtonClick = null;
+      this.FSortIndex = 0;
+      this.FSortDirection = 0;
+      this.FOnSortClick = null;
+      this.FHasMergedCells = false;
+      this.FObjectRows = null;
+      this.FEditAdvance = false;
+      this.FEditControl = null;
+      this.FOrigID = "";
+      this.FOnSetEditControlValue = null;
+      this.FOnGetEditControlValue = null;
+      this.FOnDblClickCell = null;
+    };
+    this.$final = function () {
+      this.FReq = undefined;
+      this.FGrid = undefined;
+      this.FFixedColRow = undefined;
+      this.FFixedRow = undefined;
+      this.FFixedCol = undefined;
+      this.FNormalCells = undefined;
+      this.FColWidths = undefined;
+      this.FRowHeights = undefined;
+      this.FColAlignments = undefined;
+      this.FSelectedCell = undefined;
+      this.FEdit = undefined;
+      this.FOnSelectCell = undefined;
+      this.FOnTopLeftChanged = undefined;
+      this.FOptions = undefined;
+      this.FSelection = undefined;
+      this.FStartCell = undefined;
+      this.FOnHttpRequestError = undefined;
+      this.FOnHttpRequestSuccess = undefined;
+      this.FOnGetCellClass = undefined;
+      this.FOnGetCellData = undefined;
+      this.FOnGetCellChildren = undefined;
+      this.FStyleElements = undefined;
+      this.FFixedFont = undefined;
+      this.FOnGetEditText = undefined;
+      this.FOnSetEditText = undefined;
+      this.FOnHttpRequest = undefined;
+      this.FOnCheckClick = undefined;
+      this.FOnFixedCellClick = undefined;
+      this.FOnValidateEdit = undefined;
+      this.FOnCanEditCell = undefined;
+      this.FOnColumnSized = undefined;
+      this.FRows = undefined;
+      this.FOnGetCellEditor = undefined;
+      this.FCombo = undefined;
+      this.FMemo = undefined;
+      this.FMask = undefined;
+      this.FComboBoxItems = undefined;
+      this.FRange = undefined;
+      this.FOnClickCell = undefined;
+      this.FOnButtonClick = undefined;
+      this.FOnSortClick = undefined;
+      this.FObjectRows = undefined;
+      this.FEditControl = undefined;
+      this.FOnSetEditControlValue = undefined;
+      this.FOnGetEditControlValue = undefined;
+      this.FOnDblClickCell = undefined;
+      $mod.TCustomGrid.$final.call(this);
+    };
+    this.GetCells = function (ACol, ARow) {
+      var Result = "";
+      var td = null;
+      td = this.CellRealElement(ACol,ARow);
+      if (!(td != null)) {
+        Result = "";
+        return Result;
+      };
+      if (this.FWordWrap) {
+        if (td.firstChild != null) td = td.firstChild;
+      };
+      Result = td.textContent;
+      return Result;
+    };
+    this.SetCells = function (ACol, ARow, Value) {
+      var rc = 0;
+      var rr = 0;
+      var rh = 0;
+      var StrVal = "";
+      var cn = "";
+      var el = null;
+      if ((ARow < 0) || (ACol < 0)) return;
+      StrVal = Value;
+      if (pas.System.Pos("\r",Value) > 0) {
+        StrVal = pas.SysUtils.StringReplace(StrVal,"\r","<BR>",rtl.createSet(pas.SysUtils.TStringReplaceFlag.rfReplaceAll));
+        StrVal = pas.SysUtils.StringReplace(StrVal,"\n","<BR>",rtl.createSet(pas.SysUtils.TStringReplaceFlag.rfReplaceAll));
+      } else if (pas.System.Pos("\n",Value) > 0) {
+        StrVal = pas.SysUtils.StringReplace(StrVal,"\n","<BR>",rtl.createSet(pas.SysUtils.TStringReplaceFlag.rfReplaceAll));
+      };
+      if (this.FWordWrap) {
+        rh = this.GetRowHeights(ARow) - 2;
+        StrVal = '<DIV class="cell" style="height:' + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+            return rh;
+          }, set: function (v) {
+            rh = v;
+          }}) + "px;max-height:" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+            return rh;
+          }, set: function (v) {
+            rh = v;
+          }}) + 'px">' + StrVal + "</DIV>";
+      };
+      el = this.CellRealElement(ACol,ARow);
+      if (el != null) {
+        el.innerHTML = StrVal;
+        cn = "";
+        this.GetCellClassName(ACol,ARow,null,StrVal,{get: function () {
+            return cn;
+          }, set: function (v) {
+            cn = v;
+          }});
+        if (cn !== "") el.setAttribute("class",cn);
+      };
+      if (ARow === 0) this.EnableColResize();
+    };
+    this.SetFixedCols = function (Value) {
+      if (this.FFixedCols !== Value) {
+        this.FFixedCols = Value;
+        if (!this.IsUpdating()) this.ReRenderGrid();
+      };
+    };
+    this.SetFixedRows = function (Value) {
+      if (this.FFixedRows !== Value) {
+        this.FFixedRows = Value;
+        if (!this.IsUpdating()) this.ReRenderGrid();
+      };
+    };
+    this.SetColor = function (AValue) {
+      if (this.FColor !== AValue) {
+        this.FColor = AValue;
+        this.UpdateElement();
+      };
+    };
+    this.GetColWidths = function (ACol) {
+      var Result = 0;
+      if (ACol < this.FColWidths.GetCount()) {
+        Result = rtl.trunc(this.FColWidths.Get(ACol))}
+       else Result = this.FDefaultColWidth;
+      return Result;
+    };
+    this.GetRowHeights = function (ARow) {
+      var Result = 0;
+      if (ARow < this.FRowHeights.GetCount()) {
+        Result = rtl.trunc(this.FRowHeights.Get(ARow))}
+       else Result = this.FDefaultRowHeight;
+      return Result;
+    };
+    this.SetColWidths = function (ACol, Value) {
+      var fcw = 0;
+      var nw = 0;
+      var nwvis = 0;
+      var nwvisnoscroll = 0;
+      var LAutoSizeW = false;
+      while (this.FColWidths.GetCount() <= ACol) this.FColWidths.Add(this.FDefaultColWidth);
+      this.FColWidths.Put(ACol,Value);
+      if (this.IsUpdating()) return;
+      if (!(this.FGrid != null)) return;
+      LAutoSizeW = this.FWidthStyle === pas["WEBLib.Controls"].TSizeStyle.ssAuto;
+      nw = this.NormalColWidth();
+      nwvis = this.GetWidth() - this.FixedColWidth();
+      nwvisnoscroll = nwvis - pas["WEBLib.Controls"].GetScrollBarWidth();
+      if (ACol < this.FFixedCols) {
+        fcw = this.FixedColWidth();
+        var tr = this.FGrid.rows[0];
+              if (tr != undefined) {
+              var td = tr.cells[0];
+              if (td != undefined) {
+                td.style.width = fcw + "px";
+                if (td.firstChild != undefined) {
+                td.firstChild.style.width = fcw + "px"; }
+                }
+              }
+        
+              tr = this.FGrid.rows[1];
+              if (tr != undefined) {
+              td = tr.cells[0];
+              if (td != undefined) {
+                td.style.width = fcw + "px";
+                if (td.firstChild != undefined) {
+                td.firstChild.style.width = fcw + "px"; }
+                }
+        
+              tr = this.FFixedColRow.rows[0];
+              if (tr != undefined) {
+        
+              td = tr.cells[0];
+              if (td != undefined) {
+                td.style.width = fcw + "px";
+                }
+                }
+              }
+              tr = this.FFixedCol.rows[0];
+              if (tr != undefined) {
+        
+              td = tr.cells[0];
+              if (td != undefined) {
+                td.style.width = fcw + "px";
+                }
+              };
+      };
+      if (ACol >= this.FFixedCols) {
+        ACol = ACol - this.FFixedCols;
+        var tr = this.FFixedRow.rows[0];
+              if (tr != undefined) {
+                var td = tr.cells[ACol];
+                td.style.width = Value + "px";
+                td.style.maxwidth = Value + "px";
+        
+                if (this.FNormalCells.rows.length > 0)
+                {
+                var td = this.FNormalCells.rows[0].cells[ACol];
+                td.style.width = Value + "px";
+                td.style.maxwidth = Value + "px";
+                }
+              };
+      };
+      var tr = this.FGrid.rows[0];
+      if (tr != undefined) {
+        var td = tr.cells[1];
+        if ((td.firstChild != undefined) && (!LAutoSizeW)) {
+        td.firstChild.style.width = nwvisnoscroll + "px";
+        td.firstChild.firstChild.style.width = nw + "px";
+        }
+      }
+      tr = this.FGrid.rows[1];
+      if (tr != undefined) {
+        td = tr.cells[1];
+        if ((td.firstChild != undefined) && (!LAutoSizeW)) {
+        td.firstChild.style.width = nwvis + "px";
+        td.firstChild.firstChild.style.width = nw + "px";
+        }
+      };
+      this.UpdateGridSize();
+    };
+    this.SetRowHeights = function (ARow, Value) {
+      var frh = 0;
+      var rh = 0;
+      var fh = 0;
+      var nh = 0;
+      var nhvis = 0;
+      var nhvisnoscroll = 0;
+      while (this.FRowHeights.GetCount() <= ARow) this.FRowHeights.Add(this.FDefaultRowHeight);
+      this.FRowHeights.Put(ARow,Value);
+      if (this.IsUpdating()) return;
+      if (!(this.FGrid != null)) return;
+      fh = this.FixedRowHeight();
+      nh = this.NormalRowHeight();
+      nhvis = this.GetHeight() - this.FixedRowHeight();
+      nhvisnoscroll = nhvis - pas["WEBLib.Controls"].GetScrollBarHeight();
+      if (ARow < this.FFixedRows) {
+        frh = this.FixedRowHeight();
+        var tr = this.FGrid.rows[0];
+              if (tr != undefined) {
+                tr.style.height = frh + "px";
+                var td = tr.cells[0];
+                if (td != undefined) {
+                  var fc = td.firstChild;
+                  if (fc != undefined) {
+                    fc.style.height = frh + "px";
+                  }
+                  td = tr.cells[1];
+                  fc = td.firstChild;
+                  if (fc != undefined) {
+                    fc.style.height = frh + "px";
+                  }
+                  }
+                }
+        
+              tr = this.FFixedColRow.rows[0];
+              if (tr != undefined) {
+                 tr = tr.cells[0];
+                 if (tr != undefined) {
+                 tr.style.height = Value + "px";
+                 tr = this.FFixedRow.rows[ARow].cells[0];
+                 if (tr != undefined) {
+                 tr.style.height = Value + "px"; }
+                 }
+              };
+      };
+      if (ARow >= this.FFixedRows) {
+        ARow = ARow - this.FFixedRows;
+        rh = Value;
+        if (this.HasHorzScrollBar() && this.HasVertScrollBar() && (ARow === (this.FRowCount - 1))) rh = Value + this.FNormalCells.parentElement.scrollHeight;
+        var tr = this.FFixedCol.rows[ARow];
+              if (tr != undefined) {
+              tr.style.height = Value + "px";
+              var tr = this.FNormalCells.rows[ARow];
+        
+              if (tr != undefined) {
+              tr.style.height = rh + "px"; }
+              };
+      };
+      var td = this.FGrid.rows[1].cells[0];
+          if (td.firstChild) {
+          td.firstChild.style.height = nhvisnoscroll + "px";
+          td.firstChild.firstChild.style.height = nh + "px";
+          }
+      
+          td = this.FGrid.rows[1].cells[1];
+          if (td.firstChild) {
+          td.firstChild.style.height = nhvis + "px";
+          td.firstChild.firstChild.style.height = nh + "px";
+          };
+    };
+    this.SetDefaultColWidth = function (Value) {
+      var i = 0;
+      this.FDefaultColWidth = Value;
+      for (var $l = 0, $end = this.FColCount - 1; $l <= $end; $l++) {
+        i = $l;
+        this.SetColWidths(i,Value);
+      };
+    };
+    this.SetDefaultRowHeight = function (Value) {
+      var i = 0;
+      this.FDefaultRowHeight = Value;
+      for (var $l = 0, $end = this.FRowCount - 1; $l <= $end; $l++) {
+        i = $l;
+        this.SetRowHeights(i,Value);
+      };
+    };
+    this.GetCol = function () {
+      var Result = 0;
+      var res = 0;
+      res = -1;
+      if (this.FSelectedCell != null) {
+        res = this.FSelectedCell.cellIndex;
+        res = res + this.FFixedCols;
+      };
+      Result = res;
+      return Result;
+    };
+    this.GetRow = function () {
+      var Result = 0;
+      var res = 0;
+      res = -1;
+      if (this.FSelectedCell != null) {
+        res = this.FSelectedCell.parentElement.rowIndex;
+        res = res + this.FFixedRows;
+      };
+      Result = res;
+      return Result;
+    };
+    this.SetCol = function (Value) {
+      var r = 0;
+      var c = 0;
+      var td = null;
+      if ((Value < this.FColCount) && (Value >= this.FFixedCols)) {
+        if (this.FSelectedCell != null) {
+          this.RemoveSelection(this.FSelectedCell);
+        };
+        c = Value - this.FFixedCols;
+        r = this.GetRow() - this.FFixedRows;
+        if (r < 0) r = 0;
+        var tr = this.FNormalCells.rows[r];
+        td = tr.cells[c];
+        this.AddSelection(td);
+        this.FSelectedCell = td;
+        var pardiv = this.FNormalCells.parentElement.parentElement;
+        
+               if (td.offsetLeft < pardiv.scrollLeft) {
+                 pardiv.scrollLeft = td.offsetLeft;
+               }
+        
+               if (td.offsetLeft + td.offsetWidth - pardiv.scrollLeft > pardiv.offsetWidth) {
+                 pardiv.scrollLeft = pardiv.scrollLeft + td.offsetWidth;
+               };
+      };
+    };
+    this.SetRow = function (Value) {
+      var r = 0;
+      var c = 0;
+      var sh = 0;
+      var rselect = false;
+      var tr = null;
+      var td = null;
+      if ((Value < this.FRowCount) && (Value >= this.FFixedRows)) {
+        rselect = $mod.TGridOption.goRowSelect in this.FOptions;
+        if ((this.FSelectedCell != null) && rselect) {
+          tr = this.FSelectedCell.parentElement;
+          this.RemoveSelection(tr);
+        };
+        if (this.FSelectedCell != null) {
+          this.RemoveSelection(this.FSelectedCell);
+        };
+        c = this.GetCol() - this.FFixedCols;
+        if (c < 0) c = 0;
+        r = Value - this.FFixedRows;
+        if ((this.FixedColWidth() + this.NormalColWidth()) < this.GetWidth()) {
+          sh = 0}
+         else sh = pas["WEBLib.Controls"].GetScrollBarHeight();
+        tr = this.FNormalCells.rows[r];
+        td = tr.cells[c];
+        if (rselect) {
+          if (!pas.JS.isUndefined(this.FSelectedCell)) this.RemoveSelection(this.FSelectedCell);
+          this.AddSelection(tr);
+          this.FSelectedCell = td;
+        } else {
+          this.FSelectedCell = td;
+          this.AddSelection(this.FSelectedCell);
+        };
+        var pardiv = this.FNormalCells.parentElement.parentElement;
+        
+              if (td.offsetTop < pardiv.scrollTop) {
+                pardiv.scrollTop = td.offsetTop;
+              }
+        
+              if (td.offsetHeight>0) {
+                while (td.offsetTop + td.offsetHeight - pardiv.scrollTop > pardiv.offsetHeight - sh)  {
+                  pardiv.scrollTop = pardiv.scrollTop + td.offsetHeight;
+                }
+              };
+      };
+    };
+    this.GetCellElements = function (ACol, ARow) {
+      var Result = null;
+      Result = this.CellRealElement(ACol,ARow);
+      return Result;
+    };
+    this.GetCheckElement = function (ACol, ARow) {
+      var Result = null;
+      var el = null;
+      Result = null;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetCellElements(ACol,ARow).firstChild;
+        if ((el != null) && rtl.isExt(el,Element)) {
+          if (el.hasAttribute("type") && (pas.SysUtils.UpperCase(el.getAttribute("type")) === "CHECKBOX")) {
+            Result = el;
+          };
+        };
+      };
+      return Result;
+    };
+    this.GetCanvasElement = function (ACol, ARow) {
+      var Result = null;
+      var el = null;
+      Result = null;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetCellElements(ACol,ARow).firstChild;
+        if ((el != null) && rtl.isExt(el,Element)) {
+          if (pas.SysUtils.UpperCase(el.tagName) === "CANVAS") {
+            Result = el;
+          };
+        };
+      };
+      return Result;
+    };
+    this.GetButtonElement = function (ACol, ARow) {
+      var Result = null;
+      var el = null;
+      Result = null;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetCellElements(ACol,ARow).firstChild;
+        if ((el != null) && rtl.isExt(el,Element)) {
+          if (pas.SysUtils.UpperCase(el.tagName) === "BUTTON") {
+            Result = el;
+          };
+        };
+      };
+      return Result;
+    };
+    this.GetProgressElement = function (ACol, ARow) {
+      var Result = null;
+      var el = null;
+      Result = null;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetCellElements(ACol,ARow).firstChild;
+        if ((el != null) && rtl.isExt(el,Element)) {
+          if (pas.SysUtils.UpperCase(el.tagName) === "PROGRESS") {
+            Result = el;
+          };
+        };
+      };
+      return Result;
+    };
+    this.GetSelection = function () {
+      var Result = $mod.TGridRect.$new();
+      Result.$assign(this.FSelection);
+      return Result;
+    };
+    this.SetSelection = function (Value) {
+      var c = 0;
+      var r = 0;
+      var rc = 0;
+      var rr = 0;
+      var sel = false;
+      var left = 0;
+      var right = 0;
+      var top = 0;
+      var bottom = 0;
+      var tr = null;
+      var td = null;
+      this.FSelection.$assign(Value);
+      left = Value.Left;
+      right = Value.Right;
+      if (Value.Left > Value.Right) {
+        left = Value.Right;
+        right = Value.Left;
+      };
+      top = Value.Top;
+      bottom = Value.Bottom;
+      if (Value.Top > Value.Bottom) {
+        top = Value.Bottom;
+        bottom = Value.Top;
+      };
+      for (var $l = this.FFixedRows, $end = this.FRowCount - 1; $l <= $end; $l++) {
+        r = $l;
+        if ($mod.TGridOption.goRowSelect in this.FOptions) {
+          rr = r - this.FFixedRows;
+          sel = (r >= top) && (r <= bottom);
+          if (sel) {
+            tr = this.FNormalCells.rows[rr];
+            this.AddSelection(tr);
+          } else {
+            tr = this.FNormalCells.rows[rr];
+            this.RemoveSelection(tr);
+          };
+        } else for (var $l1 = this.FFixedCols, $end1 = this.FColCount - 1; $l1 <= $end1; $l1++) {
+          c = $l1;
+          rc = c - this.FFixedCols;
+          rr = r - this.FFixedRows;
+          sel = (c >= left) && (c <= right) && (r >= top) && (r <= bottom);
+          if (sel) {
+            td = this.FNormalCells.rows[rr].cells[rc];
+            if (td != null) this.AddSelection(td);
+          } else {
+            td = this.FNormalCells.rows[rr].cells[rc];
+            if (td != null) this.RemoveSelection(td);
+          };
+        };
+      };
+    };
+    this.GetLeftCol = function () {
+      var Result = 0;
+      var i = 0;
+      var w = 0;
+      var l = 0;
+      Result = this.FFixedCols;
+      if (this.FNormalCells != null) {
+        l = this.FNormalCells.parentElement.parentElement.scrollLeft;
+        w = 0;
+        for (var $l = this.FFixedCols, $end = this.FColCount - 1; $l <= $end; $l++) {
+          i = $l;
+          if (l <= w) {
+            Result = i;
+            break;
+          };
+          w = (w + this.GetColWidths(i) + 1) - 0;
+        };
+      };
+      return Result;
+    };
+    this.GetTopRow = function () {
+      var Result = 0;
+      var pixVal = 0;
+      Result = this.FFixedRows;
+      if ((this.FNormalCells != null) && (pixVal >= 0)) {
+        pixVal = this.FNormalCells.parentElement.parentElement.scrollTop;
+        Result = this.FFixedRows + rtl.trunc(pixVal / this.FDefaultRowHeight);
+      };
+      return Result;
+    };
+    this.SetLeftCol = function (Value) {
+      var i = 0;
+      var w = 0;
+      w = 0;
+      for (var $l = this.FFixedCols, $end = Value - 1; $l <= $end; $l++) {
+        i = $l;
+        w = (w + this.GetColWidths(i) + 1) - 0;
+      };
+      if (this.FNormalCells != null) {
+        this.FNormalCells.parentElement.parentElement.scrollLeft = w;
+        if (this.FFixedCols > 0) this.FFixedCol.parentElement.parentElement.scrollLeft = w;
+      };
+    };
+    this.SetTopRow = function (Value) {
+      var pixVal = 0;
+      pixVal = (Value - this.FFixedRows) * this.FDefaultRowHeight;
+      if ((this.FNormalCells != null) && (pixVal >= 0)) {
+        this.FNormalCells.parentElement.parentElement.scrollTop = pixVal;
+        if (this.FFixedCols > 0) this.FFixedCol.parentElement.parentElement.scrollTop = pixVal;
+      };
+    };
+    this.SetFixedColor = function (Value) {
+      if (this.FFixedColor !== Value) {
+        this.FFixedColor = Value;
+        this.UpdateElementVisual();
+      };
+    };
+    this.SetFixedTextColor = function (Value) {
+      if (this.FFixedFont.FColor !== Value) {
+        this.FFixedFont.SetColor(Value);
+        this.UpdateElementVisual();
+      };
+    };
+    this.GetFixedTextColor = function () {
+      var Result = 0;
+      Result = this.FFixedFont.FColor;
+      return Result;
+    };
+    this.GetVisibleColCount = function () {
+      var Result = 0;
+      var i = 0;
+      var el = null;
+      var cr = null;
+      var gr = null;
+      i = this.GetLeftCol();
+      gr = this.GetElementHandle().getBoundingClientRect();
+      while (i < this.FColCount) {
+        el = this.GetCellElements(i,this.FFixedRows);
+        cr = el.getBoundingClientRect();
+        if (cr.right > gr.right) break;
+        i += 1;
+      };
+      Result = i - this.GetLeftCol();
+      return Result;
+    };
+    this.GetVisibleRowCount = function () {
+      var Result = 0;
+      var i = 0;
+      var el = null;
+      var cr = null;
+      var gr = null;
+      i = this.GetTopRow();
+      gr = this.GetElementHandle().getBoundingClientRect();
+      while (i < this.FRowCount) {
+        el = this.GetCellElements(this.FFixedCols,i);
+        cr = el.getBoundingClientRect();
+        if (cr.bottom > gr.bottom) break;
+        i += 1;
+      };
+      Result = i - this.GetTopRow();
+      return Result;
+    };
+    this.GetRows = function (Index) {
+      var Result = null;
+      var i = 0;
+      if ((Index >= 0) && (Index < this.FRowCount)) {
+        this.FRowsIndex = Index;
+        this.FRows.Clear();
+        for (var $l = 0, $end = this.FColCount - 1; $l <= $end; $l++) {
+          i = $l;
+          this.FRows.Add(this.GetCells(i,Index));
+        };
+        Result = this.FRows;
+      } else throw pas.SysUtils.Exception.$create("Create$1",["Invalid row index"]);
+      return Result;
+    };
+    this.SetRows = function (Index, Value) {
+      var i = 0;
+      if ((Index >= 0) && (Index < this.FRowCount)) {
+        for (var $l = 0, $end = this.FColCount - 1; $l <= $end; $l++) {
+          i = $l;
+          if (i < Value.GetCount()) this.SetCells(i,Index,Value.Get(i));
+        };
+      } else throw pas.SysUtils.Exception.$create("Create$1",["Invalid row index"]);
+    };
+    this.RowsChanged = function (Sender) {
+      this.SetRows(this.FRowsIndex,this.FRows);
+    };
+    this.GetCheckState = function (ACol, ARow) {
+      var Result = false;
+      var el = null;
+      var res = false;
+      Result = false;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetCheckElement(ACol,ARow);
+        if (el != null) {
+          res = el.checked;
+          Result = res;
+        };
+      };
+      return Result;
+    };
+    this.SetCheckState = function (ACol, ARow, Value) {
+      var el = null;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetCheckElement(ACol,ARow);
+        el.checked = Value;
+      };
+    };
+    this.GetCheckEnabled = function (ACol, ARow) {
+      var Result = false;
+      var el = null;
+      var res = false;
+      Result = false;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetCheckElement(ACol,ARow);
+        if (el != null) {
+          res = el.disabled;
+          Result = !res;
+        };
+      };
+      return Result;
+    };
+    this.SetCheckEnabled = function (ACol, ARow, Value) {
+      var el = null;
+      var v = false;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        v = !Value;
+        el = this.GetCheckElement(ACol,ARow);
+        el.disabled = v;
+      };
+    };
+    this.SetRange = function (Value) {
+      this.FRange.Assign(Value);
+    };
+    this.SetElementTableClassName = function (Value) {
+      if (this.FElementTableClassName !== Value) {
+        this.FElementTableClassName = Value;
+        if (!this.IsUpdating()) this.ReRenderGrid();
+      };
+    };
+    this.SetGridLineColor = function (Value) {
+      if (this.FGridLineColor !== Value) {
+        this.FGridLineColor = Value;
+        this.UpdateElement();
+      };
+    };
+    this.SetSelectionColor = function (Value) {
+      if (this.FSelectionColor !== Value) {
+        this.FSelectionColor = Value;
+        this.UpdateElement();
+      };
+    };
+    this.SetSelectionTextColor = function (Value) {
+      if (this.FSelectionTextColor !== Value) {
+        this.FSelectionTextColor = Value;
+        this.UpdateElement();
+      };
+    };
+    this.GetColAlignments = function (ACol) {
+      var Result = 0;
+      if (ACol < this.FColAlignments.GetCount()) {
+        Result = this.FColAlignments.Get(ACol)}
+       else Result = this.FDefaultColAlignment;
+      return Result;
+    };
+    this.SetColAlignments = function (ACol, Value) {
+      while (this.FColAlignments.GetCount() <= ACol) this.FColAlignments.Add(pas.Classes.TAlignment.taLeftJustify);
+      this.FColAlignments.Put(ACol,Value);
+      this.UpdateGridAlignment();
+    };
+    this.SetAlignAttr = function (AAlign, AElement) {
+      var $tmp = AAlign;
+      if ($tmp === pas.Classes.TAlignment.taLeftJustify) {
+        AElement.removeAttribute("align")}
+       else if ($tmp === pas.Classes.TAlignment.taCenter) {
+        AElement.setAttribute("align","center")}
+       else if ($tmp === pas.Classes.TAlignment.taRightJustify) AElement.setAttribute("align","right");
+    };
+    this.SetSortIndex = function (Value) {
+      var i = 0;
+      this.FSortIndex = Value;
+      for (var $l = 0, $end = this.FColCount - 1; $l <= $end; $l++) {
+        i = $l;
+        this.SelectSortIndicator(i,0,i === this.FSortIndex);
+      };
+    };
+    this.SetDefaultColAlignment = function (Value) {
+      if (this.FDefaultColAlignment !== Value) {
+        this.FDefaultColAlignment = Value;
+        if (!(pas.Classes.TComponentStateItem.csLoading in this.FComponentState)) this.ReRenderGrid();
+      };
+    };
+    this.GetObjects = function (ACol, ARow) {
+      var Result = null;
+      var LObjr = null;
+      Result = null;
+      if (this.FObjectRows.GetCount() > ARow) {
+        LObjr = rtl.getObject(this.FObjectRows.Get(ARow));
+        if (LObjr.GetCount() > ACol) Result = rtl.getObject(LObjr.Get(ACol));
+      };
+      return Result;
+    };
+    this.SetObjects = function (ACol, ARow, Value) {
+      var LObjr = null;
+      while (this.FObjectRows.GetCount() <= ARow) {
+        LObjr = pas.Classes.TList.$create("Create$1");
+        this.FObjectRows.Add(LObjr);
+      };
+      LObjr = rtl.getObject(this.FObjectRows.Get(ARow));
+      while (LObjr.GetCount() <= ACol) {
+        LObjr.Add(null);
+      };
+      LObjr.Put(ACol,Value);
+    };
+    this.SetFixedFont = function (Value) {
+      this.FFixedFont.Assign(Value);
+    };
+    this.GetDataRowCount = function () {
+      var Result = 0;
+      Result = this.FRowCount - this.FFixedRows;
+      return Result;
+    };
+    this.ClearData = function () {
+      this.Clear();
+      this.SetRowCount(this.FFixedRows + 5);
+      this.SetColCount(this.FFixedCols + 5);
+    };
+    this.SetDataColumnCount = function (AValue) {
+      this.SetColCount(this.FFixedCols + AValue);
+    };
+    this.SetDataRowCount = function (AValue) {
+      this.SetRowCount(this.FFixedRows + AValue);
+    };
+    this.SetDataValue = function (AColumn, ARow, AValue) {
+      this.SetCells(AColumn + this.FFixedCols,ARow + this.FFixedRows,AValue);
+    };
+    this.SetDataHeader = function (AColumn, AValue) {
+      if (this.FFixedRows > 0) this.SetCells(AColumn + this.FFixedCols,this.FFixedRows - 1,AValue);
+    };
+    this.DataBeginUpdate = function () {
+    };
+    this.DataEndUpdate = function () {
+    };
+    this.DataInsertRow = function (AInsertPosition) {
+      this.InsertRow(AInsertPosition);
+    };
+    this.FontChanged = function () {
+      pas["WEBLib.Controls"].TControl.FontChanged.call(this);
+      this.UpdateElement();
+    };
+    this.UnbindEvents = function () {
+      pas["WEBLib.Controls"].TControl.UnbindEvents.call(this);
+      if (this.FNormalCells != null) {
+        this.FNormalCells.removeEventListener("mousedown",this.FHandleMouseDownPtr);
+        this.FNormalCells.removeEventListener("mouseup",this.FHandleMouseUpPtr);
+        this.FNormalCells.removeEventListener("mousemove",this.FHandleMouseMovePtr);
+        this.FNormalCells.removeEventListener("click",this.FHandleClickPtr);
+      };
+      if (this.FFixedCol != null) this.FFixedCol.removeEventListener("click",this.FHandleFixedClickPtr);
+      if (this.FFixedRow != null) this.FFixedRow.removeEventListener("click",this.FHandleFixedClickPtr);
+      if (this.FFixedColRow != null) this.FFixedColRow.removeEventListener("click",this.FHandleFixedClickPtr);
+    };
+    this.FixedFontChanged = function (Sender) {
+      this.$class.AddInstanceStyle$1(this.StylePrefix() + this.FOrigID,this.GetGridCSS(this.FOrigID + "tbl"));
+      this.UpdateElementVisual();
+    };
+    this.StylePrefix = function () {
+      var Result = "";
+      var frm = null;
+      Result = "";
+      frm = pas["WEBLib.Forms"].GetParentForm(this);
+      if (frm != null) Result = frm.$classname;
+      return Result;
+    };
+    this.ColOffset = function () {
+      var Result = 0;
+      Result = this.FFixedCols;
+      return Result;
+    };
+    this.RowOffset = function () {
+      var Result = 0;
+      Result = this.FFixedRows;
+      return Result;
+    };
+    this.CellColSpan = function (ACol, ARow) {
+      var Result = 0;
+      var el = null;
+      var s = "";
+      var e = 0;
+      Result = 0;
+      el = this.CellRealElement(ACol,ARow);
+      if (el != null) {
+        s = el.getAttribute("colspan");
+        pas.System.val$6(s,{get: function () {
+            return Result;
+          }, set: function (v) {
+            Result = v;
+          }},{get: function () {
+            return e;
+          }, set: function (v) {
+            e = v;
+          }});
+      };
+      return Result;
+    };
+    this.CellRowSpan = function (ACol, ARow) {
+      var Result = 0;
+      var el = null;
+      var s = "";
+      var e = 0;
+      Result = 0;
+      el = this.CellRealElement(ACol,ARow);
+      if (el != null) {
+        s = el.getAttribute("rowspan");
+        pas.System.val$6(s,{get: function () {
+            return Result;
+          }, set: function (v) {
+            Result = v;
+          }},{get: function () {
+            return e;
+          }, set: function (v) {
+            e = v;
+          }});
+      };
+      return Result;
+    };
+    this.CellRealElement = function (ACol, ARow) {
+      var Result = null;
+      var el = null;
+      var t = null;
+      var c = 0;
+      var r = 0;
+      if ((ACol < this.FFixedCols) && (ARow < this.FFixedRows)) {
+        t = this.FFixedColRow;
+        c = ACol;
+        r = ARow;
+      } else if ((ACol < this.FFixedCols) && (ARow >= this.FFixedRows)) {
+        t = this.FFixedCol;
+        c = ACol;
+        r = ARow - this.FFixedRows;
+      } else if ((ACol >= this.FFixedCols) && (ARow < this.FFixedRows)) {
+        t = this.FFixedRow;
+        c = ACol - this.FFixedCols;
+        r = ARow;
+      } else {
+        t = this.FNormalCells;
+        c = ACol - this.FFixedCols;
+        r = ARow - this.FFixedRows;
+      };
+      el = null;
+      if (this.FHasMergedCells) {
+        var getTableCell = function (table, x, y) {
+        var m = [], row, cell, xx, tx, ty, xxx, yyy;
+        for(yyy = 0; yyy < table.rows.length; yyy++) {
+            row = table.rows[yyy];
+            for(xxx = 0; xxx < row.cells.length; xxx++) {
+                cell = row.cells[xxx];
+                xx = xxx;
+                for(; m[yyy] && m[yyy][xx]; ++xx) {}
+                for(tx = xx; tx < xx + cell.colSpan; ++tx) {
+                    for(ty = yyy; ty < yyy + cell.rowSpan; ++ty) {
+                        if (!m[ty])
+                            m[ty] = [];
+                        m[ty][tx] = true;
+                    }
+                }
+                if (xx <= x && x < xx + cell.colSpan && yyy <= y && y < yyy + cell.rowSpan)
+                    return cell;
+            }
+          }
+        return null;
+        };
+        el = getTableCell(t, c, r);
+      } else {
+        el = t.rows[r].cells[c];
+      };
+      Result = el;
+      return Result;
+    };
+    this.CellRealCoords = function (AElement, ACol, ARow) {
+      var allcells = [];
+      var el = null;
+      var i = 0;
+      var j = 0;
+      ACol.set(-1);
+      ARow.set(-1);
+      allcells = rtl.arraySetLength(allcells,null,this.FColCount,this.FRowCount);
+      for (var $l = 0, $end = this.FColCount - 1; $l <= $end; $l++) {
+        i = $l;
+        for (var $l1 = 0, $end1 = this.FRowCount - 1; $l1 <= $end1; $l1++) {
+          j = $l1;
+          allcells[i][j] = this.CellRealElement(i,j);
+        };
+      };
+      for (var $l2 = 0, $end2 = this.FColCount - 1; $l2 <= $end2; $l2++) {
+        i = $l2;
+        for (var $l3 = 0, $end3 = this.FRowCount - 1; $l3 <= $end3; $l3++) {
+          j = $l3;
+          if (allcells[i][j] === AElement) {
+            ACol.set(i - this.FFixedCols);
+            ARow.set(j - this.FFixedRows);
+            break;
+          };
+        };
+      };
+    };
+    this.GetDirectCellElements = function (ACol, ARow) {
+      var Result = null;
+      var rc = 0;
+      var rr = 0;
+      var res = null;
+      res = null;
+      if ((ACol < this.FFixedCols) && (ARow >= this.FFixedRows)) {
+        rr = ARow - this.FFixedRows;
+        rc = ACol;
+        res = this.FFixedCol.rows[rr].cells[rc];
+      };
+      if ((ARow < this.FFixedRows) && (ACol >= this.FFixedCols)) {
+        rc = ACol - this.FFixedCols;
+        rr = ARow;
+        res = this.FFixedRow.rows[rr].cells[rc];
+      };
+      if ((ACol < this.FFixedCols) && (ARow < this.FFixedRows)) {
+        rr = ARow;
+        rc = ACol;
+        res = this.FFixedColRow.rows[rr].cells[rc];
+      };
+      if ((ACol >= this.FFixedCols) && (ARow >= this.FFixedRows) && (ARow < this.FRowCount) && (ACol < this.FColCount)) {
+        rc = ACol - this.FFixedCols;
+        rr = ARow - this.FFixedRows;
+        res = this.FNormalCells.rows[rr].cells[rc];
+      };
+      Result = res;
+      return Result;
+    };
+    this.MouseMove = function (Shift, X, Y) {
+      pas["WEBLib.Controls"].TControl.MouseMove.apply(this,arguments);
+      if ((this.FStartCell.X !== -1) && (this.FStartCell.Y !== -1)) {
+        if (Y > (this.GetHeight() - 10)) {
+          this.SetTopRow(this.GetTopRow() + 1);
+          this.SetSelection($mod.GridRect(this.GetSelection().Left,Math.min(this.GetSelection().Top,this.GetSelection().Bottom),this.GetSelection().Right,Math.max(this.GetSelection().Top,this.GetSelection().Bottom) + 1));
+        };
+        if ((this.FFixedRows > 0) && (Y < this.GetRowHeights(0)) && (this.GetTopRow() > this.FFixedRows)) {
+          this.SetTopRow(this.GetTopRow() - 1);
+          this.SetSelection($mod.GridRect(this.GetSelection().Left,Math.min(this.GetSelection().Top,this.GetSelection().Bottom) - 1,this.GetSelection().Right,Math.max(this.GetSelection().Top,this.GetSelection().Bottom)));
+        };
+        if (X > (this.GetWidth() - 10)) {
+          this.SetLeftCol(this.GetLeftCol() + 1);
+          this.SetSelection($mod.GridRect(Math.min(this.GetSelection().Left,this.GetSelection().Right),this.GetSelection().Top,Math.max(this.GetSelection().Left,this.GetSelection().Right) + 1,this.GetSelection().Bottom));
+        };
+        if ((this.FFixedCols > 0) && (X < this.GetColWidths(0)) && (this.GetLeftCol() > this.FFixedCols)) {
+          this.SetLeftCol(this.GetLeftCol() - 1);
+          this.SetSelection($mod.GridRect(Math.min(this.GetSelection().Left,this.GetSelection().Right) - 1,this.GetSelection().Top,Math.max(this.GetSelection().Left,this.GetSelection().Right),this.GetSelection().Bottom));
+        };
+      };
+    };
+    this.HandleClick = function (Event) {
+      var Result = false;
+      var rindex = 0;
+      var cindex = 0;
+      var rselect = false;
+      var tr = null;
+      var tgt = null;
+      var tag = "";
+      var starttag = "";
+      Result = true;
+      if (!this.FEnabled) return Result;
+      rselect = $mod.TGridOption.goRowSelect in this.FOptions;
+      rindex = -1;
+      cindex = -1;
+      tgt = Event.target;
+      starttag = tgt.tagName.toLowerCase();
+      if ((starttag === "tr") || (starttag === "tbody")) return Result;
+      do {
+        tag = tgt.tagName.toLowerCase();
+        if (tag != 'td')
+        {
+          tgt = tgt.parentElement;
+        };
+      } while (!((tag === "td") || (tgt === null)));
+      if (tag == 'td')
+      {
+        cindex = tgt.cellIndex;
+        var tr = tgt.parentElement;
+        rindex = tr.rowIndex;
+      };
+      if ((tag === "td") && this.FHasMergedCells) {
+        this.CellRealCoords(tgt,{get: function () {
+            return cindex;
+          }, set: function (v) {
+            cindex = v;
+          }},{get: function () {
+            return rindex;
+          }, set: function (v) {
+            rindex = v;
+          }});
+      };
+      if ((cindex === -1) || (rindex === -1)) return Result;
+      if (!this.CanSelect(cindex + this.FFixedCols,rindex + this.FFixedRows)) {
+        return Result;
+      };
+      this.SelectCell(cindex + this.FFixedCols,rindex + this.FFixedRows);
+      if ((this.FOnClickCell != null) && this.FEnabled) {
+        this.FOnClickCell(this,cindex + this.FFixedCols,rindex + this.FFixedRows);
+      };
+      if (this.FSelectedCell != null) {
+        if (this.FSelMouseDown) {
+          if (($mod.TGridOption.goEditing in this.FOptions) && this.CanEditCell(this.GetCol(),this.GetRow())) {
+            this.ShowEdit();
+            return Result;
+          };
+        } else {
+          if (rselect) {
+            tr = this.FSelectedCell.parentElement;
+            this.RemoveSelection(tr);
+          } else this.RemoveSelection(this.FSelectedCell);
+        };
+      };
+      if (tag === "td") {
+        tr = tgt.parentElement;
+        this.FSelectedCell = tgt;
+        if (rselect) {
+          this.AddSelection(tr)}
+         else this.AddSelection(tgt);
+      };
+      return Result;
+    };
+    this.HandleFixedClick = function (Event) {
+      var Result = false;
+      var rindex = 0;
+      var cindex = 0;
+      var rselect = false;
+      var tbl = null;
+      var ACol = 0;
+      var ARow = 0;
+      var tgt = null;
+      var tag = "";
+      var sd = 0;
+      Result = true;
+      rselect = $mod.TGridOption.goRowSelect in this.FOptions;
+      rindex = -1;
+      cindex = -1;
+      sd = $mod.TGridSortIndicator.siNone;
+      tgt = Event.target;
+      if (tgt.tagName === "SPAN") {
+        if (tgt.getAttribute("sort") === "up") {
+          sd = $mod.TGridSortIndicator.siAscending;
+        } else if (tgt.getAttribute("sort") === "dn") {
+          sd = $mod.TGridSortIndicator.siDescending;
+        };
+      };
+      do {
+        tag = tgt.tagName.toLowerCase();
+        if (tag != 'td')
+        {
+          tgt = tgt.parentElement;
+        };
+      } while (!((tag === "td") || (tgt === null)));
+      if (tag == 'td')
+      {
+        cindex = tgt.cellIndex;
+        var tr = tgt.parentElement;
+        rindex = tr.rowIndex;
+        tbl = tr.parentElement;
+        tbl = tbl.parentElement;
+      };
+      if ((cindex === -1) || (rindex === -1)) return Result;
+      ACol = cindex;
+      ARow = rindex;
+      if (tbl === this.FFixedCol) {
+        ARow = rindex + this.FFixedRows;
+      };
+      if (tbl === this.FFixedRow) {
+        ACol = cindex + this.FFixedCols;
+      };
+      if (sd === $mod.TGridSortIndicator.siAscending) {
+        this.DoSortClick(ACol,ARow,$mod.TGridSortIndicator.siDescending);
+        this.SetSortIndicator(ACol,ARow,$mod.TGridSortIndicator.siDescending);
+      } else if (sd === $mod.TGridSortIndicator.siDescending) {
+        this.DoSortClick(ACol,ARow,$mod.TGridSortIndicator.siAscending);
+        this.SetSortIndicator(ACol,ARow,$mod.TGridSortIndicator.siAscending);
+      };
+      if (this.FOnFixedCellClick != null) this.FOnFixedCellClick(this,ACol,ARow);
+      return Result;
+    };
+    this.HandleMouseDown = function (Event) {
+      var Result = false;
+      var rindex = 0;
+      var cindex = 0;
+      var l = 0.0;
+      var t = 0.0;
+      var ss = {};
+      var mb = 0;
+      var el = null;
+      var ww = false;
+      Result = true;
+      if (!this.FEnabled) return Result;
+      mb = this.GetMouseEventButton(Event);
+      if (mb !== pas["WEBLib.Controls"].TMouseButton.mbLeft) return Result;
+      rindex = -1;
+      cindex = -1;
+      el = Event.target;
+      ww = this.FWordWrap;
+      if (ww && (pas.SysUtils.LowerCase(el.tagName) === "div")) {
+        el = el.parentElement;
+      };
+      if (el.tagName.toLowerCase() == 'td')
+      {
+        cindex = el.cellIndex;
+        var tr = el.parentElement;
+        rindex = tr.rowIndex;
+      };
+      this.FSelMouseDown = el === this.FSelectedCell;
+      if ((this.FSelectedCell != null) && !this.FSelMouseDown && (cindex !== -1) && (rindex !== -1)) {
+        this.HideEdit(false);
+      };
+      if (!this.CanSelect(cindex + this.FFixedCols,rindex + this.FFixedRows)) return Result;
+      if ((cindex >= 0) && (rindex >= 0)) {
+        if ($mod.TGridOption.goRowSelect in this.FOptions) {
+          this.SetSelection($mod.GridRect(this.FFixedCols,rindex + this.FFixedRows,this.FColCount - 1,rindex + this.FFixedRows))}
+         else this.SetSelection($mod.GridRect(cindex + this.FFixedCols,rindex + this.FFixedRows,cindex + this.FFixedCols,rindex + this.FFixedRows));
+        if ($mod.TGridOption.goRangeSelect in this.FOptions) {
+          this.FStartCell.X = cindex + this.FFixedCols;
+          this.FStartCell.Y = rindex + this.FFixedRows;
+        } else {
+          this.FStartCell.X = -1;
+          this.FStartCell.Y = -1;
+        };
+      };
+      this.XYToClient(Event.clientX,Event.clientY,{get: function () {
+          return l;
+        }, set: function (v) {
+          l = v;
+        }},{get: function () {
+          return t;
+        }, set: function (v) {
+          t = v;
+        }});
+      ss = rtl.refSet(this.GetMouseEventShiftState(Event));
+      this.MouseDown(mb,rtl.refSet(ss),pas.System.Trunc(l),pas.System.Trunc(t));
+      return Result;
+    };
+    this.HandleMouseMove = function (Event) {
+      var Result = false;
+      var rindex = 0;
+      var cindex = 0;
+      var l = 0.0;
+      var t = 0.0;
+      var ss = {};
+      rindex = -1;
+      cindex = -1;
+      if (Event.target.tagName.toLowerCase() == 'td')
+      {
+        cindex = Event.target.cellIndex;
+        var tr = Event.target.parentElement;
+        rindex = tr.rowIndex;
+      };
+      if ((cindex >= 0) && (rindex >= 0) && (this.FStartCell.X >= 0) && (this.FStartCell.Y >= 0)) this.SetSelection($mod.GridRect(this.FStartCell.X,this.FStartCell.Y,cindex + this.FFixedCols,rindex + this.FFixedRows));
+      Result = true;
+      this.XYToClient(Event.clientX,Event.clientY,{get: function () {
+          return l;
+        }, set: function (v) {
+          l = v;
+        }},{get: function () {
+          return t;
+        }, set: function (v) {
+          t = v;
+        }});
+      ss = rtl.refSet(this.GetMouseEventShiftState(Event));
+      this.MouseMove(rtl.refSet(ss),pas.System.Trunc(l),pas.System.Trunc(t));
+      return Result;
+    };
+    this.HandleMouseUp = function (Event) {
+      var Result = false;
+      var l = 0.0;
+      var t = 0.0;
+      var ss = {};
+      var mb = 0;
+      TMSStringGridresetResize();
+      this.FStartCell.X = -1;
+      this.FStartCell.Y = -1;
+      Result = false;
+      Event.stopPropagation();
+      Event.cancelBubble = true;
+      this.XYToClient(Event.clientX,Event.clientY,{get: function () {
+          return l;
+        }, set: function (v) {
+          l = v;
+        }},{get: function () {
+          return t;
+        }, set: function (v) {
+          t = v;
+        }});
+      ss = rtl.refSet(this.GetMouseEventShiftState(Event));
+      mb = this.GetMouseEventButton(Event);
+      this.MouseUp(mb,rtl.refSet(ss),pas.System.Trunc(l),pas.System.Trunc(t));
+      return Result;
+    };
+    this.HandleKeyDown = function (Event) {
+      var Result = false;
+      var k = 0;
+      var newcol = 0;
+      var newrow = 0;
+      var ss = {};
+      var undef = false;
+      var ischar = false;
+      Result = true;
+      if (!this.FEnabled) return Result;
+      Event.cancelBubble = true;
+      Event.stopPropagation();
+      k = 0;
+      ischar = false;
+      undef = (Event.key == undefined);
+      if (pas.SysUtils.UpperCase(Event.key) === "UNIDENTIFIED") return Result;
+      if (!undef) {
+        k = this.GetKeyCode(Event.key,true);
+        ischar = Event.key.length === 1;
+        ss = rtl.refSet(this.GetKeyBoardEventShiftState(Event));
+        if (this.FOnKeyDown != null) this.FOnKeyDown(this,{get: function () {
+            return k;
+          }, set: function (v) {
+            k = v;
+          }},rtl.refSet(ss));
+      };
+      newrow = this.GetRow();
+      newcol = this.GetCol();
+      if ((newrow === -1) && (newcol === -1) && (this.FColCount > this.FFixedCols) && (this.FRowCount > this.FFixedRows)) {
+        newcol = this.FFixedCols;
+        newrow = this.FFixedRows;
+        this.SetCol(this.FFixedCols);
+        this.SetRow(this.FFixedRows);
+        this.FNormalCells.focus();
+      };
+      if ((k in rtl.createSet(38,40,33,34)) && !ischar) {
+        Event.preventDefault();
+        this.HideEdit(false);
+        this.ChangeRow();
+      };
+      if (!this.FEditMode && (k in rtl.createSet(35,36,37,39)) && !ischar) {
+        Event.preventDefault();
+        this.HideEdit(false);
+      };
+      if ((k === 27) && !ischar) {
+        this.CancelEdit();
+      };
+      if (!this.FEditMode && !ischar && Event.shiftKey && !((k >= 48) && (k <= 122)) && ($mod.TGridOption.goRangeSelect in this.FOptions)) {
+        if (k === 35) {
+          this.SetRow(this.FRowCount - 1);
+          this.SetSelection($mod.GridRect(this.GetCol(),newrow,this.GetCol(),this.GetRow()));
+          if (this.GetRow() >= (this.GetTopRow() + this.GetVisibleRowCount())) this.SetTopRow(this.GetRow() - this.GetVisibleRowCount());
+        };
+        if (k === 36) {
+          this.SetRow(this.FFixedRows);
+          this.SetSelection($mod.GridRect(this.GetCol(),newrow,this.GetCol(),this.GetRow()));
+          if (this.GetRow() < this.GetTopRow()) this.SetTopRow(this.FFixedRows);
+        };
+        if ((k === 38) && (this.GetRow() > this.FFixedRows)) {
+          if (this.GetRow() === Math.min(this.GetSelection().Top,this.GetSelection().Bottom)) {
+            newrow = Math.max(this.GetSelection().Top,this.GetSelection().Bottom)}
+           else newrow = Math.min(this.GetSelection().Top,this.GetSelection().Bottom);
+          this.SetRow(this.GetRow() - 1);
+          this.SetSelection($mod.GridRect(this.GetSelection().Left,newrow,this.GetSelection().Right,this.GetRow()));
+          if (this.GetRow() < this.GetTopRow()) this.SetTopRow(this.GetTopRow() - 1);
+        };
+        if ((k === 40) && (this.GetRow() < (this.FRowCount - 1))) {
+          if (this.GetRow() === Math.max(this.GetSelection().Top,this.GetSelection().Bottom)) {
+            newrow = Math.min(this.GetSelection().Top,this.GetSelection().Bottom)}
+           else newrow = Math.max(this.GetSelection().Top,this.GetSelection().Bottom);
+          this.SetRow(this.GetRow() + 1);
+          this.SetSelection($mod.GridRect(this.GetSelection().Left,newrow,this.GetSelection().Right,this.GetRow()));
+          if (this.GetRow() > (this.GetTopRow() + this.GetVisibleRowCount())) this.SetTopRow(this.GetTopRow() + 1);
+        };
+        if ((k === 37) && (this.GetCol() > this.FFixedCols)) {
+          if (this.GetCol() === Math.min(this.GetSelection().Left,this.GetSelection().Right)) {
+            newcol = Math.max(this.GetSelection().Left,this.GetSelection().Right)}
+           else newcol = Math.min(this.GetSelection().Left,this.GetSelection().Right);
+          this.SetCol(this.GetCol() - 1);
+          this.SetSelection($mod.GridRect(newcol,this.GetSelection().Top,this.GetCol(),this.GetSelection().Bottom));
+          if (this.GetCol() < this.GetLeftCol()) this.SetLeftCol(this.GetLeftCol() - 1);
+        };
+        if ((k === 39) && (this.GetCol() < (this.FColCount - 1))) {
+          if (this.GetCol() === Math.max(this.GetSelection().Left,this.GetSelection().Right)) {
+            newcol = Math.min(this.GetSelection().Left,this.GetSelection().Right)}
+           else newcol = Math.max(this.GetSelection().Left,this.GetSelection().Right);
+          this.SetCol(this.GetCol() + 1);
+          this.SetSelection($mod.GridRect(newcol,this.GetSelection().Top,this.GetCol(),this.GetSelection().Bottom));
+          if (this.GetCol() >= (this.GetLeftCol() + this.GetVisibleColCount())) this.SetLeftCol(this.GetLeftCol() + 1);
+        };
+      } else {
+        if ((k === 35) && !ischar) {
+          newrow = this.FRowCount - 1;
+        };
+        if ((k === 36) && !ischar) {
+          newrow = this.FFixedRows;
+        };
+        if ((k === 34) && !ischar) {
+          if ((this.GetRow() + 4) <= (this.FRowCount - 1)) {
+            newrow = this.GetRow() + 4;
+          } else {
+            newrow = this.FRowCount - 1;
+          };
+        };
+        if ((k === 33) && !ischar) {
+          if ((this.GetRow() - 4) > this.FFixedRows) {
+            newrow = this.GetRow() - 4;
+          } else {
+            newrow = this.FFixedRows;
+          };
+        };
+        if (!this.FEditMode && (k === 38) && (this.GetRow() > this.FFixedRows) && !ischar) {
+          newrow = this.GetRow() - 1;
+        };
+        if (!this.FEditMode && (k === 40) && (this.GetRow() < (this.FRowCount - 1)) && !ischar) {
+          newrow = this.GetRow() + 1;
+        };
+        if (!this.FEditMode && (k === 37) && (this.GetCol() > this.FFixedCols) && !ischar) {
+          newcol = this.GetCol() - 1;
+        };
+        if (!this.FEditMode && (k === 39) && (this.GetCol() < (this.FColCount - 1)) && !ischar) {
+          newcol = this.GetCol() + 1;
+        };
+        if (!this.FEditMode && this.CanSelect(newcol,newrow) && !ischar) {
+          this.SelectCell(newcol,newrow);
+          if ((k === 38) && (this.GetRow() < this.GetTopRow())) this.SetTopRow(this.GetTopRow() - 1);
+          if ((k === 33) && (this.GetRow() < this.GetTopRow())) this.SetTopRow(this.GetRow());
+          if ((k === 34) && (this.GetRow() >= (this.GetTopRow() + this.GetVisibleRowCount()))) this.SetTopRow(this.GetRow());
+          if ((k === 40) && (this.GetRow() >= (this.GetTopRow() + this.GetVisibleRowCount()))) this.SetTopRow(this.GetTopRow() + 1);
+          if ((k === 37) && (this.GetCol() < this.GetLeftCol())) this.SetLeftCol(this.GetLeftCol() - 1);
+          if ((k === 39) && (this.GetCol() >= (this.GetLeftCol() + this.GetVisibleColCount()))) this.SetLeftCol(this.GetLeftCol() + 1);
+          if (k === 35) this.SetTopRow(this.GetRow() - this.GetVisibleRowCount());
+          if (k === 36) this.SetTopRow(this.FFixedRows);
+        };
+        if ((k === 113) && !this.FEditMode && ($mod.TGridOption.goEditing in this.FOptions) && this.CanEditCell(this.GetCol(),this.GetRow())) {
+          this.ShowEdit();
+        };
+        if ((k >= 32) && (k <= 112) && ischar && !this.FEditMode && ($mod.TGridOption.goEditing in this.FOptions) && this.CanEditCell(this.GetCol(),this.GetRow())) this.StartEdit(Event.key);
+        if ((k === 13) && ($mod.TGridOption.goEditing in this.FOptions) && this.CanEditCell(this.GetCol(),this.GetRow())) {
+          if (this.FEditMode) {
+            this.HideEdit(this.FEditAdvance);
+          } else this.ShowEdit();
+        };
+      };
+      return Result;
+    };
+    this.HandleTableFocus = function (Event) {
+      var Result = false;
+      Result = true;
+      if (!this.FEnabled) return Result;
+      if ((this.FOnEnter != null) && !this.FBlockFocus) this.FOnEnter(this);
+      this.FBlockFocus = false;
+      if ((this.GetCol() === -1) && (this.GetRow() === -1) && !this.HasSelection() && (this.FFixedCols < this.FColCount) && (this.FFixedRows < this.FRowCount) && this.CanSelect(this.FFixedCols,this.FFixedRows)) {
+        this.SelectCell(this.FFixedCols,this.FFixedRows);
+      };
+      return Result;
+    };
+    this.HandleTableBlur = function (Event) {
+      var Result = false;
+      Result = true;
+      if ((this.FOnExit != null) && !this.FEditMode) this.FOnExit(this);
+      return Result;
+    };
+    this.HandleScroll = function (Event) {
+      var Result = false;
+      if (this.FFixedCols > 0) {
+        this.FFixedCol.parentElement.scrollTop = this.FNormalCells.parentElement.parentElement.scrollTop;
+      };
+      if (this.FFixedRows > 0) this.FFixedRow.parentElement.parentElement.scrollLeft = this.FNormalCells.parentElement.parentElement.scrollLeft;
+      this.TopLeftChanged();
+      Result = true;
+      return Result;
+    };
+    this.HandleEditBlur = function (Event) {
+      var Result = false;
+      if (this.FEditMode) {
+        this.HideEdit(false);
+      };
+      Result = true;
+      return Result;
+    };
+    this.HandleEditKeyPress = function (Event) {
+      var Result = false;
+      var c = "\x00";
+      Event.cancelBubble = true;
+      Event.stopPropagation();
+      Result = true;
+      if (this.IsKeyCharacter(Event.key)) {
+        c = String.fromCharCode(this.GetKeyCode(Event.key,false));
+        if (this.FOnKeyPress != null) this.FOnKeyPress(this,{get: function () {
+            return c;
+          }, set: function (v) {
+            c = v;
+          }});
+      };
+      return Result;
+    };
+    this.HandleComboExit = function (Sender) {
+      if (this.FEditMode) this.HideEdit(false);
+    };
+    this.HandleComboKeyPress = function (Sender, Key) {
+      if (this.FOnKeyPress != null) this.FOnKeyPress(this,Key);
+      if (Key.get().charCodeAt() === 27) this.CancelEdit();
+      if (Key.get().charCodeAt() === 13) this.HideEdit(this.FEditAdvance);
+    };
+    this.HandleMaskExit = function (Sender) {
+      if (this.FEditMode) this.HideEdit(false);
+    };
+    this.HandleMaskKeyPress = function (Sender, Key) {
+      if (this.FOnKeyPress != null) this.FOnKeyPress(this,Key);
+      if (Key.get().charCodeAt() === 27) this.CancelEdit();
+      if (Key.get().charCodeAt() === 13) this.HideEdit(this.FEditAdvance);
+    };
+    this.HandleMemoExit = function (Sender) {
+      if (this.FEditMode) this.HideEdit(false);
+    };
+    this.HandleMemoKeyPress = function (Sender, Key) {
+      if (this.FOnKeyPress != null) this.FOnKeyPress(this,Key);
+      if (Key.get().charCodeAt() === 27) this.CancelEdit();
+    };
+    this.HandleCheckBoxClick = function (Event) {
+      var Result = false;
+      var rindex = 0;
+      var cindex = 0;
+      var chk = false;
+      rindex = -1;
+      cindex = -1;
+      var el = Event.target;
+      chk = el.checked;
+      var d = el.parentElement;
+      if (d.tagName.toLowerCase() == 'td')
+      {
+        cindex = d.cellIndex;
+        var tr = d.parentElement;
+        rindex = tr.rowIndex;
+      };
+      if ((rindex !== -1) && (cindex !== -1)) {
+        if (!this.CanEditCell(cindex + this.FFixedCols,rindex + this.FFixedRows)) {
+          var el = Event.target;
+          el.checked = (!el.checked);
+        } else this.DoCheckClick(cindex + this.FFixedCols,rindex + this.FFixedRows,chk);
+      };
+      return Result;
+    };
+    this.HandleButtonClick = function (Event) {
+      var Result = false;
+      var rindex = 0;
+      var cindex = 0;
+      var chk = false;
+      rindex = -1;
+      cindex = -1;
+      var el = Event.target;
+      var d = el.parentElement;
+      if (d.tagName.toLowerCase() == 'td')
+      {
+        cindex = d.cellIndex;
+        var tr = d.parentElement;
+        rindex = tr.rowIndex;
+      };
+      if ((rindex !== -1) && (cindex !== -1)) {
+        this.DoButtonClick(cindex + this.FFixedCols,rindex + this.FFixedRows);
+      };
+      return Result;
+    };
+    this.HandleDoMouseUp = function (Event) {
+      var Result = false;
+      var res = 0;
+      pas["WEBLib.Controls"].TControl.HandleDoMouseUp.apply(this,arguments);
+      res = TMSGridLastColSize;
+      if (!res) {
+        res = TMSStringGridisSizing(); }
+      TMSStringGridresetResize();
+      if (res >= 0) this.DoColumnSized(res);
+      Result = true;
+      return Result;
+    };
+    this.HandleDoMouseMove = function (Event) {
+      var Result = false;
+      var CtrlName = "";
+      var IsAutoWidth = false;
+      pas["WEBLib.Controls"].TControl.HandleDoMouseMove.apply(this,arguments);
+      CtrlName = this.GetID() + "tbl";
+      IsAutoWidth = this.FWidthStyle in rtl.createSet(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+      TMSStringGridID = CtrlName;
+      TMSStringGridautoWidth = IsAutoWidth;
+      GridNormalCells = this.FNormalCells;
+      GridFixedCells = this.FFixedRow;
+      GridFixedColCells = this.FFixedCol;
+      GridFixedColRows = this.FFixedColRow;
+      GridColWidths = this.FColWidths;
+      GridFixedCols = this.FFixedCols;
+      TMSStringGridresizeColumn(Event);
+      Result = true;
+      return Result;
+    };
+    this.HandleDoClick = function (Event) {
+      var Result = false;
+      Result = pas["WEBLib.Controls"].TControl.HandleDoClick.apply(this,arguments);
+      if (!this.FEditMode && (this.FNormalCells != null)) this.FNormalCells.focus();
+      return Result;
+    };
+    this.HandleDoDblClick = function (Event) {
+      var Result = false;
+      var c = 0;
+      var r = 0;
+      var fc = 0;
+      var fr = 0;
+      var el = null;
+      var pel = null;
+      pas["WEBLib.Controls"].TControl.HandleDoDblClick.apply(this,arguments);
+      el = Event.target;
+      if ((el.tagName === "TD") || (el.tagName === "TH")) {
+        c = el.cellIndex;
+        var tr = el.parentElement;
+        r = tr.rowIndex;
+        pel = el.parentElement;
+        if (pel) {
+          pel = pel.parentElement; }
+        if (pel) {
+          pel = pel.parentElement; };
+        if (!el.classList.contains("fixed")) {
+          fc = this.FFixedCols;
+          fr = this.FFixedRows;
+        };
+        if (pel != null) {
+          if (pas.System.Pos("ResizeRowTable",pel.id) > 0) fc = this.FFixedCols;
+          if (pas.System.Pos("FixedColTable",pel.id) > 0) fr = this.FFixedRows;
+        };
+        if (this.FOnDblClickCell != null) this.FOnDblClickCell(this,c + fc,r + fr);
+      };
+      Result = true;
+      return Result;
+    };
+    this.DoHttpLoadJson = function (Event) {
+      var Result = false;
+      var J = null;
+      var req = null;
+      req = Event.target;
+      if ((req.status >= 200) && (req.status <= 208)) {
+        J = JSON.parse(req.responseText);
+        this.LoadFromJSON$1(J,this.FDataNode);
+        if (this.FOnHttpRequestSuccess != null) this.FOnHttpRequestSuccess(this);
+      };
+      Result = true;
+      return Result;
+    };
+    this.DoHttpLoadCsv = function (Event) {
+      var Result = false;
+      var sl = null;
+      var req = null;
+      req = Event.target;
+      if ((req.status >= 200) && (req.status <= 208)) {
+        sl = pas.Classes.TStringList.$create("Create$1");
+        sl.SetTextStr(req.responseText);
+        try {
+          this.LoadFromStringList(sl);
+        } finally {
+          sl = rtl.freeLoc(sl);
+        };
+        if (this.FOnHttpRequestSuccess != null) this.FOnHttpRequestSuccess(this);
+      };
+      Result = true;
+      return Result;
+    };
+    this.DoHttpAbort = function (Event) {
+      var Result = false;
+      if (this.FOnHttpRequestError != null) this.FOnHttpRequestError(this);
+      Result = true;
+      return Result;
+    };
+    this.DoHttpRequest = function (ARequest) {
+      var LRequestRec = pas["WEBLib.Controls"].TJSXMLHttpRequestRecord.$new();
+      if (this.FOnHttpRequest != null) {
+        LRequestRec.req = ARequest;
+        this.FOnHttpRequest(this,pas["WEBLib.Controls"].TJSXMLHttpRequestRecord.$clone(LRequestRec));
+      };
+    };
+    this.DoCheckClick = function (ACol, ARow, Checked) {
+      if (this.FOnCheckClick != null) this.FOnCheckClick(this,ACol,ARow,Checked);
+    };
+    this.DoButtonClick = function (ACol, ARow) {
+      if (this.FOnButtonClick != null) this.FOnButtonClick(this,ACol,ARow);
+    };
+    this.DoSortClick = function (ACol, ARow, ASortIndicator) {
+      var i = 0;
+      this.FSortIndex = ACol;
+      for (var $l = 0, $end = this.FColCount - 1; $l <= $end; $l++) {
+        i = $l;
+        this.SelectSortIndicator(i,ARow,i === ACol);
+      };
+      this.FSortDirection = ASortIndicator;
+      if (this.FOnSortClick != null) this.FOnSortClick(this,ACol,ARow,ASortIndicator);
+      this.Sort(ACol,ASortIndicator);
+    };
+    this.GetEditText = function (ACol, ARow) {
+      var Result = "";
+      Result = this.GetCells(ACol,ARow);
+      if (this.FOnGetEditText != null) this.FOnGetEditText(this,ACol,ARow,{get: function () {
+          return Result;
+        }, set: function (v) {
+          Result = v;
+        }});
+      return Result;
+    };
+    this.SetEditText = function (ACol, ARow, AValue) {
+      if (this.FOnSetEditText != null) this.FOnSetEditText(this,ACol,ARow,AValue);
+    };
+    this.SetEditControlValue = function (ACol, ARow, AControl, AValue) {
+      if (this.FOnSetEditControlValue != null) this.FOnSetEditControlValue(this,ACol,ARow,AControl,AValue);
+    };
+    this.GetEditControlValue = function (ACol, ARow, AControl, AValue) {
+      if (this.FOnGetEditControlValue != null) this.FOnGetEditControlValue(this,ACol,ARow,AControl,AValue);
+    };
+    this.DoEditControlExit = function (Sender) {
+      this.HideEdit(false);
+    };
+    this.GetCellData = function (ACol, ARow, AField, AValue) {
+      if (this.FOnGetCellData != null) this.FOnGetCellData(this,ACol,ARow,AField,AValue);
+    };
+    this.GetCellClassName = function (ACol, ARow, AField, AValue, AClassName) {
+      if (this.FOnGetCellClass != null) this.FOnGetCellClass(this,ACol,ARow,AField,AValue,AClassName);
+    };
+    this.GetCellChildren = function (ACol, ARow, AField, AValue, AElement) {
+      var LElementRec = pas["WEBLib.Controls"].TJSHTMLElementRecord.$new();
+      if (this.FOnGetCellChildren != null) {
+        LElementRec.element = AElement;
+        this.FOnGetCellChildren(this,ACol,ARow,AField,AValue,pas["WEBLib.Controls"].TJSHTMLElementRecord.$clone(LElementRec));
+      };
+    };
+    this.GetCellEditor = function (ACol, ARow, AEditor) {
+      if (this.FOnGetCellEditor != null) this.FOnGetCellEditor(this,ACol,ARow,AEditor);
+    };
+    this.AddSelection = function (ACell) {
+      if (this.FShowSelection) {
+        ACell.classList.add("selected");
+      };
+    };
+    this.RemoveSelection = function (ACell) {
+      if (this.FShowSelection) ACell.classList.remove("selected");
+    };
+    this.BindCellChildren = function (ACol, ARow, AElement) {
+      var el = null;
+      el = AElement.firstChild;
+      if ((el != null) && (el.tagName === "INPUT")) {
+        if (el.hasAttribute("type") && (pas.SysUtils.LowerCase(el.getAttribute("TYPE")) === "checkbox")) {
+          el.addEventListener("click",this.FHandleCheckClickPtr);
+        };
+      };
+    };
+    this.UnBindCellChildren = function (ACol, ARow, AElement) {
+      var el = null;
+      el = AElement.firstChild;
+      if ((el != null) && (el.tagName === "INPUT")) {
+        if (el.hasAttribute("type") && (pas.SysUtils.LowerCase(el.getAttribute("TYPE")) === "checkbox")) {
+          el.removeEventListener("click",this.FHandleCheckClickPtr);
+        };
+      };
+    };
+    this.DoBoundsChange = function () {
+      var fw = 0;
+      var fh = 0;
+      var nwvis = 0;
+      var nhvis = 0;
+      pas["WEBLib.Controls"].TControl.DoBoundsChange.call(this);
+      if (this.GetElementHandle() != null) {
+        this.UpdateGridSize();
+        fw = this.FixedColWidth();
+        fh = this.FixedRowHeight();
+        nwvis = this.GetWidth() - fw;
+        nhvis = this.GetHeight() - fh;
+        if (this.FNormalCells != null) {
+          this.FNormalCells.parentElement.parentElement.style.setProperty("width",pas.SysUtils.IntToStr(nwvis) + "px");
+          this.FNormalCells.parentElement.parentElement.style.setProperty("height",pas.SysUtils.IntToStr(nhvis) + "px");
+        };
+      };
+    };
+    this.DoColumnSized = function (AColumn) {
+      if (this.FOnColumnSized != null) this.FOnColumnSized(this,AColumn);
+    };
+    this.LoadFromStringList = function (AStrings) {
+      var arow = null;
+      var i = 0;
+      var j = 0;
+      var maxcol = 0;
+      var sr = 0;
+      var sc = 0;
+      var cd = "";
+      var cn = "";
+      var ce = null;
+      if (this.FLoadFixed) {
+        this.SetRowCount(AStrings.GetCount())}
+       else this.SetRowCount(AStrings.GetCount() + this.FFixedRows);
+      arow = pas.Classes.TStringList.$create("Create$1");
+      sc = this.FFixedCols;
+      sr = this.FFixedRows;
+      if (this.FLoadFixed) {
+        sr = 0;
+        sc = 0;
+      };
+      maxcol = 0;
+      try {
+        for (var $l = 0, $end = AStrings.GetCount() - 1; $l <= $end; $l++) {
+          i = $l;
+          arow.FStrictDelimiter = true;
+          arow.SetDelimiter(this.FDelimiter);
+          arow.SetDelimitedText(AStrings.Get(i));
+          if (arow.GetCount() > maxcol) maxcol = arow.GetCount();
+          if (arow.GetCount() > (this.FColCount - sc)) this.SetColCount(arow.GetCount() + sc);
+          for (var $l1 = 0, $end1 = arow.GetCount() - 1; $l1 <= $end1; $l1++) {
+            j = $l1;
+            cd = arow.Get(j);
+            this.GetCellData(j + sc,i + sr,null,{get: function () {
+                return cd;
+              }, set: function (v) {
+                cd = v;
+              }});
+            this.SetCells(j + sc,i + sr,cd);
+            ce = this.GetCellElements(j + sc,i + sr);
+            this.GetCellChildren(j + sc,i + sr,null,cd,ce);
+            cn = "";
+            this.GetCellClassName(j + sc,i + sr,null,cd,{get: function () {
+                return cn;
+              }, set: function (v) {
+                cn = v;
+              }});
+            if (cn !== "") ce.setAttribute("class",cn);
+          };
+        };
+      } finally {
+        arow = rtl.freeLoc(arow);
+      };
+      if (maxcol < (this.FColCount - sc)) this.SetColCount(maxcol + sc);
+    };
+    this.GetGridCSS = function (id) {
+      var Result = "";
+      var ff = "";
+      Result = "";
+      if (this.FElementTableClassName !== "") return Result;
+      if (!($mod.TGridOption.goVertLine in this.FOptions)) Result = "border-left: 0px; border-right: 0px;";
+      if (!($mod.TGridOption.goHorzLine in this.FOptions)) Result = Result + "border-top: 0px; border-bottom: 0px;";
+      if (this.FElementFont === pas["WEBLib.Controls"].TElementFont.efProperty) {
+        Result = Result + pas["WEBLib.Graphics"].CSSFont(this.FFont);
+        ff = pas["WEBLib.Graphics"].CSSFont(this.FFixedFont);
+      };
+      Result = "table#" + id + " td { overflow: hidden; text-overflow: ellipsis; white-space:nowrap; border: solid 1px " + pas["WEBLib.Graphics"].ColorToHTML(this.FGridLineColor) + "; padding: 0px;" + Result + "} " + "\r" + "table#" + id + " td.fixed {" + ff + "} " + "\r" + "table#" + id + " td.selected { background-color: " + pas["WEBLib.Graphics"].ColorToHTML(this.FSelectionColor) + "; color: " + pas["WEBLib.Graphics"].ColorToHTML(this.FSelectionTextColor) + ";} " + "\r" + "table#" + id + " tr.selected { background-color: " + pas["WEBLib.Graphics"].ColorToHTML(this.FSelectionColor) + "; color: " + pas["WEBLib.Graphics"].ColorToHTML(this.FSelectionTextColor) + ";} " + "\r" + "table#" + id + " DIV.cell {word-wrap: normal; white-space: normal; text-overflow: clip; } ";
+      return Result;
+    };
+    this.RenderGrid = function () {
+      var res = null;
+      var i = 0;
+      var j = 0;
+      var k = 0;
+      var fw = 0;
+      var fh = 0;
+      var nw = 0;
+      var nh = 0;
+      var nwvis = 0;
+      var nhvis = 0;
+      var nwvisnoscroll = 0;
+      var nhvisnoscroll = 0;
+      var tr = null;
+      var td = null;
+      var span = null;
+      var cellspan = null;
+      var fixcol = "";
+      var fixtxtcol = "";
+      var dynstyle = "";
+      var vscroll = false;
+      var hscroll = false;
+      var LAutoSizeW = false;
+      var LAutoSizeH = false;
+      var ControlName = "";
+      while (this.FColWidths.GetCount() <= this.FColCount) this.FColWidths.Add(this.FDefaultColWidth);
+      if (this.FOrigID === "") {
+        this.FOrigID = this.GetID();
+        if (this.FOrigID === "") this.FOrigID = this.FName;
+      };
+      if (!(this.FGrid != null)) {
+        if (this.GetIsLinked() && (this.GetElementHandle().firstElementChild != null)) {
+          res = this.GetElementHandle().firstElementChild;
+        } else res = document.createElement("TABLE");
+        res.setAttribute("id",this.FOrigID + "tbl");
+        if (this.FElementTableClassName === "") {
+          res.setAttribute("class","table." + this.StylePrefix() + this.FName);
+          res.style.setProperty("border-collapse","collapse");
+          res.style.setProperty("border-spacing","0px");
+          res.style.setProperty("border","0px");
+        } else res.setAttribute("class",this.FElementTableClassName);
+        this.FGrid = res;
+        pas["WEBLib.Controls"].SetHTMLElementFont(res,this.FFont,!((this.FElementClassName === "") && (this.FElementFont === pas["WEBLib.Controls"].TElementFont.efProperty)));
+        this.$class.AddInstanceStyle$1(this.StylePrefix() + this.FOrigID,this.GetGridCSS(this.FOrigID + "tbl"));
+      } else return;
+      LAutoSizeW = this.FWidthStyle === pas["WEBLib.Controls"].TSizeStyle.ssAuto;
+      LAutoSizeH = this.FHeightStyle === pas["WEBLib.Controls"].TSizeStyle.ssAuto;
+      ControlName = this.FOrigID + "tbl";
+      var td = undefined;
+          var tr = undefined;
+          var span = undefined;
+          var cellspan = undefined;
+          this.FFixedColRow = document.createElement('TABLE');
+          this.FFixedColRow.setAttribute('id', ControlName + 'ResizeFixedRowTable');
+          this.FFixedColRow.style.setProperty('border-collapse','collapse');
+          this.FFixedColRow.style.setProperty('border-spacing','0px');
+      
+          this.FFixedCol = document.createElement('TABLE');
+          this.FFixedCol.setAttribute('id', ControlName + 'ResizeFixedColTable');
+          this.FFixedCol.style.setProperty('border-collapse','collapse');
+          this.FFixedCol.style.setProperty('border-spacing','0px');
+      
+          this.FFixedRow = document.createElement('TABLE');
+          this.FFixedRow.setAttribute('id', ControlName + 'ResizeRowTable');
+          this.FFixedRow.style.setProperty('border-collapse','collapse');
+          this.FFixedRow.style.setProperty('border-spacing','0px');
+          this.FFixedRow.style.setProperty('border','0px');
+      
+          this.FNormalCells = document.createElement('TABLE');
+          this.FNormalCells.setAttribute('id', ControlName + 'NormalCellTable');
+          this.FNormalCells.style.setProperty('border-collapse','collapse');
+          this.FNormalCells.style.setProperty('border-spacing','0px');
+      this.FNormalCells.setAttribute("tabindex",pas.SysUtils.IntToStr(this.FTabOrder));
+      this.FNormalCells.style.setProperty("outline","none");
+      this.FNormalCells.addEventListener("click",this.FHandleClickPtr);
+      this.FNormalCells.addEventListener("mousedown",this.FHandleMouseDownPtr);
+      this.FNormalCells.addEventListener("mousemove",this.FHandleMouseMovePtr);
+      this.FNormalCells.addEventListener("mouseup",this.FHandleMouseUpPtr);
+      this.FFixedCol.addEventListener("click",this.FHandleFixedClickPtr);
+      this.FFixedRow.addEventListener("click",this.FHandleFixedClickPtr);
+      this.FFixedColRow.addEventListener("click",this.FHandleFixedClickPtr);
+      this.GetElementHandle().appendChild(res);
+      fw = this.FixedColWidth();
+      fh = this.FixedRowHeight();
+      nw = this.NormalColWidth();
+      nh = this.NormalRowHeight();
+      nwvis = this.GetWidth() - this.FixedColWidth();
+      nhvis = this.GetHeight() - this.FixedRowHeight();
+      if (this.FBorderStyle === pas["WEBLib.Controls"].TBorderStyle.bsSingle) {
+        nwvis = nwvis - 2;
+        nhvis = nhvis - 2;
+      };
+      nwvisnoscroll = nwvis - pas["WEBLib.Controls"].GetScrollBarWidth();
+      if ((this.FixedColWidth() + this.NormalColWidth()) < this.GetWidth()) {
+        nhvisnoscroll = nhvis}
+       else nhvisnoscroll = nhvis - pas["WEBLib.Controls"].GetScrollBarHeight();
+      if (this.FFixedColor !== -1) fixcol = pas["WEBLib.Graphics"].ColorToHTML(this.FFixedColor);
+      if (this.GetFixedTextColor() !== -1) fixtxtcol = pas["WEBLib.Graphics"].ColorToHTML(this.GetFixedTextColor());
+      tr = res.insertRow(0);
+      td = tr.insertCell(0);
+      td.style.border = "0px";
+      td = tr.insertCell(1);
+      td.style.border = "0px";
+      tr = res.insertRow(1);
+      td = tr.insertCell(0);
+      td.style.border = "0px";
+      td = tr.insertCell(1);
+      td.style.border = "0px";
+      if (this.FFixedRows > 0) {
+        k = 0;
+        if (this.FFixedCols > 0) {
+          k = 1;
+          td = res.rows[0].cells[0];
+                  span = document.createElement('DIV');
+          //        span.style.width = fw + "px";
+                  span.style.height = fh + "px";
+                  span.style.overflow = "hidden";
+                  span.style.backgroundColor = fixcol;
+                  span.style.color = fixtxtcol;
+                  td.appendChild(span);
+                  span.appendChild(this.FFixedColRow);
+        } else {
+          td = res.rows[0].cells[0];
+          td.style.border = "0px";
+          td = res.rows[1].cells[0];
+          td.style.border = "0px";
+        };
+        td = res.rows[0].cells[1];
+              td.style.backgroundColor = fixcol;
+              td.style.color = fixtxtcol;
+        
+              span = document.createElement('DIV');
+              span.style.height = fh + "px";
+              if (!LAutoSizeW) {
+                span.style.width = nwvis + "px";
+              }
+        
+              span.style.overflow = "hidden";
+              span.style.backgroundColor = fixcol;
+              span.style.color = fixtxtcol;
+        
+              td.appendChild(span);
+        
+              cellspan = document.createElement('DIV');
+              cellspan.style.height = fh + "px";
+              if (!LAutoSizeW) {
+                cellspan.style.width = nw + "px";
+              }
+        
+              span.appendChild(cellspan);
+              cellspan.appendChild(this.FFixedRow);
+        if (this.FFixedCols > 0) {
+          for (var $l = 0, $end = this.FFixedRows - 1; $l <= $end; $l++) {
+            i = $l;
+            tr = this.FFixedColRow.insertRow(i);
+            for (var $l1 = 0, $end1 = this.FFixedCols - 1; $l1 <= $end1; $l1++) {
+              j = $l1;
+              td = tr.insertCell(j);
+              td.setAttribute('class','fixed');
+              this.SetAlignAttr(this.GetColAlignments(j),td);
+            };
+          };
+        };
+        for (var $l2 = 0, $end2 = this.FFixedRows - 1; $l2 <= $end2; $l2++) {
+          i = $l2;
+          tr = this.FFixedRow.insertRow(i);
+          for (var $l3 = this.FFixedCols, $end3 = this.FColCount - 1; $l3 <= $end3; $l3++) {
+            j = $l3;
+            k = j - this.FFixedCols;
+            td = tr.insertCell(k);
+            td.setAttribute('class','fixed');
+            this.SetAlignAttr(this.GetColAlignments(j),td);
+          };
+        };
+      };
+      k = 0;
+      if (this.FFixedCols > 0) {
+        k = 1;
+        //tr = res.insertRow(res.rows.length);
+              //td = tr.insertCell(0);
+        
+              td = res.rows[1].cells[0];
+        
+              td.style.backgroundColor = fixcol;
+              td.style.color = fixtxtcol;
+              td.setAttribute('class','fixed');
+        
+              span = document.createElement('DIV');
+              if (!LAutoSizeW) {
+              //span.style.width = fw + "px";
+              }
+              span.style.height = nhvisnoscroll + "px";
+              span.style.overflow = "hidden";
+              span.style.backgroundColor = fixcol;
+              span.style.color = fixtxtcol;
+        
+              td.setAttribute('valign','top');
+        
+              td.appendChild(span);
+              span.appendChild(this.FFixedCol);
+        this.SetAlignAttr(this.GetColAlignments(0),td);
+        for (var $l4 = this.FFixedRows, $end4 = this.FRowCount - 1; $l4 <= $end4; $l4++) {
+          i = $l4;
+          j = i - this.FFixedRows;
+          tr = this.FFixedCol.insertRow(j);
+          for (var $l5 = 0, $end5 = this.FFixedCols - 1; $l5 <= $end5; $l5++) {
+            j = $l5;
+            td = tr.insertCell(j);
+            td.setAttribute('class','fixed');
+            this.SetAlignAttr(this.GetColAlignments(j),td);
+          };
+        };
+      };
+      if (this.FFixedCols === 0) {
+        //tr = res.insertRow(res.rows.length);
+        //td = tr.insertCell(0);
+        td = res.rows[1].cells[1];
+      } else {
+        //tr = res.rows[1];
+        //td = tr.insertCell(1);
+        td = res.rows[1].cells[1];
+      };
+      vscroll = (pas["WEBLib.Controls"].TScrollStyle.ssVertical === this.FScrollBars) || (pas["WEBLib.Controls"].TScrollStyle.ssBoth === this.FScrollBars);
+      hscroll = (pas["WEBLib.Controls"].TScrollStyle.ssHorizontal === this.FScrollBars) || (pas["WEBLib.Controls"].TScrollStyle.ssBoth === this.FScrollBars);
+      span = document.createElement('DIV');
+          // span.style.backgroundColor = "#FFFFFF";
+      
+          if (vscroll) {
+            span.style.overflowY = "auto";
+          }
+          else
+          {
+            span.style.overflowY = "hidden";
+          }
+      
+          if (hscroll) {
+            span.style.overflowX = "auto";
+          }
+          else {
+            span.style.overflowX = "hidden";
+          }
+      
+          if (!LAutoSizeW) {
+            span.style.width = nwvis + "px";
+          }
+      
+          if (LAutoSizeH) {
+            span.style.overflow = "";
+          }
+      
+          span.style.height = nhvis + "px";
+          td.appendChild(span);
+      
+          cellspan = document.createElement('DIV');
+            if (!LAutoSizeW) {
+              cellspan.style.width = nw + "px"; }
+          cellspan.style.height = nh + "px";
+          span.parentElement.style.verticalAlign = "top";
+          span.appendChild(cellspan);
+          cellspan.appendChild(this.FNormalCells);
+      span.addEventListener("scroll",rtl.createSafeCallback(this,"HandleScroll"));
+      for (var $l6 = this.FFixedRows, $end6 = this.FRowCount - 1; $l6 <= $end6; $l6++) {
+        i = $l6;
+        k = i - this.FFixedRows;
+        tr = this.FNormalCells.insertRow(k);
+        for (var $l7 = this.FFixedCols, $end7 = this.FColCount - 1; $l7 <= $end7; $l7++) {
+          j = $l7;
+          k = j - this.FFixedCols;
+          td = tr.insertCell(k);
+          this.SetAlignAttr(this.GetColAlignments(j),td);
+        };
+      };
+      this.FNormalCells.parentElement.parentElement.addEventListener("keydown",rtl.createCallback(this,"HandleKeyDown"));
+      this.FNormalCells.addEventListener("focus",this.FHandleFocusPtr);
+      this.FNormalCells.addEventListener("blur",this.FHandleBlurPtr);
+      this.EnableColResize();
+      if (this.FDragMode === pas["WEBLib.Controls"].TDragMode.dmAutomatic) this.EnableDrag();
+    };
+    this.ReRenderGrid = function () {
+      if (!this.GetIsLinked() && (this.FGrid != null) && (this.FGrid.firstElementChild != null)) {
+        this.FGrid.removeChild(this.FGrid.firstChild);
+      };
+      this.FGrid = null;
+      this.RenderGrid();
+      this.UpdateGridSize();
+      this.UpdateGridAlignment();
+    };
+    this.RenderGridSize = function () {
+      var fw = 0;
+      var fh = 0;
+      var nw = 0;
+      var nh = 0;
+      var nwvis = 0;
+      var nhvis = 0;
+      var nwvisnoscroll = 0;
+      var nhvisnoscroll = 0;
+      if (!(this.FGrid != null)) return;
+      fw = this.FixedColWidth();
+      fh = this.FixedRowHeight();
+      nw = this.NormalColWidth();
+      nh = this.NormalRowHeight();
+      nwvis = this.GetWidth() - this.FixedColWidth();
+      nhvis = this.GetHeight() - this.FixedRowHeight();
+      if (this.FBorderStyle === pas["WEBLib.Controls"].TBorderStyle.bsSingle) {
+        nwvis = nwvis - 2;
+        nhvis = nhvis - 2;
+      };
+      nwvisnoscroll = nwvis - pas["WEBLib.Controls"].GetScrollBarWidth();
+      if ((this.FixedColWidth() + this.NormalColWidth()) < this.GetWidth()) {
+        nhvisnoscroll = nhvis}
+       else nhvisnoscroll = nhvis - pas["WEBLib.Controls"].GetScrollBarHeight();
+      if ((this.FFixedRows > 0) && (this.FWidthStyle === pas["WEBLib.Controls"].TSizeStyle.ssAbsolute)) {
+        var td = this.FGrid.rows[0].cells[1];
+        if (td!=null) {
+        var span = td.firstChild;
+        span.style.width = nwvisnoscroll + "px";
+        span.style.overflow = "hidden";
+        };
+      };
+      if ((this.FFixedCols > 0) && (this.FHeightStyle === pas["WEBLib.Controls"].TSizeStyle.ssAbsolute)) {
+        var td = this.FGrid.rows[1].cells[0];
+        if (td!=null) {
+        var span = td.firstChild;
+        span.style.height = nhvisnoscroll + "px";
+        span.style.overflow = "hidden";
+        };
+      };
+    };
+    this.RenderGridScript = function () {
+      this.AddControlScriptSource("var TMSStringGridpageX,TMSStringGridcurCol,TMSStringGridnxtCol,TMSStringGridcurColWidth,TMSStringGridnxtColWidth,TMSStringGridautoWidth,GridNormalCells,GridFixedCells,GridFixedColCells,GridFixedColRows,GridColWidths,GridFixedCols,TMSStringGridCurID;" + "var TMSStringGridTable,TMSStringGridcurTableWidth,TMSStringGridID,TMSStringGridFullWidth,TMSGridLastColSize;" + "TMSStringGridautoWidth = false;" + 'TMSStringGridCurID = "";' + "ResizeMainGrid = true;" + "function TMSStringGridupdateColSize(Cells, Col) {" + "    if (Cells){" + "     for (i = 0; i < Cells.rows.length; i++){" + "       td = Cells.rows[i].cells[Col.cellIndex];" + '       td.style.position = "relative";' + "       td.style.width = Col.style.width;" + "       td.style.maxWidth = Col.style.width;" + "      }" + "    }" + "}" + "function TMSStringGridresizeColumn(e) {" + "   if ((TMSStringGridcurCol) && (TMSStringGridCurID.indexOf(TMSStringGridID) == 0)) {" + "    var diffX = e.pageX - TMSStringGridpageX;" + "    newColWidth = (TMSStringGridcurColWidth + diffX);" + "    if (newColWidth < 10)" + "      newColWidth = 10;" + '    if (TMSStringGridCurID.indexOf("ResizeRow") > 0) {' + '\t    TMSStringGridcurCol.style.width = newColWidth + "px";' + "\t    TMSStringGridcurCol.style.maxWidth = TMSStringGridcurCol.style.width;" + "     GridColWidths.Put(TMSStringGridcurCol.cellIndex + GridFixedCols, parseInt(TMSStringGridcurCol.style.width));" + "     TMSStringGridupdateColSize(GridFixedCells, TMSStringGridcurCol);" + "     TMSStringGridupdateColSize(GridNormalCells, TMSStringGridcurCol);" + '     TMSStringGridcurTable.style.width = (TMSStringGridcurTableWidth + diffX) + "px";' + '     GridNormalCells.style.width = (TMSStringGridcurTableWidth + diffX) + "px";' + "    } else {" + "     TMSStringGridfullWidth = document.getElementById(TMSStringGridID).offsetWidth;" + "     newCellsWidth = (TMSStringGridfullWidth - (TMSStringGridcurTableWidth + diffX));" + "     if ((newCellsWidth > 10) && (newColWidth > 10)) {" + '\t     TMSStringGridcurCol.style.width = newColWidth + "px";' + "\t     TMSStringGridcurCol.style.maxWidth = TMSStringGridcurCol.style.width;" + "      TMSStringGridupdateColSize(GridFixedColRows, TMSStringGridcurCol);" + "      TMSStringGridupdateColSize(GridFixedColCells, TMSStringGridcurCol);" + "      GridColWidths.Put(TMSStringGridcurCol.cellIndex, parseInt(TMSStringGridcurCol.style.width));" + '      TMSStringGridcurTable.style.width = (TMSStringGridcurTableWidth + diffX) + "px";' + '      GridFixedColCells.style.width = (TMSStringGridcurTableWidth + diffX) + "px";' + "      if ((!TMSStringGridautoWidth) && (newColWidth > 10)){" + '       GridFixedCells.parentElement.style.width = newCellsWidth + "px";' + '       GridFixedCells.parentElement.parentElement.style.width = newCellsWidth + "px";' + '       GridNormalCells.parentElement.style.width = newCellsWidth + "px";' + '       GridNormalCells.parentElement.parentElement.style.width = newCellsWidth + "px";' + "      }" + "     }" + "    }" + "   }" + " }" + "function TMSStringGridisSizing() {" + "   if ((TMSStringGridcurCol) && (TMSStringGridCurID.indexOf(TMSStringGridID) == 0))" + "   {" + '     if (TMSStringGridCurID.indexOf("ResizeRow") > 0)' + "     {" + "       return(TMSStringGridcurCol.cellIndex + GridFixedCols)" + "     }" + "     else" + "     {" + "      return(TMSStringGridcurCol.cellIndex)" + "     }" + "   }" + "  else  { return -1; }" + "   }" + "function TMSStringGridresetResize() {" + '   TMSStringGridID = "";' + "   TMSStringGridFullWidth = undefined;" + '   TMSStringGridCurID = "";' + "   TMSStringGridcurCol = undefined;" + "   TMSStringGridnxtCol = undefined;" + "   TMSStringGridpageX = undefined;" + "   TMSStringGridnxtColWidth = undefined;" + "   TMSStringGridcurColWidth = undefined;" + "   TMSStringGridautoWidth = false;" + "   GridFixedCells = undefined;" + "   GridFixedColCells = undefined;" + "   GridFixedColRows = undefined;" + "   GridNormalCells = undefined;" + "   GridColWidths = undefined;" + "   GridFixedCols = undefined;" + " }" + " function divmousedown(e) {" + "   TMSStringGridCurID = e.target.id;" + "   TMSStringGridcurCol = e.target.parentElement;" + "   TMSStringGridnxtCol = TMSStringGridcurCol.nextElementSibling;" + "   TMSStringGridpageX = e.pageX;" + "   TMSStringGridcurTable = TMSStringGridcurCol.parentElement.parentElement.parentElement;" + "   TMSStringGridcurTableWidth = TMSStringGridcurTable.offsetWidth;" + "   TMSStringGridcurColWidth = TMSStringGridcurCol.offsetWidth;" + "   if (TMSStringGridnxtCol)" + "    TMSStringGridnxtColWidth = TMSStringGridnxtCol.offsetWidth;" + " }" + "\r\n" + " function divmouseover(e) {" + '   e.target.style.borderRight = "2px solid #0000ff";}' + "\r\n" + " function divmouseout(e) {" + '   e.target.style.borderRight = "";}' + "\r\n" + " function divmouseup(e) {" + "   TMSGridLastColSize = TMSStringGridisSizing();" + "\r\n" + "   TMSStringGridresetResize();}" + "\r\n" + "function TMSStringGridresizableGrid(tablename, enabled) {" + ' var table = document.getElementById(tablename + "Table");' + " if (!table) return;" + ' var row = table.getElementsByTagName("tr")[0],' + " cols = row ? row.children : undefined;" + " if (!cols) return;" + " for (var i=0;i<cols.length;i++){" + '  var coldiv = document.getElementById(tablename + "Div" + i);' + "  if (coldiv) {" + '    coldiv.removeEventListener("mousedown",divmousedown);' + '    coldiv.removeEventListener("mouseover",divmouseover);' + '    coldiv.removeEventListener("mouseout",divmouseout);' + '    coldiv.removeEventListener("mouseup",divmouseup);' + "    coldiv.remove(); coldiv = null; }" + "  if (enabled) {" + "    var div = createDiv();" + "    cols[i].appendChild(div);" + '    cols[i].style.position = "relative";' + '    div.id = tablename + "Div" + i;' + "    setListeners(div);" + "  }" + " }" + " function setListeners(div){" + '  div.addEventListener("mousedown", divmousedown);' + '  div.addEventListener("mouseover", divmouseover);' + '  div.addEventListener("mouseout", divmouseout);' + '  div.addEventListener("mouseup", divmouseup);' + " }" + " function createDiv(){" + '  var div = document.createElement("div");' + "  div.style.top = 0;" + "  div.style.right = 0;" + '  div.style.width = "10px";' + '  div.style.position = "absolute";' + '  div.style.cursor = "col-resize";' + '  div.style.userSelect = "none";' + '  div.style.height = "100%";' + '  div.innerHTML = "&nbsp;";' + "  return div;" + " }" + "};");
+    };
+    this.UpdateGridSize = function () {
+      var i = 0;
+      var j = 0;
+      var k = 0;
+      var l = 0;
+      var cw = 0;
+      var rh = 0;
+      var frh = 0;
+      if (!(this.GetElementHandle() != null)) return;
+      if (!(this.FParent != null)) return;
+      if (this.IsUpdating()) return;
+      if ((this.FRowCount === 0) || (this.FColCount === 0)) return;
+      for (var $l = 0, $end = this.FFixedCols - 1; $l <= $end; $l++) {
+        i = $l;
+        cw = this.GetColWidths(i) - 0;
+        if ((this.FFixedRows > 0) && (this.FFixedCols > 0)) {
+          for (j = 0; j < this.FFixedColRow.rows.length; j ++){
+           var tr = this.FFixedColRow.rows[j];
+           if (tr) {
+           var td = tr.cells[i];
+           if (td) {
+           td.style.width = cw + "px";
+           td.style.maxWidth = cw + "px";
+           }
+           }
+          };
+        };
+        if (this.FFixedCols > 0) {
+          for (j = 0; j < this.FFixedCol.rows.length; j ++){
+           var tr = this.FFixedCol.rows[j];
+           if (tr) {
+           var td = tr.cells[i];
+           if (td) {
+           td.style.width = cw + "px";
+           td.style.maxWidth = cw + "px";
+           }
+           }
+          };
+        };
+      };
+      for (var $l1 = 0, $end1 = this.FFixedRows - 1; $l1 <= $end1; $l1++) {
+        i = $l1;
+        rh = this.GetRowHeights(i);
+        if (this.FFixedCols > 0) {
+          var tr = this.FFixedColRow.rows[i];
+          if (tr) {
+            tr.style.height = rh + "px";
+          };
+        };
+        var tr = this.FFixedRow.rows[i];
+        if (tr) {
+          tr.style.height = rh + "px";
+        };
+      };
+      for (var $l2 = this.FFixedCols, $end2 = this.FColCount - 1; $l2 <= $end2; $l2++) {
+        i = $l2;
+        cw = this.GetColWidths(i) - 0;
+        k = i - this.FFixedCols;
+        if (this.FFixedRows > 0) {
+          //if (this.FFixedRow.rows.length > 0) {
+          for (i = 0; i < this.FFixedRow.rows.length; i++) {
+            var tr = this.FFixedRow.rows[i];
+            if (tr) {
+            var td = tr.cells[k];
+            if (td) {
+            td.style.width = cw + "px";
+            td.style.maxWidth = cw + "px";
+            }
+            }
+          };
+        };
+        if (this.FNormalCells.rows.length > 0) {
+          var tr = this.FNormalCells.rows[0];
+          if (tr) {
+          var td = tr.cells[k];
+          if (td) {
+          td.style.width = cw + "px";
+          td.style.maxWidth = cw + "px";
+          }
+          }
+        };
+      };
+      for (var $l3 = this.FFixedRows, $end3 = this.FRowCount - 1; $l3 <= $end3; $l3++) {
+        i = $l3;
+        k = i - this.FFixedRows;
+        rh = this.GetRowHeights(i);
+        for (var $l4 = this.FFixedCols, $end4 = this.FColCount - 1; $l4 <= $end4; $l4++) {
+          j = $l4;
+          l = j - this.FFixedCols;
+          cw = this.GetColWidths(j) - 0;
+          frh = rh;
+          if ((i === (this.FRowCount - 1)) && this.HasHorzScrollBar() && this.HasVertScrollBar()) {
+            frh = rh + 20;
+          };
+          if (this.FFixedCols > 0) {
+            var tr = this.FFixedCol.rows[k];
+            if (tr) {
+              tr.style.height = frh + "px";
+            };
+            if ((i === (this.FRowCount - 1)) && this.HasHorzScrollBar() && this.HasVertScrollBar()) {
+              var td = this.FFixedCol.rows[k].cells[0];
+              if (td) {
+                td.style.setProperty("vertical-align","top");
+              };
+            };
+          };
+          var tr = this.FNormalCells.rows[k];
+                  if (tr) {
+                  tr.style.height = rh + "px";
+          
+                  td = tr.cells[l];
+                  if (td) {
+                  td.style.maxWidth = cw + "px";
+                  }
+                  };
+        };
+      };
+    };
+    this.UpdateGridAlignment = function () {
+      var i = 0;
+      var j = 0;
+      var k = 0;
+      var l = 0;
+      var cw = 0;
+      var rh = 0;
+      var al = 0;
+      if (!(this.GetElementHandle() != null)) return;
+      if (this.IsUpdating()) return;
+      if ((this.FRowCount === 0) || (this.FColCount === 0)) return;
+      if (this.FColAlignments.GetCount() === 0) return;
+      for (var $l = 0, $end = this.FFixedCols - 1; $l <= $end; $l++) {
+        i = $l;
+        al = this.GetColAlignments(i);
+        j = i;
+        if ((this.FFixedRows > 0) && (this.FFixedCols > 0)) {
+          for (j = 0; j < this.FFixedColRow.rows.length; j ++){
+           var tr = this.FFixedColRow.rows[j];
+           if (tr) {
+           var td = tr.cells[i];
+           if (td) {
+             this.SetAlignAttr(al, td);
+             }
+          }
+          };
+        };
+        if (this.FFixedCols > 0) {
+          for (j = 0; j < this.FFixedCol.rows.length; j ++){
+           var tr = this.FFixedCol.rows[j];
+           if (tr) {
+             var td = tr.cells[i];
+             if (td) {
+             this.SetAlignAttr(al, td);
+             }
+           }
+          };
+        };
+      };
+      for (var $l1 = this.FFixedCols, $end1 = this.FColCount - 1; $l1 <= $end1; $l1++) {
+        i = $l1;
+        al = this.GetColAlignments(i);
+        k = i - this.FFixedCols;
+        j = i;
+        if (this.FFixedRows > 0) {
+          //if (this.FFixedRow.rows.length > 0) {
+          for (j = 0; j < this.FFixedRow.rows.length; j++) {
+            var tr = this.FFixedRow.rows[j];
+            if (tr) {
+            var td = tr.cells[k];
+            if (td) {
+              this.SetAlignAttr(al, td);
+             }
+            }
+          };
+        };
+        for (j = 0; j < this.FNormalCells.rows.length; j++) {
+          var tr = this.FNormalCells.rows[j];
+          if (tr) {
+            var td = tr.cells[k];
+            if (td) {
+            this.SetAlignAttr(al, td);
+            }
+          }
+        };
+      };
+    };
+    this.BindEvents = function () {
+      pas["WEBLib.Controls"].TCustomControl.BindEvents.call(this);
+      this.RenderGridScript();
+    };
+    this.Resize = function () {
+      pas["WEBLib.Controls"].TCustomControl.Resize.call(this);
+      this.RenderGridSize();
+    };
+    this.DoEnter = function () {
+    };
+    this.DoExit = function () {
+    };
+    this.GridChanged = function () {
+      $mod.TCustomGrid.GridChanged.call(this);
+      this.FSelectedCell = null;
+      this.UpdateGridSize();
+      this.UpdateGridAlignment();
+    };
+    this.CreateElement = function () {
+      var Result = null;
+      Result = document.createElement("SPAN");
+      this.FGrid = null;
+      return Result;
+    };
+    this.UpdateElement = function () {
+      var clr = "";
+      pas["WEBLib.Controls"].TControl.UpdateElement.call(this);
+      if (this.IsUpdating()) return;
+      if (this.GetElementHandle() != null) {
+        if ((this.FColor !== 16711422) && (this.FColor !== -1)) this.GetElementHandle().style.setProperty("background-color",pas["WEBLib.Graphics"].ColorToHTML(this.FColor));
+        if (this.FGrid != null) {
+          pas["WEBLib.Controls"].SetHTMLElementFont(this.FGrid,this.FFont,!((this.FElementClassName === "") && (this.FElementFont === pas["WEBLib.Controls"].TElementFont.efProperty)));
+        };
+        this.GetElementHandle().style.setProperty("overflow","hidden");
+        if ((this.FBorderStyle === pas["WEBLib.Controls"].TBorderStyle.bsSingle) && !(this.FBorderColor === -1) && (this.FElementClassName === "") && !this.GetIsLinked()) {
+          this.GetElementHandle().style.setProperty("border","1px solid " + pas["WEBLib.Graphics"].ColorToHTML(this.FBorderColor));
+        } else {
+          this.GetElementHandle().style.setProperty("border","");
+        };
+        this.RenderGrid();
+        clr = pas["WEBLib.Graphics"].ColorToHTML(this.FColor);
+        if (this.FColor !== 16711422) {
+          var bd = this.FNormalCells.tBodies[0];
+          if (bd != undefined) {
+            this.FNormalCells.tBodies[0].style.setProperty('background-color', clr);
+            }
+          this.FNormalCells.parentElement.parentElement.style.setProperty('background-color', clr);
+        };
+        if (this.FOrigID === "") {
+          this.FOrigID = this.GetID();
+          if (this.FOrigID === "") this.FOrigID = this.FName;
+        };
+        this.$class.AddInstanceStyle$1(this.StylePrefix() + this.FOrigID,this.GetGridCSS(this.FOrigID + "tbl"));
+        this.UpdateGridSize();
+        this.UpdateGridAlignment();
+      };
+    };
+    this.UpdateElementVisual = function () {
+      var fixcol = "";
+      var fixtxtcol = "";
+      pas["WEBLib.Controls"].TCustomControl.UpdateElementVisual.call(this);
+      if (this.IsUpdating()) return;
+      if ((this.GetElementHandle() != null) && (this.FGrid != null)) {
+        fixcol = pas["WEBLib.Graphics"].ColorToHTML(this.FFixedColor);
+        fixtxtcol = pas["WEBLib.Graphics"].ColorToHTML(this.GetFixedTextColor());
+        if ((this.FFixedCols > 0) && (this.FFixedRows > 0)) {
+          this.FFixedColRow.parentElement.style.setProperty('background-color',fixcol);
+          this.FFixedColRow.parentElement.style.setProperty('color',fixtxtcol);
+        };
+        if (this.FFixedCols > 0) {
+          this.FFixedCol.parentElement.style.setProperty('background-color',fixcol);
+                  this.FFixedCol.parentElement.style.setProperty('color',fixtxtcol);
+          
+                  if (this.FFixedCol.parentElement.parentElement) {
+                    this.FFixedCol.parentElement.parentElement.style.setProperty('background-color',fixcol);
+                    this.FFixedCol.parentElement.parentElement.style.setProperty('color',fixtxtcol);
+                  };
+        };
+        if (this.FFixedRows > 0) {
+          this.FFixedRow.parentElement.style.setProperty('background-color',fixcol);
+          this.FFixedRow.parentElement.style.setProperty('color',fixtxtcol);
+          this.FFixedRow.parentElement.parentElement.style.setProperty('background-color',fixcol);
+          this.FFixedRow.parentElement.parentElement.style.setProperty('color',fixtxtcol);
+          if (this.FFixedRow.parentElement.parentElement.parentElement) {
+            this.FFixedRow.parentElement.parentElement.parentElement.style.setProperty('background-color',fixcol);
+            this.FFixedRow.parentElement.parentElement.parentElement.style.setProperty('color',fixtxtcol);
+          };
+        };
+      };
+    };
+    this.FixedColWidth = function () {
+      var Result = 0;
+      var i = 0;
+      Result = 0;
+      for (var $l = 0, $end = this.FFixedCols - 1; $l <= $end; $l++) {
+        i = $l;
+        Result = (Result + this.GetColWidths(i)) - 0;
+      };
+      return Result;
+    };
+    this.FixedRowHeight = function () {
+      var Result = 0;
+      var i = 0;
+      Result = 0;
+      for (var $l = 0, $end = this.FFixedRows - 1; $l <= $end; $l++) {
+        i = $l;
+        Result = Result + this.GetRowHeights(i);
+      };
+      return Result;
+    };
+    this.NormalColWidth = function () {
+      var Result = 0;
+      var i = 0;
+      Result = 1;
+      for (var $l = this.FFixedCols, $end = this.FColCount - 1; $l <= $end; $l++) {
+        i = $l;
+        Result = (Result + this.GetColWidths(i) + 1) - 0;
+      };
+      return Result;
+    };
+    this.NormalRowHeight = function () {
+      var Result = 0;
+      var i = 0;
+      Result = 0;
+      for (var $l = this.FFixedRows, $end = this.FRowCount - 1; $l <= $end; $l++) {
+        i = $l;
+        Result = Result + this.GetRowHeights(i);
+      };
+      return Result;
+    };
+    this.FocusedCell = function () {
+      var Result = null;
+      Result = this.FSelectedCell;
+      return Result;
+    };
+    this.CanSelect = function (ACol, ARow) {
+      var Result = false;
+      Result = true;
+      if (this.FOnSelectCell != null) this.FOnSelectCell(this,ACol,ARow,{get: function () {
+          return Result;
+        }, set: function (v) {
+          Result = v;
+        }});
+      return Result;
+    };
+    this.CanRowAdvance = function () {
+      var Result = false;
+      Result = true;
+      return Result;
+    };
+    this.HasSelection = function () {
+      var Result = false;
+      Result = !((this.GetSelection().Left === 0) && (this.GetSelection().Top === 0) && (this.GetSelection().Right === 0) && (this.GetSelection().Bottom === 0));
+      return Result;
+    };
+    this.UpdateCell = function (ACol, ARow, AValue) {
+    };
+    this.ValidateCell = function (ACol, ARow, AValue) {
+      if (this.FOnValidateEdit != null) this.FOnValidateEdit(this,ACol,ARow,AValue);
+    };
+    this.TopLeftChanged = function () {
+      if (this.FOnTopLeftChanged != null) this.FOnTopLeftChanged(this);
+    };
+    this.RowCountChanged = function (delta) {
+      var $Self = this;
+      var r = 0;
+      var fr = 0;
+      var fc = 0;
+      var nh = 0;
+      function SetColAlign(column, td) {
+        $Self.SetAlignAttr($Self.GetColAlignments(column),td);
+      };
+      if (this.IsUpdating() && (pas.Classes.TComponentStateItem.csLoading in this.FComponentState)) return;
+      if (!(this.FNormalCells != null)) return;
+      fr = this.FFixedRows;
+      fc = this.FFixedCols;
+      nh = this.NormalRowHeight();
+      if (1 < 0) SetColAlign(0,null);
+      if (delta > 0) {
+        var i = 0;
+              var j = 0;
+              var tr = undefined;
+              var td = undefined;
+              var l = this.FNormalCells.rows.length;
+        
+              this.FNormalCells.parentElement.style.setProperty('height', nh + 'px');
+        
+              for(i = 0;i < delta; i++)
+              {
+                 tr = this.FNormalCells.insertRow(l);
+                 for(j = this.FFixedCols; j < this.FColCount; j++)
+                 {
+                    td = tr.insertCell(0);
+                    SetColAlign(j, td);
+                 }
+        
+                 if (fc > 0) {
+                   tr = this.FFixedCol.insertRow(l);
+                   for(j = 0; j < this.FFixedCols; j++)
+                   {
+                     td = tr.insertCell(0);
+                     td.setAttribute('class','fixed');
+                     SetColAlign(j, td);
+                   }
+                 }
+              };
+        this.BeginUpdate();
+        for (var $l = 1, $end = delta; $l <= $end; $l++) {
+          r = $l;
+          this.SetRowHeights(this.FRowCount - r,this.FDefaultRowHeight);
+        };
+        if (this.FDragMode === pas["WEBLib.Controls"].TDragMode.dmAutomatic) this.EnableDrag();
+        this.EndUpdate();
+      };
+      if (delta < 0) {
+        var i = 0;
+              var l = this.FNormalCells.rows.length;
+        
+              if (l > 0) {
+        
+              for(i = 0;i < -delta; i++)
+              {
+                this.FNormalCells.deleteRow(l - i - 1);
+        
+                if (fc > 0) {
+                  this.FFixedCol.deleteRow(l - i - 1);
+                }
+              }
+              };
+        if (this.FRowCount > 0) this.SetRowHeights(this.FRowCount - 1,this.GetRowHeights(this.FRowCount - 1));
+      };
+    };
+    this.ColCountChanged = function (delta) {
+      var c = 0;
+      if (this.IsUpdating() && (pas.Classes.TComponentStateItem.csLoading in this.FComponentState)) return;
+      if (!(this.FNormalCells != null)) return;
+      if (delta > 0) {
+        var i = 0;
+              var j = 0;
+              var k = 0;
+              var tr = undefined;
+              var td = undefined;
+              var sizediv,div = undefined;
+        
+              var l = this.FNormalCells.rows.length;
+        
+              for(j = 0; j < l; j++)
+              {
+                tr = this.FNormalCells.rows[j];
+        
+                k = tr.cells.length;
+        
+                 for(i = 0; i < delta; i++)
+                 {
+                   tr.insertCell(k);
+                 }
+              }
+        
+              for(j = 0; j < this.FFixedRows; j++)
+              {
+                k = this.FFixedRow.rows[j].cells.length;
+        
+                for(i = 0; i < delta; i++)
+                {
+                  td = this.FFixedRow.rows[j].insertCell(k);
+                  td.setAttribute('class','fixed');
+                  div = document.createElement("DIV");
+                  div.style = 'position:relative;height:100%;width:100%';
+                  td.appendChild(div);
+                  sizediv = document.createElement("DIV");
+                  sizediv.style = 'position:absolute;height:100%;width:5px;margin-right:-5px;left:100%;top:0px;cursor:w-resize;z-index:999;';
+                  div.appendChild(sizediv);
+                }
+              };
+        for (var $l = 1, $end = delta; $l <= $end; $l++) {
+          c = $l;
+          this.SetColWidths(this.FColCount - c,this.FDefaultColWidth);
+        };
+        if (this.FDragMode === pas["WEBLib.Controls"].TDragMode.dmAutomatic) this.EnableDrag();
+      };
+      if (delta < 0) {
+        var i = 0;
+              var j = 0;
+              var k = 0;
+              var tr = undefined;
+        
+              var l = this.FNormalCells.rows.length;
+        
+              for(j = 0; j < l; j++)
+              {
+                tr = this.FNormalCells.rows[j];
+        
+                k = tr.cells.length;
+        
+                 for(i = 0; i < -delta; i++)
+                 {
+                   tr.deleteCell(k - i - 1);
+                 }
+              }
+        
+              if (this.FFixedRows > 0) {
+        
+              k = this.FFixedRow.rows[0].cells.length;
+        
+              for(i = 0; i < -delta; i++)
+              {
+                this.FFixedRow.rows[0].deleteCell(k- i - 1);
+              }
+              };
+        if (this.FColCount > 0) this.SetColWidths(this.FColCount - 1,this.GetColWidths(this.FColCount - 1));
+      };
+    };
+    this.ClearMethodPointers = function () {
+      pas["WEBLib.Controls"].TControl.ClearMethodPointers.call(this);
+      this.FHandleEditBlurPtr = null;
+      this.FHandleEditKeypressPtr = null;
+      this.FHandleCheckClickPtr = null;
+      this.FHandleButtonClickPtr = null;
+      this.FHandleMouseDownPtr = null;
+      this.FHandleMouseUpPtr = null;
+      this.FHandleMouseMovePtr = null;
+      this.FHandleFixedClickPtr = null;
+      this.FHandleBlurPtr = null;
+      this.FHandleFocusPtr = null;
+      this.FHandleClickPtr = null;
+    };
+    this.GetMethodPointers = function () {
+      pas["WEBLib.Controls"].TControl.GetMethodPointers.call(this);
+      this.FHandleEditBlurPtr = rtl.createCallback(this,"HandleEditBlur");
+      this.FHandleEditKeypressPtr = rtl.createCallback(this,"HandleEditKeyPress");
+      this.FHandleCheckClickPtr = rtl.createCallback(this,"HandleCheckBoxClick");
+      this.FHandleButtonClickPtr = rtl.createCallback(this,"HandleButtonClick");
+      this.FHandleMouseDownPtr = rtl.createCallback(this,"HandleMouseDown");
+      this.FHandleMouseUpPtr = rtl.createCallback(this,"HandleMouseUp");
+      this.FHandleMouseMovePtr = rtl.createCallback(this,"HandleMouseMove");
+      this.FHandleFixedClickPtr = rtl.createCallback(this,"HandleFixedClick");
+      this.FHandleFocusPtr = rtl.createCallback(this,"HandleTableFocus");
+      this.FHandleBlurPtr = rtl.createCallback(this,"HandleTableBlur");
+      this.FHandleClickPtr = rtl.createCallback(this,"HandleClick");
+    };
+    this.StartEdit = function (ch) {
+      var created = false;
+      var eh = null;
+      var s = "";
+      var dorange = false;
+      if (this.FWordWrap) {
+        this.FEditType = $mod.TGridCellEditor.geMemo}
+       else this.FEditType = $mod.TGridCellEditor.geText;
+      this.GetCellEditor(this.GetCol(),this.GetRow(),{p: this, get: function () {
+          return this.p.FEditType;
+        }, set: function (v) {
+          this.p.FEditType = v;
+        }});
+      if (this.FEditType === $mod.TGridCellEditor.geNone) return;
+      eh = this.GetElementHandle();
+      this.FEditRow = this.GetRow();
+      this.FEditCol = this.GetCol();
+      this.FEditMode = true;
+      s = this.GetEditText(this.GetCol(),this.GetRow());
+      this.FOrigVal = s;
+      if (this.FEditType === $mod.TGridCellEditor.geCombo) {
+        if (!(this.FCombo != null)) {
+          this.FCombo = pas["WEBLib.StdCtrls"].TWebComboBox.$create("Create$1",[this]);
+          this.FCombo.SetElementPosition(pas["WEBLib.Controls"].TElementPosition.epRelative);
+          this.FCombo.SetWidthStyle(pas["WEBLib.Controls"].TSizeStyle.ssPercent);
+          this.FCombo.SetWidthPercent(100);
+          this.FCombo.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssPercent);
+          this.FCombo.SetHeightPercent(100);
+          this.FCombo.SetParent(this);
+          this.FCombo.FOnExit = rtl.createCallback(this,"HandleComboExit");
+          this.FCombo.FOnKeyPress = rtl.createCallback(this,"HandleComboKeyPress");
+        };
+        this.FCombo.FItems.Assign(this.FComboBoxItems);
+        this.FCombo.SetText(s);
+        this.FSelectedCell.innerHTML = "";
+        this.FSelectedCell.appendChild(this.FCombo.GetElementHandle());
+        this.FCombo.SetFocus();
+        this.RemoveSelection(this.FSelectedCell);
+        return;
+      };
+      if (this.FEditType === $mod.TGridCellEditor.geMemo) {
+        if (!(this.FMemo != null)) {
+          this.FMemo = pas["WEBLib.StdCtrls"].TWebMemo.$create("Create$1",[this]);
+          this.FMemo.SetElementPosition(pas["WEBLib.Controls"].TElementPosition.epRelative);
+          this.FMemo.SetWidthStyle(pas["WEBLib.Controls"].TSizeStyle.ssPercent);
+          this.FMemo.SetWidthPercent(100);
+          this.FMemo.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
+          this.FMemo.SetParent(this);
+          this.FMemo.GetElementHandle().style.setProperty("outline","none");
+          this.FMemo.FOnExit = rtl.createCallback(this,"HandleMemoExit");
+          this.FMemo.FOnKeyPress = rtl.createCallback(this,"HandleMemoKeyPress");
+        };
+        this.FMemo.SetHeight(this.GetRowHeights(this.FEditRow) - 3);
+        this.FMemo.FLines.SetTextStr(s);
+        this.FSelectedCell.innerHTML = "";
+        this.FSelectedCell.style.setProperty("justify-content","top");
+        this.FSelectedCell.style.setProperty("vertical-align","top");
+        this.FSelectedCell.appendChild(this.FMemo.GetElementHandle());
+        this.FMemo.SetFocus();
+        this.RemoveSelection(this.FSelectedCell);
+        return;
+      };
+      if (this.FEditType === $mod.TGridCellEditor.geCustom) {
+        this.FEditControl.SetElementPosition(pas["WEBLib.Controls"].TElementPosition.epRelative);
+        this.FEditControl.SetWidthStyle(pas["WEBLib.Controls"].TSizeStyle.ssPercent);
+        this.FEditControl.SetWidthPercent(100);
+        this.FEditControl.SetParent(this);
+        this.FEditControl.FOnExit = rtl.createCallback(this,"DoEditControlExit");
+        this.SetEditControlValue(this.FEditCol,this.FEditRow,this.FEditControl,s);
+        this.FSelectedCell.innerHTML = "";
+        this.FSelectedCell.style.setProperty("justify-content","top");
+        this.FSelectedCell.style.setProperty("vertical-align","top");
+        this.FSelectedCell.appendChild(this.FEditControl.GetElementHandle());
+        this.RemoveSelection(this.FSelectedCell);
+        return;
+      };
+      if (this.FEditType === $mod.TGridCellEditor.geMask) {
+        if (!(this.FMask != null)) {
+          this.FMask = pas["WEBLib.Mask"].TWebMaskEdit.$create("Create$1",[this]);
+          this.FMask.SetElementPosition(pas["WEBLib.Controls"].TElementPosition.epRelative);
+          this.FMask.SetWidthStyle(pas["WEBLib.Controls"].TSizeStyle.ssPercent);
+          this.FMask.SetWidthPercent(100);
+          this.FMask.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssPercent);
+          this.FMask.SetHeightPercent(100);
+          this.FMask.SetParent(this);
+          this.FMask.FOnExit = rtl.createCallback(this,"HandleMaskExit");
+          this.FMask.FOnKeyPress = rtl.createCallback(this,"HandleMaskKeyPress");
+        };
+        this.FMask.SetEditMask(this.FEditMask);
+        this.FMask.SetText(s);
+        this.FSelectedCell.innerHTML = "";
+        this.FSelectedCell.appendChild(this.FMask.GetElementHandle());
+        this.FMask.SetFocus();
+        this.FMask.SetSelection(0,s.length);
+        this.RemoveSelection(this.FSelectedCell);
+        return;
+      };
+      created = false;
+      if (this.FEdit == undefined) {
+            this.FEdit = document.createElement('INPUT');
+            this.FEdit.style.setProperty('box-sizing','border-box');
+            this.FEdit.style.setProperty('-webkit-box-sizing','border-box');
+            this.FEdit.style.setProperty('-moz-box-sizing','border-box');
+            this.FEdit.style.setProperty('outline', 'none');
+            this.FEdit.style.setProperty('border-style', 'none');
+      
+            created = true;
+          }
+          this.FEdit.removeAttribute("type");
+      var $tmp = this.FEditType;
+      if ($tmp === $mod.TGridCellEditor.geURL) {
+        this.FEdit.setAttribute("type","URL")}
+       else if ($tmp === $mod.TGridCellEditor.geDate) {
+        this.FEdit.setAttribute("type","DATE")}
+       else if ($tmp === $mod.TGridCellEditor.geTime) {
+        this.FEdit.setAttribute("type","TIME")}
+       else if ($tmp === $mod.TGridCellEditor.geRange) {
+        this.FEdit.setAttribute("type","RANGE");
+        this.FEdit.setAttribute("min",pas["WEBLib.WebTools"].NumAttribute(this.FRange.FMin));
+        this.FEdit.setAttribute("max",pas["WEBLib.WebTools"].NumAttribute(this.FRange.FMax));
+        this.FEdit.setAttribute("step",pas["WEBLib.WebTools"].NumAttribute(this.FRange.FStep));
+      } else if ($tmp === $mod.TGridCellEditor.geEmail) {
+        this.FEdit.setAttribute("type","EMAIL")}
+       else if ($tmp === $mod.TGridCellEditor.geNumber) {
+        this.FEdit.setAttribute("type","NUMBER")}
+       else if ($tmp === $mod.TGridCellEditor.geTel) {
+        this.FEdit.setAttribute("type","TEL")}
+       else if ($tmp === $mod.TGridCellEditor.geColor) this.FEdit.setAttribute("type","COLOR");
+      dorange = this.FEditType === $mod.TGridCellEditor.geText;
+      this.FEdit.removeAttribute("min");
+          this.FEdit.removeAttribute("max");
+          this.FEdit.removeAttribute("step");
+      
+          if (ch == '') {
+            this.FEdit.value = s;
+            }
+          else {
+            this.FEdit.value = ch;
+          }
+      
+          this.FEdit.style.width = "100%";
+          this.FEdit.style.height = "100%";
+          this.FEdit.style.fontFamily = eh.style.fontFamily;
+          this.FEdit.style.fontSize = eh.style.fontSize;
+      
+          if (dorange) {
+          this.FEdit.setSelectionRange(0, this.FEdit.value.length)
+          }
+      
+          this.FSelectedCell.innerHTML = "";
+          this.FSelectedCell.appendChild(this.FEdit);
+      this.FEdit.focus();
+      this.RemoveSelection(this.FSelectedCell);
+      if (created) {
+        this.FEdit.addEventListener("blur",this.FHandleEditBlurPtr);
+        this.FEdit.addEventListener("keypress",this.FHandleEditKeypressPtr);
+      };
+    };
+    this.StopEdit = function () {
+      var Result = "";
+      var val = "";
+      var eh = null;
+      Result = "";
+      if (this.FEditMode) {
+        this.FEditMode = false;
+        if (this.FEditType === $mod.TGridCellEditor.geCombo) {
+          val = this.FCombo.GetText();
+          eh = this.FCombo.GetElementHandle();
+        } else if (this.FEditType === $mod.TGridCellEditor.geMask) {
+          val = this.FMask.GetText();
+          eh = this.FMask.GetElementHandle();
+        } else {
+          val = rtl.asExt(this.FEdit,HTMLInputElement).value;
+          eh = this.FEdit;
+        };
+        this.ValidateCell(this.FEditCol,this.FEditRow,{get: function () {
+            return val;
+          }, set: function (v) {
+            val = v;
+          }});
+        if (this.FSelectedCell.contains(eh)) this.FSelectedCell.removeChild(eh);
+        this.FSelectedCell.innerHTML = val;
+        Result = val;
+        this.UpdateCell(this.FEditCol,this.FEditRow,{get: function () {
+            return val;
+          }, set: function (v) {
+            val = v;
+          }});
+        if (!($mod.TGridOption.goRowSelect in this.FOptions)) {
+          this.AddSelection(this.FSelectedCell);
+        };
+      };
+      return Result;
+    };
+    this.CanEditCell = function (ACol, ARow) {
+      var Result = false;
+      var CanEdit = false;
+      CanEdit = true;
+      if (this.FOnCanEditCell != null) this.FOnCanEditCell(this,ACol,ARow,{get: function () {
+          return CanEdit;
+        }, set: function (v) {
+          CanEdit = v;
+        }});
+      Result = CanEdit;
+      return Result;
+    };
+    this.ChangeRow = function () {
+    };
+    this.EnableColResize = function () {
+      var TableName = "";
+      var ResizeEnabled = false;
+      if (!(pas.Classes.TComponentStateItem.csDesigning in this.FComponentState)) {
+        TableName = this.GetID() + "tblResizeRow";
+        ResizeEnabled = $mod.TGridOption.goColSizing in this.FOptions;
+        TMSStringGridresizableGrid(TableName, ResizeEnabled);
+        TableName = this.GetID() + "tblResizeFixedRow";
+        ResizeEnabled = $mod.TGridOption.goColSizing in this.FOptions;
+        TMSStringGridresizableGrid(TableName, ResizeEnabled);
+      };
+    };
+    this.EnableDrag = function () {
+      var $Self = this;
+      function AddDraggableAttribute(AElement) {
+        var I = 0;
+        for (var $l = 0, $end = AElement.children.length - 1; $l <= $end; $l++) {
+          I = $l;
+          if (AElement.children.item(I).tagName === "TD") {
+            AElement.children.item(I).setAttribute("draggable","true");
+            AddDraggableAttribute(AElement.children.item(I));
+          } else AddDraggableAttribute(AElement.children.item(I));
+        };
+      };
+      if (!(this.GetContainer() != null)) return;
+      AddDraggableAttribute(this.GetContainer());
+    };
+    this.DisableDrag = function () {
+      var $Self = this;
+      function RemoveDraggableAttribute(AElement) {
+        var I = 0;
+        for (var $l = 0, $end = AElement.children.length - 1; $l <= $end; $l++) {
+          I = $l;
+          if (AElement.children.item(I).tagName === "TD") {
+            AElement.children.item(I).removeAttribute("draggable");
+            RemoveDraggableAttribute(AElement.children.item(I));
+          } else RemoveDraggableAttribute(AElement.children.item(I));
+        };
+      };
+      if (!(this.GetContainer() != null)) return;
+      RemoveDraggableAttribute(this.GetContainer());
+    };
+    this.BindCellButton = function (ACol, ARow, AElement) {
+      var el = null;
+      el = AElement.firstChild;
+      if ((el != null) && (el.tagName === "BUTTON")) {
+        el.addEventListener("click",this.FHandleButtonClickPtr);
+      };
+    };
+    this.InitCSSLibrary = function (ALibrary) {
+      if (ALibrary === pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap) {
+        this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+      };
+    };
+    this.Create$1 = function (AOwner) {
+      pas["WEBLib.Controls"].TControl.Create$1.apply(this,arguments);
+      this.FDrawingStyle = $mod.TGridDrawingStyle.gdsThemed;
+      return this;
+    };
+    this.Destroy = function () {
+      var i = 0;
+      var LObjr = null;
+      rtl.free(this,"FRange");
+      rtl.free(this,"FColWidths");
+      rtl.free(this,"FColAlignments");
+      rtl.free(this,"FRowHeights");
+      rtl.free(this,"FRows");
+      rtl.free(this,"FFixedFont");
+      for (var $l = 0, $end = this.FObjectRows.GetCount() - 1; $l <= $end; $l++) {
+        i = $l;
+        LObjr = rtl.getObject(this.FObjectRows.Get(i));
+        LObjr = rtl.freeLoc(LObjr);
+      };
+      this.FObjectRows.Clear();
+      rtl.free(this,"FObjectRows");
+      rtl.free(this,"FComboBoxItems");
+      if (this.FCombo != null) rtl.free(this,"FCombo");
+      if (this.FMask != null) rtl.free(this,"FMask");
+      pas["WEBLib.Controls"].TCustomControl.Destroy.call(this);
+    };
+    this.CreateInitialize = function () {
+      pas["WEBLib.Controls"].TCustomControl.CreateInitialize.call(this);
+      this.FEditAdvance = false;
+      this.FColWidths = pas.Classes.TList.$create("Create$1");
+      this.FRowHeights = pas.Classes.TList.$create("Create$1");
+      this.FColAlignments = pas.Classes.TList.$create("Create$1");
+      this.FObjectRows = pas.Classes.TList.$create("Create$1");
+      this.FRows = pas.Classes.TStringList.$create("Create$1");
+      this.FRows.FOnChange = rtl.createCallback(this,"RowsChanged");
+      this.FComboBoxItems = pas.Classes.TStringList.$create("Create$1");
+      this.FRange = $mod.TGridRange.$create("Create$1");
+      this.FHasMergedCells = false;
+      this.FDefaultColAlignment = pas.Classes.TAlignment.taLeftJustify;
+      this.FStartCell.X = -1;
+      this.FStartCell.Y = -1;
+      this.FFixedColor = 15790320;
+      this.FRowCount = 5;
+      this.FColCount = 5;
+      this.FColor = 16711422;
+      this.FFixedCols = 1;
+      this.FFixedRows = 1;
+      this.FDefaultColWidth = 64;
+      this.FDefaultRowHeight = 22;
+      this.FShowSelection = true;
+      this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efProperty);
+      this.SetElementPosition(pas["WEBLib.Controls"].TElementPosition.epAbsolute);
+      this.FScrollBars = pas["WEBLib.Controls"].TScrollStyle.ssBoth;
+      this.FGridLineColor = 12632256;
+      this.FSelectionColor = 0xFF8F5B;
+      this.FSelectionTextColor = 0xFFFFFF;
+      this.FOptions = rtl.createSet($mod.TGridOption.goHorzLine,$mod.TGridOption.goVertLine,$mod.TGridOption.goRangeSelect);
+      this.FFixedFont = pas["WEBLib.Graphics"].TFont.$create("Create$1");
+      this.FFixedFont.FOnChange = rtl.createCallback(this,"FixedFontChanged");
+      if (pas.Classes.TComponentStateItem.csDesigning in this.FComponentState) {
+        this.SetWidth(400);
+        this.SetHeight(300);
+      };
+    };
+    this.SetFocus = function () {
+      if (this.FNormalCells != null) this.FNormalCells.focus();
+    };
+    this.ShowEdit = function () {
+      this.StartEdit("");
+    };
+    this.HideEdit = function (Advance) {
+      var val = "";
+      var cval = "";
+      var eh = null;
+      var rh = 0;
+      if (this.FEditMode) {
+        this.FEditMode = false;
+        if (this.FEditType === $mod.TGridCellEditor.geCombo) {
+          val = this.FCombo.GetText();
+          eh = this.FCombo.GetElementHandle();
+        } else if (this.FEditType === $mod.TGridCellEditor.geMemo) {
+          val = this.FMemo.FLines.GetTextStr();
+          eh = this.FMemo.GetElementHandle();
+        } else if (this.FEditType === $mod.TGridCellEditor.geMask) {
+          val = this.FMask.GetText();
+          eh = this.FMask.GetElementHandle();
+        } else if (this.FEditType === $mod.TGridCellEditor.geCustom) {
+          this.GetEditControlValue(this.FEditCol,this.FEditRow,this.FEditControl,{get: function () {
+              return val;
+            }, set: function (v) {
+              val = v;
+            }});
+          eh = this.FEditControl.GetElementHandle();
+          this.FSelectedCell.style.removeProperty("vertical-align");
+        } else {
+          val = rtl.asExt(this.FEdit,HTMLInputElement).value;
+          eh = this.FEdit;
+        };
+        this.ValidateCell(this.FEditCol,this.FEditRow,{get: function () {
+            return val;
+          }, set: function (v) {
+            val = v;
+          }});
+        if (this.FSelectedCell.contains(eh)) this.FSelectedCell.removeChild(eh);
+        cval = val;
+        if (this.FWordWrap) {
+          rh = this.GetRowHeights(this.FEditRow) - 2;
+          cval = '<DIV class="cell" style="height:' + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+              return rh;
+            }, set: function (v) {
+              rh = v;
+            }}) + "px;max-height:" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+              return rh;
+            }, set: function (v) {
+              rh = v;
+            }}) + 'px">' + cval + "</DIV>";
+        };
+        this.FSelectedCell.innerHTML = cval;
+        this.UpdateCell(this.FEditCol,this.FEditRow,{get: function () {
+            return val;
+          }, set: function (v) {
+            val = v;
+          }});
+        if (!($mod.TGridOption.goRowSelect in this.FOptions)) this.AddSelection(this.FSelectedCell);
+        this.SetEditText(this.FEditCol,this.FEditRow,val);
+        this.FBlockFocus = true;
+        this.FNormalCells.focus();
+        if (Advance) {
+          this.RemoveSelection(this.FSelectedCell);
+          if (this.GetCol() < (this.FColCount - 1)) {
+            this.SetCol(this.GetCol() + 1)}
+           else {
+            if (this.CanRowAdvance()) {
+              if (this.GetRow() < (this.FRowCount - 1)) {
+                this.SetCol(this.FFixedCols);
+                this.SetRow(this.GetRow() + 1);
+              } else {
+                this.SetCol(this.FFixedCols);
+                this.SetRow(this.FFixedRows);
+              };
+            } else return;
+          };
+          if (this.CanEditCell(this.GetCol(),this.GetRow())) this.StartEdit("");
+        };
+      };
+    };
+    this.CancelEdit = function () {
+      var eh = null;
+      if (this.FEditMode) {
+        if (this.FEditType === $mod.TGridCellEditor.geCombo) {
+          eh = this.FCombo.GetElementHandle();
+        } else if (this.FEditType === $mod.TGridCellEditor.geMemo) {
+          eh = this.FMemo.GetElementHandle();
+        } else if (this.FEditType === $mod.TGridCellEditor.geMask) {
+          eh = this.FMask.GetElementHandle();
+        } else {
+          eh = this.FEdit;
+        };
+        this.FEditMode = false;
+        this.ValidateCell(this.FEditCol,this.FEditRow,{p: this, get: function () {
+            return this.p.FOrigVal;
+          }, set: function (v) {
+            this.p.FOrigVal = v;
+          }});
+        if (this.FSelectedCell.contains(eh)) this.FSelectedCell.removeChild(eh);
+        this.FSelectedCell.innerHTML = this.FOrigVal;
+        this.UpdateCell(this.FEditCol,this.FEditRow,{p: this, get: function () {
+            return this.p.FOrigVal;
+          }, set: function (v) {
+            this.p.FOrigVal = v;
+          }});
+        if (!($mod.TGridOption.goRowSelect in this.FOptions)) {
+          this.AddSelection(this.FSelectedCell);
+        };
+        this.SetEditText(this.FEditCol,this.FEditRow,this.FOrigVal);
+        this.FBlockFocus = true;
+        this.FNormalCells.focus();
+      };
+    };
+    this.Clear = function () {
+      var c = 0;
+      var r = 0;
+      for (var $l = 0, $end = this.FColCount - 1; $l <= $end; $l++) {
+        c = $l;
+        for (var $l1 = 0, $end1 = this.FRowCount - 1; $l1 <= $end1; $l1++) {
+          r = $l1;
+          if (this.HasButton(c,r)) this.RemoveButton(c,r);
+          if (this.HasCheckBox(c,r)) this.RemoveCheckBox(c,r);
+          this.SetCells(c,r,"");
+        };
+      };
+    };
+    this.ClearSelection = function () {
+      var rselect = false;
+      var tr = null;
+      rselect = $mod.TGridOption.goRowSelect in this.FOptions;
+      if ((this.FSelectedCell != null) && rselect) {
+        tr = this.FSelectedCell.parentElement;
+        this.RemoveSelection(tr);
+      };
+      this.SetSelection($mod.GridRect(0,0,0,0));
+      if (this.FSelectedCell != null) {
+        this.RemoveSelection(this.FSelectedCell);
+      };
+    };
+    this.InitSample = function (AInitMethod) {
+      var i = 0;
+      var j = 0;
+      for (var $l = 0, $end = this.FRowCount - 1; $l <= $end; $l++) {
+        i = $l;
+        for (var $l1 = 0, $end1 = this.FColCount - 1; $l1 <= $end1; $l1++) {
+          j = $l1;
+          var $tmp = AInitMethod;
+          if ($tmp === $mod.TInitMethod.imRandom) {
+            this.SetCells(j,i,pas.SysUtils.IntToStr(pas.System.Random(100)))}
+           else if ($tmp === $mod.TInitMethod.imLinear) this.SetCells(j,i,pas.SysUtils.IntToStr(j) + ":" + pas.SysUtils.IntToStr(i));
+        };
+      };
+    };
+    this.Sort = function (AColumn, ADirection) {
+      var colidx = 0;
+      var grid = null;
+      var asc = false;
+      grid = this.FNormalCells;
+      asc = ADirection === $mod.TGridSortIndicator.siAscending;
+      colidx = AColumn - this.FFixedCols;
+      const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+          const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+            v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+            )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+      
+          const table = grid;
+          Array.from(table.querySelectorAll('tr:nth-child(n+1)'))
+              .sort(comparer(colidx, asc))
+              .forEach(tr => table.appendChild(tr) );
+    };
+    this.MouseToCell = function (X, Y, C, R) {
+      var DocX = 0.0;
+      var DocY = 0.0;
+      var el = null;
+      var cindex = 0;
+      var rindex = 0;
+      var frm = null;
+      cindex = -1;
+      rindex = -1;
+      this.ClientToXY(X,Y,{get: function () {
+          return DocX;
+        }, set: function (v) {
+          DocX = v;
+        }},{get: function () {
+          return DocY;
+        }, set: function (v) {
+          DocY = v;
+        }});
+      frm = pas["WEBLib.Forms"].GetParentForm(this);
+      if (frm.FPopup) {
+        DocX = DocX - frm.GetLeft();
+        DocY = DocY - frm.GetTop();
+      };
+      el = document.elementFromPoint(Math.round(DocX),Math.round(DocY));
+      if (el != null) {
+        if (el.tagName.toLowerCase() == 'td')
+              {
+                cindex = el.cellIndex;
+                var tr = el.parentElement;
+                rindex = tr.rowIndex;
+        
+                if (tr.parentElement.parentElement == this.FNormalCells)
+                {
+                  rindex = rindex + this.FFixedRows;
+                  cindex = cindex + this.FFixedCols;
+                }
+                if (tr.parentElement.parentElement == this.FFixedCol)
+                {
+                  rindex = rindex + this.FFixedRows;
+                }
+                if (tr.parentElement.parentElement == this.FFixedRow)
+                {
+                  cindex = cindex + this.FFixedCols;
+                }
+              };
+      };
+      R.set(rindex);
+      C.set(cindex);
+    };
+    this.LoadFromJSON = function (AURL, ADataNode) {
+      this.FDataNode = ADataNode;
+      this.FReq = new XMLHttpRequest();
+      this.FReq.addEventListener("load",rtl.createSafeCallback(this,"DoHttpLoadJson"));
+      this.FReq.addEventListener("abort",rtl.createSafeCallback(this,"DoHttpAbort"));
+      this.FReq.open("GET",AURL);
+      this.DoHttpRequest(this.FReq);
+      this.FReq.send();
+    };
+    this.LoadFromJSON$1 = function (AJSON, ADataNode) {
+      var JO = undefined;
+      var JA = null;
+      var r = 0;
+      var c = 0;
+      var arow = "";
+      var sl = null;
+      var ce = null;
+      var cd = "";
+      var cn = "";
+      if (ADataNode !== "") {
+        JA = AJSON[ADataNode]}
+       else JA = AJSON;
+      if (JA != null) {
+        sl = pas.Classes.TStringList.$create("Create$1");
+        this.Clear();
+        this.SetRowCount(JA.length + this.FFixedRows);
+        for (var $l = 0, $end = JA.length - 1; $l <= $end; $l++) {
+          r = $l;
+          JO = JA[r];
+          c = 0;
+          arow = "";
+          var x = undefined;
+          for (x in JO) {
+            arow += "|" + JO[x];
+            c++;
+          };
+          pas.System.Delete({get: function () {
+              return arow;
+            }, set: function (v) {
+              arow = v;
+            }},1,1);
+          sl.FStrictDelimiter = true;
+          sl.SetDelimiter("|");
+          sl.SetDelimitedText(arow);
+          if (this.FColCount < sl.GetCount()) this.SetColCount(sl.GetCount() + this.FFixedCols);
+          for (var $l1 = 0, $end1 = sl.GetCount() - 1; $l1 <= $end1; $l1++) {
+            c = $l1;
+            cd = sl.Get(c);
+            this.GetCellData(this.FFixedCols + c,this.FFixedRows + r,null,{get: function () {
+                return cd;
+              }, set: function (v) {
+                cd = v;
+              }});
+            this.SetCells(this.FFixedCols + c,this.FFixedRows + r,cd);
+            cn = "";
+            ce = this.GetCellElements(this.FFixedCols + c,this.FFixedRows + r);
+            this.GetCellChildren(this.FFixedCols + c,this.FFixedRows + r,null,cd,ce);
+            this.GetCellClassName(this.FFixedCols + c,this.FFixedRows + r,null,cd,{get: function () {
+                return cn;
+              }, set: function (v) {
+                cn = v;
+              }});
+            if (cn !== "") ce.setAttribute("class",cn);
+          };
+        };
+        sl = rtl.freeLoc(sl);
+      };
+      this.UpdateGridSize();
+      this.UpdateGridAlignment();
+    };
+    this.LoadFromJSONAsync = function (AURL, ADataNode) {
+      var $Self = this;
+      var Result = null;
+      Result = new Promise(function (ASuccess, AFailed) {
+        function DoLoad(Event) {
+          var Result = false;
+          if ($Self.DoHttpLoadJson(Event)) {
+            ASuccess(Event.target)}
+           else AFailed(Event.target);
+          Result = true;
+          return Result;
+        };
+        function DoError(Event) {
+          var Result = false;
+          AFailed(Event.target);
+          Result = true;
+          return Result;
+        };
+        $Self.FDataNode = ADataNode;
+        $Self.FReq = new XMLHttpRequest();
+        $Self.FReq.addEventListener("load",rtl.createSafeCallback(null,DoLoad));
+        $Self.FReq.addEventListener("abort",rtl.createSafeCallback(null,DoError));
+        $Self.FReq.addEventListener("timeout",rtl.createSafeCallback(null,DoError));
+        $Self.FReq.addEventListener("error",rtl.createSafeCallback(null,DoError));
+        $Self.FReq.open("GET",AURL);
+        $Self.DoHttpRequest($Self.FReq);
+        $Self.FReq.send();
+      });
+      return Result;
+    };
+    this.LoadFromCSV = function (AURL, Delimiter, LoadFixed) {
+      this.FDelimiter = Delimiter;
+      this.FLoadFixed = LoadFixed;
+      this.FReq = new XMLHttpRequest();
+      this.FReq.addEventListener("load",rtl.createSafeCallback(this,"DoHttpLoadCsv"));
+      this.FReq.addEventListener("abort",rtl.createSafeCallback(this,"DoHttpAbort"));
+      this.FReq.open("GET",AURL);
+      this.DoHttpRequest(this.FReq);
+      this.FReq.send();
+    };
+    this.LoadFromCSVAsync = function (AURL, Delimiter, LoadFixed) {
+      var $Self = this;
+      var Result = null;
+      Result = new Promise(function (ASuccess, AFailed) {
+        function DoLoad(Event) {
+          var Result = false;
+          if ($Self.DoHttpLoadCsv(Event)) {
+            ASuccess(Event.target)}
+           else AFailed(Event.target);
+          Result = true;
+          return Result;
+        };
+        function DoError(Event) {
+          var Result = false;
+          AFailed(Event.target);
+          Result = true;
+          return Result;
+        };
+        $Self.FDelimiter = Delimiter;
+        $Self.FLoadFixed = LoadFixed;
+        $Self.FReq = new XMLHttpRequest();
+        $Self.FReq.addEventListener("load",rtl.createSafeCallback(null,DoLoad));
+        $Self.FReq.addEventListener("abort",rtl.createSafeCallback(null,DoError));
+        $Self.FReq.addEventListener("timeout",rtl.createSafeCallback(null,DoError));
+        $Self.FReq.addEventListener("error",rtl.createSafeCallback(null,DoError));
+        $Self.FReq.open("GET",AURL);
+        $Self.DoHttpRequest($Self.FReq);
+        $Self.FReq.send();
+      });
+      return Result;
+    };
+    this.LoadFromStrings = function (AStrings, Delimiter, LoadFixed) {
+      this.FDelimiter = Delimiter;
+      this.FLoadFixed = LoadFixed;
+      this.LoadFromStringList(AStrings);
+    };
+    this.SaveToCSV = function (AFileName, Delimiter, SaveFixed) {
+      var sl = null;
+      sl = pas.Classes.TStringList.$create("Create$1");
+      try {
+        this.SaveToStrings(sl,Delimiter,SaveFixed);
+        sl.SaveToFile(AFileName);
+      } finally {
+        sl = rtl.freeLoc(sl);
+      };
+    };
+    this.SaveToStrings = function (AStrings, Delimiter, SaveFixed) {
+      var r = 0;
+      var c = 0;
+      var fr = 0;
+      var fc = 0;
+      var s = "";
+      var rowstr = "";
+      fr = 0;
+      fc = 0;
+      if (!SaveFixed) fc = this.FFixedCols;
+      if (!SaveFixed) fr = this.FFixedRows;
+      for (var $l = fr, $end = this.FRowCount - 1; $l <= $end; $l++) {
+        r = $l;
+        rowstr = "";
+        for (var $l1 = fc, $end1 = this.FColCount - 1; $l1 <= $end1; $l1++) {
+          c = $l1;
+          s = this.GetCells(c,r);
+          s = pas.SysUtils.StringReplace(s,'"','""',rtl.createSet(pas.SysUtils.TStringReplaceFlag.rfReplaceAll));
+          if ((pas.System.Pos(Delimiter,s) > 0) || (pas.System.Pos("\r",s) > 0)) {
+            s = '"' + s + '"';
+          };
+          if (s === "") s = '""';
+          if (rowstr === "") {
+            rowstr = s}
+           else rowstr = rowstr + Delimiter + s;
+        };
+        AStrings.Add(rowstr);
+      };
+    };
+    this.SelectCell = function (ACol, ARow) {
+      var rc = 0;
+      var rr = 0;
+      this.SetSelection($mod.GridRect(ACol,ARow,ACol,ARow));
+      rc = ACol - this.FFixedCols;
+      rr = ARow - this.FFixedRows;
+      if ((rc >= 0) && (rr >= 0)) {
+        //if all rows are deleted then no indicator is displayed
+        if (this.FNormalCells.rows.length <= 0)
+        {
+          this.FSelectedCell = null;
+          this.UpdateIndicator(this.FFixedRows);
+          return;
+        }
+        this.FSelectedCell = this.FNormalCells.rows[rr].cells[rc];
+      } else {
+        this.FSelectedCell = null;
+      };
+    };
+    this.InsertRow = function (Index) {
+      var i = 0;
+      var fr = 0;
+      fr = this.FFixedRows;
+      var tr;
+      var td;
+      if (Index < this.FFixedRows) {
+        if (this.FFixedCols > 0) {
+          tr = this.FFixedColRow.insertRow(Index-fr);
+          td = tr.insertCell(i-1);
+          for (var $l = 0, $end = this.FFixedCols - 1; $l <= $end; $l++) {
+            i = $l;
+            td = tr.insertCell(i-1);
+          };
+        };
+        tr = this.FFixedRow.insertRow(Index);
+        for (var $l1 = this.FFixedCols, $end1 = this.FColCount - 1; $l1 <= $end1; $l1++) {
+          i = $l1;
+          tr.insertCell(i-1);
+        };
+        this.FFixedRows = this.FFixedRows + 1;
+      } else if (Index >= this.FFixedRows) {
+        if (this.FFixedCols > 0) {
+          tr = this.FFixedCol.insertRow(Index-fr);
+          for (var $l2 = 0, $end2 = this.FFixedCols - 1; $l2 <= $end2; $l2++) {
+            i = $l2;
+            td = tr.insertCell(i-1);
+          };
+        };
+        tr = this.FNormalCells.insertRow(Index-fr);
+        for (var $l3 = this.FFixedCols, $end3 = this.FColCount - 1; $l3 <= $end3; $l3++) {
+          i = $l3;
+          tr.insertCell(i-1);
+        };
+      };
+      this.FRowCount = this.FRowCount + 1;
+      this.SetRowHeights(Index,this.FDefaultRowHeight);
+      this.UpdateGridSize();
+      this.UpdateGridAlignment();
+    };
+    this.RemoveRow = function (Index) {
+      var td = null;
+      var tr = null;
+      var fr = 0;
+      var i = 0;
+      if (Index >= this.FRowCount) throw pas.SysUtils.Exception.$create("Create$1",["Invalid row index"]);
+      fr = this.FFixedRows;
+      if (Index < this.FFixedRows) {
+        if (this.FFixedCols > 0) {
+          this.FFixedColRow.deleteRow(Index);
+        };
+        this.FFixedRow.deleteRow(Index);
+      } else {
+        if (this.FFixedCols > 0) {
+          this.FFixedCol.deleteRow(Index -fr);
+        };
+        this.FNormalCells.deleteRow(Index - fr);
+      };
+      if (this.FRowHeights.GetCount() === this.FRowCount) this.FRowHeights.Delete(Index);
+      this.FRowCount = this.FRowCount - 1;
+      this.SetRowHeights(0,this.GetRowHeights(0));
+      this.UpdateGridSize();
+      this.UpdateGridAlignment();
+    };
+    this.InsertColumn = function (Index) {
+      var i = 0;
+      var fc = 0;
+      fc = this.FFixedCols;
+      var tr;
+      var td;
+      if (Index < this.FFixedCols) {
+        if (this.FFixedRows > 0) {
+          for (var $l = 0, $end = this.FFixedRows - 1; $l <= $end; $l++) {
+            i = $l;
+            tr = this.FFixedColRow.rows[i];
+            td = tr.insertCell(Index);
+          };
+        };
+        for (var $l1 = 0, $end1 = this.FRowCount - 1 - this.FFixedRows; $l1 <= $end1; $l1++) {
+          i = $l1;
+          tr = this.FFixedCol.rows[i];
+          td = tr.insertCell(Index);
+        };
+        this.FFixedCols = this.FFixedCols + 1;
+      } else {
+        if (this.FFixedRows > 0) {
+          for (var $l2 = 0, $end2 = this.FFixedRows - 1; $l2 <= $end2; $l2++) {
+            i = $l2;
+            tr = this.FFixedRow.rows[i];
+            td = tr.insertCell(Index - fc);
+          };
+        };
+        for (var $l3 = 0, $end3 = this.FRowCount - 1 - this.FFixedRows; $l3 <= $end3; $l3++) {
+          i = $l3;
+          tr = this.FNormalCells.rows[i];
+          td = tr.insertCell(Index - fc);
+        };
+      };
+      this.FColCount = this.FColCount + 1;
+      for (var $l4 = this.FColCount - 1, $end4 = Index; $l4 >= $end4; $l4--) {
+        i = $l4;
+        if (Index > 0) this.SetColWidths(i,this.GetColWidths(i - 1));
+      };
+      this.SetColWidths(Index,this.FDefaultColWidth);
+    };
+    this.RemoveColumn = function (Index) {
+      var i = 0;
+      var fc = 0;
+      fc = this.FFixedCols;
+      var tr;
+      var td;
+      if (Index < this.FFixedCols) {
+        if (this.FFixedRows > 0) {
+          for (var $l = 0, $end = this.FFixedRows - 1; $l <= $end; $l++) {
+            i = $l;
+            tr = this.FFixedColRow.rows[i];
+            td = tr.deleteCell(Index);
+          };
+        };
+        for (var $l1 = 0, $end1 = this.FRowCount - 1 - this.FFixedRows; $l1 <= $end1; $l1++) {
+          i = $l1;
+          tr = this.FFixedCol.rows[i];
+          td = tr.deleteCell(Index);
+        };
+        this.FFixedCols = this.FFixedCols - 1;
+      } else {
+        if (this.FFixedRows > 0) {
+          for (var $l2 = 0, $end2 = this.FFixedRows - 1; $l2 <= $end2; $l2++) {
+            i = $l2;
+            tr = this.FFixedRow.rows[i];
+            td = tr.deleteCell(Index - fc);
+          };
+        };
+        for (var $l3 = 0, $end3 = this.FRowCount - 1 - this.FFixedRows; $l3 <= $end3; $l3++) {
+          i = $l3;
+          tr = this.FNormalCells.rows[i];
+          td = tr.deleteCell(Index - fc);
+        };
+      };
+      this.FColCount = this.FColCount - 1;
+      for (var $l4 = Index, $end4 = this.FColCount - 1; $l4 <= $end4; $l4++) {
+        i = $l4;
+        this.SetColWidths(i,this.GetColWidths(i + 1));
+      };
+    };
+    this.AddCheckBox = function (ACol, ARow, AState) {
+      var chk = null;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        if (!this.HasCheckBox(ACol,ARow)) {
+          chk = document.createElement("INPUT");
+          chk.setAttribute("type","checkbox");
+          chk.checked = AState;
+          this.GetCellElements(ACol,ARow).insertBefore(chk,this.GetCellElements(ACol,ARow).firstChild);
+          chk.addEventListener("click",this.FHandleCheckClickPtr);
+        };
+      };
+    };
+    this.RemoveCheckBox = function (ACol, ARow) {
+      var el = null;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetCheckElement(ACol,ARow);
+        if (el != null) {
+          el.removeEventListener("click",this.FHandleCheckClickPtr);
+          el.remove();
+        };
+      };
+    };
+    this.HasCheckBox = function (ACol, ARow) {
+      var Result = false;
+      var el = null;
+      Result = false;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetCheckElement(ACol,ARow);
+        Result = el != null;
+      };
+      return Result;
+    };
+    this.AddButton = function (ACol, ARow, AText, AStyle) {
+      var s = "";
+      var ct = "";
+      var el = null;
+      if ((ARow >= 0) && (ACol >= 0) && !this.HasCheckBox(ACol,ARow)) {
+        ct = this.GetCells(ACol,ARow);
+        if (ct !== "") ct = "&nbsp;" + ct;
+        s = '<BUTTON type="button" style="vertical-align:middle"';
+        if (AStyle !== "") s = s + ' class="' + AStyle + '"';
+        s = s + ">" + AText + "</BUTTON>";
+        this.SetCells(ACol,ARow,s + ct);
+        el = this.GetCellElements(ACol,ARow);
+        this.BindCellButton(ACol,ARow,el);
+      };
+    };
+    this.RemoveButton = function (ACol, ARow) {
+      var el = null;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetButtonElement(ACol,ARow);
+        if (el != null) {
+          el.removeEventListener("click",this.FHandleCheckClickPtr);
+          el.remove();
+        };
+      };
+    };
+    this.HasButton = function (ACol, ARow) {
+      var Result = false;
+      var el = null;
+      Result = false;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetButtonElement(ACol,ARow);
+        Result = el != null;
+      };
+      return Result;
+    };
+    this.AddCanvas = function (ACol, ARow) {
+      var el = null;
+      var w = 0;
+      var h = 0;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        if (!this.HasCanvas(ACol,ARow)) {
+          w = this.GetColWidths(ACol);
+          h = this.GetRowHeights(ARow);
+          el = document.createElement("CANVAS");
+          el.setAttribute("width",pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+              return w;
+            }, set: function (v) {
+              w = v;
+            }}) + "px");
+          el.setAttribute("height",pas["WEBLib.Utils"].TLongIntHelper.ToString.call({a: h - 1, get: function () {
+              return this.a;
+            }, set: function (v) {
+              rtl.raiseE("EPropReadOnly");
+            }}) + "px");
+          el.style.setProperty("display","block");
+          this.GetCellElements(ACol,ARow).insertBefore(el,this.GetCellElements(ACol,ARow).firstChild);
+        };
+      };
+    };
+    this.RemoveCanvas = function (ACol, ARow) {
+      var el = null;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetCanvasElement(ACol,ARow);
+        if (el != null) {
+          el.remove();
+        };
+      };
+    };
+    this.HasCanvas = function (ACol, ARow) {
+      var Result = false;
+      var el = null;
+      Result = false;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetCanvasElement(ACol,ARow);
+        Result = el != null;
+      };
+      return Result;
+    };
+    this.GetCanvas$1 = function (ACol, ARow) {
+      var Result = null;
+      var el = null;
+      Result = null;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetCanvasElement(ACol,ARow);
+        if (el != null) Result = el;
+      };
+      return Result;
+    };
+    this.AddSortIndicator = function (ACol, ARow, AIndicator) {
+      var s = "";
+      var sid = "";
+      var sp = 0;
+      s = this.GetCells(ACol,ARow);
+      sp = pas.System.Pos("<span",s);
+      if (sp > 0) s = pas.System.Copy(s,1,sp - 1);
+      sid = this.FName + "si" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return ACol;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }}) + "_" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return ARow;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }});
+      var $tmp = AIndicator;
+      if ($tmp === $mod.TGridSortIndicator.siNone) {
+        this.SetCells(ACol,ARow,s)}
+       else if ($tmp === $mod.TGridSortIndicator.siAscending) {
+        this.SetCells(ACol,ARow,s + '<span style="cursor:pointer;float:right" id="' + sid + '" sort="up">' + $impl.GlyphAscending + "</span>")}
+       else if ($tmp === $mod.TGridSortIndicator.siDescending) this.SetCells(ACol,ARow,s + '<span style="cursor:pointer;float:right" id="' + sid + '" sort="dn">' + $impl.GlyphDescending + "</span>");
+    };
+    this.SelectSortIndicator = function (ACol, ARow, ASelect) {
+      var el = null;
+      var sid = "";
+      sid = this.FName + "si" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return ACol;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }}) + "_" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return ARow;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }});
+      el = document.getElementById(sid);
+      if (el != null) {
+        if (ASelect) {
+          el.style.setProperty("color",pas["WEBLib.Graphics"].ColorToHTML(this.FSelectionColor))}
+         else el.style.removeProperty("color");
+      };
+    };
+    this.SetSortIndicator = function (ACol, ARow, AIndicator) {
+      var el = null;
+      var sid = "";
+      sid = this.FName + "si" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return ACol;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }}) + "_" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return ARow;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }});
+      el = document.getElementById(sid);
+      if (el != null) {
+        if (AIndicator === $mod.TGridSortIndicator.siAscending) {
+          el.innerHTML = $impl.GlyphAscending;
+          el.setAttribute("sort","up");
+        } else {
+          el.innerHTML = $impl.GlyphDescending;
+          el.setAttribute("sort","dn");
+        };
+      };
+    };
+    this.HasSortIndicator = function (ACol, ARow) {
+      var Result = false;
+      var el = null;
+      var sid = "";
+      sid = this.FName + "si" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return ACol;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }}) + "_" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return ARow;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }});
+      el = document.getElementById(sid);
+      Result = el != null;
+      return Result;
+    };
+    this.RemoveSortIndicator = function (ACol, ARow) {
+      var el = null;
+      var sid = "";
+      sid = this.FName + "si" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return ACol;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }}) + "_" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return ARow;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }});
+      el = document.getElementById(sid);
+      if (el != null) el.parentElement.removeChild(el);
+    };
+    this.AddProgress = function (ACol, ARow, APosition, AStyle) {
+      var prog = null;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        if (!this.HasProgress(ACol,ARow)) {
+          prog = document.createElement("PROGRESS");
+          prog.setAttribute("max","100");
+          prog.setAttribute("value",pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+              return APosition;
+            }, set: function (v) {
+              APosition = v;
+            }}));
+          prog.style.setProperty("width","100%");
+          if (AStyle !== "") prog.setAttribute("class",AStyle);
+          this.GetCellElements(ACol,ARow).insertBefore(prog,this.GetCellElements(ACol,ARow).firstChild);
+        };
+      };
+    };
+    this.SetProgress = function (ACol, ARow, APosition) {
+      var el = null;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetProgressElement(ACol,ARow);
+        if (el != null) {
+          el.setAttribute("value",pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+              return APosition;
+            }, set: function (v) {
+              APosition = v;
+            }}));
+        };
+      };
+    };
+    this.RemoveProgress = function (ACol, ARow) {
+      var el = null;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetProgressElement(ACol,ARow);
+        el.remove();
+      };
+    };
+    this.HasProgress = function (ACol, ARow) {
+      var Result = false;
+      var el = null;
+      Result = false;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetProgressElement(ACol,ARow);
+        Result = el != null;
+      };
+      return Result;
+    };
+    this.HasVertScrollBar = function () {
+      var Result = false;
+      Result = false;
+      if (this.FNormalCells.parentElement != null) {
+        Result = this.FNormalCells.parentElement.parentElement.clientHeight < this.FNormalCells.parentElement.scrollHeight;
+      };
+      return Result;
+    };
+    this.HasHorzScrollBar = function () {
+      var Result = false;
+      Result = false;
+      if (this.FNormalCells.parentElement != null) {
+        Result = this.FNormalCells.parentElement.parentElement.clientWidth < this.FNormalCells.parentElement.scrollWidth;
+      };
+      return Result;
+    };
+    this.MergeCells = function (ACol, ARow, NumCol, NumRow) {
+      var i = 0;
+      var j = 0;
+      var el = null;
+      var mel = null;
+      var cw = 0;
+      this.FHasMergedCells = true;
+      mel = this.CellRealElement(ACol,ARow);
+      for (var $l = NumCol; $l >= 1; $l--) {
+        i = $l;
+        for (var $l1 = NumRow; $l1 >= 1; $l1--) {
+          j = $l1;
+          if ((i > 1) || (j > 1)) {
+            el = this.CellRealElement((ACol + i) - 1,(ARow + j) - 1);
+            el.remove();
+          };
+        };
+      };
+      if (NumCol > 1) mel.setAttribute("colspan",pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return NumCol;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }}));
+      if (NumRow > 1) mel.setAttribute("rowspan",pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return NumRow;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }}));
+      if (ARow in rtl.createSet(0,1)) {
+        cw = 0;
+        for (var $l2 = ACol, $end = (ACol + NumCol) - 1; $l2 <= $end; $l2++) {
+          i = $l2;
+          cw = (cw + this.GetColWidths(i)) - 0;
+          if (((ARow === 0) && ($mod.TGridOption.goFixedVertLine in this.FOptions)) || ((ARow === 1) && ($mod.TGridOption.goVertLine in this.FOptions))) if (NumCol > 1) cw += 1;
+        };
+        mel.style.setProperty("width",pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+            return cw;
+          }, set: function (v) {
+            cw = v;
+          }}) + "px");
+        mel.style.setProperty("max-width",pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+            return cw;
+          }, set: function (v) {
+            cw = v;
+          }}) + "px");
+      };
+    };
+    this.SplitCells = function (ACol, ARow) {
+      var el = null;
+      var td = null;
+      var split = null;
+      var i = 0;
+      var j = 0;
+      var NumRow = 0;
+      var NumCol = 0;
+      if (this.IsMergedCell(ACol,ARow,{get: function () {
+          return NumCol;
+        }, set: function (v) {
+          NumCol = v;
+        }},{get: function () {
+          return NumRow;
+        }, set: function (v) {
+          NumRow = v;
+        }})) {
+        split = this.CellRealElement(ACol,ARow);
+        for (var $l = 1, $end = Math.max(1,NumRow); $l <= $end; $l++) {
+          i = $l;
+          el = this.CellRealElement(ACol + NumCol,(ARow + i) - 1);
+          for (var $l1 = 1, $end1 = Math.max(1,NumCol); $l1 <= $end1; $l1++) {
+            j = $l1;
+            if ((j === 1) && (i === 1)) continue;
+            td = document.createElement("TD");
+            el.parentNode.insertBefore(td,el);
+          };
+        };
+        split.setAttribute("colspan","");
+        split.setAttribute("rowspan","");
+        if (ARow === 0) {
+          for (var $l2 = ACol, $end2 = (ACol + NumCol) - 1; $l2 <= $end2; $l2++) {
+            i = $l2;
+            this.SetColWidths(i,this.GetColWidths(i));
+          };
+        };
+      };
+    };
+    this.IsMergedCell = function (ACol, ARow, NumCol, NumRow) {
+      var Result = false;
+      NumCol.set(this.CellColSpan(ACol,ARow));
+      NumRow.set(this.CellRowSpan(ACol,ARow));
+      Result = (NumCol.get() > 1) || (NumRow.get() > 1);
+      return Result;
+    };
+    rtl.addIntf(this,pas["WEBLib.Controls"].ITMSFNCDataBinderGrid);
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+    var $r = this.$rtti;
+    $r.addMethod("Create$1",2,[["AOwner",pas.Classes.$rtti["TComponent"]]]);
+    $r.addProperty("Align",2,pas["WEBLib.Controls"].$rtti["TAlign"],"FAlign","SetAlign",{Default: pas["WEBLib.Controls"].TAlign.alNone});
+    $r.addProperty("AlignWithMargins",2,rtl.boolean,"FAlignWithMargins","SetAlignWithMargins",{Default: false});
+    $r.addProperty("Anchors",2,pas["WEBLib.Controls"].$rtti["TAnchors"],"FAnchors","SetAnchors",{Default: rtl.createSet(pas["WEBLib.Controls"].TAnchorKind.akLeft,pas["WEBLib.Controls"].TAnchorKind.akTop)});
+    $r.addProperty("BiDiMode",2,pas["WEBLib.Controls"].$rtti["TBiDiMode"],"FBiDiMode","SetBiDiMode",{Default: pas["WEBLib.Controls"].TBiDiMode.bdLeftToRight});
+    $r.addProperty("BorderColor",2,pas["WEBLib.Graphics"].$rtti["TColor"],"FBorderColor","SetBorderColor",{Default: 12632256});
+    $r.addProperty("BorderStyle",2,pas["WEBLib.Controls"].$rtti["TBorderStyle"],"FBorderStyle","SetBorderStyle",{Default: pas["WEBLib.Controls"].TBorderStyle.bsSingle});
+    $r.addProperty("Color",2,pas["WEBLib.Graphics"].$rtti["TColor"],"FColor","SetColor",{Default: 16711422});
+    $r.addProperty("DragMode",2,pas["WEBLib.Controls"].$rtti["TDragMode"],"FDragMode","SetDragMode",{Default: pas["WEBLib.Controls"].TDragMode.dmManual});
+    $r.addProperty("DefaultColAlignment",2,pas.Classes.$rtti["TAlignment"],"FDefaultColAlignment","SetDefaultColAlignment",{Default: pas.Classes.TAlignment.taLeftJustify});
+    $r.addProperty("DefaultColWidth",2,rtl.longint,"FDefaultColWidth","SetDefaultColWidth",{Default: 64});
+    $r.addProperty("DefaultRowHeight",2,rtl.longint,"FDefaultRowHeight","SetDefaultRowHeight",{Default: 24});
+    $r.addProperty("EditAdvance",0,rtl.boolean,"FEditAdvance","FEditAdvance",{Default: false});
+    $r.addProperty("EditMask",0,pas["WEBLib.Mask"].$rtti["TEditMask"],"FEditMask","FEditMask");
+    $r.addProperty("ElementID",3,pas["WEBLib.Controls"].$rtti["TElementID"],"GetID","SetID");
+    $r.addProperty("ElementClassName",2,pas["WEBLib.Controls"].$rtti["TElementClassName"],"FElementClassName","SetElementClassName");
+    $r.addProperty("ElementFont",2,pas["WEBLib.Controls"].$rtti["TElementFont"],"FElementFont","SetElementFont",{Default: pas["WEBLib.Controls"].TElementFont.efProperty});
+    $r.addProperty("ElementPosition",2,pas["WEBLib.Controls"].$rtti["TElementPosition"],"FElementPosition","SetElementPosition",{Default: pas["WEBLib.Controls"].TElementPosition.epAbsolute});
+    $r.addProperty("ElementTableClassName",2,rtl.string,"FElementTableClassName","SetElementTableClassName");
+    $r.addProperty("FixedRows",2,rtl.longint,"FFixedRows","SetFixedRows",{Default: 1});
+    $r.addProperty("FixedCols",2,rtl.longint,"FFixedCols","SetFixedCols",{Default: 1});
+    $r.addProperty("FixedColor",2,pas["WEBLib.Graphics"].$rtti["TColor"],"FFixedColor","SetFixedColor",{Default: 15790320});
+    $r.addProperty("FixedFont",2,pas["WEBLib.Graphics"].$rtti["TFont"],"FFixedFont","SetFixedFont");
+    $r.addProperty("Font",2,pas["WEBLib.Graphics"].$rtti["TFont"],"FFont","SetFont");
+    $r.addProperty("GridLineColor",2,pas["WEBLib.Graphics"].$rtti["TColor"],"FGridLineColor","SetGridLineColor",{Default: 12632256});
+    $r.addProperty("Height",3,rtl.longint,"GetHeight","SetHeight");
+    $r.addProperty("HeightPercent",2,rtl.double,"FHeightPercent","SetHeightPercent",{Default: 100});
+    $r.addProperty("HeightStyle",2,pas["WEBLib.Controls"].$rtti["TSizeStyle"],"FHeightStyle","SetHeightStyle",{Default: pas["WEBLib.Controls"].TSizeStyle.ssAbsolute});
+    $r.addProperty("Margins",2,pas["WEBLib.Controls"].$rtti["TMargins"],"FMargins","SetMargins");
+    $r.addProperty("Options",0,$mod.$rtti["TGridOptions"],"FOptions","FOptions");
+    $r.addProperty("ParentFont",2,rtl.boolean,"FParentFont","SetParentFont",{Default: true});
+    $r.addProperty("ParentBiDiMode",0,rtl.boolean,"FParentBiDiMode","FParentBiDiMode",{Default: true});
+    $r.addProperty("PopupMenu",0,pas["WEBLib.Menus"].$rtti["TPopupMenu"],"FPopupMenu","FPopupMenu");
+    $r.addProperty("RangeEdit",2,$mod.$rtti["TGridRange"],"FRange","SetRange");
+    $r.addProperty("Scrollbars",0,pas["WEBLib.Controls"].$rtti["TScrollStyle"],"FScrollBars","FScrollBars",{Default: pas["WEBLib.Controls"].TScrollStyle.ssBoth});
+    $r.addProperty("SelectionColor",2,pas["WEBLib.Graphics"].$rtti["TColor"],"FSelectionColor","SetSelectionColor",{Default: 16748379});
+    $r.addProperty("SelectionTextColor",2,pas["WEBLib.Graphics"].$rtti["TColor"],"FSelectionTextColor","SetSelectionTextColor",{Default: 16777215});
+    $r.addProperty("ShowSelection",0,rtl.boolean,"FShowSelection","FShowSelection",{Default: true});
+    $r.addProperty("StyleElements",0,pas["WEBLib.Controls"].$rtti["TStyleElements"],"FStyleElements","FStyleElements");
+    $r.addProperty("TabOrder",2,rtl.longint,"FTabOrder","SetTabOrder");
+    $r.addProperty("Visible",2,rtl.boolean,"FVisible","SetVisible",{Default: true});
+    $r.addProperty("Width",3,rtl.longint,"GetWidth","SetWidth");
+    $r.addProperty("WidthPercent",2,rtl.double,"FWidthPercent","SetWidthPercent",{Default: 100});
+    $r.addProperty("WidthStyle",2,pas["WEBLib.Controls"].$rtti["TSizeStyle"],"FWidthStyle","SetWidthStyle",{Default: pas["WEBLib.Controls"].TSizeStyle.ssAbsolute});
+    $r.addProperty("WordWrap",0,rtl.boolean,"FWordWrap","FWordWrap",{Default: false});
+    $r.addProperty("OnClick",0,pas["WEBLib.Controls"].$rtti["TNotifyEvent"],"FOnClick","FOnClick");
+    $r.addProperty("OnClickCell",0,$mod.$rtti["TCellEvent"],"FOnClickCell","FOnClickCell");
+    $r.addProperty("OnDblClick",0,pas["WEBLib.Controls"].$rtti["TNotifyEvent"],"FOnDblClick","FOnDblClick");
+    $r.addProperty("OnDblClickCell",0,$mod.$rtti["TCellEvent"],"FOnDblClickCell","FOnDblClickCell");
+    $r.addProperty("OnEnter",0,pas["WEBLib.Controls"].$rtti["TNotifyEvent"],"FOnEnter","FOnEnter");
+    $r.addProperty("OnExit",0,pas["WEBLib.Controls"].$rtti["TNotifyEvent"],"FOnExit","FOnExit");
+    $r.addProperty("OnMouseWheelDown",0,pas["WEBLib.Controls"].$rtti["TMouseWheelUpDownEvent"],"FOnMouseWheelDown","FOnMouseWheelDown");
+    $r.addProperty("OnMouseWheelUp",0,pas["WEBLib.Controls"].$rtti["TMouseWheelUpDownEvent"],"FOnMouseWheelUp","FOnMouseWheelUp");
+    $r.addProperty("OnCanEditCell",0,$mod.$rtti["TCellCanEditEvent"],"FOnCanEditCell","FOnCanEditCell");
+    $r.addProperty("OnColumnSized",0,$mod.$rtti["TColumnSizedEvent"],"FOnColumnSized","FOnColumnSized");
+    $r.addProperty("OnGetCellData",0,$mod.$rtti["TGridGetCellDataEvent"],"FOnGetCellData","FOnGetCellData");
+    $r.addProperty("OnGetCellChildren",0,$mod.$rtti["TGridGetCellChildrenEvent"],"FOnGetCellChildren","FOnGetCellChildren");
+    $r.addProperty("OnGetCellClass",0,$mod.$rtti["TGridGetCellClassEvent"],"FOnGetCellClass","FOnGetCellClass");
+    $r.addProperty("OnGetCellEditor",0,$mod.$rtti["TGridGetCellEditorEvent"],"FOnGetCellEditor","FOnGetCellEditor");
+    $r.addProperty("OnButtonClick",0,$mod.$rtti["TCellEvent"],"FOnButtonClick","FOnButtonClick");
+    $r.addProperty("OnCheckClick",0,$mod.$rtti["TCellCheckEvent"],"FOnCheckClick","FOnCheckClick");
+    $r.addProperty("OnFixedCellClick",0,$mod.$rtti["TCellEvent"],"FOnFixedCellClick","FOnFixedCellClick");
+    $r.addProperty("OnGetEditText",0,$mod.$rtti["TGetEditEvent"],"FOnGetEditText","FOnGetEditText");
+    $r.addProperty("OnSetEditText",0,$mod.$rtti["TSetEditEvent"],"FOnSetEditText","FOnSetEditText");
+    $r.addProperty("OnSetEditControlValue",0,$mod.$rtti["TSetEditControlValueEvent"],"FOnSetEditControlValue","FOnSetEditControlValue");
+    $r.addProperty("OnGetEditControlValue",0,$mod.$rtti["TGetEditControlValueEvent"],"FOnGetEditControlValue","FOnGetEditControlValue");
+    $r.addProperty("OnSelectCell",0,$mod.$rtti["TSelectCellEvent"],"FOnSelectCell","FOnSelectCell");
+    $r.addProperty("OnSortClick",0,$mod.$rtti["TGridSortClickEvent"],"FOnSortClick","FOnSortClick");
+    $r.addProperty("OnTopLeftChanged",0,pas["WEBLib.Controls"].$rtti["TNotifyEvent"],"FOnTopLeftChanged","FOnTopLeftChanged");
+    $r.addProperty("OnValidateEdit",0,$mod.$rtti["TGetEditEvent"],"FOnValidateEdit","FOnValidateEdit");
+    $r.addProperty("OnDragDrop",0,pas["WEBLib.Controls"].$rtti["TDragDropEvent"],"FOnDragDrop","FOnDragDrop");
+    $r.addProperty("OnDragOver",0,pas["WEBLib.Controls"].$rtti["TDragOverEvent"],"FOnDragOver","FOnDragOver");
+    $r.addProperty("OnEndDrag",0,pas["WEBLib.Controls"].$rtti["TEndDragEvent"],"FonEndDrag","FonEndDrag");
+    $r.addProperty("OnStartDrag",0,pas["WEBLib.Controls"].$rtti["TStartDragEvent"],"FOnStartDrag","FOnStartDrag");
+  });
+  rtl.createClass(this,"TStringGrid",this.TCustomStringGrid,function () {
+    rtl.addIntf(this,pas["WEBLib.Controls"].ITMSFNCDataBinderGrid);
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+    var $r = this.$rtti;
+    $r.addProperty("ColCount",2,rtl.longint,"FColCount","SetColCount");
+    $r.addProperty("RowCount",2,rtl.longint,"FRowCount","SetRowCount");
+    $r.addProperty("OnHttpRequestError",0,pas["WEBLib.Controls"].$rtti["TNotifyEvent"],"FOnHttpRequestError","FOnHttpRequestError");
+    $r.addProperty("OnHttpRequestSuccess",0,pas["WEBLib.Controls"].$rtti["TNotifyEvent"],"FOnHttpRequestSuccess","FOnHttpRequestSuccess");
+  });
+  rtl.createClass(this,"TWebStringGrid",this.TStringGrid,function () {
+    rtl.addIntf(this,pas["WEBLib.Controls"].ITMSFNCDataBinderGrid);
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+  });
+  this.$rtti.$Class("TCustomTableControl");
+  this.TTablePager = {"0": "tpNone", tpNone: 0, "1": "tpDropDown", tpDropDown: 1, "2": "tpLink", tpLink: 2, "3": "tpButton", tpButton: 3, "4": "tpList", tpList: 4, "5": "tpPrevNext", tpPrevNext: 5};
+  this.$rtti.$Enum("TTablePager",{minvalue: 0, maxvalue: 5, ordtype: 1, enumtype: this.TTablePager});
+  this.TTablePagerAlign = {"0": "paRight", paRight: 0, "1": "paCenter", paCenter: 1, "2": "paLeft", paLeft: 2};
+  this.$rtti.$Enum("TTablePagerAlign",{minvalue: 0, maxvalue: 2, ordtype: 1, enumtype: this.TTablePagerAlign});
+  rtl.createClass(this,"TTableControlHeader",pas.Classes.TPersistent,function () {
+    this.$init = function () {
+      pas.Classes.TPersistent.$init.call(this);
+      this.FPageEventPtr = null;
+      this.FFilterEventPtr = null;
+      this.FSearchEventPtr = null;
+      this.FOwner = null;
+      this.FElement = null;
+      this.FPagerElement = null;
+      this.FSearchElement = null;
+      this.FFilterElement = null;
+      this.FSearchInput = null;
+      this.FFilterInput = null;
+      this.FVisible = false;
+      this.FCaption = "";
+      this.FSearchValue = "";
+      this.FFilterValue = "";
+      this.FOnChange = null;
+      this.FPager = 0;
+      this.FButtonElementClassName = "";
+      this.FLinkElementClassName = "";
+      this.FDropDownElementClassName = "";
+      this.FListElementClassName = "";
+      this.FListItemElementClassName = "";
+      this.FInputElementClassName = "";
+      this.FFilterColumn = 0;
+      this.FSearch = false;
+      this.FFilter = false;
+      this.FButtonActiveElementClassName = "";
+      this.FLinkActiveElementClassName = "";
+      this.FListLinkElementClassName = "";
+      this.FPagerAlign = 0;
+    };
+    this.$final = function () {
+      this.FOwner = undefined;
+      this.FElement = undefined;
+      this.FPagerElement = undefined;
+      this.FSearchElement = undefined;
+      this.FFilterElement = undefined;
+      this.FSearchInput = undefined;
+      this.FFilterInput = undefined;
+      this.FOnChange = undefined;
+      pas.Classes.TPersistent.$final.call(this);
+    };
+    this.SetCaption = function (Value) {
+      if (this.FCaption !== Value) {
+        this.FCaption = Value;
+        this.FOwner.RenderGrid();
+      };
+    };
+    this.SetVisible = function (Value) {
+      if (this.FVisible !== Value) {
+        this.FVisible = Value;
+        this.FOwner.ReRenderGrid();
+      };
+    };
+    this.SetPager = function (Value) {
+      if (this.FPager !== Value) {
+        this.FPager = Value;
+        this.Update(this.FOwner.FPaging.FSize,this.FOwner.FRowCount,this.FOwner.FPaging.FActivePage);
+      };
+    };
+    this.SetPagerAlign = function (Value) {
+      if (this.FPagerAlign !== Value) {
+        this.FPagerAlign = Value;
+        this.FOwner.ReRenderGrid();
+      };
+    };
+    this.Changed = function () {
+      if (this.FOnChange != null) this.FOnChange(this);
+    };
+    this.Update = function (PageSize, RowCount, ActivePage) {
+      var opt = null;
+      var lnk = null;
+      var itm = null;
+      var btn = null;
+      var i = 0;
+      var numpages = 0;
+      var trc = 0;
+      if (!(this.FElement != null)) return;
+      if (this.FSearchElement != null) {
+        this.FSearchElement.parentElement.removeChild(this.FSearchElement);
+        this.FSearchElement = null;
+      };
+      if (this.FFilterElement != null) {
+        this.FFilterElement.parentElement.removeChild(this.FFilterElement);
+        this.FFilterElement = null;
+      };
+      if (this.FSearch) {
+        this.FSearchElement = document.createElement("DIV");
+        this.FSearchElement.style.setProperty("float","left");
+        this.FSearchInput = document.createElement("INPUT");
+        if (this.FInputElementClassName !== "") this.FSearchInput.setAttribute("class",this.FInputElementClassName);
+        this.FSearchInput.style.setProperty("display","inline");
+        this.FSearchInput.style.setProperty("width","auto");
+        btn = document.createElement("IMG");
+        btn.setAttribute("src",pas["WEBLib.Ctrls.SVG"].ICON_SEARCH);
+        btn.style.setProperty("vertical-align","middle");
+        btn.style.setProperty("margin-right","10px");
+        this.FSearchElement.appendChild(this.FSearchInput);
+        this.FSearchElement.appendChild(btn);
+        this.FElement.appendChild(this.FSearchElement);
+        btn.addEventListener("click",this.FSearchEventPtr);
+        this.FSearchInput.value = this.FSearchValue;
+      };
+      if (this.FFilter) {
+        this.FFilterElement = document.createElement("DIV");
+        this.FFilterElement.style.setProperty("float","left");
+        this.FFilterInput = document.createElement("INPUT");
+        if (this.FInputElementClassName !== "") this.FFilterInput.setAttribute("class",this.FInputElementClassName);
+        this.FFilterInput.style.setProperty("display","inline");
+        this.FFilterInput.style.setProperty("width","auto");
+        btn = document.createElement("IMG");
+        btn.setAttribute("src",pas["WEBLib.Ctrls.SVG"].ICON_FILTER);
+        btn.style.setProperty("vertical-align","middle");
+        btn.style.setProperty("margin-right","10px");
+        this.FFilterElement.appendChild(this.FFilterInput);
+        this.FFilterElement.appendChild(btn);
+        this.FElement.appendChild(this.FFilterElement);
+        btn.addEventListener("click",this.FFilterEventPtr);
+        this.FFilterInput.value = this.FFilterValue;
+      };
+      trc = 0;
+      if (this.FOwner.FRowHeader) trc += 1;
+      numpages = rtl.trunc((RowCount - trc) / PageSize);
+      if (((RowCount - trc) % PageSize) > 0) numpages += 1;
+      this.FOwner.FPaging.FPageCount = numpages;
+      if (this.FPagerElement != null) {
+        this.FPagerElement.parentElement.removeChild(this.FPagerElement);
+        this.FPagerElement = null;
+      };
+      if (!this.FOwner.FPaging.FEnabled) return;
+      if (this.FPager === $mod.TTablePager.tpDropDown) {
+        this.FPagerElement = document.createElement("SELECT");
+        if (this.FDropDownElementClassName !== "") this.FPagerElement.setAttribute("class",this.FDropDownElementClassName);
+        this.FPagerElement.addEventListener("change",this.FPageEventPtr);
+        for (var $l = 0, $end = numpages - 1; $l <= $end; $l++) {
+          i = $l;
+          opt = document.createElement("option");
+          opt.text = pas["WEBLib.Utils"].TLongIntHelper.ToString.call({a: i + 1, get: function () {
+              return this.a;
+            }, set: function (v) {
+              rtl.raiseE("EPropReadOnly");
+            }});
+          opt.setAttribute("data",pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+              return i;
+            }, set: function (v) {
+              i = v;
+            }}));
+          if (i === ActivePage) opt.setAttribute("selected","selected");
+          this.FPagerElement.add(opt);
+        };
+        var $tmp = this.FPagerAlign;
+        if ($tmp === $mod.TTablePagerAlign.paRight) {
+          this.FPagerElement.style.setProperty("float","right")}
+         else if ($tmp === $mod.TTablePagerAlign.paLeft) {
+          this.FPagerElement.style.setProperty("float","left")}
+         else if ($tmp === $mod.TTablePagerAlign.paCenter) {
+          this.FPagerElement.style.removeProperty("float");
+          this.FPagerElement.style.setProperty("max-width","content");
+          this.FPagerElement.style.setProperty("margin-left","auto");
+          this.FPagerElement.style.setProperty("margin-right","auto");
+        };
+        this.FPagerElement.style.setProperty("display","inline");
+        this.FPagerElement.style.setProperty("width","auto");
+        this.FElement.appendChild(this.FPagerElement);
+      };
+      if (this.FPager === $mod.TTablePager.tpLink) {
+        this.FPagerElement = document.createElement("DIV");
+        for (var $l1 = 0, $end1 = numpages - 1; $l1 <= $end1; $l1++) {
+          i = $l1;
+          lnk = document.createElement("A");
+          lnk.innerHTML = pas["WEBLib.Utils"].TLongIntHelper.ToString.call({a: i + 1, get: function () {
+              return this.a;
+            }, set: function (v) {
+              rtl.raiseE("EPropReadOnly");
+            }});
+          lnk.setAttribute("href","#");
+          if (this.FLinkElementClassName !== "") {
+            if ((i === ActivePage) && (this.FLinkActiveElementClassName !== "")) {
+              lnk.setAttribute("class",this.FLinkActiveElementClassName)}
+             else lnk.setAttribute("class",this.FLinkElementClassName);
+          };
+          lnk.style.setProperty("margin-right","4px");
+          lnk.style.setProperty("display","inline");
+          lnk.setAttribute("data",pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+              return i;
+            }, set: function (v) {
+              i = v;
+            }}));
+          lnk.addEventListener("click",this.FPageEventPtr);
+          this.FPagerElement.appendChild(lnk);
+        };
+        var $tmp1 = this.FPagerAlign;
+        if ($tmp1 === $mod.TTablePagerAlign.paRight) {
+          this.FPagerElement.style.setProperty("float","right")}
+         else if ($tmp1 === $mod.TTablePagerAlign.paLeft) {
+          this.FPagerElement.style.setProperty("float","left")}
+         else if ($tmp1 === $mod.TTablePagerAlign.paCenter) {
+          this.FPagerElement.style.removeProperty("float");
+          this.FPagerElement.style.setProperty("max-width","content");
+          this.FPagerElement.style.setProperty("margin-left","auto");
+          this.FPagerElement.style.setProperty("margin-right","auto");
+        };
+        this.FElement.appendChild(this.FPagerElement);
+      };
+      if (this.FPager === $mod.TTablePager.tpButton) {
+        this.FPagerElement = document.createElement("DIV");
+        for (var $l2 = 0, $end2 = numpages - 1; $l2 <= $end2; $l2++) {
+          i = $l2;
+          lnk = document.createElement("BUTTON");
+          lnk.innerHTML = pas["WEBLib.Utils"].TLongIntHelper.ToString.call({a: i + 1, get: function () {
+              return this.a;
+            }, set: function (v) {
+              rtl.raiseE("EPropReadOnly");
+            }});
+          if (this.FButtonElementClassName !== "") {
+            if ((i === ActivePage) && (this.FButtonActiveElementClassName !== "")) {
+              lnk.setAttribute("class",this.FButtonActiveElementClassName)}
+             else lnk.setAttribute("class",this.FButtonElementClassName);
+          };
+          lnk.setAttribute("data",pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+              return i;
+            }, set: function (v) {
+              i = v;
+            }}));
+          lnk.addEventListener("click",this.FPageEventPtr);
+          lnk.style.setProperty("margin-right","4px");
+          this.FPagerElement.appendChild(lnk);
+        };
+        var $tmp2 = this.FPagerAlign;
+        if ($tmp2 === $mod.TTablePagerAlign.paRight) {
+          this.FPagerElement.style.setProperty("float","right")}
+         else if ($tmp2 === $mod.TTablePagerAlign.paLeft) {
+          this.FPagerElement.style.setProperty("float","left")}
+         else if ($tmp2 === $mod.TTablePagerAlign.paCenter) {
+          this.FPagerElement.style.removeProperty("float");
+          this.FPagerElement.style.setProperty("max-width","content");
+          this.FPagerElement.style.setProperty("margin-left","auto");
+          this.FPagerElement.style.setProperty("margin-right","auto");
+        };
+        this.FElement.appendChild(this.FPagerElement);
+      };
+      if (this.FPager === $mod.TTablePager.tpPrevNext) {
+        this.FPagerElement = document.createElement("DIV");
+        lnk = document.createElement("BUTTON");
+        lnk.innerHTML = "&#xab;";
+        lnk.setAttribute("data","0");
+        if (this.FButtonElementClassName !== "") lnk.setAttribute("class",this.FButtonElementClassName);
+        lnk.addEventListener("click",this.FPageEventPtr);
+        lnk.style.setProperty("margin-right","4px");
+        if (this.FOwner.FPaging.FActivePage === 0) lnk.setAttribute("disabled","");
+        this.FPagerElement.appendChild(lnk);
+        lnk = document.createElement("BUTTON");
+        lnk.innerHTML = "&#x2039";
+        lnk.setAttribute("data","1");
+        if (this.FButtonElementClassName !== "") lnk.setAttribute("class",this.FButtonElementClassName);
+        lnk.addEventListener("click",this.FPageEventPtr);
+        lnk.style.setProperty("margin-right","4px");
+        if (this.FOwner.FPaging.FActivePage === 0) lnk.setAttribute("disabled","");
+        this.FPagerElement.appendChild(lnk);
+        lnk = document.createElement("BUTTON");
+        lnk.innerHTML = "&#x203A;";
+        lnk.setAttribute("data","2");
+        if (this.FButtonElementClassName !== "") lnk.setAttribute("class",this.FButtonElementClassName);
+        lnk.addEventListener("click",this.FPageEventPtr);
+        lnk.style.setProperty("margin-right","4px");
+        if (this.FOwner.FPaging.FActivePage === this.FOwner.FPaging.FPageCount) lnk.setAttribute("disabled","");
+        this.FPagerElement.appendChild(lnk);
+        lnk = document.createElement("BUTTON");
+        lnk.innerHTML = "&#xbb;";
+        lnk.setAttribute("data","3");
+        lnk.addEventListener("click",this.FPageEventPtr);
+        if (this.FButtonElementClassName !== "") lnk.setAttribute("class",this.FButtonElementClassName);
+        lnk.style.setProperty("margin-right","4px");
+        this.FPagerElement.appendChild(lnk);
+        var $tmp3 = this.FPagerAlign;
+        if ($tmp3 === $mod.TTablePagerAlign.paRight) {
+          this.FPagerElement.style.setProperty("float","right")}
+         else if ($tmp3 === $mod.TTablePagerAlign.paLeft) {
+          this.FPagerElement.style.setProperty("float","left")}
+         else if ($tmp3 === $mod.TTablePagerAlign.paCenter) {
+          this.FPagerElement.style.removeProperty("float");
+          this.FPagerElement.style.setProperty("max-width","content");
+          this.FPagerElement.style.setProperty("margin-left","auto");
+          this.FPagerElement.style.setProperty("margin-right","auto");
+        };
+        if (this.FOwner.FPaging.FActivePage === this.FOwner.FPaging.FPageCount) lnk.setAttribute("disabled","");
+        this.FElement.appendChild(this.FPagerElement);
+      };
+      if (this.FPager === $mod.TTablePager.tpList) {
+        this.FPagerElement = document.createElement("UL");
+        if (this.FListElementClassName !== "") this.FPagerElement.setAttribute("class",this.FListElementClassName);
+        this.FPagerElement.style.setProperty("margin","0px");
+        for (var $l3 = 0, $end3 = numpages - 1; $l3 <= $end3; $l3++) {
+          i = $l3;
+          itm = document.createElement("LI");
+          if (this.FListItemElementClassName !== "") {
+            if (i === ActivePage) {
+              itm.setAttribute("class",this.FListItemElementClassName + " active")}
+             else itm.setAttribute("class",this.FListItemElementClassName);
+          };
+          lnk = document.createElement("A");
+          lnk.innerHTML = pas["WEBLib.Utils"].TLongIntHelper.ToString.call({a: i + 1, get: function () {
+              return this.a;
+            }, set: function (v) {
+              rtl.raiseE("EPropReadOnly");
+            }});
+          lnk.setAttribute("href","#");
+          lnk.setAttribute("data",pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+              return i;
+            }, set: function (v) {
+              i = v;
+            }}));
+          lnk.addEventListener("click",this.FPageEventPtr);
+          if (this.FListLinkElementClassName !== "") lnk.setAttribute("class",this.FListLinkElementClassName);
+          itm.appendChild(lnk);
+          this.FPagerElement.appendChild(itm);
+        };
+        var $tmp4 = this.FPagerAlign;
+        if ($tmp4 === $mod.TTablePagerAlign.paRight) {
+          this.FPagerElement.style.setProperty("float","right")}
+         else if ($tmp4 === $mod.TTablePagerAlign.paLeft) {
+          this.FPagerElement.style.setProperty("float","left")}
+         else if ($tmp4 === $mod.TTablePagerAlign.paCenter) {
+          this.FPagerElement.style.removeProperty("float");
+          this.FPagerElement.style.setProperty("max-width","content");
+          this.FPagerElement.style.setProperty("margin-left","auto");
+          this.FPagerElement.style.setProperty("margin-right","auto");
+        };
+        this.FElement.appendChild(this.FPagerElement);
+      };
+    };
+    this.HandlePagerClick = function (Event) {
+      var Result = false;
+      var idx = 0;
+      var s = "";
+      Event.preventDefault();
+      Event.stopPropagation();
+      Result = true;
+      if (this.FPager === $mod.TTablePager.tpDropDown) {
+        idx = this.FPagerElement.selectedIndex;
+      } else if (this.FPager === $mod.TTablePager.tpPrevNext) {
+        s = Event.target.getAttribute("data");
+        idx = pas.SysUtils.StrToInt(s);
+        var $tmp = idx;
+        if ($tmp === 0) {
+          if (this.FOwner.FPaging.FActivePage > 0) {
+            idx = 0}
+           else return Result}
+         else if ($tmp === 1) {
+          if (this.FOwner.FPaging.FActivePage > 0) {
+            idx = this.FOwner.FPaging.FActivePage - 1}
+           else return Result}
+         else if ($tmp === 2) {
+          if (this.FOwner.FPaging.FActivePage < (this.FOwner.FPaging.FPageCount - 1)) {
+            idx = this.FOwner.FPaging.FActivePage + 1}
+           else return Result}
+         else if ($tmp === 3) if (this.FOwner.FPaging.FActivePage < (this.FOwner.FPaging.FPageCount - 1)) {
+          idx = this.FOwner.FPaging.FPageCount - 1}
+         else return Result;
+      } else {
+        s = Event.target.getAttribute("data");
+        idx = pas.SysUtils.StrToInt(s);
+      };
+      this.FOwner.DoSelectPage(idx);
+      return Result;
+    };
+    this.HandleSearchClick = function (Event) {
+      var Result = false;
+      var cond = "";
+      cond = this.FSearchInput.value;
+      if ((cond !== "") && (cond !== this.FSearchValue)) {
+        this.FSearchValue = cond;
+        this.FOwner.FindCell(this.FSearchValue,true,false);
+      } else this.FOwner.FindNext();
+      Result = true;
+      return Result;
+    };
+    this.HandleFilterClick = function (Event) {
+      var Result = false;
+      var cond = "";
+      cond = this.FFilterInput.value;
+      if ((cond === "") || (cond !== this.FFilterValue)) this.FOwner.RemoveFilter();
+      if (cond !== "") {
+        this.FFilterValue = cond;
+        this.FOwner.SetFilter(this.FFilterColumn,this.FFilterValue,true);
+      };
+      Result = true;
+      return Result;
+    };
+    this.Create$1 = function (AOwner) {
+      pas.System.TObject.Create.call(this);
+      this.FOwner = AOwner;
+      this.FPagerElement = null;
+      this.FPagerAlign = $mod.TTablePagerAlign.paRight;
+      this.FPageEventPtr = rtl.createCallback(this,"HandlePagerClick");
+      this.FSearchEventPtr = rtl.createCallback(this,"HandleSearchClick");
+      this.FFilterEventPtr = rtl.createCallback(this,"HandleFilterClick");
+      return this;
+    };
+    this.Assign = function (Source) {
+      if ($mod.TTableControlHeader.isPrototypeOf(Source)) {
+        this.FCaption = rtl.as(Source,$mod.TTableControlHeader).FCaption;
+        this.FVisible = rtl.as(Source,$mod.TTableControlHeader).FVisible;
+        this.FPager = rtl.as(Source,$mod.TTableControlHeader).FPager;
+        this.FPagerAlign = rtl.as(Source,$mod.TTableControlHeader).FPagerAlign;
+        this.FButtonActiveElementClassName = rtl.as(Source,$mod.TTableControlHeader).FButtonActiveElementClassName;
+        this.FButtonElementClassName = rtl.as(Source,$mod.TTableControlHeader).FButtonElementClassName;
+        this.FLinkActiveElementClassName = rtl.as(Source,$mod.TTableControlHeader).FLinkActiveElementClassName;
+        this.FLinkElementClassName = rtl.as(Source,$mod.TTableControlHeader).FLinkElementClassName;
+        this.FDropDownElementClassName = rtl.as(Source,$mod.TTableControlHeader).FDropDownElementClassName;
+        this.FInputElementClassName = rtl.as(Source,$mod.TTableControlHeader).FInputElementClassName;
+        this.FFilterColumn = rtl.as(Source,$mod.TTableControlHeader).FFilterColumn;
+        this.FFilter = rtl.as(Source,$mod.TTableControlHeader).FFilter;
+        this.FSearch = rtl.as(Source,$mod.TTableControlHeader).FSearch;
+        this.FListElementClassName = rtl.as(Source,$mod.TTableControlHeader).FListElementClassName;
+        this.FListItemElementClassName = rtl.as(Source,$mod.TTableControlHeader).FListItemElementClassName;
+        this.FListLinkElementClassName = rtl.as(Source,$mod.TTableControlHeader).FListLinkElementClassName;
+      };
+    };
+    var $r = this.$rtti;
+    $r.addMethod("Create$1",2,[["AOwner",$mod.$rtti["TCustomTableControl"]]]);
+    $r.addProperty("FilterColumn",0,rtl.longint,"FFilterColumn","FFilterColumn",{Default: 0});
+    $r.addProperty("Filter",0,rtl.boolean,"FFilter","FFilter",{Default: false});
+    $r.addProperty("Search",0,rtl.boolean,"FSearch","FSearch",{Default: false});
+    $r.addProperty("ButtonActiveElementClassName",0,pas["WEBLib.Controls"].$rtti["TElementClassName"],"FButtonActiveElementClassName","FButtonActiveElementClassName");
+    $r.addProperty("ButtonElementClassName",0,pas["WEBLib.Controls"].$rtti["TElementClassName"],"FButtonElementClassName","FButtonElementClassName");
+    $r.addProperty("DropDownElementClassName",0,pas["WEBLib.Controls"].$rtti["TElementClassName"],"FDropDownElementClassName","FDropDownElementClassName");
+    $r.addProperty("InputElementClassName",0,pas["WEBLib.Controls"].$rtti["TElementClassName"],"FInputElementClassName","FInputElementClassName");
+    $r.addProperty("LinkActiveElementClassName",0,pas["WEBLib.Controls"].$rtti["TElementClassName"],"FLinkActiveElementClassName","FLinkActiveElementClassName");
+    $r.addProperty("LinkElementClassName",0,pas["WEBLib.Controls"].$rtti["TElementClassName"],"FLinkElementClassName","FLinkElementClassName");
+    $r.addProperty("ListElementClassName",0,pas["WEBLib.Controls"].$rtti["TElementClassName"],"FListElementClassName","FListElementClassName");
+    $r.addProperty("ListLinkElementClassName",0,pas["WEBLib.Controls"].$rtti["TElementClassName"],"FListLinkElementClassName","FListLinkElementClassName");
+    $r.addProperty("ListItemElementClassName",0,pas["WEBLib.Controls"].$rtti["TElementClassName"],"FListItemElementClassName","FListItemElementClassName");
+    $r.addProperty("Caption",2,rtl.string,"FCaption","SetCaption");
+    $r.addProperty("Pager",2,$mod.$rtti["TTablePager"],"FPager","SetPager");
+    $r.addProperty("PagerAlign",2,$mod.$rtti["TTablePagerAlign"],"FPagerAlign","SetPagerAlign",{Default: $mod.TTablePagerAlign.paRight});
+    $r.addProperty("Visible",2,rtl.boolean,"FVisible","SetVisible",{Default: false});
+  });
+  rtl.createClass(this,"TTableControlPaging",pas.Classes.TPersistent,function () {
+    this.$init = function () {
+      pas.Classes.TPersistent.$init.call(this);
+      this.FOwner = null;
+      this.FSize = 0;
+      this.FIndex = 0;
+      this.FEnabled = false;
+      this.FActivePage = 0;
+      this.FPageCount = 0;
+    };
+    this.$final = function () {
+      this.FOwner = undefined;
+      pas.Classes.TPersistent.$final.call(this);
+    };
+    this.SetIndex = function (Value) {
+      if ((this.FIndex !== Value) && (Value >= 0)) {
+        if (this.FOwner.FPaging.FSize !== 0) if (!(Value < rtl.trunc(this.FOwner.FRowCount / this.FOwner.FPaging.FSize))) return;
+        this.FActivePage = Value;
+        this.FIndex = Value;
+        this.FOwner.DoSelectPage(this.FIndex);
+      };
+    };
+    this.SetSize = function (Value) {
+      var FOldSize = 0;
+      if (this.FSize !== Value) {
+        FOldSize = this.FSize;
+        this.FSize = Value;
+        this.FOwner.RowCountChanged(this.FSize - FOldSize);
+        this.FOwner.GridChanged();
+      };
+    };
+    this.SetEnabled = function (Value) {
+      var rh = 0;
+      if (this.FEnabled !== Value) {
+        this.FEnabled = Value;
+        rh = 0;
+        if (this.FOwner.FRowHeader) rh = 1;
+        if (this.FEnabled) {
+          this.FOwner.RowCountChanged((this.FSize + rh) - this.FOwner.FRowCount)}
+         else this.FOwner.RowCountChanged(this.FOwner.FRowCount - this.FSize - rh);
+        this.FOwner.ReRenderGrid();
+      };
+    };
+    this.Create$1 = function (AOwner) {
+      pas.System.TObject.Create.call(this);
+      this.FOwner = AOwner;
+      this.FSize = 10;
+      this.FIndex = 0;
+      return this;
+    };
+    this.Assign = function (Source) {
+      if ($mod.TTableControlPaging.isPrototypeOf(Source)) {
+        this.FEnabled = rtl.as(Source,$mod.TTableControlPaging).FEnabled;
+        this.FSize = rtl.as(Source,$mod.TTableControlPaging).FSize;
+        this.FIndex = rtl.as(Source,$mod.TTableControlPaging).FActivePage;
+      };
+    };
+    var $r = this.$rtti;
+    $r.addMethod("Create$1",2,[["AOwner",$mod.$rtti["TCustomTableControl"]]]);
+    $r.addProperty("Enabled",2,rtl.boolean,"FEnabled","SetEnabled",{Default: false});
+    $r.addProperty("Index",2,rtl.longint,"FActivePage","SetIndex",{Default: 0});
+    $r.addProperty("Size",2,rtl.longint,"FSize","SetSize",{Default: 10});
+  });
+  rtl.createClass(this,"TTableControlOptions",pas.Classes.TPersistent,function () {
+    this.$init = function () {
+      pas.Classes.TPersistent.$init.call(this);
+      this.FOwner = null;
+      this.FScrollVertical = false;
+      this.FResizeColumns = false;
+      this.FAutoCellURL = false;
+      this.FAutoCellEmail = false;
+      this.FAutoCellImage = false;
+      this.FCellBorderColor = 0;
+      this.FCellBorders = false;
+      this.FAutoNumAlign = false;
+      this.FImageAlign = 0;
+      this.FImageWidth = 0;
+    };
+    this.$final = function () {
+      this.FOwner = undefined;
+      pas.Classes.TPersistent.$final.call(this);
+    };
+    this.SetResizeColumns = function (Value) {
+      this.FResizeColumns = Value;
+      this.FOwner.EnableColResize();
+    };
+    this.SetCellBorderColor = function (Value) {
+      this.FCellBorderColor = Value;
+      this.FOwner.RenderGridBorders();
+    };
+    this.SetCellBorders = function (Value) {
+      this.FCellBorders = Value;
+      this.FOwner.RenderGridBorders();
+    };
+    this.SetScrollVertical = function (Value) {
+      this.FScrollVertical = Value;
+      this.FOwner.UpdateElement();
+    };
+    this.Create$1 = function (AOwner) {
+      this.FOwner = AOwner;
+      this.FCellBorderColor = 12632256;
+      this.FImageAlign = pas.Classes.TAlignment.taLeftJustify;
+      this.FImageWidth = 0;
+      return this;
+    };
+    this.Assign = function (Source) {
+      if ($mod.TTableControlOptions.isPrototypeOf(Source)) {
+        this.FScrollVertical = rtl.as(Source,$mod.TTableControlOptions).FScrollVertical;
+        this.FResizeColumns = rtl.as(Source,$mod.TTableControlOptions).FResizeColumns;
+        this.FAutoCellURL = rtl.as(Source,$mod.TTableControlOptions).FAutoCellURL;
+        this.FAutoCellEmail = rtl.as(Source,$mod.TTableControlOptions).FAutoCellEmail;
+        this.FAutoCellImage = rtl.as(Source,$mod.TTableControlOptions).FAutoCellImage;
+        this.FAutoNumAlign = rtl.as(Source,$mod.TTableControlOptions).FAutoNumAlign;
+        this.FCellBorders = rtl.as(Source,$mod.TTableControlOptions).FCellBorders;
+        this.FCellBorderColor = rtl.as(Source,$mod.TTableControlOptions).FCellBorderColor;
+        this.FImageWidth = rtl.as(Source,$mod.TTableControlOptions).FImageWidth;
+        this.FImageAlign = rtl.as(Source,$mod.TTableControlOptions).FImageAlign;
+      };
+    };
+    var $r = this.$rtti;
+    $r.addMethod("Create$1",2,[["AOwner",$mod.$rtti["TCustomTableControl"]]]);
+    $r.addProperty("AutoCellEmail",0,rtl.boolean,"FAutoCellEmail","FAutoCellEmail",{Default: false});
+    $r.addProperty("AutoCellURL",0,rtl.boolean,"FAutoCellURL","FAutoCellURL",{Default: false});
+    $r.addProperty("AutoCellImage",0,rtl.boolean,"FAutoCellImage","FAutoCellImage",{Default: false});
+    $r.addProperty("AutoNumAlign",0,rtl.boolean,"FAutoNumAlign","FAutoNumAlign",{Default: false});
+    $r.addProperty("CellBorders",2,rtl.boolean,"FCellBorders","SetCellBorders",{Default: false});
+    $r.addProperty("CellBorderColor",2,pas["WEBLib.Graphics"].$rtti["TColor"],"FCellBorderColor","SetCellBorderColor",{Default: 12632256});
+    $r.addProperty("ImageAlign",0,pas.Classes.$rtti["TAlignment"],"FImageAlign","FImageAlign",{Default: pas.Classes.TAlignment.taLeftJustify});
+    $r.addProperty("ImageWidth",0,rtl.longint,"FImageWidth","FImageWidth",{Default: 0});
+    $r.addProperty("ScrollVertical",2,rtl.boolean,"FScrollVertical","SetScrollVertical",{Default: false});
+    $r.addProperty("ResizeColumns",2,rtl.boolean,"FResizeColumns","SetResizeColumns",{Default: false});
+  });
+  this.$rtti.$MethodVar("TPageSelectEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["NewPage",rtl.longint],["Allow",rtl.boolean,1],["DefaultSelect",rtl.boolean,1]]), methodkind: 0});
+  rtl.createClass(this,"TCustomTableControl",this.TCustomGrid,function () {
+    this.$init = function () {
+      $mod.TCustomGrid.$init.call(this);
+      this.FReq = null;
+      this.FDataNode = "";
+      this.FData = undefined;
+      this.FUnfiltered = undefined;
+      this.FTable = null;
+      this.FBody = null;
+      this.FRowHeader = false;
+      this.FColHeader = false;
+      this.FDelimiter = "\x00";
+      this.FLoadFixed = false;
+      this.FFindCol = 0;
+      this.FFindRow = 0;
+      this.FFindCase = false;
+      this.FFindCondition = "";
+      this.FElementHeaderClassName = "";
+      this.FElementTableClassName = "";
+      this.FOnHttpRequestError = null;
+      this.FOnHttpRequestSuccess = null;
+      this.FOnDblClickCell = null;
+      this.FOnClickCell = null;
+      this.FOptions = null;
+      this.FOnGetCellClass = null;
+      this.FOnGetCellData = null;
+      this.FOnGetCellChildren = null;
+      this.FOnHttpRequest = null;
+      this.FOnCheckClick = null;
+      this.FOnButtonClick = null;
+      this.FHandleCheckClickPtr = null;
+      this.FHandleButtonClickPtr = null;
+      this.FOnSortClick = null;
+      this.FSortIndex = 0;
+      this.FSortDirection = 0;
+      this.FElementSelectionClassName = "";
+      this.FElementRowSelectClassName = "";
+      this.FRowIndex = 0;
+      this.FSelectionTextColor = 0;
+      this.FSelectionColor = 0;
+      this.FHeader = null;
+      this.FFooter = null;
+      this.FPaging = null;
+      this.FOnSelectPage = null;
+      this.FHiddenCols = null;
+      this.FWordWrap = false;
+    };
+    this.$final = function () {
+      this.FReq = undefined;
+      this.FTable = undefined;
+      this.FBody = undefined;
+      this.FOnHttpRequestError = undefined;
+      this.FOnHttpRequestSuccess = undefined;
+      this.FOnDblClickCell = undefined;
+      this.FOnClickCell = undefined;
+      this.FOptions = undefined;
+      this.FOnGetCellClass = undefined;
+      this.FOnGetCellData = undefined;
+      this.FOnGetCellChildren = undefined;
+      this.FOnHttpRequest = undefined;
+      this.FOnCheckClick = undefined;
+      this.FOnButtonClick = undefined;
+      this.FOnSortClick = undefined;
+      this.FHeader = undefined;
+      this.FFooter = undefined;
+      this.FPaging = undefined;
+      this.FOnSelectPage = undefined;
+      this.FHiddenCols = undefined;
+      $mod.TCustomGrid.$final.call(this);
+    };
+    this.GetCells = function (col, row) {
+      var Result = "";
+      var res = "";
+      var hdr = 0;
+      var trc = 0;
+      Result = "";
+      hdr = 0;
+      if (this.FHeader.FVisible) hdr = 1;
+      trc = this.RenderRowCount();
+      if (this.FRowHeader) trc += 1;
+      if ((col >= 0) && (row >= 0) && (col < this.FColCount) && (hdr < 2)) {
+        //      res = this.FData[row][col];
+        //      if (res == undefined) {
+                var td = this.FTable.rows[row + hdr].cells[col];
+                //res = td.innerHTML;
+        
+                res = td.textContent;
+                if (td.childElementCount > 0) {
+                  if (td.firstChild.tagName == 'DIV')
+                    res = td.firstChild.textContent;
+                }
+        //      };
+        Result = res;
+      };
+      return Result;
+    };
+    this.SetCells = function (col, row, Value) {
+      var trc = 0;
+      var td = null;
+      if (!(this.FTable != null)) return;
+      trc = this.FRowCount;
+      if (this.FRowHeader) trc += 1;
+      if ((col >= 0) && (row >= 0) && (col < this.FColCount) && (row <= trc)) {
+        if (row === 0) this.EnableColResize();
+        if (row < this.FData.length) {
+          this.FData[row][col] = Value;
+        };
+        if (this.FRowHeader) row = row - 1;
+        if (this.InVisiblePage({get: function () {
+            return row;
+          }, set: function (v) {
+            row = v;
+          }}) || ((row === -1) && this.FRowHeader)) {
+          if (this.FHeader.FVisible) row += 1;
+          if (this.FRowHeader) row = row + 1;
+          td = this.FTable.rows[row].cells[col];
+          this.SetTableCell(col,row,td,Value);
+        };
+      };
+    };
+    this.GetRowClassName = function (row) {
+      var Result = "";
+      var res = "";
+      res = "";
+      if ((row >= 0) && (row < this.FRowCount)) {
+        var tr = this.FTable.rows[row];
+        res = tr.getAttribute('class');
+      };
+      Result = res;
+      return Result;
+    };
+    this.SetRowClassName = function (row, Value) {
+      if ((row >= 0) && (row < this.FRowCount)) {
+        var tr = this.FTable.rows[row];
+        tr.setAttribute('class',Value);
+      };
+    };
+    this.GetCellElement = function (col, row) {
+      var Result = null;
+      var res = null;
+      var rh = 0;
+      var fr = 0;
+      res = null;
+      rh = 0;
+      if (this.FHeader.FVisible) rh = 1;
+      fr = 0;
+      if (this.FColHeader) fr = 1;
+      if ((col >= 0) && (row >= 0) && (col < this.FColCount) && (row <= (this.RenderRowCount() + rh + fr)) && (this.FTable != null)) {
+        if ((this.FTable.rows.length > row + rh) && (this.FTable.rows[row + rh].cells.length > col)) {
+          res = this.FTable.rows[row + rh].cells[col];
+        };
+      };
+      Result = res;
+      return Result;
+    };
+    this.GetCheckElement = function (ACol, ARow) {
+      var Result = null;
+      var el = null;
+      var s = "";
+      Result = null;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetCellElement(ACol,ARow).firstChild;
+        if ((el != null) && rtl.isExt(el,Element) && (pas.SysUtils.UpperCase(el.tagName) === "DIV")) el = el.firstChild;
+        if ((el != null) && rtl.isExt(el,Element)) {
+          s = "";
+          if (el.hasAttribute("type")) s = el.getAttribute("type");
+          if ((s !== "") && (pas.SysUtils.UpperCase(s) === "CHECKBOX")) {
+            Result = el;
+          };
+        };
+      };
+      return Result;
+    };
+    this.GetButtonElement = function (ACol, ARow) {
+      var Result = null;
+      var el = null;
+      Result = null;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetCellElement(ACol,ARow);
+        el = el.firstChild;
+        if ((el != null) && (el.tagName === "DIV")) el = el.firstChild;
+        if ((el != null) && (el.tagName === "BUTTON")) {
+          Result = el;
+        };
+      };
+      return Result;
+    };
+    this.GetProgressElement = function (ACol, ARow) {
+      var Result = null;
+      var el = null;
+      Result = null;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetCellElement(ACol,ARow).firstChild;
+        if ((el != null) && rtl.isExt(el,Element)) {
+          if (pas.SysUtils.UpperCase(el.tagName) === "PROGRESS") {
+            Result = el;
+          };
+        };
+      };
+      return Result;
+    };
+    this.SetOptions = function (Value) {
+      this.FOptions.Assign(Value);
+    };
+    this.SetElementHeaderClassName = function (Value) {
+      var head = null;
+      if (this.FElementHeaderClassName !== Value) {
+        this.FElementHeaderClassName = Value;
+        if (this.FTable != null) {
+          head = this.FTable.firstChild;
+          if ((head != null) && (head.tagName === "THEAD")) head.setAttribute("class",this.FElementHeaderClassName);
+        };
+      };
+    };
+    this.SetElementTableClassName = function (Value) {
+      if (this.FElementTableClassName !== Value) {
+        this.FElementTableClassName = Value;
+        if (this.FTable != null) this.FTable.setAttribute("class",this.FElementTableClassName);
+      };
+    };
+    this.SetColHeader = function (Value) {
+      if (this.FColHeader !== Value) {
+        this.FColHeader = Value;
+        if (this.FTable != null) {
+          if (!(pas.Classes.TComponentStateItem.csLoading in this.FComponentState)) this.ReRenderGrid();
+        };
+      };
+    };
+    this.SetRowHeader = function (Value) {
+      if (this.FRowHeader !== Value) {
+        this.FRowHeader = Value;
+        if (this.FTable != null) {
+          if (!(pas.Classes.TComponentStateItem.csLoading in this.FComponentState)) this.ReRenderGrid();
+        };
+      };
+    };
+    this.SetSortIndex = function (Value) {
+      this.FSortIndex = Value;
+    };
+    this.SetRowIndex = function (Value) {
+      var el = null;
+      if (this.FRowIndex !== -1) {
+        el = this.GetCellElement(0,this.FRowIndex);
+        if (el != null) {
+          if (this.FElementRowSelectClassName === "") {
+            el.parentElement.style.removeProperty("color");
+            el.parentElement.style.removeProperty("background-color");
+          } else el.parentElement.className = "";
+        };
+      };
+      this.FRowIndex = Value;
+      if (this.FRowIndex !== -1) {
+        el = this.GetCellElement(0,this.FRowIndex);
+        if (el != null) {
+          if (this.FElementRowSelectClassName === "") {
+            if (this.FSelectionTextColor !== -1) el.parentElement.style.setProperty("color",pas["WEBLib.Graphics"].ColorToHTML(this.FSelectionTextColor));
+            if (this.FSelectionColor !== -1) el.parentElement.style.setProperty("background-color",pas["WEBLib.Graphics"].ColorToHTML(this.FSelectionColor));
+          } else el.parentElement.classList.add(this.FElementRowSelectClassName);
+        };
+      };
+    };
+    this.SetSelectionColor = function (Value) {
+      if (this.FSelectionColor !== Value) {
+        this.FSelectionColor = Value;
+        this.UpdateElement();
+      };
+    };
+    this.SetSelectionTextColor = function (Value) {
+      if (this.FSelectionTextColor !== Value) {
+        this.FSelectionTextColor = Value;
+        this.UpdateElement();
+      };
+    };
+    this.SetFooter = function (Value) {
+      this.FFooter.Assign(Value);
+    };
+    this.SetHeader = function (Value) {
+      this.FHeader.Assign(Value);
+    };
+    this.SetPaging = function (Value) {
+      this.FPaging.Assign(Value);
+    };
+    this.SetTableCell = function (ACol, ARow, ACell, Value) {
+      var $Self = this;
+      var clr = "";
+      var td = "";
+      var cn = "";
+      var topcell = null;
+      function IsEmail(s) {
+        var Result = false;
+        var res = false;
+        var re = /\S+@\S+\.\S+/;
+        res = re.test(s);
+        Result = res;
+        return Result;
+      };
+      function IsImgUrl(url) {
+        var Result = false;
+        var res = false;
+        res = /\.(jpg|jpeg|png|webp|avif|gif)$/.test(url);
+        Result = res;
+        return Result;
+      };
+      function IsValidHttpUrl(s) {
+        var Result = false;
+        try {
+          url = new URL(s);
+        } catch (_) {
+          return false;
+        }
+        return url.protocol === "http:" || url.protocol === "https:";
+        return Result;
+      };
+      function IsNum(str) {
+        var Result = false;
+        if (typeof str != "string") return false // we only process strings!
+        return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+          !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail;
+        return Result;
+      };
+      if ((pas.Classes.TComponentStateItem.csDesigning in this.FComponentState) && (this.FElementTableClassName === "") && !this.FOptions.FCellBorders) {
+        ACell.style.borderRight = "1px dashed gray";
+        ACell.style.borderBottom = "1px dashed gray";
+        ACell.innerHTML = "&nbsp;";
+        return;
+      };
+      if (this.FOptions.FAutoCellEmail && IsEmail(Value)) {
+        td = '<a href="mailto:' + Value + '">' + Value + "</a>"}
+       else if (this.FOptions.FAutoCellImage && IsImgUrl(Value)) {
+        if (this.FOptions.FImageWidth > 0) {
+          td = '<img src="' + Value + '" width="' + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({p: this.FOptions, get: function () {
+              return this.p.FImageWidth;
+            }, set: function (v) {
+              this.p.FImageWidth = v;
+            }}) + 'px">'}
+         else td = '<img src="' + Value + '">';
+        var $tmp = this.FOptions.FImageAlign;
+        if ($tmp === pas.Classes.TAlignment.taCenter) {
+          ACell.setAttribute("align","center")}
+         else if ($tmp === pas.Classes.TAlignment.taRightJustify) ACell.setAttribute("align","right");
+      } else if (this.FOptions.FAutoCellURL && IsValidHttpUrl(Value)) {
+        td = '<a href="' + Value + '">' + Value + "</a>"}
+       else {
+        td = Value;
+        if (this.FOptions.FAutoNumAlign && IsNum(Value)) ACell.setAttribute("align","right");
+      };
+      if (this.FWordWrap) {
+        ACell.innerHTML = td}
+       else ACell.innerHTML = '<div style="overflow: hidden; text-overflow: ellipsis; white-space:nowrap;">' + td + "</div>";
+      if ((this.FElementTableClassName === "") && this.FOptions.FCellBorders) {
+        clr = pas["WEBLib.Graphics"].ColorToHTML(this.FOptions.FCellBorderColor);
+        ACell.style.borderRight = "1px solid " + clr;
+        ACell.style.borderBottom = "1px solid " + clr;
+      };
+      cn = "";
+      this.GetCellClassName(ACol,ARow,null,Value,{get: function () {
+          return cn;
+        }, set: function (v) {
+          cn = v;
+        }});
+      if (cn !== "") ACell.setAttribute("class",cn);
+    };
+    this.GetColWidth = function (ACol) {
+      var Result = 0;
+      var td = null;
+      var w = 0;
+      Result = 0;
+      if ((ACol < this.FColCount) && (ACol >= 0)) {
+        td = this.GetCellElement(ACol,0);
+        w = td.offsetWidth;
+        Result = w;
+      };
+      return Result;
+    };
+    this.SetColWidth = function (ACol, AWidth) {
+      var td = null;
+      var el = null;
+      var i = 0;
+      if ((ACol < this.FColCount) && (ACol >= 0)) {
+        if (AWidth > 0) {
+          for (var $l = 0, $end = this.RenderRowCount(); $l <= $end; $l++) {
+            i = $l;
+            td = null;
+            td = this.GetCellElement(ACol,i);
+            if (td != null) {
+              td.style.setProperty("width",pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+                  return AWidth;
+                }, set: function (v) {
+                  AWidth = v;
+                }}) + "px");
+              td.style.setProperty("max-width",pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+                  return AWidth;
+                }, set: function (v) {
+                  AWidth = v;
+                }}) + "px");
+              el = td.firstChild;
+              if ((el != null) && (el.tagName === "DIV")) {
+                el.style.setProperty("width",pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+                    return AWidth;
+                  }, set: function (v) {
+                    AWidth = v;
+                  }}) + "px");
+                el.style.setProperty("max-width",pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+                    return AWidth;
+                  }, set: function (v) {
+                    AWidth = v;
+                  }}) + "px");
+              };
+            };
+          };
+        };
+      };
+    };
+    this.SetWordWrap = function (AValue) {
+      if (this.FWordWrap !== AValue) {
+        this.FWordWrap = AValue;
+        if (this.FTable != null) {
+          if (!(pas.Classes.TComponentStateItem.csLoading in this.FComponentState)) this.ReRenderGrid();
+        };
+      };
+    };
+    this.GetDataRowCount = function () {
+      var Result = 0;
+      if (this.FRowHeader || (this.FPaging.FEnabled === false)) {
+        Result = this.FRowCount - 1}
+       else Result = this.FRowCount;
+      return Result;
+    };
+    this.ClearData = function () {
+      this.Clear();
+    };
+    this.SetDataColumnCount = function (AValue) {
+      if (this.FRowHeader) {
+        this.SetColCount(AValue + 1)}
+       else this.SetColCount(AValue);
+    };
+    this.SetDataRowCount = function (AValue) {
+      if (this.FColHeader) {
+        this.SetRowCount(AValue + 1)}
+       else this.SetRowCount(AValue);
+    };
+    this.SetDataValue = function (AColumn, ARow, AValue) {
+      var dc = 0;
+      var dr = 0;
+      dc = 0;
+      dr = 0;
+      if (this.FRowHeader) dc = 1;
+      if (this.FColHeader) dr = 1;
+      this.SetCells(AColumn + dc,ARow + dr,AValue);
+    };
+    this.SetDataHeader = function (AColumn, AValue) {
+      var d = 0;
+      if (!this.FColHeader) return;
+      d = 0;
+      if (this.FRowHeader) d = 1;
+      this.SetCells(AColumn + d,0,AValue);
+    };
+    this.DataBeginUpdate = function () {
+    };
+    this.DataEndUpdate = function () {
+    };
+    this.DataInsertRow = function (AInsertPosition) {
+      this.InsertRow(AInsertPosition);
+    };
+    this.ClearMethodPointers = function () {
+      pas["WEBLib.Controls"].TControl.ClearMethodPointers.call(this);
+      this.FHandleCheckClickPtr = null;
+      this.FHandleButtonClickPtr = null;
+    };
+    this.GetMethodPointers = function () {
+      pas["WEBLib.Controls"].TControl.GetMethodPointers.call(this);
+      this.FHandleCheckClickPtr = rtl.createCallback(this,"HandleCheckBoxClick");
+      this.FHandleButtonClickPtr = rtl.createCallback(this,"HandleButtonClick");
+    };
+    this.HandleDoKeyPress = function (Event) {
+      var Result = false;
+      pas["WEBLib.Controls"].TControl.HandleDoKeyPress.apply(this,arguments);
+      Result = true;
+      return Result;
+    };
+    this.ColOffset = function () {
+      var Result = 0;
+      if (this.FColHeader) {
+        Result = 1}
+       else Result = 0;
+      return Result;
+    };
+    this.RowOffset = function () {
+      var Result = 0;
+      if (this.FRowHeader) {
+        Result = 1}
+       else Result = 0;
+      return Result;
+    };
+    this.HandleDoClick = function (Event) {
+      var Result = false;
+      var c = 0;
+      var r = 0;
+      var tgt = null;
+      var sd = 0;
+      var tag = "";
+      var s = "";
+      tgt = Event.target;
+      if (pas.SysUtils.UpperCase(tgt.tagName) === "BUTTON") {
+        return Result;
+      };
+      if (pas.SysUtils.UpperCase(tgt.tagName) === "INPUT") {
+        s = tgt.getAttribute("type");
+        if (pas.System.Assigned(s) && (pas.SysUtils.UpperCase(s) === "CHECKBOX")) {
+          return Result;
+        };
+      };
+      sd = $mod.TGridSortIndicator.siNone;
+      if (tgt.tagName === "SPAN") {
+        if (tgt.getAttribute("sort") === "up") {
+          sd = $mod.TGridSortIndicator.siAscending;
+        } else if (tgt.getAttribute("sort") === "dn") {
+          sd = $mod.TGridSortIndicator.siDescending;
+        };
+      };
+      do {
+        tag = tgt.tagName.toLowerCase();
+        if ((tag !== "td") && (tag !== "th")) tgt = tgt.parentElement;
+      } while (!((tag === "td") || (tag === "th") || (tgt === null)));
+      if ((tag === "td") || (tag === "th")) {
+        c = tgt.cellIndex;
+        var tr = tgt.parentElement;
+        r = tr.rowIndex;
+        if (this.FHeader.FVisible) r -= 1;
+        if (this.FPaging.FEnabled) {
+          r = r + (this.FPaging.FActivePage * this.FPaging.FSize);
+        };
+        if ((this.FOnClickCell != null) && (sd === $mod.TGridSortIndicator.siNone) && this.FEnabled) this.FOnClickCell(this,c,r);
+      };
+      if (sd === $mod.TGridSortIndicator.siAscending) {
+        this.DoSortClick(c,r,$mod.TGridSortIndicator.siDescending);
+        this.SetSortIndicator(c,r,$mod.TGridSortIndicator.siDescending);
+      } else if (sd === $mod.TGridSortIndicator.siDescending) {
+        this.DoSortClick(c,r,$mod.TGridSortIndicator.siAscending);
+        this.SetSortIndicator(c,r,$mod.TGridSortIndicator.siAscending);
+      };
+      if (this.FOnClick != null) this.FOnClick(this);
+      Result = true;
+      return Result;
+    };
+    this.HandleDoDblClick = function (Event) {
+      var Result = false;
+      var c = 0;
+      var r = 0;
+      var el = null;
+      el = Event.target;
+      if ((el.tagName === "TD") || (el.tagName === "TH")) {
+        c = el.cellIndex;
+        var tr = el.parentElement;
+        r = tr.rowIndex;
+        if (this.FPaging.FEnabled) {
+          r = r + (this.FPaging.FActivePage * this.FPaging.FSize);
+        };
+        if (this.FOnDblClickCell != null) this.FOnDblClickCell(this,c,r);
+      };
+      Result = true;
+      return Result;
+    };
+    this.HandleCheckBoxClick = function (Event) {
+      var Result = false;
+      var rindex = 0;
+      var cindex = 0;
+      var chk = false;
+      Result = true;
+      rindex = -1;
+      cindex = -1;
+      var el = Event.target;
+      chk = el.checked;
+      var d = el.parentElement;
+      if (d.tagName.toLowerCase() == 'div')
+      {
+        d = d.parentElement;
+      }
+      if (d.tagName.toLowerCase() == 'td')
+      {
+        cindex = d.cellIndex;
+        var tr = d.parentElement;
+        rindex = tr.rowIndex;
+      };
+      if (this.FPaging.FEnabled) {
+        rindex = rindex + (this.FPaging.FActivePage * this.FPaging.FSize);
+      };
+      if ((rindex !== -1) && (cindex !== -1)) {
+        this.DoCheckClick(cindex,rindex,chk);
+      };
+      return Result;
+    };
+    this.HandleButtonClick = function (Event) {
+      var Result = false;
+      var rindex = 0;
+      var cindex = 0;
+      Result = true;
+      rindex = -1;
+      cindex = -1;
+      var el = Event.target;
+          var d = el.parentElement;
+          if (d.tagName.toLowerCase() == 'div') {
+            d = d.parentElement;
+          }
+      
+          if (d.tagName.toLowerCase() == 'td') {
+            cindex = d.cellIndex;
+            var tr = d.parentElement;
+            rindex = tr.rowIndex;
+          };
+      if (this.FPaging.FEnabled) {
+        rindex = rindex + (this.FPaging.FActivePage * this.FPaging.FSize);
+      };
+      if ((rindex !== -1) && (cindex !== -1)) {
+        this.DoButtonClick(cindex,rindex);
+      };
+      return Result;
+    };
+    this.HandleDoMouseUp = function (Event) {
+      var Result = false;
+      pas["WEBLib.Controls"].TControl.HandleDoMouseUp.apply(this,arguments);
+      resetResize();
+      Result = true;
+      return Result;
+    };
+    this.HandleDoMouseMove = function (Event) {
+      var Result = false;
+      var IsAutoWidth = false;
+      pas["WEBLib.Controls"].TControl.HandleDoMouseMove.apply(this,arguments);
+      IsAutoWidth = this.FWidthStyle in rtl.createSet(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+      autoWidth = IsAutoWidth;
+      resizeColumn(Event);
+      Result = true;
+      return Result;
+    };
+    this.HandleDoMouseDown = function (Event) {
+      var Result = false;
+      var r = 0;
+      var maxr = 0;
+      var tgt = null;
+      var tr = null;
+      var sd = 0;
+      var tag = "";
+      Result = true;
+      if (!this.FEnabled) return Result;
+      tgt = Event.target;
+      tag = "";
+      sd = $mod.TGridSortIndicator.siNone;
+      tr = null;
+      do {
+        tag = tgt.tagName.toLowerCase();
+        if ((tag !== "td") && (tag !== "th")) tgt = tgt.parentElement;
+      } while (!((tag === "td") || (tag === "th") || (tgt === null)));
+      if ((tag === "td") || (tag === "th")) {
+        tr = tgt.parentElement;
+        r = tr.rowIndex;
+        if (this.FHeader.FVisible) r -= 1;
+        if (this.FPaging.FEnabled) {
+          maxr = this.FPaging.FSize}
+         else maxr = this.FRowCount;
+        if (r > maxr) return Result;
+        if ((tag === "td") || ((tag === "th") && this.FEnabled)) {
+          tag = tr.parentElement.tagName.toLowerCase();
+          if (tag !== "thead") this.SetRowIndex(r);
+        };
+      };
+      return Result;
+    };
+    this.DoCheckClick = function (ACol, ARow, Checked) {
+      if (this.FOnCheckClick != null) this.FOnCheckClick(this,ACol,ARow,Checked);
+    };
+    this.DoButtonClick = function (ACol, ARow) {
+      if (this.FOnButtonClick != null) this.FOnButtonClick(this,ACol,ARow);
+    };
+    this.DoSortClick = function (ACol, ARow, ASortIndicator) {
+      var i = 0;
+      this.FSortIndex = ACol;
+      for (var $l = 0, $end = this.FColCount - 1; $l <= $end; $l++) {
+        i = $l;
+        this.SelectSortIndicator(i,ARow,i === ACol);
+      };
+      this.FSortDirection = ASortIndicator;
+      if (this.FOnSortClick != null) this.FOnSortClick(this,ACol,ARow,ASortIndicator);
+      this.Sort(ACol,ASortIndicator);
+    };
+    this.DoHttpLoadJson = function (Event) {
+      var Result = false;
+      var J = null;
+      var req = null;
+      req = Event.target;
+      if ((req.status >= 200) && (req.status <= 208)) {
+        J = JSON.parse(req.responseText);
+        this.LoadFromJSON$1(J,this.FDataNode);
+        if (this.FOnHttpRequestSuccess != null) this.FOnHttpRequestSuccess(this);
+      };
+      Result = true;
+      return Result;
+    };
+    this.DoHttpLoadPageJson = function (Event) {
+      var Result = false;
+      var J = null;
+      var req = null;
+      req = Event.target;
+      if ((req.status >= 200) && (req.status <= 208)) {
+        J = JSON.parse(req.responseText);
+        this.LoadPageFromJSON$1(J,this.FDataNode);
+        if (this.FOnHttpRequestSuccess != null) this.FOnHttpRequestSuccess(this);
+      };
+      Result = true;
+      return Result;
+    };
+    this.DoHttpLoadCsv = function (Event) {
+      var Result = false;
+      var sl = null;
+      var req = null;
+      req = Event.target;
+      if ((req.status >= 200) && (req.status <= 208)) {
+        sl = pas.Classes.TStringList.$create("Create$1");
+        sl.SetTextStr(req.responseText);
+        try {
+          this.LoadFromStringList(sl);
+        } finally {
+          sl = rtl.freeLoc(sl);
+        };
+        if (this.FOnHttpRequestSuccess != null) this.FOnHttpRequestSuccess(this);
+      };
+      Result = true;
+      return Result;
+    };
+    this.DoHttpAbort = function (Event) {
+      var Result = false;
+      if (this.FOnHttpRequestError != null) this.FOnHttpRequestError(this);
+      Result = true;
+      return Result;
+    };
+    this.DoHttpRequest = function (ARequest) {
+      var LRequestRec = pas["WEBLib.Controls"].TJSXMLHttpRequestRecord.$new();
+      if (this.FOnHttpRequest != null) {
+        LRequestRec.req = ARequest;
+        this.FOnHttpRequest(this,pas["WEBLib.Controls"].TJSXMLHttpRequestRecord.$clone(LRequestRec));
+      };
+    };
+    this.GetCellData = function (ACol, ARow, AField, AValue) {
+      if (this.FOnGetCellData != null) this.FOnGetCellData(this,ACol,ARow,AField,AValue);
+    };
+    this.GetCellClassName = function (ACol, ARow, AField, AValue, AClassName) {
+      if (this.FOnGetCellClass != null) this.FOnGetCellClass(this,ACol,ARow,AField,AValue,AClassName);
+    };
+    this.GetCellChildren = function (ACol, ARow, AField, AValue, AElement) {
+      var LElementRec = pas["WEBLib.Controls"].TJSHTMLElementRecord.$new();
+      if (this.FOnGetCellChildren != null) {
+        LElementRec.element = AElement;
+        this.FOnGetCellChildren(this,ACol,ARow,AField,AValue,pas["WEBLib.Controls"].TJSHTMLElementRecord.$clone(LElementRec));
+      };
+    };
+    this.BindCellCheckBox = function (ACol, ARow, AElement) {
+      var el = null;
+      el = AElement.firstChild;
+      if ((el != null) && (el.tagName === "DIV")) el = el.firstChild;
+      if ((el != null) && (el.tagName === "INPUT")) {
+        if (pas.SysUtils.LowerCase(el.getAttribute("TYPE")) === "checkbox") {
+          el.addEventListener("click",this.FHandleCheckClickPtr);
+        };
+      };
+    };
+    this.BindCellButton = function (ACol, ARow, AElement) {
+      var el = null;
+      el = AElement.firstChild;
+      if ((el != null) && (el.tagName === "DIV")) el = el.firstChild;
+      if ((el != null) && (el.tagName === "BUTTON")) {
+        el.addEventListener("click",this.FHandleButtonClickPtr);
+      };
+    };
+    this.RenderGrid = function () {
+      var i = 0;
+      var table = null;
+      var tbody = null;
+      var th = null;
+      var frows = 0;
+      var fcols = 0;
+      var fhc = 0;
+      var rc = 0;
+      var rh = false;
+      var ch = false;
+      var headclass = "";
+      var cc = "";
+      var headcaption = "";
+      var ridx = 0;
+      if (!(this.FTable != null)) {
+        this.FTable = document.createElement("TABLE");
+        this.GetElementHandle().appendChild(this.FTable);
+        pas["WEBLib.Controls"].SetHTMLElementFont(this.FTable,this.FFont,!((this.FElementClassName === "") && (this.FElementFont === pas["WEBLib.Controls"].TElementFont.efProperty)));
+        table = this.FTable;
+        table.setAttribute("id",this.FName + "Table");
+        table.style.setProperty("vertical-align","middle");
+        frows = this.RenderRowCount();
+        fcols = this.FColCount;
+        rh = this.FRowHeader;
+        ch = this.FColHeader;
+        rc = this.FRowCount;
+        cc = "";
+        ridx = 0;
+        fhc = 0;
+        if (this.FElementTableClassName === "") {
+          table.style.setProperty("border-collapse","collapse");
+          table.setAttribute("border","0");
+          table.setAttribute("cellpadding","0");
+          table.setAttribute("cellspacing","0");
+          table.setAttribute("width","100%");
+          table.setAttribute("table-layout","fixed");
+          table.setAttribute("height","100%");
+        } else {
+          table.setAttribute("class",this.FElementTableClassName);
+        };
+        headclass = this.FElementHeaderClassName;
+        while (table.firstChild) {
+          table.removeChild(table.firstChild);
+        };
+        this.FHeader.FElement = null;
+        if (this.FHeader.FVisible) {
+          ridx += 1;
+          headcaption = this.FHeader.FCaption;
+          var theader = table.createTHead();
+          
+                  if (headclass != "")
+                  {
+                    theader.setAttribute("class", headclass);
+                  }
+          
+                  var tr = theader.insertRow(0);
+                  th = document.createElement('th');
+                  tr.appendChild(th);
+                  th.setAttribute('colspan',fcols);
+                  th.setAttribute('vertical-align','middle');
+                  if (headcaption != '') {
+                    th.innerHTML = '<div style="float:left;margin-right:10px;vertical-align:middle">'+headcaption+'</div>'; };
+          this.FHeader.FElement = th;
+        };
+        var i = 0;
+              var j = 0;
+        
+              if (rh)
+              {
+                fhc++;
+        
+                var theader = table.createTHead();
+        
+                if (headclass != "")
+                {
+                  theader.setAttribute("class", headclass);
+                }
+        
+                var tr = theader.insertRow(ridx);
+        
+                for(i=0; i < fcols; i++)
+                {
+                  if (rc > 0) {
+                  cc = this.FData[0][i];
+                  if (cc == undefined) { cc = "";}
+                  }
+                  else
+                  {
+                    cc = "";
+                  }
+                  var th = document.createElement('th');
+                  th.setAttribute('scope','col');
+                  this.SetTableCell(i,0, th, cc);
+                  tr.appendChild(th);
+                }
+              }
+        
+              tbody = table.appendChild(document.createElement('tbody'));
+        
+              for(i=0; i < frows; i++)
+              {
+                if (i + fhc >= this.FData.length) { break; }
+        
+                var tr = tbody.insertRow(tbody.length);
+        
+                for(j=0; j < fcols; j++)
+                {
+                  cc = this.FData[i+fhc][j];
+                  if (cc == undefined) { cc = "";}
+        
+                  if ((j == 0) && (ch))
+                  {
+                    var th = document.createElement('th');
+                    th.setAttribute('scope','row');
+                    tr.appendChild(th);
+                    this.SetTableCell(j,i + fhc,th, cc);
+                  }
+                  else
+                  {
+                    tr.insertCell();
+                    var td = tr.cells[j];
+                    this.SetTableCell(j,i + fhc,td, cc);
+                  }
+                }
+              };
+        this.FBody = tbody;
+        this.FFooter.FElement = null;
+        if (this.FFooter.FVisible) {
+          ridx += 1;
+          headcaption = this.FFooter.FCaption;
+          var theader = table.createTFoot();
+          
+                  if (headclass != "")
+                  {
+                    theader.setAttribute("class", headclass);
+                  }
+          
+                  var tr = theader.insertRow(0);
+                  th = document.createElement('th');
+                  tr.appendChild(th);
+                  th.setAttribute('colspan',fcols);
+          //        th['colspan'] = fcols;
+                  th.innerHTML = headcaption;
+          this.FFooter.FElement = th;
+        };
+        if (this.FDragMode === pas["WEBLib.Controls"].TDragMode.dmAutomatic) this.EnableDrag();
+      };
+      if (!this.FOptions.FResizeColumns) ;
+      this.EnableColResize();
+      if (this.FHiddenCols.GetCount() > 0) {
+        for (var $l = 0, $end = this.FColCount - 1; $l <= $end; $l++) {
+          i = $l;
+          if (this.IsHiddenColumn(i)) this.HideColumn(i);
+        };
+      };
+    };
+    this.ReRenderGrid = function () {
+      if (!(this.GetElementHandle() != null) || this.IsUpdating()) return;
+      if (this.FTable != null) this.FTable.parentElement.removeChild(this.FTable);
+      this.FTable = null;
+      this.RenderGrid();
+      this.RenderHeaderFooter();
+    };
+    this.RenderGridBorders = function () {
+      var i = 0;
+      var j = 0;
+      var td = null;
+      var clr = "";
+      for (var $l = 0, $end = this.FColCount - 1; $l <= $end; $l++) {
+        i = $l;
+        for (var $l1 = 0, $end1 = this.RenderRowCount(); $l1 <= $end1; $l1++) {
+          j = $l1;
+          td = this.GetCellElement(i,j);
+          if (td != null) {
+            if (this.FOptions.FCellBorders) {
+              clr = pas["WEBLib.Graphics"].ColorToHTML(this.FOptions.FCellBorderColor);
+              td.style.borderRight = "1px solid " + clr;
+              td.style.borderBottom = "1px solid " + clr;
+            } else {
+              td.style.borderRight = "";
+              td.style.borderBottom = "";
+            };
+          };
+        };
+      };
+    };
+    this.RenderGridData = function () {
+      var i = 0;
+      var j = 0;
+      for (var $l = 0, $end = this.FColCount - 1; $l <= $end; $l++) {
+        i = $l;
+        for (var $l1 = 0, $end1 = this.FRowCount - 1; $l1 <= $end1; $l1++) {
+          j = $l1;
+          this.SetCells(i,j,this.GetCells(i,j));
+        };
+      };
+    };
+    this.RenderGridScript = function () {
+      this.AddControlScriptSource("var pageX,curCol,nxtCol,curColWidth,nxtColWidth,autoWidth,curTable,curTableWidth;" + "autoWidth = false;" + "function resizeColumn(e) {" + "   if (curCol) {" + "    var diffX = e.pageX - pageX;" + "\t\tif ((nxtCol) && (!autoWidth)){" + '\t\t nxtCol.style.width = (nxtColWidth - diffX)+"px";' + "   } else {" + "   }" + "   newColWidth = (curColWidth + diffX);" + "   if (newColWidth < 10)" + "    newColWidth = 10;" + '\t  curCol.style.width = newColWidth + "px";' + "   }" + " }" + "function resetResize() {" + "   curCol = undefined;" + "   nxtCol = undefined;" + "   pageX = undefined;" + "   nxtColWidth = undefined;" + "   curColWidth = undefined;" + "   curTable = undefined;" + "   curTableWidth = undefined;" + " }" + "function resizableGrid(tablename, enabled,ridx) {" + ' var table = document.getElementById(tablename + "Table");' + " if (!table) return;" + ' var row = table.getElementsByTagName("tr")[ridx],' + " cols = row ? row.children : undefined;" + " if (!cols) return;" + " for (var i=0;i<cols.length;i++){" + '  var coldiv = document.getElementById(tablename + "Div" + i);' + "  if (coldiv)" + "    coldiv.remove();" + "  if (enabled) {" + "    var div = createDiv();" + "    cols[i].appendChild(div);" + '    cols[i].style.position = "relative";' + '    div.id = tablename + "Div" + i;' + "    setListeners(div);" + "  }" + " }" + " function setListeners(div){" + '  div.addEventListener("mousedown", function (e) {' + "   curCol = e.target.parentElement;" + "   nxtCol = curCol.nextElementSibling;" + "   pageX = e.pageX;" + "   curColWidth = curCol.offsetWidth;" + "   curTable = curCol.parentElement.parentElement.parentElement;" + "   curTableWidth = curTable.offsetWidth;" + "   if (nxtCol)" + "    nxtColWidth = nxtCol.offsetWidth;" + "  });" + '  div.addEventListener("mouseover", function (e) {' + '   e.target.style.borderRight = "2px solid #0000ff";' + "  });" + '  div.addEventListener("mouseout", function (e) {' + '   e.target.style.borderRight = "";' + "  });" + '  document.addEventListener("mousemove", function (e) {' + "   resizeColumn(e);" + "  });" + '  document.addEventListener("mouseup", function (e) {' + "   resetResize(e);" + "  });" + " }" + " function createDiv(){" + '  var div = document.createElement("div");' + "  div.style.top = 0;" + "  div.style.right = 0;" + '  div.style.width = "10px";' + '  div.style.position = "absolute";' + '  div.style.cursor = "col-resize";' + '  div.style.userSelect = "none";' + '  div.style.height = "100%";' + '  div.innerHTML = "&nbsp;";' + "  return div;" + " }" + "};");
+    };
+    this.RenderHeaderFooter = function () {
+      if (this.FHeader.FVisible) this.FHeader.Update(this.FPaging.FSize,this.FRowCount,this.FPaging.FActivePage);
+      if (this.FFooter.FVisible) this.FFooter.Update(this.FPaging.FSize,this.FRowCount,this.FPaging.FActivePage);
+    };
+    this.BindEvents = function () {
+      pas["WEBLib.Controls"].TCustomControl.BindEvents.call(this);
+      this.RenderGridScript();
+    };
+    this.KeyDown = function (Key, Shift) {
+      var fr = 0;
+      pas["WEBLib.Controls"].TControl.KeyDown.apply(this,arguments);
+      if (!this.FEnabled) return;
+      fr = 0;
+      if (this.FRowHeader) fr = 1;
+      if (Key.get() === 38) this.SetRowIndex(Math.max(fr,this.FRowIndex - 1));
+      if (Key.get() === 40) this.SetRowIndex(Math.min(this.FRowCount - 1,this.FRowIndex + 1));
+      if (Key.get() === 36) this.SetRowIndex(fr);
+      if (Key.get() === 35) this.SetRowIndex(this.FRowCount - 1);
+      if (Key.get() === 34) this.SetRowIndex(Math.min(this.FRowCount - 1,this.FRowIndex + 4));
+      if (Key.get() === 33) this.SetRowIndex(Math.max(fr,this.FRowIndex - 4));
+    };
+    this.CreateElement = function () {
+      var Result = null;
+      Result = document.createElement("DIV");
+      this.FTable = null;
+      return Result;
+    };
+    this.UpdateElement = function () {
+      pas["WEBLib.Controls"].TControl.UpdateElement.call(this);
+      if (this.IsUpdating()) return;
+      if (this.GetElementHandle() != null) {
+        if (this.FOptions.FScrollVertical) {
+          this.GetElementHandle().style.setProperty("overflow-y","scroll")}
+         else this.GetElementHandle().style.setProperty("height","");
+        if (pas.Classes.TComponentStateItem.csDesigning in this.FComponentState) {
+          this.GetElementHandle().style.setProperty("width",pas.SysUtils.IntToStr(this.GetWidth()) + "px");
+          this.GetElementHandle().style.setProperty("height",pas.SysUtils.IntToStr(this.GetHeight()) + "px");
+        };
+        this.GetElementHandle().style.setProperty("user-select","");
+        if (this.FCursor === 0) this.GetElementHandle().style.setProperty("cursor","");
+        if ((this.FBorderStyle === pas["WEBLib.Controls"].TBorderStyle.bsSingle) && (this.FBorderColor !== -1) && (this.FElementClassName === "") && (this.FElementTableClassName === "") && !this.GetIsLinked()) {
+          this.GetElementHandle().style.setProperty("border","1px " + pas["WEBLib.Graphics"].ColorToHTML(this.FBorderColor) + " solid")}
+         else this.GetElementHandle().style.setProperty("border","");
+        if ((this.FColor !== -1) && (this.FColor !== 16711422)) {
+          this.GetElementHandle().style.setProperty("background-color",pas["WEBLib.Graphics"].ColorToHTML(this.FColor))}
+         else this.GetElementHandle().style.setProperty("background-color","");
+        this.RenderGrid();
+      };
+    };
+    this.SetRowCount = function (Value) {
+      var delta = 0;
+      var trc = 0;
+      var trh = 0;
+      var i = 0;
+      if ((this.FRowCount !== Value) && (Value >= 0)) {
+        trc = Value;
+        this.FData.length = trc;
+              var i;
+        
+              for(i = 0; i < this.FData.length; i++) {
+                if (this.FData[i] == null) {
+                  this.FData[i] = [];
+                  this.FData[i].length = this.FColCount;
+                }
+              };
+        delta = Value - this.FRowCount;
+        if ((this.FRowCount === 0) && this.FRowHeader) delta = Value - 1;
+        this.FRowCount = Value;
+        this.RowCountChanged(delta);
+        this.GridChanged();
+        if (this.FPaging.FEnabled) {
+          trc = 0;
+          trh = 0;
+          if (this.FRowHeader) trc += 1;
+          if (this.FHeader.FVisible) trh += 1;
+          for (var $l = this.FPaging.FSize + trc + trh, $end = (this.FRowCount - 1) + trh; $l <= $end; $l++) {
+            i = $l;
+            this.HideRow(i);
+          };
+        };
+        if (this.FHeader.FPager !== $mod.TTablePager.tpNone) this.FHeader.Update(this.FPaging.FSize,this.FRowCount,this.FPaging.FActivePage);
+        if (this.FFooter.FPager !== $mod.TTablePager.tpNone) this.FFooter.Update(this.FPaging.FSize,this.FRowCount,this.FPaging.FActivePage);
+      };
+    };
+    this.SetColCount = function (Value) {
+      $mod.TCustomGrid.SetColCount.apply(this,arguments);
+      var i;
+          for(i=0; i < this.FData.length; i++)
+          {
+            if (this.FData[i] == null) this.FData[i] = [];
+      
+            this.FData[i].length = Value;
+          };
+    };
+    this.RowCountChanged = function (delta) {
+      var r = 0;
+      var tbody = null;
+      if (!(this.FTable != null)) return;
+      tbody = this.FBody;
+      if (delta > 0) {
+        var i = 0;
+              var j = 0;
+              var tr = undefined;
+              var l = tbody.rows.length;
+        
+              for(i = 0;i < delta; i++)
+              {
+                 tr = tbody.insertRow(l);
+                 for(j = 0; j < this.FColCount; j++)
+                 {
+        
+                  if ((j == 0) && (this.FColHeader))
+                  {
+                    var th = document.createElement('th');
+                    th.setAttribute('scope','row');
+                    tr.appendChild(th);
+                  }
+                  else
+                  {
+                    tr.insertCell();
+                  }
+                 }
+              };
+        if (this.FDragMode === pas["WEBLib.Controls"].TDragMode.dmAutomatic) this.EnableDrag();
+      };
+      if (delta < 0) {
+        var i = 0;
+        var l = this.FBody.rows.length;
+        if (l < -delta) return;
+        for(i = 0;i < -delta; i++) {
+          this.FBody.deleteRow(l - i - 1);
+        };
+      };
+    };
+    this.ColCountChanged = function (delta) {
+      var c = 0;
+      var fromrow = 0;
+      var torow = 0;
+      var dtb = "";
+      var cc = "";
+      if (this.IsUpdating() || !(this.FTable != null)) return;
+      cc = "";
+      dtb = "";
+      if (pas.Classes.TComponentStateItem.csDesigning in this.FComponentState) {
+        dtb = "1px dashed gray";
+        cc = "&nbsp;";
+      };
+      fromrow = 0;
+      torow = this.RenderRowCount();
+      if (this.FRowHeader) torow = torow + 1;
+      if (this.FHeader.FVisible) {
+        this.FHeader.FElement.setAttribute("colspan",pas["WEBLib.Utils"].TLongIntHelper.ToString.call({p: this, get: function () {
+            return this.p.FColCount;
+          }, set: function (v) {
+            this.p.FColCount = v;
+          }}));
+        fromrow = 1;
+        torow = torow + 1;
+      };
+      if (this.FFooter.FVisible) {
+        this.FFooter.FElement.setAttribute("colspan",pas["WEBLib.Utils"].TLongIntHelper.ToString.call({p: this, get: function () {
+            return this.p.FColCount;
+          }, set: function (v) {
+            this.p.FColCount = v;
+          }}));
+      };
+      if (delta > 0) {
+        var i = 0;
+              var j = 0;
+              var k = 0;
+              var tr = undefined;
+              var td = undefined;
+        
+              for(j = fromrow; j < torow; j++)
+              {
+                tr = this.FTable.rows[j];
+        
+                if (tr == undefined) { continue; }
+        
+                k = tr.cells.length;
+        
+                 for(i = 0; i < delta; i++)
+                 {
+                   if ((j == fromrow) && (this.FRowHeader))
+                   {
+                     var th = document.createElement('th');
+                     th.setAttribute('scope','col');
+                     tr.appendChild(th);
+                     this.SetTableCell(i,j,th,cc);
+                   }
+                   else
+                   {
+                     if ((tr.cells.length == 0) && (this.FColHeader))
+                     {
+                       var th = document.createElement('th');
+                       th.setAttribute('scope','row');
+                       this.SetTableCell(i,j,th, cc);
+                       tr.appendChild(th);
+                     }
+                     else
+                     {
+                       td = tr.insertCell();
+                       td = tr.cells[k];
+                       this.SetTableCell(i,j,td, cc);
+                     }
+                   }
+                 }
+              };
+        if (this.FDragMode === pas["WEBLib.Controls"].TDragMode.dmAutomatic) this.EnableDrag();
+      };
+      if (delta < 0) {
+        var i = 0;
+              var j = 0;
+              var k = 0;
+              var tr = undefined;
+        
+              for(j = fromrow; j < torow; j++)
+              {
+                tr = this.FTable.rows[j];
+        
+                if (tr == undefined) { continue; }
+        
+                k = tr.cells.length;
+        
+                for(i = 0; i < -delta; i++)
+                {
+                  if ((k - i - 1 < k) && (k - i - 1 >= 0))  {
+                    tr.deleteCell(k - i - 1);
+                }
+               }
+              };
+      };
+    };
+    this.LoadFromStringList = function (AStrings) {
+      var firstrow = 0;
+      var arow = null;
+      var i = 0;
+      var j = 0;
+      var cr = 0;
+      var cd = "";
+      var cn = "";
+      var ce = null;
+      if (this.FRowHeader && !this.FLoadFixed) {
+        firstrow = 1}
+       else firstrow = 0;
+      this.SetRowCount(AStrings.GetCount() + firstrow);
+      arow = pas.Classes.TStringList.$create("Create$1");
+      try {
+        for (var $l = 0, $end = AStrings.GetCount() - 1; $l <= $end; $l++) {
+          i = $l;
+          arow.FStrictDelimiter = true;
+          arow.SetDelimiter(this.FDelimiter);
+          arow.SetDelimitedText(AStrings.Get(i));
+          if (arow.GetCount() > this.FColCount) this.SetColCount(arow.GetCount());
+          for (var $l1 = 0, $end1 = arow.GetCount() - 1; $l1 <= $end1; $l1++) {
+            j = $l1;
+            cd = arow.Get(j);
+            this.GetCellData(j,i + firstrow,null,{get: function () {
+                return cd;
+              }, set: function (v) {
+                cd = v;
+              }});
+            this.SetCells(j,i + firstrow,cd);
+            cr = i + firstrow;
+            if (this.InVisiblePage({get: function () {
+                return cr;
+              }, set: function (v) {
+                cr = v;
+              }})) {
+              ce = this.GetCellElement(j,cr);
+              this.GetCellChildren(j,cr,null,cd,ce);
+              cn = "";
+              this.GetCellClassName(j,cr,null,cd,{get: function () {
+                  return cn;
+                }, set: function (v) {
+                  cn = v;
+                }});
+              if (cn !== "") ce.setAttribute("class",cn);
+            };
+          };
+        };
+      } finally {
+        arow = rtl.freeLoc(arow);
+      };
+    };
+    this.EnableColResize = function () {
+      var TableName = "";
+      var ResizeEnabled = false;
+      var ridx = 0;
+      TableName = this.FName;
+      ResizeEnabled = this.FOptions.FResizeColumns;
+      if (!(pas.Classes.TComponentStateItem.csDesigning in this.FComponentState)) {
+        if (this.FHeader.FVisible) {
+          ridx = 1}
+         else ridx = 0;
+        resizableGrid(TableName, ResizeEnabled, ridx);
+      };
+    };
+    this.EnableDrag = function () {
+      var $Self = this;
+      function AddDraggableAttribute(AElement) {
+        var I = 0;
+        for (var $l = 0, $end = AElement.children.length - 1; $l <= $end; $l++) {
+          I = $l;
+          if (AElement.children.item(I).tagName === "TD") {
+            AElement.children.item(I).setAttribute("draggable","true");
+            AddDraggableAttribute(AElement.children.item(I));
+          } else AddDraggableAttribute(AElement.children.item(I));
+        };
+      };
+      if (!(this.GetContainer() != null)) return;
+      AddDraggableAttribute(this.GetContainer());
+    };
+    this.DisableDrag = function () {
+      var $Self = this;
+      function RemoveDraggableAttribute(AElement) {
+        var I = 0;
+        for (var $l = 0, $end = AElement.children.length - 1; $l <= $end; $l++) {
+          I = $l;
+          if (AElement.children.item(I).tagName === "TD") {
+            AElement.children.item(I).removeAttribute("draggable");
+            RemoveDraggableAttribute(AElement.children.item(I));
+          } else RemoveDraggableAttribute(AElement.children.item(I));
+        };
+      };
+      if (!(this.GetContainer() != null)) return;
+      RemoveDraggableAttribute(this.GetContainer());
+    };
+    this.FindFrom = function (ACol, ARow, Condition, CaseSensitive, AllCells) {
+      var Result = $mod.TGridCoord.$new();
+      var i = 0;
+      var j = 0;
+      var r = 0;
+      var pg = 0;
+      var sr = 0;
+      var sc = 0;
+      var cd = "";
+      var found = false;
+      sc = ACol;
+      Result.X = -1;
+      Result.Y = -1;
+      for (var $l = ARow, $end = this.FRowCount - 1; $l <= $end; $l++) {
+        i = $l;
+        for (var $l1 = sc, $end1 = this.FColCount - 1; $l1 <= $end1; $l1++) {
+          j = $l1;
+          cd = this.FData[i][j];
+          found = (cd != undefined);
+          if (found && pas["WEBLib.Utils"].MatchStr("*" + Condition + "*",cd,CaseSensitive)) {
+            Result.X = j;
+            Result.Y = i;
+            this.FFindCol = j;
+            this.FFindRow = i;
+            if (this.FPaging.FEnabled) {
+              pg = rtl.trunc((i - ARow) / this.FPaging.FSize);
+              this.SelectPage(pg,true);
+              this.FFindRow = i % this.FPaging.FSize;
+              if (this.FFindRow < ARow) this.FFindRow = this.FPaging.FSize;
+              Result.Y = this.FFindRow;
+            };
+            this.ScrollRowInView(this.FFindRow);
+            this.SelectCell(j,this.FFindRow);
+            return Result;
+          };
+        };
+        if (this.FColHeader && !AllCells) {
+          sc = 1}
+         else sc = 0;
+      };
+      return Result;
+    };
+    this.RenderRowCount = function () {
+      var Result = 0;
+      if (this.FPaging.FEnabled && (this.FPaging.FSize > 0)) {
+        Result = this.FPaging.FSize}
+       else {
+        if (this.FRowHeader) {
+          Result = this.FRowCount - 1}
+         else Result = this.FRowCount;
+      };
+      return Result;
+    };
+    this.InVisiblePage = function (ARow) {
+      var Result = false;
+      if (this.FPaging.FEnabled) {
+        Result = (ARow.get() >= (this.FPaging.FSize * this.FPaging.FActivePage)) && (ARow.get() < (this.FPaging.FSize * (this.FPaging.FActivePage + 1)));
+        ARow.set(ARow.get() - (this.FPaging.FSize * this.FPaging.FActivePage));
+      } else Result = ARow.get() <= this.FRowCount;
+      return Result;
+    };
+    this.DoSelectPage = function (AIndex) {
+      var Allow = false;
+      var DoDefault = false;
+      Allow = true;
+      DoDefault = true;
+      if (this.FOnSelectPage != null) this.FOnSelectPage(this,AIndex,{get: function () {
+          return Allow;
+        }, set: function (v) {
+          Allow = v;
+        }},{get: function () {
+          return DoDefault;
+        }, set: function (v) {
+          DoDefault = v;
+        }});
+      if (Allow) this.SelectPage(AIndex,DoDefault);
+    };
+    this.SelectPage = function (AIndex, DoDefault) {
+      var i = 0;
+      var j = 0;
+      var delta = 0;
+      var offset = 0;
+      var hdr = 0;
+      var tr = null;
+      var td = null;
+      var s = "";
+      if (this.FPaging.FEnabled) {
+        this.FPaging.FActivePage = AIndex;
+        td = null;
+        this.RenderHeaderFooter();
+        if (DoDefault) {
+          if (this.FRowHeader) {
+            delta = 1}
+           else delta = 0;
+          if (this.FHeader.FVisible) {
+            hdr = 1}
+           else hdr = 0;
+          offset = AIndex * this.FPaging.FSize;
+          for (var $l = 0, $end = this.FPaging.FSize - 1; $l <= $end; $l++) {
+            i = $l;
+            tr = this.FTable.rows[i + delta + hdr];
+            if (tr != null) {
+              if ((offset + i + delta) >= this.FRowCount) {
+                tr.style.setProperty('display','none');
+                continue;
+              };
+              s = "";
+              for (var $l1 = 0, $end1 = this.FColCount - 1; $l1 <= $end1; $l1++) {
+                j = $l1;
+                s = this.FData[offset + i + delta][j];
+                if (s != undefined) {
+                  td = tr.cells[j];
+                  this.SetTableCell(j,i+delta,td,s);
+                }
+                tr.style.removeProperty('display');
+              };
+            };
+          };
+        };
+      };
+    };
+    this.Loaded = function () {
+      pas["WEBLib.Controls"].TCustomControl.Loaded.call(this);
+    };
+    this.InitCSSLibrary = function (ALibrary) {
+      if (ALibrary === pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap) {
+        this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.SetElementHeaderClassName("thead-light");
+        this.SetElementTableClassName("table table-striped table-bordered  table-hover");
+        if (!(this.FHeader != null)) this.FHeader = $mod.TTableControlHeader.$create("Create$1",[this]);
+        this.FHeader.FButtonActiveElementClassName = "btn btn-primary";
+        this.FHeader.FButtonElementClassName = "btn btn-light";
+        this.FHeader.FLinkActiveElementClassName = "link-primary";
+        this.FHeader.FLinkElementClassName = "link-secondary";
+        this.FHeader.FListElementClassName = "pagination";
+        this.FHeader.FListLinkElementClassName = "page-link";
+        this.FHeader.FListItemElementClassName = "page-item";
+        this.FHeader.FDropDownElementClassName = "form-control";
+        this.FHeader.FInputElementClassName = "form-control";
+        if (!(this.FFooter != null)) this.FFooter = $mod.TTableControlHeader.$create("Create$1",[this]);
+        this.FFooter.FButtonActiveElementClassName = "btn btn-primary";
+        this.FFooter.FButtonElementClassName = "btn btn-light";
+        this.FFooter.FLinkActiveElementClassName = "link-primary";
+        this.FFooter.FLinkElementClassName = "link-secondary";
+        this.FFooter.FListElementClassName = "pagination";
+        this.FFooter.FListLinkElementClassName = "page-link";
+        this.FFooter.FListItemElementClassName = "page-item";
+        this.FFooter.FDropDownElementClassName = "form-control";
+        this.FFooter.FInputElementClassName = "form-control";
+      };
+    };
+    this.Create$1 = function (AOwner) {
+      this.FHeader = null;
+      this.FFooter = null;
+      pas["WEBLib.Controls"].TControl.Create$1.apply(this,arguments);
+      this.SetTabStop(false);
+      return this;
+    };
+    this.CreateInitialize = function () {
+      pas["WEBLib.Controls"].TCustomControl.CreateInitialize.call(this);
+      this.FOptions = $mod.TTableControlOptions.$create("Create$1",[this]);
+      this.FData = null;
+      this.FUnfiltered = null;
+      if (this.FData == null) {
+        if (!(this.FHeader != null)) this.FHeader = $mod.TTableControlHeader.$create("Create$1",[this]);
+        if (!(this.FFooter != null)) this.FFooter = $mod.TTableControlHeader.$create("Create$1",[this]);
+        this.FPaging = $mod.TTableControlPaging.$create("Create$1",[this]);
+        this.FHiddenCols = pas.Classes.TStringList.$create("Create$1");
+        this.FHiddenCols.FDuplicates = pas.Types.TDuplicates.dupIgnore;
+      };
+      this.FData = [];
+          this.FData.length = 11;
+          var i;
+          for(i=0;i<11;i++) {
+            if (this.FData[i] == null) this.FData[i] = [];
+      
+            this.FData[i].length = 5;
+          };
+      this.FColCount = 5;
+      this.FRowCount = 10;
+      this.FRowHeader = true;
+      this.FColHeader = true;
+      this.FRowIndex = -1;
+      this.FSelectionColor = 0xFF8F5B;
+      this.FSelectionTextColor = 0xFFFFFF;
+      this.SetEnabled(true);
+      if (pas.Classes.TComponentStateItem.csDesigning in this.FComponentState) {
+        this.SetWidth(400);
+        this.SetHeight(300);
+      };
+    };
+    this.Destroy = function () {
+      rtl.free(this,"FHiddenCols");
+      rtl.free(this,"FOptions");
+      rtl.free(this,"FHeader");
+      rtl.free(this,"FFooter");
+      rtl.free(this,"FPaging");
+      pas["WEBLib.Controls"].TCustomControl.Destroy.call(this);
+    };
+    this.Invalidate = function () {
+      pas["WEBLib.Controls"].TCustomControl.Invalidate.call(this);
+      if (!(pas.Classes.TComponentStateItem.csLoading in this.FComponentState)) return;
+      this.ReRenderGrid();
+      if (this.FHeader.FVisible) this.FHeader.Update(this.FPaging.FSize,this.FRowCount,this.FPaging.FActivePage);
+      if (this.FFooter.FVisible) this.FFooter.Update(this.FPaging.FSize,this.FRowCount,this.FPaging.FActivePage);
+    };
+    this.LogData = function () {
+      window.console.log(this.FData);
+    };
+    this.InitSample = function (AInitMethod) {
+      var i = 0;
+      var j = 0;
+      var trc = 0;
+      trc = this.RenderRowCount();
+      if (this.FRowHeader) trc += 1;
+      for (var $l = 0, $end = trc - 1; $l <= $end; $l++) {
+        i = $l;
+        for (var $l1 = 0, $end1 = this.FColCount - 1; $l1 <= $end1; $l1++) {
+          j = $l1;
+          var $tmp = AInitMethod;
+          if ($tmp === $mod.TInitMethod.imRandom) {
+            this.SetCells(j,i,pas.SysUtils.IntToStr(pas.System.Random(100)))}
+           else if ($tmp === $mod.TInitMethod.imLinear) this.SetCells(j,i,pas.SysUtils.IntToStr(j) + ":" + pas.SysUtils.IntToStr(i));
+        };
+      };
+    };
+    this.LoadFromJSON = function (AURL, ADataNode) {
+      this.FDataNode = ADataNode;
+      this.FReq = new XMLHttpRequest();
+      this.FReq.addEventListener("load",rtl.createSafeCallback(this,"DoHttpLoadJson"));
+      this.FReq.addEventListener("abort",rtl.createSafeCallback(this,"DoHttpAbort"));
+      this.FReq.open("GET",AURL);
+      this.DoHttpRequest(this.FReq);
+      this.FReq.send();
+    };
+    this.LoadFromJSON$1 = function (AJSON, ADataNode) {
+      var JO = undefined;
+      var JA = null;
+      var r = 0;
+      var c = 0;
+      var cr = 0;
+      var firstrow = 0;
+      var arow = "";
+      var sl = null;
+      var cd = "";
+      var cn = "";
+      var ce = null;
+      var p = false;
+      if (ADataNode !== "") {
+        JA = AJSON[ADataNode]}
+       else JA = AJSON;
+      if (JA != null) {
+        p = this.FPaging.FEnabled;
+        this.FPaging.SetEnabled(false);
+        sl = pas.Classes.TStringList.$create("Create$1");
+        firstrow = 0;
+        if (this.FRowHeader) firstrow = 1;
+        this.SetRowCount(JA.length + firstrow);
+        for (var $l = 0, $end = JA.length - 1; $l <= $end; $l++) {
+          r = $l;
+          JO = JA[r];
+          c = 0;
+          arow = "";
+          var x = undefined;
+          for (x in JO) {
+            arow += "|" + JO[x];
+            c++;
+          };
+          pas.System.Delete({get: function () {
+              return arow;
+            }, set: function (v) {
+              arow = v;
+            }},1,1);
+          sl.FStrictDelimiter = true;
+          sl.SetDelimiter("|");
+          sl.SetDelimitedText(arow);
+          if (this.FColCount < sl.GetCount()) this.SetColCount(sl.GetCount());
+          for (var $l1 = 0, $end1 = sl.GetCount() - 1; $l1 <= $end1; $l1++) {
+            c = $l1;
+            cd = sl.Get(c);
+            this.GetCellData(c,r + firstrow,null,{get: function () {
+                return cd;
+              }, set: function (v) {
+                cd = v;
+              }});
+            this.SetCells(c,r + firstrow,cd);
+            cr = r;
+            if (this.InVisiblePage({get: function () {
+                return cr;
+              }, set: function (v) {
+                cr = v;
+              }})) {
+              cr = cr + firstrow;
+              ce = this.GetCellElement(c,cr);
+              this.GetCellChildren(c,cr,null,cd,ce);
+              cn = "";
+              this.GetCellClassName(c,cr,null,cd,{get: function () {
+                  return cn;
+                }, set: function (v) {
+                  cn = v;
+                }});
+              if (cn !== "") ce.setAttribute("class",cn);
+            };
+          };
+          this.FPaging.SetEnabled(p);
+        };
+        sl = rtl.freeLoc(sl);
+      };
+    };
+    this.LoadFromJSONAsync = function (AURL, ADataNode) {
+      var $Self = this;
+      var Result = null;
+      Result = new Promise(function (ASuccess, AFailed) {
+        function DoLoad(Event) {
+          var Result = false;
+          if ($Self.DoHttpLoadJson(Event)) {
+            ASuccess(Event.target)}
+           else AFailed(Event.target);
+          Result = true;
+          return Result;
+        };
+        function DoError(Event) {
+          var Result = false;
+          AFailed(Event.target);
+          Result = true;
+          return Result;
+        };
+        $Self.FDataNode = ADataNode;
+        $Self.FReq = new XMLHttpRequest();
+        $Self.FReq.addEventListener("load",rtl.createSafeCallback(null,DoLoad));
+        $Self.FReq.addEventListener("abort",rtl.createSafeCallback(null,DoError));
+        $Self.FReq.addEventListener("timeout",rtl.createSafeCallback(null,DoError));
+        $Self.FReq.addEventListener("error",rtl.createSafeCallback(null,DoError));
+        $Self.FReq.open("GET",AURL);
+        $Self.DoHttpRequest($Self.FReq);
+        $Self.FReq.send();
+      });
+      return Result;
+    };
+    this.LoadPageFromJSON = function (AURL, ADataNode) {
+      this.FDataNode = ADataNode;
+      this.FReq = new XMLHttpRequest();
+      this.FReq.addEventListener("load",rtl.createSafeCallback(this,"DoHttpLoadPageJson"));
+      this.FReq.addEventListener("abort",rtl.createSafeCallback(this,"DoHttpAbort"));
+      this.FReq.open("GET",AURL);
+      this.DoHttpRequest(this.FReq);
+      this.FReq.send();
+    };
+    this.LoadPageFromJSON$1 = function (AJSON, ADataNode) {
+      var JO = undefined;
+      var JA = null;
+      var r = 0;
+      var c = 0;
+      var cr = 0;
+      var firstrow = 0;
+      var arow = "";
+      var sl = null;
+      var cd = "";
+      var cn = "";
+      var ce = null;
+      var p = false;
+      if (ADataNode !== "") {
+        JA = AJSON[ADataNode]}
+       else JA = AJSON;
+      if (JA != null) {
+        sl = pas.Classes.TStringList.$create("Create$1");
+        firstrow = this.FPaging.FActivePage * this.FPaging.FSize;
+        if (this.FRowHeader) firstrow = firstrow + 1;
+        for (var $l = 0, $end = JA.length - 1; $l <= $end; $l++) {
+          r = $l;
+          JO = JA[r];
+          c = 0;
+          arow = "";
+          var x = undefined;
+          for (x in JO) {
+            arow += "|" + JO[x];
+            c++;
+          };
+          pas.System.Delete({get: function () {
+              return arow;
+            }, set: function (v) {
+              arow = v;
+            }},1,1);
+          sl.FStrictDelimiter = true;
+          sl.SetDelimiter("|");
+          sl.SetDelimitedText(arow);
+          if (this.FColCount < sl.GetCount()) this.SetColCount(sl.GetCount());
+          for (var $l1 = 0, $end1 = sl.GetCount() - 1; $l1 <= $end1; $l1++) {
+            c = $l1;
+            cd = sl.Get(c);
+            this.GetCellData(c,r + firstrow,null,{get: function () {
+                return cd;
+              }, set: function (v) {
+                cd = v;
+              }});
+            this.SetCells(c,r + firstrow,cd);
+            cr = r;
+            if (this.InVisiblePage({get: function () {
+                return cr;
+              }, set: function (v) {
+                cr = v;
+              }})) {
+              cr = cr + firstrow;
+              ce = this.GetCellElement(c,cr);
+              this.GetCellChildren(c,cr,null,cd,ce);
+              cn = "";
+              this.GetCellClassName(c,cr,null,cd,{get: function () {
+                  return cn;
+                }, set: function (v) {
+                  cn = v;
+                }});
+              if (cn !== "") ce.setAttribute("class",cn);
+            };
+          };
+        };
+        sl = rtl.freeLoc(sl);
+      };
+    };
+    this.LoadPageFromJSONAsync = function (AURL, ADataNode) {
+      var $Self = this;
+      var Result = null;
+      Result = new Promise(function (ASuccess, AFailed) {
+        function DoLoad(Event) {
+          var Result = false;
+          if ($Self.DoHttpLoadPageJson(Event)) {
+            ASuccess(Event.target)}
+           else AFailed(Event.target);
+          Result = true;
+          return Result;
+        };
+        function DoError(Event) {
+          var Result = false;
+          AFailed(Event.target);
+          Result = true;
+          return Result;
+        };
+        $Self.FDataNode = ADataNode;
+        $Self.FReq = new XMLHttpRequest();
+        $Self.FReq.addEventListener("load",rtl.createSafeCallback(null,DoLoad));
+        $Self.FReq.addEventListener("abort",rtl.createSafeCallback(null,DoError));
+        $Self.FReq.addEventListener("timeout",rtl.createSafeCallback(null,DoError));
+        $Self.FReq.addEventListener("error",rtl.createSafeCallback(null,DoError));
+        $Self.FReq.open("GET",AURL);
+        $Self.DoHttpRequest($Self.FReq);
+        $Self.FReq.send();
+      });
+      return Result;
+    };
+    this.LoadFromCSV = function (AURL, Delimiter, LoadFixed) {
+      this.FDelimiter = Delimiter;
+      this.FLoadFixed = LoadFixed;
+      this.FReq = new XMLHttpRequest();
+      this.FReq.addEventListener("load",rtl.createSafeCallback(this,"DoHttpLoadCsv"));
+      this.FReq.addEventListener("abort",rtl.createSafeCallback(this,"DoHttpAbort"));
+      this.FReq.open("GET",AURL);
+      this.DoHttpRequest(this.FReq);
+      this.FReq.send();
+    };
+    this.LoadFromCSVAsync = function (AURL, Delimiter, LoadFixed) {
+      var $Self = this;
+      var Result = null;
+      Result = new Promise(function (ASuccess, AFailed) {
+        function DoLoad(Event) {
+          var Result = false;
+          if ($Self.DoHttpLoadCsv(Event)) {
+            ASuccess(Event.target)}
+           else AFailed(Event.target);
+          Result = true;
+          return Result;
+        };
+        function DoError(Event) {
+          var Result = false;
+          AFailed(Event.target);
+          Result = true;
+          return Result;
+        };
+        $Self.FDelimiter = Delimiter;
+        $Self.FLoadFixed = LoadFixed;
+        $Self.FReq = new XMLHttpRequest();
+        $Self.FReq.addEventListener("load",rtl.createSafeCallback(null,DoLoad));
+        $Self.FReq.addEventListener("abort",rtl.createSafeCallback(null,DoError));
+        $Self.FReq.addEventListener("timeout",rtl.createSafeCallback(null,DoError));
+        $Self.FReq.addEventListener("error",rtl.createSafeCallback(null,DoError));
+        $Self.FReq.open("GET",AURL);
+        $Self.DoHttpRequest($Self.FReq);
+        $Self.FReq.send();
+      });
+      return Result;
+    };
+    this.LoadFromStrings = function (AStrings, Delimiter, LoadFixed) {
+      this.FDelimiter = Delimiter;
+      this.FLoadFixed = LoadFixed;
+      this.LoadFromStringList(AStrings);
+    };
+    this.SaveToCSV = function (AFileName, Delimiter, SaveFixed) {
+      var sl = null;
+      sl = pas.Classes.TStringList.$create("Create$1");
+      try {
+        this.SaveToStrings(sl,Delimiter,SaveFixed);
+        sl.SaveToFile(AFileName);
+      } finally {
+        sl = rtl.freeLoc(sl);
+      };
+    };
+    this.SaveToStrings = function (AStrings, Delimiter, SaveFixed) {
+      var r = 0;
+      var c = 0;
+      var fr = 0;
+      var fc = 0;
+      var s = "";
+      var rowstr = "";
+      fr = 0;
+      fc = 0;
+      if (!SaveFixed && this.FColHeader) fc = 1;
+      if (!SaveFixed && this.FRowHeader) fr = 1;
+      for (var $l = fr, $end = this.FRowCount - 1; $l <= $end; $l++) {
+        r = $l;
+        rowstr = "";
+        for (var $l1 = fc, $end1 = this.FColCount - 1; $l1 <= $end1; $l1++) {
+          c = $l1;
+          s = this.GetCells(c,r);
+          s = pas.SysUtils.StringReplace(s,'"','""',rtl.createSet(pas.SysUtils.TStringReplaceFlag.rfReplaceAll));
+          if ((pas.System.Pos(Delimiter,s) > 0) || (pas.System.Pos("\r",s) > 0)) {
+            s = '"' + s + '"';
+          };
+          if (s === "") s = '""';
+          if (rowstr === "") {
+            rowstr = s}
+           else rowstr = rowstr + Delimiter + s;
+        };
+        AStrings.Add(rowstr);
+      };
+    };
+    this.AddCheckBox = function (ACol, ARow, Checked) {
+      var s = "";
+      var ct = "";
+      var el = null;
+      if ((ARow >= 0) && (ACol >= 0) && !this.HasCheckBox(ACol,ARow)) {
+        ct = this.GetCells(ACol,ARow);
+        if (ct !== "") ct = "&nbsp;" + ct;
+        s = '<INPUT TYPE="CHECKBOX" style="vertical-align:middle"';
+        if (Checked) s = s + " CHECKED";
+        s = s + ">";
+        this.SetCells(ACol,ARow,s + ct);
+        el = this.GetCellElement(ACol,ARow);
+        this.BindCellCheckBox(ACol,ARow,el);
+      };
+    };
+    this.RemoveCheckBox = function (ACol, ARow) {
+      var el = null;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetCheckElement(ACol,ARow);
+        if (el != null) {
+          el.removeEventListener("click",this.FHandleCheckClickPtr);
+          el.remove();
+        };
+      };
+    };
+    this.AddCheckBoxColumn = function (ACol, Checked) {
+      var i = 0;
+      var s = 0;
+      s = 0;
+      if (this.FRowHeader) s = 1;
+      for (var $l = s, $end = this.FRowCount - 1; $l <= $end; $l++) {
+        i = $l;
+        this.AddCheckBox(ACol,i,Checked);
+      };
+    };
+    this.HasCheckBox = function (ACol, ARow) {
+      var Result = false;
+      var el = null;
+      Result = false;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetCheckElement(ACol,ARow);
+        Result = el != null;
+      };
+      return Result;
+    };
+    this.AddButton = function (ACol, ARow, AText, AStyle) {
+      var s = "";
+      var ct = "";
+      var el = null;
+      if ((ARow >= 0) && (ACol >= 0) && !this.HasCheckBox(ACol,ARow)) {
+        ct = this.GetCells(ACol,ARow);
+        if (ct !== "") ct = "&nbsp;" + ct;
+        s = '<BUTTON type="button" style="vertical-align:middle"';
+        if (AStyle !== "") s = s + ' class="' + AStyle + '"';
+        s = s + ">" + AText + "</BUTTON>";
+        this.SetCells(ACol,ARow,s + ct);
+        el = this.GetCellElement(ACol,ARow);
+        this.BindCellButton(ACol,ARow,el);
+      };
+    };
+    this.AddButtonColumn = function (ACol, AText, AStyle) {
+      var i = 0;
+      var s = 0;
+      s = 0;
+      if (this.FRowHeader) s = 1;
+      for (var $l = s, $end = this.FRowCount - 1; $l <= $end; $l++) {
+        i = $l;
+        this.AddButton(ACol,i,AText,AStyle);
+      };
+    };
+    this.RemoveButton = function (ACol, ARow) {
+      var el = null;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetButtonElement(ACol,ARow);
+        if (el != null) {
+          el.removeEventListener("click",this.FHandleCheckClickPtr);
+          el.remove();
+        };
+      };
+    };
+    this.HasButton = function (ACol, ARow) {
+      var Result = false;
+      var el = null;
+      Result = false;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetButtonElement(ACol,ARow);
+        if (el != null) {
+          Result = true;
+        };
+      };
+      return Result;
+    };
+    this.AddSortIndicator = function (ACol, ARow, AIndicator) {
+      var s = "";
+      var sid = "";
+      var sp = 0;
+      s = this.GetCells(ACol,ARow);
+      sp = pas.System.Pos("<span",s);
+      if (sp > 0) s = pas.System.Copy(s,1,sp - 1);
+      sid = this.FName + "si" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return ACol;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }}) + "_" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return ARow;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }});
+      var $tmp = AIndicator;
+      if ($tmp === $mod.TGridSortIndicator.siNone) {
+        this.SetCells(ACol,ARow,s)}
+       else if ($tmp === $mod.TGridSortIndicator.siAscending) {
+        this.SetCells(ACol,ARow,s + '<span style="cursor:pointer;float:right" id="' + sid + '" sort="up">' + $impl.GlyphAscending + "</span>")}
+       else if ($tmp === $mod.TGridSortIndicator.siDescending) this.SetCells(ACol,ARow,s + '<span style="cursor:pointer;float:right" id="' + sid + '" sort="dn">' + $impl.GlyphDescending + "</span>");
+    };
+    this.SelectSortIndicator = function (ACol, ARow, ASelect) {
+      var el = null;
+      var sid = "";
+      sid = this.FName + "si" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return ACol;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }}) + "_" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return ARow;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }});
+      el = document.getElementById(sid);
+      if (el != null) {
+        if (this.FElementSelectionClassName === "") {
+          if (ASelect) {
+            el.style.setProperty("color",pas["WEBLib.Graphics"].ColorToHTML(0xFF8F5B))}
+           else el.style.removeProperty("color");
+        } else {
+          if (ASelect) {
+            el.classList.add(this.FElementSelectionClassName)}
+           else el.classList.remove(this.FElementSelectionClassName);
+        };
+      };
+    };
+    this.SetSortIndicator = function (ACol, ARow, AIndicator) {
+      var el = null;
+      var sid = "";
+      sid = this.FName + "si" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return ACol;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }}) + "_" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return ARow;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }});
+      el = document.getElementById(sid);
+      if (el != null) {
+        if (AIndicator === $mod.TGridSortIndicator.siAscending) {
+          el.innerHTML = $impl.GlyphAscending;
+          el.setAttribute("sort","up");
+        } else {
+          el.innerHTML = $impl.GlyphDescending;
+          el.setAttribute("sort","dn");
+        };
+      };
+    };
+    this.HasSortIndicator = function (ACol, ARow) {
+      var Result = false;
+      var el = null;
+      var sid = "";
+      sid = this.FName + "si" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return ACol;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }}) + "_" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return ARow;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }});
+      el = document.getElementById(sid);
+      Result = el != null;
+      return Result;
+    };
+    this.RemoveSortIndicator = function (ACol, ARow) {
+      var el = null;
+      var sid = "";
+      sid = this.FName + "si" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return ACol;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }}) + "_" + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return ARow;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }});
+      el = document.getElementById(sid);
+      if (el != null) el.parentElement.removeChild(el);
+    };
+    this.AddProgress = function (ACol, ARow, APosition, AStyle) {
+      var prog = null;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        if (!this.HasProgress(ACol,ARow)) {
+          prog = document.createElement("PROGRESS");
+          prog.setAttribute("max","100");
+          prog.setAttribute("value",pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+              return APosition;
+            }, set: function (v) {
+              APosition = v;
+            }}));
+          prog.style.setProperty("width","100%");
+          if (AStyle !== "") prog.setAttribute("class",AStyle);
+          this.GetCellElement(ACol,ARow).insertBefore(prog,this.GetCellElement(ACol,ARow).firstChild);
+        };
+      };
+    };
+    this.SetProgress = function (ACol, ARow, APosition) {
+      var el = null;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetProgressElement(ACol,ARow);
+        if (el != null) {
+          el.setAttribute("value",pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+              return APosition;
+            }, set: function (v) {
+              APosition = v;
+            }}));
+        };
+      };
+    };
+    this.RemoveProgress = function (ACol, ARow) {
+      var el = null;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetProgressElement(ACol,ARow);
+        el.remove();
+      };
+    };
+    this.HasProgress = function (ACol, ARow) {
+      var Result = false;
+      var el = null;
+      Result = false;
+      if ((ACol < this.FColCount) && (ARow < this.FRowCount)) {
+        el = this.GetProgressElement(ACol,ARow);
+        Result = el != null;
+      };
+      return Result;
+    };
+    this.Clear = function () {
+      var i = 0;
+      var j = 0;
+      for (var $l = 0, $end = this.FRowCount - 1; $l <= $end; $l++) {
+        i = $l;
+        for (var $l1 = 0, $end1 = this.FColCount - 1; $l1 <= $end1; $l1++) {
+          j = $l1;
+          this.SetCells(j,i,"");
+        };
+      };
+    };
+    this.InsertRow = function (Index) {
+      var i = 0;
+      var cnt = 0;
+      var ch = false;
+      if ((Index < 0) || (Index > this.FRowCount)) return;
+      cnt = this.FColCount;
+      ch = this.FColHeader;
+      var tr = this.FTable.insertRow(Index);
+      
+          for(i = 0; i < cnt; i++)
+          {
+            if ((i == 0) && (ch)) {
+              var th = document.createElement('th');
+              th.setAttribute('scope','row');
+              tr.appendChild(th);
+              }
+            else
+            {
+              tr.insertCell();
+            }
+          };
+    };
+    this.RemoveRow = function (Index) {
+      if ((Index < 0) || (Index >= this.FRowCount)) return;
+      var tr = this.FTable.deleteRow(Index);
+    };
+    this.SetFilter = function (Column, Condition, CaseSensitive) {
+      var r = 0;
+      var rs = 0;
+      var hdr = 0;
+      var l = 0;
+      var tr = null;
+      var s = "";
+      if (this.FTable != null) {
+        if (Condition === "") {
+          this.RemoveFilter();
+          return;
+        };
+        hdr = 0;
+        rs = 0;
+        if (this.FRowHeader) rs = 1;
+        if (this.FHeader.FVisible) hdr = 1;
+        if (this.FPaging.FEnabled) {
+          if (!pas.System.Assigned(this.FUnfiltered)) {
+            this.FUnfiltered  = Array.from(this.FData);
+          };
+          for (var $l = this.FRowCount - 1, $end = rs; $l >= $end; $l--) {
+            r = $l;
+            s = this.FData[r][Column];
+            if (!pas["WEBLib.Utils"].MatchStr(Condition,s,CaseSensitive) && (hdr < 2)) {
+              this.FData.splice(r,1);
+            };
+          };
+          l = this.FData.length;
+          this.SetRowCount(l);
+          this.SelectPage(this.FPaging.FActivePage,true);
+        } else {
+          for (var $l1 = rs, $end1 = this.FRowCount - 1; $l1 <= $end1; $l1++) {
+            r = $l1;
+            if (!pas["WEBLib.Utils"].MatchStr(Condition,this.GetCells(Column,r),CaseSensitive) && (hdr < 2)) {
+              tr = this.FTable.rows[r + hdr];
+              tr.style.setProperty("display","none");
+            };
+          };
+        };
+      };
+    };
+    this.RemoveFilter = function () {
+      var r = 0;
+      var rs = 0;
+      var l = 0;
+      var tr = null;
+      if (this.FTable != null) {
+        if (this.FColHeader) {
+          rs = 1}
+         else rs = 0;
+        if (this.FPaging.FEnabled) {
+          if (pas.System.Assigned(this.FUnfiltered)) {
+            this.FData = Array.from(this.FUnfiltered);
+            this.FUnfiltered = null;
+          };
+          l = this.FData.length;
+          this.SetRowCount(l);
+          this.SelectPage(this.FPaging.FActivePage,true);
+        } else {
+          for (var $l = rs, $end = this.FRowCount - 1; $l <= $end; $l++) {
+            r = $l;
+            tr = this.FTable.rows[r];
+            tr.style.removeProperty("display");
+          };
+        };
+      };
+    };
+    this.ScrollRowInView = function (ARow) {
+      if ((ARow < this.FRowCount) && (this.FTable != null)) {
+        this.FTable.rows[ARow].scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+        });
+      };
+    };
+    this.SelectCell = function (ACol, ARow) {
+      var el = null;
+      if ((ARow < this.FRowCount) && (ACol < this.FColCount)) {
+        el = this.GetCellElement(ACol,ARow);
+        if (el != null) pas["WEBLib.Utils"].SelectElementContents(el);
+      };
+    };
+    this.FindCell = function (Condition, CaseSensitive, AllCells) {
+      var Result = $mod.TGridCoord.$new();
+      var i = 0;
+      var j = 0;
+      if (this.FColHeader && !AllCells) {
+        i = 1}
+       else i = 0;
+      if (this.FRowHeader) {
+        j = 1}
+       else j = 0;
+      this.FFindCase = CaseSensitive;
+      this.FFindCondition = Condition;
+      Result.$assign(this.FindFrom(i,j,Condition,CaseSensitive,AllCells));
+      return Result;
+    };
+    this.FindNext = function () {
+      var Result = $mod.TGridCoord.$new();
+      if ((this.FFindCol + 1) === this.FRowCount) {
+        if (this.FColHeader) {
+          this.FFindCol = 1}
+         else this.FFindCol = 0;
+        this.FFindRow = this.FFindRow + 1;
+      } else this.FFindCol = this.FFindCol + 1;
+      Result.$assign(this.FindFrom(this.FFindCol,this.FFindRow,this.FFindCondition,this.FFindCase,false));
+      return Result;
+    };
+    this.HideColumn = function (Index) {
+      var i = 0;
+      var fr = 0;
+      var tr = null;
+      var td = null;
+      if ((Index < 0) || (Index > this.FColCount)) return;
+      if (this.FFooter.FVisible) {
+        fr = 1}
+       else fr = 0;
+      for(i=0; i < this.FTable.rows.length - fr; i++)
+      {
+        tr = this.FTable.rows[i];
+        td = tr.cells[Index];
+        td.style.setProperty('display','none');
+      };
+      this.FHiddenCols.Add(pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return Index;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }}));
+    };
+    this.UnHideColumn = function (Index) {
+      var i = 0;
+      var idx = 0;
+      var tr = null;
+      var td = null;
+      if ((Index < 0) || (Index > this.FColCount)) return;
+      idx = this.FHiddenCols.IndexOf(pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return Index;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }}));
+      if (idx === -1) return;
+      this.FHiddenCols.Delete(idx);
+      for(i=0; i<this.FTable.rows.length;i++)
+      {
+        tr = this.FTable.rows[i];
+        td = tr.cells[Index];
+        td.style.removeProperty('display');
+      };
+    };
+    this.IsHiddenColumn = function (Index) {
+      var Result = false;
+      Result = this.FHiddenCols.IndexOf(pas["WEBLib.Utils"].TLongIntHelper.ToString.call({get: function () {
+          return Index;
+        }, set: function (v) {
+          rtl.raiseE("EPropReadOnly");
+        }})) !== -1;
+      return Result;
+    };
+    this.HideRow = function (Index) {
+      if ((Index < 0) || (Index > this.FRowCount)) return;
+      if (!(this.FTable != null)) return;
+      var tr = this.FTable.rows[Index];
+      tr.style.setProperty('display','none');
+    };
+    this.UnHideRow = function (Index) {
+      if ((Index < 0) || (Index > this.FRowCount)) return;
+      var tr = this.FTable.rows[Index];
+      tr.style.removeProperty('display');
+    };
+    this.Sort = function (AColumn, ADirection) {
+      var colidx = 0;
+      var grid = null;
+      var asc = false;
+      var rh = false;
+      var fixrow = undefined;
+      if (!(this.FTable != null)) return;
+      grid = this.FTable.children.item(1);
+      asc = ADirection === $mod.TGridSortIndicator.siAscending;
+      colidx = AColumn;
+      if (this.FPaging.FEnabled) {
+        rh = this.FRowHeader;
+        if (rh) fixrow = this.FData[0];
+        
+              const getCellValue = (tr, idx) => tr[idx];
+              const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+                v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+                )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+        
+              var arr = Array.from(this.FData);
+              if (rh) arr.shift();
+              arr.sort(comparer(colidx, asc));
+              if (rh) arr.splice(0,0,fixrow);
+              this.FData = arr;
+        this.SelectPage(this.FPaging.FActivePage,true);
+      } else {
+        const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+              const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+                v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+                )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+        
+              const table = grid;
+        
+              Array.from(table.querySelectorAll('tr'))
+                  .sort(comparer(colidx, asc))
+                  .forEach(tr => table.appendChild(tr) );
+      };
+    };
+    rtl.addIntf(this,pas["WEBLib.Controls"].ITMSFNCDataBinderGrid);
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+    var $r = this.$rtti;
+    $r.addMethod("Create$1",2,[["AOwner",pas.Classes.$rtti["TComponent"]]]);
+    $r.addProperty("Align",2,pas["WEBLib.Controls"].$rtti["TAlign"],"FAlign","SetAlign",{Default: pas["WEBLib.Controls"].TAlign.alNone});
+    $r.addProperty("AlignWithMargins",2,rtl.boolean,"FAlignWithMargins","SetAlignWithMargins",{Default: false});
+    $r.addProperty("Anchors",2,pas["WEBLib.Controls"].$rtti["TAnchors"],"FAnchors","SetAnchors",{Default: rtl.createSet(pas["WEBLib.Controls"].TAnchorKind.akLeft,pas["WEBLib.Controls"].TAnchorKind.akTop)});
+    $r.addProperty("BorderColor",2,pas["WEBLib.Graphics"].$rtti["TColor"],"FBorderColor","SetBorderColor",{Default: 12632256});
+    $r.addProperty("BorderStyle",2,pas["WEBLib.Controls"].$rtti["TBorderStyle"],"FBorderStyle","SetBorderStyle",{Default: pas["WEBLib.Controls"].TBorderStyle.bsSingle});
+    $r.addProperty("Color",2,pas["WEBLib.Graphics"].$rtti["TColor"],"FColor","SetColor");
+    $r.addProperty("DragMode",2,pas["WEBLib.Controls"].$rtti["TDragMode"],"FDragMode","SetDragMode",{Default: pas["WEBLib.Controls"].TDragMode.dmManual});
+    $r.addProperty("ElementClassName",2,pas["WEBLib.Controls"].$rtti["TElementClassName"],"FElementClassName","SetElementClassName");
+    $r.addProperty("ElementFont",2,pas["WEBLib.Controls"].$rtti["TElementFont"],"FElementFont","SetElementFont",{Default: pas["WEBLib.Controls"].TElementFont.efProperty});
+    $r.addProperty("ElementID",3,pas["WEBLib.Controls"].$rtti["TElementID"],"GetID","SetID");
+    $r.addProperty("ElementPosition",2,pas["WEBLib.Controls"].$rtti["TElementPosition"],"FElementPosition","SetElementPosition",{Default: pas["WEBLib.Controls"].TElementPosition.epAbsolute});
+    $r.addProperty("ElementHeaderClassName",2,pas["WEBLib.Controls"].$rtti["TElementClassName"],"FElementHeaderClassName","SetElementHeaderClassName");
+    $r.addProperty("ElementRowSelectClassName",0,pas["WEBLib.Controls"].$rtti["TElementClassName"],"FElementRowSelectClassName","FElementRowSelectClassName");
+    $r.addProperty("ElementSelectionClassName",0,pas["WEBLib.Controls"].$rtti["TElementClassName"],"FElementSelectionClassName","FElementSelectionClassName");
+    $r.addProperty("ElementTableClassName",2,pas["WEBLib.Controls"].$rtti["TElementClassName"],"FElementTableClassName","SetElementTableClassName");
+    $r.addProperty("Enabled",2,rtl.boolean,"FEnabled","SetEnabled",{Default: false});
+    $r.addProperty("Font",2,pas["WEBLib.Graphics"].$rtti["TFont"],"FFont","SetFont");
+    $r.addProperty("Footer",2,$mod.$rtti["TTableControlHeader"],"FFooter","SetFooter");
+    $r.addProperty("Header",2,$mod.$rtti["TTableControlHeader"],"FHeader","SetHeader");
+    $r.addProperty("Height",3,rtl.longint,"GetHeight","SetHeight");
+    $r.addProperty("HeightPercent",2,rtl.double,"FHeightPercent","SetHeightPercent",{Default: 100});
+    $r.addProperty("HeightStyle",2,pas["WEBLib.Controls"].$rtti["TSizeStyle"],"FHeightStyle","SetHeightStyle",{Default: pas["WEBLib.Controls"].TSizeStyle.ssAbsolute});
+    $r.addProperty("Margins",2,pas["WEBLib.Controls"].$rtti["TMargins"],"FMargins","SetMargins");
+    $r.addProperty("RowHeader",2,rtl.boolean,"FRowHeader","SetRowHeader",{Default: true});
+    $r.addProperty("ColHeader",2,rtl.boolean,"FColHeader","SetColHeader",{Default: true});
+    $r.addProperty("Options",2,$mod.$rtti["TTableControlOptions"],"FOptions","SetOptions");
+    $r.addProperty("Paging",2,$mod.$rtti["TTableControlPaging"],"FPaging","SetPaging");
+    $r.addProperty("ParentBiDiMode",0,rtl.boolean,"FParentBiDiMode","FParentBiDiMode",{Default: true});
+    $r.addProperty("PopupMenu",0,pas["WEBLib.Menus"].$rtti["TPopupMenu"],"FPopupMenu","FPopupMenu");
+    $r.addProperty("SelectionColor",2,pas["WEBLib.Graphics"].$rtti["TColor"],"FSelectionColor","SetSelectionColor",{Default: 16748379});
+    $r.addProperty("SelectionTextColor",2,pas["WEBLib.Graphics"].$rtti["TColor"],"FSelectionTextColor","SetSelectionTextColor",{Default: 16777215});
+    $r.addProperty("Visible",2,rtl.boolean,"FVisible","SetVisible",{Default: true});
+    $r.addProperty("Width",3,rtl.longint,"GetWidth","SetWidth");
+    $r.addProperty("WidthPercent",2,rtl.double,"FWidthPercent","SetWidthPercent",{Default: 100});
+    $r.addProperty("WidthStyle",2,pas["WEBLib.Controls"].$rtti["TSizeStyle"],"FWidthStyle","SetWidthStyle",{Default: pas["WEBLib.Controls"].TSizeStyle.ssAbsolute});
+    $r.addProperty("WordWrap",2,rtl.boolean,"FWordWrap","SetWordWrap",{Default: false});
+    $r.addProperty("OnButtonClick",0,$mod.$rtti["TCellEvent"],"FOnButtonClick","FOnButtonClick");
+    $r.addProperty("OnCheckClick",0,$mod.$rtti["TCellCheckEvent"],"FOnCheckClick","FOnCheckClick");
+    $r.addProperty("OnClick",0,pas["WEBLib.Controls"].$rtti["TNotifyEvent"],"FOnClick","FOnClick");
+    $r.addProperty("OnClickCell",0,$mod.$rtti["TCellEvent"],"FOnClickCell","FOnClickCell");
+    $r.addProperty("OnDblClickCell",0,$mod.$rtti["TCellEvent"],"FOnDblClickCell","FOnDblClickCell");
+    $r.addProperty("OnDblClick",0,pas["WEBLib.Controls"].$rtti["TNotifyEvent"],"FOnDblClick","FOnDblClick");
+    $r.addProperty("OnGetCellData",0,$mod.$rtti["TGridGetCellDataEvent"],"FOnGetCellData","FOnGetCellData");
+    $r.addProperty("OnGetCellChildren",0,$mod.$rtti["TGridGetCellChildrenEvent"],"FOnGetCellChildren","FOnGetCellChildren");
+    $r.addProperty("OnGetCellClass",0,$mod.$rtti["TGridGetCellClassEvent"],"FOnGetCellClass","FOnGetCellClass");
+    $r.addProperty("OnSortClick",0,$mod.$rtti["TGridSortClickEvent"],"FOnSortClick","FOnSortClick");
+    $r.addProperty("OnDragDrop",0,pas["WEBLib.Controls"].$rtti["TDragDropEvent"],"FOnDragDrop","FOnDragDrop");
+    $r.addProperty("OnDragOver",0,pas["WEBLib.Controls"].$rtti["TDragOverEvent"],"FOnDragOver","FOnDragOver");
+    $r.addProperty("OnEndDrag",0,pas["WEBLib.Controls"].$rtti["TEndDragEvent"],"FonEndDrag","FonEndDrag");
+    $r.addProperty("OnSelectPage",0,$mod.$rtti["TPageSelectEvent"],"FOnSelectPage","FOnSelectPage");
+    $r.addProperty("OnStartDrag",0,pas["WEBLib.Controls"].$rtti["TStartDragEvent"],"FOnStartDrag","FOnStartDrag");
+  });
+  rtl.createClass(this,"TTableControl",this.TCustomTableControl,function () {
+    rtl.addIntf(this,pas["WEBLib.Controls"].ITMSFNCDataBinderGrid);
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+    var $r = this.$rtti;
+    $r.addProperty("RowCount",2,rtl.longint,"FRowCount","SetRowCount");
+    $r.addProperty("ColCount",2,rtl.longint,"FColCount","SetColCount");
+    $r.addProperty("OnHttpRequestError",0,pas["WEBLib.Controls"].$rtti["TNotifyEvent"],"FOnHttpRequestError","FOnHttpRequestError");
+    $r.addProperty("OnHttpRequestSuccess",0,pas["WEBLib.Controls"].$rtti["TNotifyEvent"],"FOnHttpRequestSuccess","FOnHttpRequestSuccess");
+  });
+  rtl.createClass(this,"TWebTableControl",this.TTableControl,function () {
+    rtl.addIntf(this,pas["WEBLib.Controls"].ITMSFNCDataBinderGrid);
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+  });
+  rtl.createClass(this,"TResponsiveGridItem",pas.Classes.TCollectionItem,function () {
+    this.$init = function () {
+      pas.Classes.TCollectionItem.$init.call(this);
+      this.FHTML = "";
+      this.FElementHandle = null;
+      this.FTag = 0;
+      this.FItemObject = null;
+      this.FVisible = false;
+      this.FJSONObject = undefined;
+      this.FSelected = false;
+      this.FRecNo = 0;
+    };
+    this.$final = function () {
+      this.FElementHandle = undefined;
+      this.FItemObject = undefined;
+      pas.Classes.TCollectionItem.$final.call(this);
+    };
+    this.SetHTML = function (Value) {
+      this.FHTML = Value;
+      this.Changed(false);
+    };
+    this.SetVisible = function (Value) {
+      if (this.FVisible !== Value) {
+        this.FVisible = Value;
+        if (this.FElementHandle != null) {
+          if (this.FVisible) {
+            this.FElementHandle.style.removeProperty("display")}
+           else this.FElementHandle.style.setProperty("display","none");
+        };
+      };
+    };
+    this.GetJSONElementValue = function (id) {
+      var Result = "";
+      var res = "";
+      var JO = undefined;
+      JO = this.FJSONObject;
+      res = JO[id];
+      Result = res;
+      return Result;
+    };
+    this.SetSelected = function (Value) {
+      var LStyleName = "";
+      this.FSelected = Value;
+      LStyleName = rtl.as(this.FCollection,$mod.TResponsiveGridItems).FGrid.GetStyleName();
+      if (this.FSelected) {
+        this.FElementHandle.classList.add(LStyleName + "_Selected")}
+       else this.FElementHandle.classList.remove(LStyleName + "_Selected");
+    };
+    this.Create$1 = function (ACollection) {
+      pas.Classes.TCollectionItem.Create$1.apply(this,arguments);
+      this.FVisible = true;
+      return this;
+    };
+    this.Destroy = function () {
+      rtl.as(this.FCollection,$mod.TResponsiveGridItems).DoItemDelete(this.GetIndex());
+      pas.Classes.TCollectionItem.Destroy.call(this);
+    };
+    var $r = this.$rtti;
+    $r.addMethod("Create$1",2,[["ACollection",pas.Classes.$rtti["TCollection"]]]);
+    $r.addProperty("HTML",2,rtl.string,"FHTML","SetHTML");
+    $r.addProperty("Tag",0,rtl.longint,"FTag","FTag",{Default: 0});
+    $r.addProperty("Visible",2,rtl.boolean,"FVisible","SetVisible",{Default: true});
+  });
+  this.$rtti.$MethodVar("TResponsiveGridItemEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["Index",rtl.longint]]), methodkind: 0});
+  this.$rtti.$MethodVar("TResponsiveGridItemTemplateEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["Index",rtl.longint],["ItemData",rtl.string],["ATemplate",rtl.string,1]]), methodkind: 0});
+  this.$rtti.$MethodVar("TResponsiveGridItemFieldValueEvent",{procsig: rtl.newTIProcSig([["Sender",pas.System.$rtti["TObject"]],["Index",rtl.longint],["AFieldName",rtl.string],["AValue",rtl.string,1]]), methodkind: 0});
+  this.$rtti.$Class("TResponsiveGrid");
+  rtl.createClass(this,"TResponsiveGridItems",pas.Classes.TOwnedCollection,function () {
+    this.$init = function () {
+      pas.Classes.TOwnedCollection.$init.call(this);
+      this.FOnItemDelete = null;
+      this.FOnItemUpdate = null;
+      this.FOnItemInsert = null;
+      this.FOnItemAdd = null;
+      this.FOnItemClear = null;
+      this.FGrid = null;
+    };
+    this.$final = function () {
+      this.FOnItemDelete = undefined;
+      this.FOnItemUpdate = undefined;
+      this.FOnItemInsert = undefined;
+      this.FOnItemAdd = undefined;
+      this.FOnItemClear = undefined;
+      this.FGrid = undefined;
+      pas.Classes.TOwnedCollection.$final.call(this);
+    };
+    this.GetItem$1 = function (Index) {
+      var Result = null;
+      Result = this.GetItem(Index);
+      return Result;
+    };
+    this.SetItem$1 = function (Index, Value) {
+      this.SetItem(Index,Value);
+    };
+    this.DoItemClear = function () {
+      if (this.FOnItemClear != null) this.FOnItemClear(this);
+    };
+    this.DoItemAdd = function (Index) {
+      if (this.FOnItemAdd != null) this.FOnItemAdd(this,Index);
+    };
+    this.DoItemDelete = function (Index) {
+      if (this.FOnItemDelete != null) this.FOnItemDelete(this,Index);
+    };
+    this.DoItemInsert = function (Index) {
+      if (this.FOnItemInsert != null) this.FOnItemInsert(this,Index);
+    };
+    this.DoItemUpdate = function (Index) {
+      if (this.FOnItemUpdate != null) this.FOnItemUpdate(this,Index);
+    };
+    this.Update = function (Item) {
+      pas.Classes.TCollection.Update.apply(this,arguments);
+      if (Item != null) this.DoItemUpdate(Item.GetIndex());
+    };
+    this.Create$3 = function (AOwner) {
+      pas.Classes.TOwnedCollection.Create$2.call(this,AOwner,$mod.TResponsiveGridItem);
+      this.FGrid = AOwner;
+      return this;
+    };
+    this.Clear$1 = function () {
+      pas.Classes.TCollection.Clear.call(this);
+      this.DoItemClear();
+    };
+    this.Delete$1 = function (Index) {
+      pas.Classes.TCollection.Delete.call(this,Index);
+    };
+    this.Add$1 = function () {
+      var Result = null;
+      Result = pas.Classes.TCollection.Add.call(this);
+      this.DoItemAdd(Result.GetIndex());
+      return Result;
+    };
+    this.Add$2 = function (HTML) {
+      var Result = null;
+      Result = pas.Classes.TCollection.Add.call(this);
+      Result.FHTML = HTML;
+      this.DoItemAdd(Result.GetIndex());
+      return Result;
+    };
+    this.Insert$1 = function (Index) {
+      var Result = null;
+      Result = pas.Classes.TCollection.Insert.call(this,Index);
+      this.DoItemInsert(Result.GetIndex());
+      return Result;
+    };
+    var $r = this.$rtti;
+    $r.addMethod("Create$3",2,[["AOwner",pas.Classes.$rtti["TComponent"]]]);
+  });
+  this.TResponsiveGridTemplateOrder = {"0": "toColumn", toColumn: 0, "1": "toRow", toRow: 1};
+  this.$rtti.$Enum("TResponsiveGridTemplateOrder",{minvalue: 0, maxvalue: 1, ordtype: 1, enumtype: this.TResponsiveGridTemplateOrder});
+  rtl.createClass(this,"TResponsiveGridOptions",pas.Classes.TPersistent,function () {
+    this.$init = function () {
+      pas.Classes.TPersistent.$init.call(this);
+      this.FItemWidthMin = 0;
+      this.FItemHeight = 0;
+      this.FItemGap = 0;
+      this.FScrollVertical = false;
+      this.FItemClassName = "";
+      this.FItemColor = 0;
+      this.FItemBorderColor = 0;
+      this.FItemHoverColor = 0;
+      this.FItemHoverBorderColor = 0;
+      this.FOnChange = null;
+      this.FItemPadding = 0;
+      this.FItemTemplate = "";
+      this.FItemSelectedBorderColor = 0;
+      this.FItemSelectedTextColor = 0;
+      this.FItemSelectedColor = 0;
+      this.FMultiSelect = false;
+      this.FOrder = 0;
+    };
+    this.$final = function () {
+      this.FOnChange = undefined;
+      pas.Classes.TPersistent.$final.call(this);
+    };
+    this.SetItemBorderColor = function (Value) {
+      if (this.FItemBorderColor !== Value) {
+        this.FItemBorderColor = Value;
+        this.Changed();
+      };
+    };
+    this.SetItemColor = function (Value) {
+      if (this.FItemColor !== Value) {
+        this.FItemColor = Value;
+        this.Changed();
+      };
+    };
+    this.SetItemGap = function (Value) {
+      if (this.FItemGap !== Value) {
+        this.FItemGap = Value;
+        this.Changed();
+      };
+    };
+    this.SetItemHeight = function (Value) {
+      if (this.FItemHeight !== Value) {
+        this.FItemHeight = Value;
+        this.Changed();
+      };
+    };
+    this.SetItemHoverBorderColor = function (Value) {
+      if (this.FItemHoverBorderColor !== Value) {
+        this.FItemHoverBorderColor = Value;
+        this.Changed();
+      };
+    };
+    this.SetItemHoverColor = function (Value) {
+      if (this.FItemHoverColor !== Value) {
+        this.FItemHoverColor = Value;
+        this.Changed();
+      };
+    };
+    this.SetItemWidthMin = function (Value) {
+      if (this.FItemWidthMin !== Value) {
+        this.FItemWidthMin = Value;
+        this.Changed();
+      };
+    };
+    this.SetScrollVertical = function (Value) {
+      if (this.FScrollVertical !== Value) {
+        this.FScrollVertical = Value;
+        this.Changed();
+      };
+    };
+    this.SetItemPadding = function (Value) {
+      if (this.FItemPadding !== Value) {
+        this.FItemPadding = Value;
+        this.Changed();
+      };
+    };
+    this.SetItemTemplate = function (Value) {
+      if (this.FItemTemplate !== Value) {
+        this.FItemTemplate = Value;
+        this.Changed();
+      };
+    };
+    this.SetItemSelectedBorderColor = function (Value) {
+      if (this.FItemSelectedBorderColor !== Value) {
+        this.FItemSelectedBorderColor = Value;
+        this.Changed();
+      };
+    };
+    this.SetItemSelectedColor = function (Value) {
+      if (this.FItemSelectedColor !== Value) {
+        this.FItemSelectedColor = Value;
+        this.Changed();
+      };
+    };
+    this.SetItemSelectedTextColor = function (Value) {
+      if (this.FItemSelectedTextColor !== Value) {
+        this.FItemSelectedTextColor = Value;
+        this.Changed();
+      };
+    };
+    this.Changed = function () {
+      if (this.FOnChange != null) this.FOnChange(this);
+    };
+    this.Create$1 = function () {
+      pas.System.TObject.Create.call(this);
+      this.FItemWidthMin = 100;
+      this.FItemHeight = 100;
+      this.FItemGap = 10;
+      this.FScrollVertical = true;
+      this.FItemColor = -1;
+      this.FItemBorderColor = -1;
+      this.FItemHoverColor = -1;
+      this.FItemHoverBorderColor = -1;
+      this.FItemSelectedColor = -1;
+      this.FItemSelectedBorderColor = -1;
+      this.FItemSelectedTextColor = -1;
+      this.FOrder = $mod.TResponsiveGridTemplateOrder.toColumn;
+      return this;
+    };
+    this.Assign = function (Source) {
+      if ($mod.TResponsiveGridOptions.isPrototypeOf(Source)) {
+        this.FItemWidthMin = rtl.as(Source,$mod.TResponsiveGridOptions).FItemWidthMin;
+        this.FItemHeight = rtl.as(Source,$mod.TResponsiveGridOptions).FItemHeight;
+        this.FMultiSelect = rtl.as(Source,$mod.TResponsiveGridOptions).FMultiSelect;
+        this.FOrder = rtl.as(Source,$mod.TResponsiveGridOptions).FOrder;
+      };
+    };
+    var $r = this.$rtti;
+    $r.addMethod("Create$1",2,[]);
+    $r.addProperty("ItemClassName",0,rtl.string,"FItemClassName","FItemClassName");
+    $r.addProperty("ItemColor",2,pas["WEBLib.Graphics"].$rtti["TColor"],"FItemColor","SetItemColor",{Default: -1});
+    $r.addProperty("ItemBorderColor",2,pas["WEBLib.Graphics"].$rtti["TColor"],"FItemBorderColor","SetItemBorderColor",{Default: -1});
+    $r.addProperty("ItemGap",2,rtl.longint,"FItemGap","SetItemGap",{Default: 10});
+    $r.addProperty("ItemHeight",2,rtl.longint,"FItemHeight","SetItemHeight",{Default: 100});
+    $r.addProperty("ItemHoverColor",2,pas["WEBLib.Graphics"].$rtti["TColor"],"FItemHoverColor","SetItemHoverColor",{Default: -1});
+    $r.addProperty("ItemHoverBorderColor",2,pas["WEBLib.Graphics"].$rtti["TColor"],"FItemHoverBorderColor","SetItemHoverBorderColor",{Default: -1});
+    $r.addProperty("ItemSelectedColor",2,pas["WEBLib.Graphics"].$rtti["TColor"],"FItemSelectedColor","SetItemSelectedColor",{Default: -1});
+    $r.addProperty("ItemSelectedBorderColor",2,pas["WEBLib.Graphics"].$rtti["TColor"],"FItemSelectedBorderColor","SetItemSelectedBorderColor",{Default: -1});
+    $r.addProperty("ItemSelectedTextColor",2,pas["WEBLib.Graphics"].$rtti["TColor"],"FItemSelectedTextColor","SetItemSelectedTextColor",{Default: -1});
+    $r.addProperty("ItemPadding",2,rtl.longint,"FItemPadding","SetItemPadding",{Default: 0});
+    $r.addProperty("ItemTemplate",2,rtl.string,"FItemTemplate","SetItemTemplate");
+    $r.addProperty("ItemWidthMin",2,rtl.longint,"FItemWidthMin","SetItemWidthMin",{Default: 100});
+    $r.addProperty("MultiSelect",0,rtl.boolean,"FMultiSelect","FMultiSelect",{Default: false});
+    $r.addProperty("Order",0,$mod.$rtti["TResponsiveGridTemplateOrder"],"FOrder","FOrder",{Default: $mod.TResponsiveGridTemplateOrder.toColumn});
+    $r.addProperty("ScrollVertical",2,rtl.boolean,"FScrollVertical","SetScrollVertical",{Default: true});
+    $r.addProperty("OnChange",0,pas["WEBLib.Controls"].$rtti["TNotifyEvent"],"FOnChange","FOnChange");
+  });
+  rtl.createClass(this,"TResponsiveGrid",pas["WEBLib.Menus"].TWebCustomControl,function () {
+    this.$init = function () {
+      pas["WEBLib.Menus"].TWebCustomControl.$init.call(this);
+      this.FDesignTime$1 = false;
+      this.FReq = null;
+      this.FDataNode = "";
+      this.FOptions = null;
+      this.FItems = null;
+      this.FOnItemDblClick = null;
+      this.FOnItemClick = null;
+      this.FOnHttpRequestError = null;
+      this.FOnHttpRequestSuccess = null;
+      this.FOnItemCreated = null;
+      this.FOnItemGetFieldValue = null;
+      this.FItemIndex = 0;
+      this.FDelimiter = "\x00";
+      this.FOnHttpRequest = null;
+      this.FListElement = null;
+      this.FOnItemGetTemplate = null;
+    };
+    this.$final = function () {
+      this.FReq = undefined;
+      this.FOptions = undefined;
+      this.FItems = undefined;
+      this.FOnItemDblClick = undefined;
+      this.FOnItemClick = undefined;
+      this.FOnHttpRequestError = undefined;
+      this.FOnHttpRequestSuccess = undefined;
+      this.FOnItemCreated = undefined;
+      this.FOnItemGetFieldValue = undefined;
+      this.FOnHttpRequest = undefined;
+      this.FListElement = undefined;
+      this.FOnItemGetTemplate = undefined;
+      pas["WEBLib.Menus"].TWebCustomControl.$final.call(this);
+    };
+    this.SetOptions = function (Value) {
+      this.FOptions.Assign(Value);
+    };
+    this.SetItems = function (Value) {
+      this.FItems.Assign(Value);
+    };
+    this.SetItemIndex = function (Value) {
+      var el = null;
+      var i = 0;
+      var LStyleName = "";
+      this.FItemIndex = Value;
+      if (pas.Classes.TComponentStateItem.csLoading in this.FComponentState) return;
+      LStyleName = this.GetStyleName();
+      for (var $l = 0, $end = this.FItems.GetCount() - 1; $l <= $end; $l++) {
+        i = $l;
+        el = this.ListElementHandle().children.item(i);
+        if (i === this.FItemIndex) {
+          el.setAttribute("class",this.FOptions.FItemClassName + " " + LStyleName + "_Selected");
+        } else el.setAttribute("class",this.FOptions.FItemClassName);
+      };
+    };
+    this.DoHttpLoadJson = function (Event) {
+      var Result = false;
+      var J = null;
+      var req = null;
+      req = Event.target;
+      if ((req.status >= 200) && (req.status <= 208)) {
+        this.FItems.Clear$1();
+        J = JSON.parse(req.responseText);
+        this.LoadFromJSON$1(J,this.FDataNode);
+        if (this.FOnHttpRequestSuccess != null) this.FOnHttpRequestSuccess(this);
+      };
+      Result = true;
+      return Result;
+    };
+    this.DoHttpLoadCsv = function (Event) {
+      var Result = false;
+      var sl = null;
+      var arow = null;
+      var columns = null;
+      var i = 0;
+      var c = 0;
+      var itm = null;
+      var ident = "";
+      var html = "";
+      var htmlvalue = "";
+      var req = null;
+      req = Event.target;
+      if ((req.status >= 200) && (req.status <= 208)) {
+        sl = pas.Classes.TStringList.$create("Create$1");
+        sl.SetTextStr(req.responseText);
+        arow = pas.Classes.TStringList.$create("Create$1");
+        arow.FStrictDelimiter = true;
+        arow.SetDelimiter(this.FDelimiter);
+        if (sl.GetCount() > 0) {
+          columns = pas.Classes.TStringList.$create("Create$1");
+          columns.FStrictDelimiter = true;
+          columns.SetDelimiter(this.FDelimiter);
+          columns.SetDelimitedText(sl.Get(0));
+          for (var $l = 0, $end = sl.GetCount() - 1; $l <= $end; $l++) {
+            i = $l;
+            arow.SetDelimitedText(sl.Get(i));
+            if (this.FOptions.FItemTemplate === "") {
+              this.FItems.Add$1().SetHTML(arow.GetCommaText());
+            } else {
+              itm = this.FItems.Add$2("&nbsp;");
+              html = this.FOptions.FItemTemplate;
+              this.DoItemGetTemplate(i,arow.GetCommaText(),{get: function () {
+                  return html;
+                }, set: function (v) {
+                  html = v;
+                }});
+              ident = "(%ITEMINDEX%)";
+              if (pas.System.Pos(ident,html) > 0) {
+                html = pas.SysUtils.StringReplace(html,ident,pas.SysUtils.IntToStr(itm.GetIndex()),rtl.createSet(pas.SysUtils.TStringReplaceFlag.rfReplaceAll));
+              };
+              for (var $l1 = 0, $end1 = arow.GetCount() - 1; $l1 <= $end1; $l1++) {
+                c = $l1;
+                ident = "(%" + columns.Get(c) + "%)";
+                if (pas.System.Pos(ident,html) > 0) {
+                  htmlvalue = "";
+                  if (c < arow.GetCount()) htmlvalue = arow.Get(c);
+                  this.DoItemGetFieldValue(itm.GetIndex(),columns.Get(c),{get: function () {
+                      return htmlvalue;
+                    }, set: function (v) {
+                      htmlvalue = v;
+                    }});
+                  html = pas.SysUtils.StringReplace(html,ident,htmlvalue,rtl.createSet(pas.SysUtils.TStringReplaceFlag.rfReplaceAll));
+                };
+              };
+              itm.SetHTML(html);
+              this.DoItemCreated(itm.GetIndex());
+            };
+          };
+          columns = rtl.freeLoc(columns);
+        };
+        arow = rtl.freeLoc(arow);
+        sl = rtl.freeLoc(sl);
+      };
+      Result = true;
+      return Result;
+    };
+    this.DoHttpAbort = function (Event) {
+      var Result = false;
+      if (this.FOnHttpRequestError != null) this.FOnHttpRequestError(this);
+      Result = true;
+      return Result;
+    };
+    this.DoHttpRequest = function (ARequest) {
+      var LRequestRec = pas["WEBLib.Controls"].TJSXMLHttpRequestRecord.$new();
+      if (this.FOnHttpRequest != null) {
+        LRequestRec.req = ARequest;
+        this.FOnHttpRequest(this,pas["WEBLib.Controls"].TJSXMLHttpRequestRecord.$clone(LRequestRec));
+      };
+    };
+    this.DoItemCreated = function (Index) {
+      if (this.FOnItemCreated != null) this.FOnItemCreated(this,Index);
+    };
+    this.DoItemGetFieldValue = function (Index, AFieldName, AValue) {
+      if (this.FOnItemGetFieldValue != null) this.FOnItemGetFieldValue(this,Index,AFieldName,AValue);
+    };
+    this.DoItemGetTemplate = function (Index, ItemData, ATemplate) {
+      if (this.FOnItemGetTemplate != null) this.FOnItemGetTemplate(this,Index,ItemData,ATemplate);
+    };
+    this.HandleDoItemClick = function (Index) {
+      if (this.FOnItemClick != null) this.FOnItemClick(this,Index);
+    };
+    this.HandleDoItemDblClick = function (Index) {
+      if (this.FOnItemDblClick != null) this.FOnItemDblClick(this,Index);
+    };
+    this.TargetIsParent = function (tgt, el) {
+      var Result = false;
+      var pe = null;
+      Result = false;
+      pe = tgt;
+      do {
+        if (el === pe) {
+          Result = true;
+          break;
+        };
+        pe = pe.parentElement;
+      } while (pe != null);
+      return Result;
+    };
+    this.HandleDoMouseEnter = function (Event) {
+      var Result = false;
+      Result = pas["WEBLib.Controls"].TControl.HandleDoMouseEnter.call(this,Event);
+      return Result;
+    };
+    this.HandleDoClick = function (Event) {
+      var Result = false;
+      var i = 0;
+      var el = null;
+      var LStyleName = "";
+      Result = pas["WEBLib.Controls"].TControl.HandleDoClick.call(this,Event);
+      LStyleName = this.GetStyleName();
+      for (var $l = 0, $end = this.FItems.GetCount() - 1; $l <= $end; $l++) {
+        i = $l;
+        el = this.ListElementHandle().children.item(i);
+        if (el != null) {
+          if (this.TargetIsParent(Event.target,el)) {
+            if (this.FOptions.FMultiSelect) {
+              if (this.FItems.GetItem$1(i).FSelected) {
+                el.classList.remove(LStyleName + "_Selected");
+              } else {
+                el.classList.add(LStyleName + "_Selected");
+              };
+              this.FItems.GetItem$1(i).FSelected = !this.FItems.GetItem$1(i).FSelected;
+            } else {
+              this.FItemIndex = i;
+              el.classList.add(LStyleName + "_Selected");
+            };
+            this.HandleDoItemClick(i);
+          } else if (!this.FOptions.FMultiSelect) el.classList.remove(LStyleName + "_Selected");
+        };
+      };
+      return Result;
+    };
+    this.HandleDoDblClick = function (Event) {
+      var Result = false;
+      var i = 0;
+      var el = null;
+      Result = pas["WEBLib.Controls"].TControl.HandleDoClick.call(this,Event);
+      for (var $l = 0, $end = this.FItems.GetCount() - 1; $l <= $end; $l++) {
+        i = $l;
+        el = this.ListElementHandle().children.item(i);
+        if (this.TargetIsParent(Event.target,el)) {
+          this.HandleDoItemDblClick(i);
+        };
+      };
+      return Result;
+    };
+    this.HandleItemAdd = function (Sender, Index) {
+      var el = null;
+      if (this.FItems.GetItem$1(Index).FHTML === "") this.FItems.GetItem$1(Index).FHTML = this.FOptions.FItemTemplate;
+      el = document.createElement("DIV");
+      this.FItems.GetItem$1(Index).FElementHandle = el;
+      this.ListElementHandle().appendChild(el);
+      if (pas.System.Pos("(%",this.FItems.GetItem$1(Index).FHTML) === 0) el.innerHTML = this.FItems.GetItem$1(Index).FHTML;
+      if (this.FOptions.FItemClassName !== "") el.setAttribute("class",this.FOptions.FItemClassName);
+    };
+    this.HandleItemUpdate = function (Sender, Index) {
+      var el = null;
+      if (this.ListElementHandle() != null) {
+        el = this.ListElementHandle().children.item(Index);
+        if (!(el != null)) {
+          this.HandleItemInsert(this,Index);
+        } else el.innerHTML = this.FItems.GetItem$1(Index).FHTML;
+      };
+    };
+    this.HandleItemDelete = function (Sender, Index) {
+      if (this.ListElementHandle() != null) {
+        this.ListElementHandle().removeChild(this.ListElementHandle().children.item(Index));
+      };
+    };
+    this.HandleItemInsert = function (Sender, Index) {
+      var el = null;
+      this.FItems.GetItem$1(Index).FHTML = this.FOptions.FItemTemplate;
+      el = document.createElement("DIV");
+      this.FItems.GetItem$1(Index).FElementHandle = el;
+      if (this.FItems.GetCount() <= 1) {
+        this.ListElementHandle().appendChild(el)}
+       else this.ListElementHandle().insertBefore(el,this.ListElementHandle().children.item(Index));
+      el.innerHTML = this.FItems.GetItem$1(Index).FHTML;
+      if (this.FOptions.FItemClassName !== "") el.setAttribute("class",this.FOptions.FItemClassName);
+    };
+    this.HandleItemClear = function (Sender) {
+      var i = 0;
+      for (var $l = this.ListElementHandle().childElementCount - 1; $l >= 0; $l--) {
+        i = $l;
+        this.ListElementHandle().removeChild(this.ListElementHandle().children.item(0));
+      };
+    };
+    this.OptionsChanged = function (Sender) {
+      this.UpdateElement();
+    };
+    this.FontChanged = function () {
+      pas["WEBLib.Controls"].TControl.FontChanged.call(this);
+      this.UpdateElement();
+    };
+    this.CreateElement = function () {
+      var Result = null;
+      Result = document.createElement("DIV");
+      return Result;
+    };
+    this.CreateControl = function () {
+      pas["WEBLib.Controls"].TCustomControl.CreateControl.call(this);
+    };
+    this.BindElement = function () {
+      pas["WEBLib.Controls"].TCustomControl.BindElement.call(this);
+    };
+    var cssimportant = " !important; ";
+    this.UpdateElement = function () {
+      var s = "";
+      var fs = "";
+      var ITMWIDTHMIN = "";
+      var ITMGAP = "";
+      var ITMHEIGHT = "";
+      var itemstyle = "";
+      var itemstylehover = "";
+      var itemstyleselected = "";
+      var LStyleName = "";
+      var LTemplate = "";
+      pas["WEBLib.Controls"].TControl.UpdateElement.call(this);
+      if (this.IsUpdating()) return;
+      if (pas.Classes.TComponentStateItem.csLoading in this.FComponentState) return;
+      if (this.GetElementHandle() != null) {
+        ITMWIDTHMIN = pas.SysUtils.IntToStr(this.FOptions.FItemWidthMin);
+        ITMHEIGHT = pas.SysUtils.IntToStr(this.FOptions.FItemHeight);
+        ITMGAP = pas.SysUtils.IntToStr(this.FOptions.FItemGap);
+        LStyleName = this.GetStyleName();
+        this.ListElementHandle().setAttribute("class",LStyleName);
+        fs = "";
+        if ((this.FElementClassName === "") && (this.FElementFont === pas["WEBLib.Controls"].TElementFont.efProperty)) fs = pas["WEBLib.Graphics"].CSSFont(this.FFont);
+        itemstyle = "";
+        itemstylehover = "";
+        itemstyleselected = "";
+        if (this.FOptions.FItemColor !== -1) {
+          itemstyle = "background-color:" + pas["WEBLib.Graphics"].ColorToHTML(this.FOptions.FItemColor) + ";";
+        };
+        if ((pas.Classes.TComponentStateItem.csDesigning in this.FComponentState) && (this.FOptions.FItemBorderColor === -1)) {
+          itemstyle = itemstyle + "border: 1px dotted silver;"}
+         else if (this.FOptions.FItemBorderColor !== -1) itemstyle = itemstyle + "border: 1px solid " + pas["WEBLib.Graphics"].ColorToHTML(this.FOptions.FItemBorderColor) + ";";
+        if (this.FOptions.FItemPadding !== 0) itemstyle = itemstyle + "padding:" + pas.SysUtils.IntToStr(this.FOptions.FItemPadding) + "px;";
+        if (this.FOptions.FItemHoverColor !== -1) itemstylehover = "background-color:" + pas["WEBLib.Graphics"].ColorToHTML(this.FOptions.FItemHoverColor) + cssimportant;
+        if (this.FOptions.FItemHoverBorderColor !== -1) itemstylehover = itemstylehover + "border: 1px solid " + pas["WEBLib.Graphics"].ColorToHTML(this.FOptions.FItemHoverBorderColor) + cssimportant;
+        if (this.FOptions.FItemSelectedColor !== -1) itemstyleselected = "background-color:" + pas["WEBLib.Graphics"].ColorToHTML(this.FOptions.FItemSelectedColor) + cssimportant;
+        if (this.FOptions.FItemSelectedBorderColor !== -1) itemstyleselected = itemstyleselected + "border: 1px solid " + pas["WEBLib.Graphics"].ColorToHTML(this.FOptions.FItemSelectedBorderColor) + ";";
+        if (this.FOptions.FItemSelectedTextColor !== -1) itemstyleselected = itemstyleselected + "color:" + pas["WEBLib.Graphics"].ColorToHTML(this.FOptions.FItemSelectedTextColor) + ";";
+        if (this.FOptions.FScrollVertical) {
+          this.GetElementHandle().style.removeProperty("overflow-y")}
+         else this.GetElementHandle().style.setProperty("overflow-y","hidden");
+        if (this.FOptions.FOrder === $mod.TResponsiveGridTemplateOrder.toColumn) {
+          LTemplate = "grid-template-columns"}
+         else {
+          LTemplate = "grid-auto-flow: column; height: " + pas["WEBLib.Utils"].TLongIntHelper.ToString.call({p: this.GetHeight(), get: function () {
+              return this.p;
+            }, set: function (v) {
+              this.p = v;
+            }}) + "px; grid-template-rows";
+          ITMWIDTHMIN = pas.SysUtils.IntToStr(this.FOptions.FItemHeight);
+          this.GetElementHandle().style.setProperty("overflow-x","auto");
+        };
+        s = "." + LStyleName + " {" + "display: grid; " + LTemplate + ": repeat(auto-fill, minmax(" + ITMWIDTHMIN + "px, 1fr));" + " grid-gap: " + ITMGAP + "px;" + "}" + "\r" + "." + LStyleName + " > div { " + itemstyle + "height: " + ITMHEIGHT + "px; " + fs + " }" + "\r" + "." + LStyleName + " > div:hover {" + itemstylehover + " " + fs + " }" + "\r" + "." + LStyleName + "_Selected {" + itemstyleselected + "height: " + ITMHEIGHT + "px;" + fs + "}" + "\r";
+        this.$class.AddInstanceStyle$1(LStyleName + "_style",s);
+      };
+      this.RenderGrid();
+    };
+    this.RenderGrid = function () {
+      var i = 0;
+      var el = null;
+      if (pas.Classes.TComponentStateItem.csDestroying in this.FComponentState) return;
+      if (!(this.ListElementHandle() != null)) return;
+      while (this.ListElementHandle().childElementCount > 0) {
+        this.ListElementHandle().removeChild(this.ListElementHandle().firstChild);
+      };
+      for (var $l = 0, $end = this.FItems.GetCount() - 1; $l <= $end; $l++) {
+        i = $l;
+        el = document.createElement("DIV");
+        el.style.setProperty("position","relative");
+        this.FItems.GetItem$1(i).FElementHandle = el;
+        this.ListElementHandle().appendChild(el);
+        el.innerHTML = this.FItems.GetItem$1(i).FHTML;
+        if (this.FOptions.FItemClassName !== "") el.setAttribute("class",this.FOptions.FItemClassName);
+      };
+    };
+    this.Loaded = function () {
+      pas["WEBLib.Controls"].TCustomControl.Loaded.call(this);
+      this.RenderGrid();
+    };
+    this.GetStyleName = function () {
+      var Result = "";
+      if (this.FParent != null) {
+        Result = this.FParent.FName + "_" + this.FName}
+       else Result = this.FName;
+      return Result;
+    };
+    this.InitCSSLibrary = function (ALibrary) {
+      if (ALibrary === pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap) {
+        this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+      };
+    };
+    this.Create$1 = function (AOwner) {
+      pas["WEBLib.Controls"].TControl.Create$1.apply(this,arguments);
+      return this;
+    };
+    this.CreateInitialize = function () {
+      pas["WEBLib.Controls"].TCustomControl.CreateInitialize.call(this);
+      this.FDesignTime$1 = (pas.Classes.TComponentStateItem.csDesigning in this.FComponentState) && !((pas.Classes.TComponentStateItem.csReading in this.FOwner.FComponentState) || (pas.Classes.TComponentStateItem.csLoading in this.FOwner.FComponentState));
+      this.FListElement = null;
+      this.FItemIndex = -1;
+      this.FOptions = $mod.TResponsiveGridOptions.$create("Create$1");
+      this.FOptions.FOnChange = rtl.createCallback(this,"OptionsChanged");
+      this.FItems = $mod.TResponsiveGridItems.$create("Create$3",[this]);
+      this.FItems.FPropName = "Items";
+      if (this.FDesignTime$1) {
+        this.FItems.Clear$1();
+        this.FItems.Add$1();
+        this.FItems.Add$1();
+        this.FItems.Add$1();
+      };
+      this.FItems.FOnItemAdd = rtl.createCallback(this,"HandleItemAdd");
+      this.FItems.FOnItemUpdate = rtl.createCallback(this,"HandleItemUpdate");
+      this.FItems.FOnItemDelete = rtl.createCallback(this,"HandleItemDelete");
+      this.FItems.FOnItemInsert = rtl.createCallback(this,"HandleItemInsert");
+      this.FItems.FOnItemClear = rtl.createCallback(this,"HandleItemClear");
+      if (pas.Classes.TComponentStateItem.csDesigning in this.FComponentState) {
+        this.SetWidth(400);
+        this.SetHeight(300);
+      };
+    };
+    this.Destroy = function () {
+      rtl.free(this,"FOptions");
+      rtl.free(this,"FItems");
+      pas["WEBLib.Controls"].TCustomControl.Destroy.call(this);
+    };
+    this.LoadFromJSON = function (AURL, ADataNode) {
+      this.FDataNode = ADataNode;
+      this.FReq = new XMLHttpRequest();
+      this.FReq.addEventListener("load",rtl.createSafeCallback(this,"DoHttpLoadJson"));
+      this.FReq.addEventListener("abort",rtl.createSafeCallback(this,"DoHttpAbort"));
+      this.FReq.open("GET",AURL);
+      this.DoHttpRequest(this.FReq);
+      this.FReq.send();
+    };
+    this.LoadFromJSON$1 = function (ASJON, ADataNode) {
+      var JO = undefined;
+      var JA = null;
+      var r = 0;
+      var c = 0;
+      var arow = "";
+      var ident = "";
+      var html = "";
+      var htmlvalue = "";
+      var sl = null;
+      var itm = null;
+      if (ADataNode !== "") {
+        JA = ASJON[ADataNode]}
+       else JA = ASJON;
+      if (JA != null) {
+        sl = pas.Classes.TStringList.$create("Create$1");
+        for (var $l = 0, $end = JA.length - 1; $l <= $end; $l++) {
+          r = $l;
+          JO = JA[r];
+          c = 0;
+          arow = "";
+          var x = undefined;
+          for (x in JO) {
+            arow += "|" + x + "=" + JO[x];
+            c++;
+          };
+          pas.System.Delete({get: function () {
+              return arow;
+            }, set: function (v) {
+              arow = v;
+            }},1,1);
+          sl.FStrictDelimiter = true;
+          sl.SetDelimiter("|");
+          sl.SetDelimitedText(arow);
+          itm = this.FItems.Add$1();
+          itm.FJSONObject = JO;
+          if (this.FOptions.FItemTemplate === "") {
+            itm.SetHTML(sl.GetCommaText());
+          } else {
+            html = this.FOptions.FItemTemplate;
+            this.DoItemGetTemplate(r,sl.GetCommaText(),{get: function () {
+                return html;
+              }, set: function (v) {
+                html = v;
+              }});
+            ident = "(%ITEMINDEX%)";
+            if (pas.System.Pos(ident,html) > 0) {
+              html = pas.SysUtils.StringReplace(html,ident,pas.SysUtils.IntToStr(itm.GetIndex()),rtl.createSet(pas.SysUtils.TStringReplaceFlag.rfReplaceAll));
+            };
+            for (var $l1 = 0, $end1 = sl.GetCount() - 1; $l1 <= $end1; $l1++) {
+              c = $l1;
+              ident = "(%" + sl.GetName(c) + "%)";
+              if (pas.System.Pos(ident,html) > 0) {
+                htmlvalue = sl.GetValue(sl.GetName(c));
+                this.DoItemGetFieldValue(itm.GetIndex(),sl.GetName(c),{get: function () {
+                    return htmlvalue;
+                  }, set: function (v) {
+                    htmlvalue = v;
+                  }});
+                html = pas.SysUtils.StringReplace(html,ident,htmlvalue,rtl.createSet(pas.SysUtils.TStringReplaceFlag.rfReplaceAll));
+              };
+            };
+            itm.SetHTML(html);
+            this.DoItemCreated(itm.GetIndex());
+          };
+        };
+        sl = rtl.freeLoc(sl);
+      };
+    };
+    this.LoadFromCSV = function (AURL, Delimiter) {
+      this.FDelimiter = Delimiter;
+      this.FReq = new XMLHttpRequest();
+      this.FReq.addEventListener("load",rtl.createSafeCallback(this,"DoHttpLoadCsv"));
+      this.FReq.addEventListener("abort",rtl.createSafeCallback(this,"DoHttpAbort"));
+      this.FReq.open("GET",AURL);
+      this.DoHttpRequest(this.FReq);
+      this.FReq.send();
+    };
+    this.ListElementHandle = function () {
+      var Result = null;
+      if (!(this.FListElement != null)) {
+        this.FListElement = document.createElement("DIV");
+        this.FListElement.setAttribute("width","100%");
+        this.GetElementHandle().appendChild(this.FListElement);
+        Result = this.FListElement;
+      } else Result = this.FListElement;
+      return Result;
+    };
+    this.ItemByTag = function (ATag) {
+      var Result = null;
+      var i = 0;
+      Result = null;
+      for (var $l = 0, $end = this.FItems.GetCount() - 1; $l <= $end; $l++) {
+        i = $l;
+        if (this.FItems.GetItem$1(i).FTag === ATag) {
+          Result = this.FItems.GetItem$1(i);
+          break;
+        };
+      };
+      return Result;
+    };
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+    var $r = this.$rtti;
+    $r.addMethod("Create$1",2,[["AOwner",pas.Classes.$rtti["TComponent"]]]);
+    $r.addProperty("Align",2,pas["WEBLib.Controls"].$rtti["TAlign"],"FAlign","SetAlign",{Default: pas["WEBLib.Controls"].TAlign.alNone});
+    $r.addProperty("AlignWithMargins",2,rtl.boolean,"FAlignWithMargins","SetAlignWithMargins",{Default: false});
+    $r.addProperty("Anchors",2,pas["WEBLib.Controls"].$rtti["TAnchors"],"FAnchors","SetAnchors",{Default: rtl.createSet(pas["WEBLib.Controls"].TAnchorKind.akLeft,pas["WEBLib.Controls"].TAnchorKind.akTop)});
+    $r.addProperty("ElementID",3,pas["WEBLib.Controls"].$rtti["TElementID"],"GetID","SetID");
+    $r.addProperty("ElementClassName",2,pas["WEBLib.Controls"].$rtti["TElementClassName"],"FElementClassName","SetElementClassName");
+    $r.addProperty("ElementFont",2,pas["WEBLib.Controls"].$rtti["TElementFont"],"FElementFont","SetElementFont",{Default: pas["WEBLib.Controls"].TElementFont.efProperty});
+    $r.addProperty("ElementPosition",2,pas["WEBLib.Controls"].$rtti["TElementPosition"],"FElementPosition","SetElementPosition",{Default: pas["WEBLib.Controls"].TElementPosition.epAbsolute});
+    $r.addProperty("Font",2,pas["WEBLib.Graphics"].$rtti["TFont"],"FFont","SetFont");
+    $r.addProperty("Height",3,rtl.longint,"GetHeight","SetHeight");
+    $r.addProperty("HeightPercent",2,rtl.double,"FHeightPercent","SetHeightPercent",{Default: 100});
+    $r.addProperty("HeightStyle",2,pas["WEBLib.Controls"].$rtti["TSizeStyle"],"FHeightStyle","SetHeightStyle",{Default: pas["WEBLib.Controls"].TSizeStyle.ssAbsolute});
+    $r.addProperty("ItemIndex",2,rtl.longint,"FItemIndex","SetItemIndex",{Default: -1});
+    $r.addProperty("Items",2,$mod.$rtti["TResponsiveGridItems"],"FItems","SetItems");
+    $r.addProperty("Margins",2,pas["WEBLib.Controls"].$rtti["TMargins"],"FMargins","SetMargins");
+    $r.addProperty("Options",2,$mod.$rtti["TResponsiveGridOptions"],"FOptions","SetOptions");
+    $r.addProperty("ParentFont",2,rtl.boolean,"FParentFont","SetParentFont",{Default: true});
+    $r.addProperty("PopupMenu",0,pas["WEBLib.Menus"].$rtti["TPopupMenu"],"FPopupMenu","FPopupMenu");
+    $r.addProperty("Visible",2,rtl.boolean,"FVisible","SetVisible",{Default: true});
+    $r.addProperty("Width",3,rtl.longint,"GetWidth","SetWidth");
+    $r.addProperty("WidthPercent",2,rtl.double,"FWidthPercent","SetWidthPercent",{Default: 100});
+    $r.addProperty("WidthStyle",2,pas["WEBLib.Controls"].$rtti["TSizeStyle"],"FWidthStyle","SetWidthStyle",{Default: pas["WEBLib.Controls"].TSizeStyle.ssAbsolute});
+    $r.addProperty("OnClick",0,pas["WEBLib.Controls"].$rtti["TNotifyEvent"],"FOnClick","FOnClick");
+    $r.addProperty("OnDblClick",0,pas["WEBLib.Controls"].$rtti["TNotifyEvent"],"FOnDblClick","FOnDblClick");
+    $r.addProperty("OnMouseDown",0,pas["WEBLib.Controls"].$rtti["TMouseEvent"],"FOnMouseDown","FOnMouseDown");
+    $r.addProperty("OnMouseUp",0,pas["WEBLib.Controls"].$rtti["TMouseEvent"],"FOnMouseUp","FOnMouseUp");
+    $r.addProperty("OnMouseMove",0,pas["WEBLib.Controls"].$rtti["TMouseMoveEvent"],"FOnMouseMove","FOnMouseMove");
+    $r.addProperty("OnMouseLeave",0,pas["WEBLib.Controls"].$rtti["TNotifyEvent"],"FOnMouseLeave","FOnMouseLeave");
+    $r.addProperty("OnMouseEnter",0,pas["WEBLib.Controls"].$rtti["TNotifyEvent"],"FOnMouseEnter","FOnMouseEnter");
+    $r.addProperty("OnItemCreated",0,$mod.$rtti["TResponsiveGridItemEvent"],"FOnItemCreated","FOnItemCreated");
+    $r.addProperty("OnItemGetFieldValue",0,$mod.$rtti["TResponsiveGridItemFieldValueEvent"],"FOnItemGetFieldValue","FOnItemGetFieldValue");
+    $r.addProperty("OnItemGetTemplate",0,$mod.$rtti["TResponsiveGridItemTemplateEvent"],"FOnItemGetTemplate","FOnItemGetTemplate");
+    $r.addProperty("OnItemClick",0,$mod.$rtti["TResponsiveGridItemEvent"],"FOnItemClick","FOnItemClick");
+    $r.addProperty("OnItemDblClick",0,$mod.$rtti["TResponsiveGridItemEvent"],"FOnItemDblClick","FOnItemDblClick");
+    $r.addProperty("OnHttpRequestError",0,pas["WEBLib.Controls"].$rtti["TNotifyEvent"],"FOnHttpRequestError","FOnHttpRequestError");
+    $r.addProperty("OnHttpRequestSuccess",0,pas["WEBLib.Controls"].$rtti["TNotifyEvent"],"FOnHttpRequestSuccess","FOnHttpRequestSuccess");
+    $r.addProperty("OnHttpRequest",0,$mod.$rtti["TGridRequestEvent"],"FOnHttpRequest","FOnHttpRequest");
+  });
+  rtl.createClass(this,"TWebResponsiveGrid",this.TResponsiveGrid,function () {
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+  });
+  this.GridRect = function (Left, Top, Right, Bottom) {
+    var Result = $mod.TGridRect.$new();
+    Result.Left = Left;
+    Result.Top = Top;
+    Result.Right = Right;
+    Result.Bottom = Bottom;
+    return Result;
+  };
+  $mod.$implcode = function () {
+    $impl.GlyphAscending = "&#x25B2;";
+    $impl.GlyphDescending = "&#x25BC;";
+    $impl.CELLPADDING = 0;
+  };
+},["SysUtils","Math","WEBLib.Utils","WEBLib.WebTools","WEBLib.Forms"]);
+rtl.module("Unit5",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.StdCtrls","WEBLib.StdCtrls","WEBLib.Controls","WEBLib.Grids","UFormaLibreta","WEBLib.ExtCtrls"],function () {
+  "use strict";
+  var $mod = this;
+  rtl.createClass(this,"TForm5",pas["WEBLib.Forms"].TForm,function () {
+    this.$init = function () {
+      pas["WEBLib.Forms"].TForm.$init.call(this);
+      this.WebPanel2 = null;
+      this.WebButton1 = null;
+      this.WebButton2 = null;
+      this.WebLabel1 = null;
+      this.WebResponsiveGrid1 = null;
+    };
+    this.$final = function () {
+      this.WebPanel2 = undefined;
+      this.WebButton1 = undefined;
+      this.WebButton2 = undefined;
+      this.WebLabel1 = undefined;
+      this.WebResponsiveGrid1 = undefined;
+      pas["WEBLib.Forms"].TForm.$final.call(this);
+    };
+    this.WebButton1Click = function (Sender) {
+      var CardHTML = "";
+      var i = 0;
+      this.WebResponsiveGrid1.FOptions.SetItemWidthMin(215);
+      this.WebResponsiveGrid1.FOptions.SetItemGap(30);
+      this.WebResponsiveGrid1.FOptions.SetItemHeight(230);
+      for (i = 0; i <= 5; i++) {
+        CardHTML = pas.SysUtils.Format('<div class="card">' + '<div class="card-header">Card Titulo %s</div>' + '<div class="card-body">Este es el contenido para la tarjeta numero %s.</div>' + "</div>",pas.System.VarRecs(18,pas.SysUtils.IntToStr(i),18,pas.SysUtils.IntToStr(i)));
+        this.WebResponsiveGrid1.FItems.Add$1().SetHTML(CardHTML);
+      };
+    };
+    this.WebResponsiveGrid1ItemClick = function (Sender, Index) {
+      this.WebLabel1.SetCaption("Item Seleccionado " + pas.SysUtils.IntToStr(Index));
+      var $tmp = Index;
+      if ($tmp === 0) pas["WEBLib.Forms"].Application.CreateForm(pas.UFormaLibreta.TFormaLibreta,{p: pas.UFormaLibreta, get: function () {
+          return this.p.FormaLibreta;
+        }, set: function (v) {
+          this.p.FormaLibreta = v;
+        }});
+    };
+    this.WebButton2Click = function (Sender) {
+      var CardHTML = "";
+      var i = 0;
+      this.WebResponsiveGrid1.FOptions.SetItemWidthMin(210);
+      this.WebResponsiveGrid1.FOptions.SetItemGap(20);
+      this.WebResponsiveGrid1.FOptions.SetItemHeight(230);
+      for (i = 0; i <= 2; i++) {
+        CardHTML = pas.SysUtils.Format(' <div class="card border-info mb-3" style="max-width: 18rem;">' + ' <div class="card-header">Header</div>' + '<div class="card-body">' + ' <h5 class="card-title">Light card title</h5>' + ' <p class="card-text">Some quick example text to build on the card title and make up the bulk of the cards content </p>' + " </div>" + "</div>",pas.System.VarRecs(18,pas.SysUtils.IntToStr(i),18,pas.SysUtils.IntToStr(i)));
+        this.WebResponsiveGrid1.FItems.Add$1().SetHTML(CardHTML);
+      };
+    };
+    this.WebFormCreate = function (Sender) {
+      this.cargarTarjetas();
+    };
+    this.cargarTarjetas = function () {
+      var CardHTML = "";
+      var i = 0;
+      this.WebResponsiveGrid1.FOptions.SetItemWidthMin(210);
+      this.WebResponsiveGrid1.FOptions.SetItemGap(20);
+      this.WebResponsiveGrid1.FOptions.SetItemHeight(220);
+      CardHTML = pas.SysUtils.Format(' <div class="card border-info mb-3" style="max-width: 20rem;">' + ' <div class="card-header">Registro</div>' + '<div class="card-body">' + ' <h5 class="card-title">Registro Ventas y Subastas</h5>' + ' <p class="card-text">Ingresar a registro de información de sus ventas y subastas </p>' + " </div>" + "</div>",pas.System.VarRecs(18,pas.SysUtils.IntToStr(i),18,pas.SysUtils.IntToStr(i)));
+      this.WebResponsiveGrid1.FItems.Add$1().SetHTML(CardHTML);
+      CardHTML = pas.SysUtils.Format(' <div class="card border-info mb-3" style="max-width: 20rem;">' + ' <div class="card-header">Venta</div>' + '<div class="card-body">' + ' <h5 class="card-title">Operaciones de venta en módulo</h5>' + ' <p class="card-text">Consulte sus operaciones de ventas y subastas de el módulo </p>' + " </div>" + "</div>",pas.System.VarRecs(18,pas.SysUtils.IntToStr(i),18,pas.SysUtils.IntToStr(i)));
+      this.WebResponsiveGrid1.FItems.Add$1().SetHTML(CardHTML);
+      CardHTML = pas.SysUtils.Format(' <div class="card border-info mb-3" style="max-width: 20rem;">' + ' <div class="card-header">Consultas</div>' + '<div class="card-body">' + ' <h5 class="card-title">Consultas y reportes</h5>' + ' <p class="card-text">Obtenga información relevante sobre su trabajo en el módulo </p>' + " </div>" + "</div>",pas.System.VarRecs(18,pas.SysUtils.IntToStr(i),18,pas.SysUtils.IntToStr(i)));
+      this.WebResponsiveGrid1.FItems.Add$1().SetHTML(CardHTML);
+    };
+    this.LoadDFMValues = function () {
+      pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
+      this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.WebLabel1 = pas["WEBLib.StdCtrls"].TLabel.$create("Create$1",[this]);
+      this.WebButton1 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.WebButton2 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.WebResponsiveGrid1 = pas["WEBLib.Grids"].TResponsiveGrid.$create("Create$1",[this]);
+      this.WebPanel2.BeforeLoadDFMValues();
+      this.WebLabel1.BeforeLoadDFMValues();
+      this.WebButton1.BeforeLoadDFMValues();
+      this.WebButton2.BeforeLoadDFMValues();
+      this.WebResponsiveGrid1.BeforeLoadDFMValues();
+      try {
+        this.SetName("Form5");
+        this.SetWidth(400);
+        this.SetHeight(480);
+        this.SetCSSLibrary(pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap);
+        this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.FFont.FCharset = 1;
+        this.FFont.SetColor(65793);
+        this.FFont.SetHeight(-15);
+        this.FFont.SetName("Tahoma");
+        this.FFont.SetStyle({});
+        this.SetParentFont(false);
+        this.SetEvent(this,"OnCreate","WebFormCreate");
+        this.WebPanel2.SetParentComponent(this);
+        this.WebPanel2.SetName("WebPanel2");
+        this.WebPanel2.SetLeft(8);
+        this.WebPanel2.SetTop(0);
+        this.WebPanel2.SetWidth(465);
+        this.WebPanel2.SetHeight(60);
+        this.WebPanel2.SetElementClassName("card");
+        this.WebPanel2.SetCaption("Favor de seleccionar una opción");
+        this.WebPanel2.SetChildOrderEx(4);
+        this.WebPanel2.FElementBodyClassName = "card-body";
+        this.WebPanel2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebPanel2.SetTabOrder(0);
+        this.WebPanel2.SetVisible(false);
+        this.WebLabel1.SetParentComponent(this.WebPanel2);
+        this.WebLabel1.SetName("WebLabel1");
+        this.WebLabel1.SetLeft(415);
+        this.WebLabel1.SetTop(36);
+        this.WebLabel1.SetWidth(71);
+        this.WebLabel1.SetHeight(18);
+        this.WebLabel1.SetCaption("WebLabel1");
+        this.WebLabel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebLabel1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebLabel1.SetHeightPercent(100.000000000000000000);
+        this.WebLabel1.SetVisible(false);
+        this.WebLabel1.SetWidthPercent(100.000000000000000000);
+        this.WebButton1.SetParentComponent(this.WebPanel2);
+        this.WebButton1.SetName("WebButton1");
+        this.WebButton1.SetLeft(262);
+        this.WebButton1.SetTop(3);
+        this.WebButton1.SetWidth(122);
+        this.WebButton1.SetHeight(25);
+        this.WebButton1.SetCaption("Cards- Tarjetas");
+        this.WebButton1.SetChildOrderEx(1);
+        this.WebButton1.SetElementClassName("btn btn-light");
+        this.WebButton1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebButton1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebButton1.SetHeightPercent(100.000000000000000000);
+        this.WebButton1.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.WebButton1,this,"OnClick","WebButton1Click");
+        this.WebButton2.SetParentComponent(this.WebPanel2);
+        this.WebButton2.SetName("WebButton2");
+        this.WebButton2.SetLeft(390);
+        this.WebButton2.SetTop(3);
+        this.WebButton2.SetWidth(96);
+        this.WebButton2.SetHeight(25);
+        this.WebButton2.SetCaption("Cards2");
+        this.WebButton2.SetChildOrderEx(3);
+        this.WebButton2.SetElementClassName("btn btn-light");
+        this.WebButton2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebButton2.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebButton2.SetHeightPercent(100.000000000000000000);
+        this.WebButton2.SetVisible(false);
+        this.WebButton2.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.WebButton2,this,"OnClick","WebButton2Click");
+        this.WebResponsiveGrid1.SetParentComponent(this);
+        this.WebResponsiveGrid1.SetName("WebResponsiveGrid1");
+        this.WebResponsiveGrid1.SetLeft(5);
+        this.WebResponsiveGrid1.SetTop(34);
+        this.WebResponsiveGrid1.SetWidth(389);
+        this.WebResponsiveGrid1.SetHeight(480);
+        this.WebResponsiveGrid1.FCenter.SetHorizontal(true);
+        this.WebResponsiveGrid1.SetChildOrderEx(1);
+        this.WebResponsiveGrid1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebResponsiveGrid1.FOptions.SetItemWidthMin(200);
+        this.SetEvent$1(this.WebResponsiveGrid1,this,"OnItemClick","WebResponsiveGrid1ItemClick");
+      } finally {
+        this.WebPanel2.AfterLoadDFMValues();
+        this.WebLabel1.AfterLoadDFMValues();
+        this.WebButton1.AfterLoadDFMValues();
+        this.WebButton2.AfterLoadDFMValues();
+        this.WebResponsiveGrid1.AfterLoadDFMValues();
+      };
+    };
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+    var $r = this.$rtti;
+    $r.addField("WebPanel2",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
+    $r.addField("WebButton1",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("WebButton2",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("WebLabel1",pas["WEBLib.StdCtrls"].$rtti["TLabel"]);
+    $r.addField("WebResponsiveGrid1",pas["WEBLib.Grids"].$rtti["TResponsiveGrid"]);
+    $r.addMethod("WebButton1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebResponsiveGrid1ItemClick",0,[["Sender",pas.System.$rtti["TObject"]],["Index",rtl.longint]]);
+    $r.addMethod("WebButton2Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
+  });
+  this.Form5 = null;
+});
+rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","UFormaLibreta","uLoginForma","uAyuda","uTabulator","Unit5"],function () {
   "use strict";
   var $mod = this;
   $mod.$implcode = function () {

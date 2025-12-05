@@ -81641,7 +81641,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                   p1.setAttribute('tabindex', '0');
                   p1.style.overflowWrap = 'break-word';
                   p1.style.userSelect = "text";
-                  p1.textContent = strlinea;
+                  p1.textContent = ''; //strlinea;
           
                  // p1.addEventListener('click', function() {
                  //         p1.style.backgroundColor = 'green';
@@ -81978,6 +81978,32 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
             } // if Enter
       
            }); // keydown
+      
+      
+               codeEditor.addEventListener('mousedown', (event) => {
+         // alert('entro');
+            if (event.key === 'Enter') {
+         // alert('entro enter key');
+      
+         //console.log('****** entro enter key index <  divCount', index,divCount);
+               if (index <  divCount)
+               {
+         // alert('entro enter key index <  divCount');
+        //  console.log('***** editor configurar',index,focusableDivs[index]);
+                  //   focusableDivs[index].focus();
+                 setCaretAtEnd(focusableDivs[index]);
+               }
+               else
+               {
+                 index = 0;
+                 focusableDivs[index].focus();
+                 setCaretAtEnd(focusableDivs[index]);
+               }
+              event.preventDefault(); // Prevent default Enter key behavior
+            } // if Enter
+      
+           }); // mousedown
+      
       
       ///-------------------------------------------------------;
     };

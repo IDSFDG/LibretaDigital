@@ -81981,7 +81981,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
       
                codeEditor.addEventListener('click', (event) => {
-               alert('entro click');
+               //alert('entro click');
                setCaretAtEnd(focusableDivs[index]);
       
               event.preventDefault(); // Prevent default Enter key behavior

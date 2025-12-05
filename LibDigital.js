@@ -81640,6 +81640,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                  // p1.setAttribute('contenteditable', 'true'); // Container (editor) editable=true, para copy/paste
                   p1.setAttribute('tabindex', '0');
                   p1.style.overflowWrap = 'break-word';
+                  p1.style.userSelect = "text";
                   p1.textContent = strlinea;
           
                  // p1.addEventListener('click', function() {
@@ -81844,6 +81845,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       const codeEditor = document.getElementById('editor');
             codeEditor.setAttribute('contenteditable', 'true');
       
+              codeEditor.style.userSelect = "text";
       
             function setCaretAtEnd(element) {
         //  alert('setCaretAtEndAbir EditorConfigurar');

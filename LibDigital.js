@@ -81980,8 +81980,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
            }); // keydown
       
       
-               codeEditor.addEventListener('mousedown', (event) => {
-         // alert('entro');
+               codeEditor.addEventListener('click', (event) => {
+          alert('entro click');
             if (event.key === 'Enter') {
          // alert('entro enter key');
       
@@ -82002,7 +82002,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
               event.preventDefault(); // Prevent default Enter key behavior
             } // if Enter
       
-           }); // mousedown
+           }); // click
       
       
       ///-------------------------------------------------------;

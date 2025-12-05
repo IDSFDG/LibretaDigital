@@ -81981,26 +81981,10 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
       
                codeEditor.addEventListener('click', (event) => {
-          alert('entro click');
-            if (event.key === 'Enter') {
-         // alert('entro enter key');
+               alert('entro click');
+               setCaretAtEnd(focusableDivs[index]);
       
-         //console.log('****** entro enter key index <  divCount', index,divCount);
-               if (index <  divCount)
-               {
-         // alert('entro enter key index <  divCount');
-        //  console.log('***** editor configurar',index,focusableDivs[index]);
-                  //   focusableDivs[index].focus();
-                 setCaretAtEnd(focusableDivs[index]);
-               }
-               else
-               {
-                 index = 0;
-                 focusableDivs[index].focus();
-                 setCaretAtEnd(focusableDivs[index]);
-               }
               event.preventDefault(); // Prevent default Enter key behavior
-            } // if Enter
       
            }); // click
       

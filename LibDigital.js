@@ -81683,6 +81683,15 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         };
       };
       for (const element of myElements) {
+      
+                element.addEventListener('focus', (event) => {
+                // Calculate the relative position of the focused child within the parent
+                const childOffsetTop = event.target.offsetTop;
+      
+                console.log('element focus ',childOffsetTop);
+                 // Scroll the parent container to bring the child to the top
+                   targetDiv.scrollTop = childOffsetTop;
+              });
               element.addEventListener('dblclick', function() {
                       const colorb = element.style.backgroundColor;
                       console.log('color ',colorb, colorb.length);
@@ -81691,7 +81700,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                       {
                         element.style.backgroundColor = color; //'lightgreen';
       
-                      } 
+                      }
                   });
       
       element.addEventListener('keydown', (event) => {
@@ -81878,6 +81887,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
         // Focus the element to make the caret visible
         element.focus();
+      
+        //codeEditor.scrollTop=0;
       }
       
       function getFocusedDivIndexInContainer(containerId) {
@@ -81923,7 +81934,8 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
            const divCountCont = childDivsCont.length;
            if (childDivsCont && index >= 0 && index < divCountCont ) {
                 childDivsCont[index].focus();
-      
+                //container.scrollIntoView();
+               // container.scrollTop  =0;
               }
       
        });
@@ -81982,8 +81994,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
                codeEditor.addEventListener('click', (event) => {
                //alert('entro click');
+              const childOffsetTop = event.target.offsetTop;
+              codeEditor.scrollTop = childOffsetTop;
                setCaretAtEnd(focusableDivs[index]);
-      
               event.preventDefault(); // Prevent default Enter key behavior
       
            }); // click

@@ -26,6 +26,7 @@
   border-bottom: 1px double;
   margin-bottom: 10px;
   width: 98%;
+  overflow: auto;
 }
 .editor-container {
     display: flex;
@@ -56,7 +57,11 @@
   background-size: 100% 2.5em; /* Matches line-height */
   background-repeat: repeat-y;
   background-attachment: local;
+  height: 200px; /* Define a fixed height for the div */
+  width: 300px;  /* Define a fixed width for the div (optional, but often useful) */
+  border: 1px solid #ccc; /* Optional: for visual clarity */
   overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .highlighted-line {

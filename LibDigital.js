@@ -80589,7 +80589,31 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.diveditor.SetElementClassName("code-editor");
       this.CrearDiv_Dinamicos();
       this.EditorConfigurar();
-      const codeEditor = document.getElementById('editor');
+      function disableBodyScroll() {
+              document.body.classList.add('no-scroll');
+              // Optionally, store the current scroll position to restore later
+              // document.body.style.top = `-${window.scrollY}px`;
+          }
+      
+          function enableBodyScroll() {
+              document.body.classList.remove('no-scroll');
+              // Optionally, restore the scroll position
+              // const scrollY = document.body.style.top;
+              // document.body.style.top = '';
+              // window.scrollTo(0, parseInt(scrollY || '0') * -1);
+          }
+      
+            // To disable body scrolling
+      
+      
+          // Example usage:
+          // When opening a modal:
+           disableBodyScroll();
+      
+          // When closing a modal:
+          // enableBodyScroll();
+      
+            const codeEditor = document.getElementById('editor');
             codeEditor.setAttribute('contenteditable', 'true');
             const maxLines = 5;
             let numbersHtml = '';
@@ -81690,7 +81714,12 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
                 console.log('element focus ',childOffsetTop);
                  // Scroll the parent container to bring the child to the top
-                   targetDiv.scrollTop = childOffsetTop;
+      
+                  targetDiv.scrollTop = childOffsetTop;
+      
+                 //element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                 //element.scrollIntoView();
+      
               });
               element.addEventListener('dblclick', function() {
                       const colorb = element.style.backgroundColor;
@@ -81994,9 +82023,16 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
                codeEditor.addEventListener('click', (event) => {
                //alert('entro click');
-              const childOffsetTop = event.target.offsetTop;
+              var childOffsetTop = event.target.offsetTop;
+              console.log('*****+childOffsetTop',childOffsetTop,'scrollTop ',codeEditor.scrollTop);
+             // if (childOffsetTop > codeEditor.scrollTop)
+             // {
+             //   childOffsetTop=0;
+             // }
               codeEditor.scrollTop = childOffsetTop;
-               setCaretAtEnd(focusableDivs[index]);
+              //  focusableDivs[index].scrollIntoView();
+      
+              setCaretAtEnd(focusableDivs[index]);
               event.preventDefault(); // Prevent default Enter key behavior
       
            }); // click
@@ -82006,11 +82042,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
-      this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
-      this.WebSpeedButton1 = pas["WEBLib.Buttons"].TSpeedButton.$create("Create$1",[this]);
-      this.webBotonMenu = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
-      this.WebHTMLDiv1 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$1",[this]);
-      this.WebHTMLDiv2 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$1",[this]);
       this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
       this.lbmarcar = pas["WEBLib.StdCtrls"].TLabel.$create("Create$1",[this]);
       this.lblimpiar = pas["WEBLib.StdCtrls"].TLabel.$create("Create$2",["quitar"]);
@@ -82031,6 +82062,11 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.listaHojas = pas["WEBLib.StdCtrls"].TListBox.$create("Create$2",["listaabrir"]);
       this.btnAbrir = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.btnCancelarAbrir = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.WebSpeedButton1 = pas["WEBLib.Buttons"].TSpeedButton.$create("Create$1",[this]);
+      this.webBotonMenu = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.WebHTMLDiv1 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$1",[this]);
+      this.WebHTMLDiv2 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$1",[this]);
       this.WebPopupMenu1 = pas["WEBLib.Menus"].TPopupMenu.$create("Create$1",[this]);
       this.Cerrar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Ayuda1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
@@ -82049,11 +82085,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.Sumarimportes1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Salir1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.LibHojasDbClientDataset1 = pas["WEBLib.IndexedDb"].TIndexedDbClientDataset.$create("Create$1",[this]);
-      this.WebPanel1.BeforeLoadDFMValues();
-      this.WebSpeedButton1.BeforeLoadDFMValues();
-      this.webBotonMenu.BeforeLoadDFMValues();
-      this.WebHTMLDiv1.BeforeLoadDFMValues();
-      this.WebHTMLDiv2.BeforeLoadDFMValues();
       this.WebPanel2.BeforeLoadDFMValues();
       this.lbmarcar.BeforeLoadDFMValues();
       this.lblimpiar.BeforeLoadDFMValues();
@@ -82074,6 +82105,11 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.listaHojas.BeforeLoadDFMValues();
       this.btnAbrir.BeforeLoadDFMValues();
       this.btnCancelarAbrir.BeforeLoadDFMValues();
+      this.WebPanel1.BeforeLoadDFMValues();
+      this.WebSpeedButton1.BeforeLoadDFMValues();
+      this.webBotonMenu.BeforeLoadDFMValues();
+      this.WebHTMLDiv1.BeforeLoadDFMValues();
+      this.WebHTMLDiv2.BeforeLoadDFMValues();
       this.WebPopupMenu1.BeforeLoadDFMValues();
       this.Cerrar1.BeforeLoadDFMValues();
       this.Ayuda1.BeforeLoadDFMValues();
@@ -82106,85 +82142,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.SetParentFont(false);
         this.SetEvent(this,"OnCreate","WebFormCreate");
         this.SetEvent(this,"OnShow","WebFormShow");
-        this.WebPanel1.SetParentComponent(this);
-        this.WebPanel1.SetName("WebPanel1");
-        this.WebPanel1.SetLeft(0);
-        this.WebPanel1.SetTop(0);
-        this.WebPanel1.SetWidth(600);
-        this.WebPanel1.SetHeight(57);
-        this.WebPanel1.SetElementClassName("card text-white bg-secondary mb-3");
-        this.WebPanel1.SetAlign(pas["WEBLib.Controls"].TAlign.alTop);
-        this.WebPanel1.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
-        this.WebPanel1.SetCaption("Libreta Digital");
-        this.WebPanel1.SetChildOrderEx(1);
-        this.WebPanel1.SetColor(16770250);
-        this.WebPanel1.FElementBodyClassName = "d-flex justify-content-center align-items-center min-vh-100";
-        this.WebPanel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.WebPanel1.SetTabOrder(0);
-        this.SetEvent$1(this.WebPanel1,this,"OnMouseMove","WebPanel1MouseMove");
-        this.WebSpeedButton1.SetParentComponent(this.WebPanel1);
-        this.WebSpeedButton1.SetName("WebSpeedButton1");
-        this.WebSpeedButton1.SetLeft(561);
-        this.WebSpeedButton1.SetTop(0);
-        this.WebSpeedButton1.SetWidth(39);
-        this.WebSpeedButton1.SetHeight(57);
-        this.WebSpeedButton1.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
-        this.WebSpeedButton1.SetColorEx(-1);
-        this.WebSpeedButton1.SetElementClassName("btn bg-transparent");
-        this.WebSpeedButton1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.WebSpeedButton1.SetFlat(true);
-        this.WebSpeedButton1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
-        this.WebSpeedButton1.SetHeightPercent(100.000000000000000000);
-        this.WebSpeedButton1.SetTabOrder(0);
-        this.WebSpeedButton1.SetWidthPercent(100.000000000000000000);
-        this.webBotonMenu.SetParentComponent(this.WebPanel1);
-        this.webBotonMenu.SetName("webBotonMenu");
-        this.webBotonMenu.SetLeft(512);
-        this.webBotonMenu.SetTop(0);
-        this.webBotonMenu.SetWidth(49);
-        this.webBotonMenu.SetHeight(57);
-        this.webBotonMenu.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
-        this.webBotonMenu.SetCaption("Menu");
-        this.webBotonMenu.FCenter.SetVertical(true);
-        this.webBotonMenu.SetChildOrderEx(2);
-        this.webBotonMenu.SetElementClassName("btn-outline-secondary");
-        this.webBotonMenu.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.webBotonMenu.FFont.FCharset = 1;
-        this.webBotonMenu.FFont.SetColor(65793);
-        this.webBotonMenu.FFont.SetHeight(-15);
-        this.webBotonMenu.FFont.SetName("Tahoma");
-        this.webBotonMenu.FFont.SetStyle({});
-        this.webBotonMenu.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
-        this.webBotonMenu.SetHeightPercent(100.000000000000000000);
-        this.webBotonMenu.SetParentFont(false);
-        this.webBotonMenu.FPopupMenu = this.WebPopupMenu1;
-        this.webBotonMenu.SetWidthPercent(100.000000000000000000);
-        this.SetEvent$1(this.webBotonMenu,this,"OnClick","webBotonMenuClick");
-        this.WebHTMLDiv1.SetParentComponent(this.WebPanel1);
-        this.WebHTMLDiv1.SetName("WebHTMLDiv1");
-        this.WebHTMLDiv1.SetLeft(424);
-        this.WebHTMLDiv1.SetTop(0);
-        this.WebHTMLDiv1.SetWidth(88);
-        this.WebHTMLDiv1.SetHeight(57);
-        this.WebHTMLDiv1.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
-        this.WebHTMLDiv1.SetChildOrderEx(2);
-        this.WebHTMLDiv1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.WebHTMLDiv1.SetRole("");
-        this.WebHTMLDiv2.SetParentComponent(this.WebHTMLDiv1);
-        this.WebHTMLDiv2.SetName("WebHTMLDiv2");
-        this.WebHTMLDiv2.SetLeft(12);
-        this.WebHTMLDiv2.SetTop(13);
-        this.WebHTMLDiv2.SetWidth(70);
-        this.WebHTMLDiv2.SetHeight(41);
-        this.WebHTMLDiv2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.WebHTMLDiv2.FHTML.BeginUpdate();
-        try {
-          this.WebHTMLDiv2.FHTML.Clear();
-          this.WebHTMLDiv2.FHTML.Add('<P align="center"><B>Menú:</B></P>');
-        } finally {
-          this.WebHTMLDiv2.FHTML.EndUpdate();
-        };
-        this.WebHTMLDiv2.SetRole("");
         this.WebPanel2.SetParentComponent(this);
         this.WebPanel2.SetName("WebPanel2");
         this.WebPanel2.SetLeft(0);
@@ -82266,9 +82223,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebPanel3.SetParentComponent(this);
         this.WebPanel3.SetName("WebPanel3");
         this.WebPanel3.SetLeft(0);
-        this.WebPanel3.SetTop(57);
+        this.WebPanel3.SetTop(65);
         this.WebPanel3.SetWidth(600);
-        this.WebPanel3.SetHeight(343);
+        this.WebPanel3.SetHeight(335);
         this.WebPanel3.SetElementClassName("card");
         this.WebPanel3.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
         this.WebPanel3.SetChildOrderEx(2);
@@ -82280,7 +82237,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.divnumlineas.SetLeft(0);
         this.divnumlineas.SetTop(0);
         this.divnumlineas.SetWidth(57);
-        this.divnumlineas.SetHeight(343);
+        this.divnumlineas.SetHeight(335);
         this.divnumlineas.SetAlign(pas["WEBLib.Controls"].TAlign.alLeft);
         this.divnumlineas.SetChildOrderEx(1);
         this.divnumlineas.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
@@ -82291,7 +82248,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.diveditor.SetLeft(57);
         this.diveditor.SetTop(0);
         this.diveditor.SetWidth(543);
-        this.diveditor.SetHeight(343);
+        this.diveditor.SetHeight(335);
         this.diveditor.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
         this.diveditor.SetChildOrderEx(1);
         this.diveditor.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
@@ -82445,6 +82402,85 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.btnCancelarAbrir.SetHeightPercent(100.000000000000000000);
         this.btnCancelarAbrir.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.btnCancelarAbrir,this,"OnClick","btnCancelarAbrirClick");
+        this.WebPanel1.SetParentComponent(this);
+        this.WebPanel1.SetName("WebPanel1");
+        this.WebPanel1.SetLeft(0);
+        this.WebPanel1.SetTop(0);
+        this.WebPanel1.SetWidth(600);
+        this.WebPanel1.SetHeight(65);
+        this.WebPanel1.SetElementClassName("card text-white bg-secondary mb-3");
+        this.WebPanel1.SetAlign(pas["WEBLib.Controls"].TAlign.alTop);
+        this.WebPanel1.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
+        this.WebPanel1.SetCaption("Libreta Digital");
+        this.WebPanel1.SetChildOrderEx(1);
+        this.WebPanel1.SetColor(16770250);
+        this.WebPanel1.FElementBodyClassName = "d-flex justify-content-center align-items-center min-vh-100";
+        this.WebPanel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebPanel1.SetTabOrder(0);
+        this.SetEvent$1(this.WebPanel1,this,"OnMouseMove","WebPanel1MouseMove");
+        this.WebSpeedButton1.SetParentComponent(this.WebPanel1);
+        this.WebSpeedButton1.SetName("WebSpeedButton1");
+        this.WebSpeedButton1.SetLeft(561);
+        this.WebSpeedButton1.SetTop(0);
+        this.WebSpeedButton1.SetWidth(39);
+        this.WebSpeedButton1.SetHeight(65);
+        this.WebSpeedButton1.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
+        this.WebSpeedButton1.SetColorEx(-1);
+        this.WebSpeedButton1.SetElementClassName("btn bg-transparent");
+        this.WebSpeedButton1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebSpeedButton1.SetFlat(true);
+        this.WebSpeedButton1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebSpeedButton1.SetHeightPercent(100.000000000000000000);
+        this.WebSpeedButton1.SetTabOrder(0);
+        this.WebSpeedButton1.SetWidthPercent(100.000000000000000000);
+        this.webBotonMenu.SetParentComponent(this.WebPanel1);
+        this.webBotonMenu.SetName("webBotonMenu");
+        this.webBotonMenu.SetLeft(512);
+        this.webBotonMenu.SetTop(0);
+        this.webBotonMenu.SetWidth(49);
+        this.webBotonMenu.SetHeight(65);
+        this.webBotonMenu.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
+        this.webBotonMenu.SetCaption("Menu");
+        this.webBotonMenu.FCenter.SetVertical(true);
+        this.webBotonMenu.SetChildOrderEx(2);
+        this.webBotonMenu.SetElementClassName("btn-outline-secondary");
+        this.webBotonMenu.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.webBotonMenu.FFont.FCharset = 1;
+        this.webBotonMenu.FFont.SetColor(65793);
+        this.webBotonMenu.FFont.SetHeight(-15);
+        this.webBotonMenu.FFont.SetName("Tahoma");
+        this.webBotonMenu.FFont.SetStyle({});
+        this.webBotonMenu.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.webBotonMenu.SetHeightPercent(100.000000000000000000);
+        this.webBotonMenu.SetParentFont(false);
+        this.webBotonMenu.FPopupMenu = this.WebPopupMenu1;
+        this.webBotonMenu.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.webBotonMenu,this,"OnClick","webBotonMenuClick");
+        this.WebHTMLDiv1.SetParentComponent(this.WebPanel1);
+        this.WebHTMLDiv1.SetName("WebHTMLDiv1");
+        this.WebHTMLDiv1.SetLeft(424);
+        this.WebHTMLDiv1.SetTop(0);
+        this.WebHTMLDiv1.SetWidth(88);
+        this.WebHTMLDiv1.SetHeight(65);
+        this.WebHTMLDiv1.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
+        this.WebHTMLDiv1.SetChildOrderEx(2);
+        this.WebHTMLDiv1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebHTMLDiv1.SetRole("");
+        this.WebHTMLDiv2.SetParentComponent(this.WebHTMLDiv1);
+        this.WebHTMLDiv2.SetName("WebHTMLDiv2");
+        this.WebHTMLDiv2.SetLeft(12);
+        this.WebHTMLDiv2.SetTop(13);
+        this.WebHTMLDiv2.SetWidth(70);
+        this.WebHTMLDiv2.SetHeight(41);
+        this.WebHTMLDiv2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebHTMLDiv2.FHTML.BeginUpdate();
+        try {
+          this.WebHTMLDiv2.FHTML.Clear();
+          this.WebHTMLDiv2.FHTML.Add('<P align="center"><B>Menú:</B></P>');
+        } finally {
+          this.WebHTMLDiv2.FHTML.EndUpdate();
+        };
+        this.WebHTMLDiv2.SetRole("");
         this.WebPopupMenu1.SetParentComponent(this);
         this.WebPopupMenu1.SetName("WebPopupMenu1");
         this.WebPopupMenu1.FAppearance.FHamburgerMenu.SetCaption("Menu");
@@ -82527,11 +82563,6 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.LibHojasDbClientDataset1.SetLeft(64);
         this.LibHojasDbClientDataset1.SetTop(8);
       } finally {
-        this.WebPanel1.AfterLoadDFMValues();
-        this.WebSpeedButton1.AfterLoadDFMValues();
-        this.webBotonMenu.AfterLoadDFMValues();
-        this.WebHTMLDiv1.AfterLoadDFMValues();
-        this.WebHTMLDiv2.AfterLoadDFMValues();
         this.WebPanel2.AfterLoadDFMValues();
         this.lbmarcar.AfterLoadDFMValues();
         this.lblimpiar.AfterLoadDFMValues();
@@ -82552,6 +82583,11 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.listaHojas.AfterLoadDFMValues();
         this.btnAbrir.AfterLoadDFMValues();
         this.btnCancelarAbrir.AfterLoadDFMValues();
+        this.WebPanel1.AfterLoadDFMValues();
+        this.WebSpeedButton1.AfterLoadDFMValues();
+        this.webBotonMenu.AfterLoadDFMValues();
+        this.WebHTMLDiv1.AfterLoadDFMValues();
+        this.WebHTMLDiv2.AfterLoadDFMValues();
         this.WebPopupMenu1.AfterLoadDFMValues();
         this.Cerrar1.AfterLoadDFMValues();
         this.Ayuda1.AfterLoadDFMValues();

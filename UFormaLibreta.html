@@ -3,7 +3,12 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <title>TMS Web Project</title>
     <style>
-
+.no-scroll {
+        overflow: hidden;
+        height: 100vh; /* Use 100vh for full viewport height */
+        position: fixed; /* To prevent content jump on iOS */
+        width: 100%; /* Ensure full width when fixed */
+    }
 .readonly-span {
     pointer-events: none; /* Prevents click events and text selection */
     /* user-select: none; */ /*Prevents text selection */

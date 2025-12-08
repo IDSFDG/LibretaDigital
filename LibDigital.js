@@ -80589,7 +80589,43 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.diveditor.SetElementClassName("code-editor");
       this.CrearDiv_Dinamicos();
       this.EditorConfigurar();
-      function disableBodyScroll() {
+      const isIOS = () => {
+        // Ensure window and navigator objects exist in the current environment
+        if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+          return false;
+        }
+      
+        // Check the user agent string for common iOS device identifiers
+        // The 'i' flag makes the regex case-insensitive
+        const userAgent = navigator.userAgent || navigator.vendor;
+        return /iPad|iPhone|iPod/i.test(userAgent);
+         };
+      
+          if (isIOS()) {
+            console.log("This is an iOS device.");
+            alert(' es un dispositivo IOS');
+      
+         window.visualViewport.addEventListener('resize', function() {
+          const visualViewportHeight = window.visualViewport.height;
+          const documentHeight = document.documentElement.clientHeight; // Or another reference height
+      
+          // Calculate keyboard height (simplified)
+          const keyboardHeight = documentHeight - visualViewportHeight;
+      
+          // Adjust element positioning (example for a fixed footer)
+          const footer = document.getElementById('panel_abajo');
+          if (footer) {
+              footer.style.bottom = keyboardHeight + 'px';
+          }
+      });
+      
+          } else {
+              console.log("This is not an iOS device.");
+            //alert(' NO es un dispositivo IOS');
+           }
+      
+      
+           function disableBodyScroll() {
               document.body.classList.add('no-scroll');
               // Optionally, store the current scroll position to restore later
               // document.body.style.top = `-${window.scrollY}px`;
@@ -82042,7 +82078,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
-      this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$2",["panel_abajo"]);
       this.lbmarcar = pas["WEBLib.StdCtrls"].TLabel.$create("Create$1",[this]);
       this.lblimpiar = pas["WEBLib.StdCtrls"].TLabel.$create("Create$2",["quitar"]);
       this.txtnumlinea = pas["WEBLib.StdCtrls"].TEdit.$create("Create$2",["nlinea"]);
@@ -82145,9 +82181,9 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebPanel2.SetParentComponent(this);
         this.WebPanel2.SetName("WebPanel2");
         this.WebPanel2.SetLeft(0);
-        this.WebPanel2.SetTop(400);
+        this.WebPanel2.SetTop(408);
         this.WebPanel2.SetWidth(600);
-        this.WebPanel2.SetHeight(62);
+        this.WebPanel2.SetHeight(54);
         this.WebPanel2.SetElementClassName("card text-white bg-secondary mb-3");
         this.WebPanel2.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
         this.WebPanel2.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
@@ -82225,7 +82261,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebPanel3.SetLeft(0);
         this.WebPanel3.SetTop(65);
         this.WebPanel3.SetWidth(600);
-        this.WebPanel3.SetHeight(335);
+        this.WebPanel3.SetHeight(343);
         this.WebPanel3.SetElementClassName("card");
         this.WebPanel3.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
         this.WebPanel3.SetChildOrderEx(2);
@@ -82237,7 +82273,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.divnumlineas.SetLeft(0);
         this.divnumlineas.SetTop(0);
         this.divnumlineas.SetWidth(57);
-        this.divnumlineas.SetHeight(335);
+        this.divnumlineas.SetHeight(343);
         this.divnumlineas.SetAlign(pas["WEBLib.Controls"].TAlign.alLeft);
         this.divnumlineas.SetChildOrderEx(1);
         this.divnumlineas.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
@@ -82248,7 +82284,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.diveditor.SetLeft(57);
         this.diveditor.SetTop(0);
         this.diveditor.SetWidth(543);
-        this.diveditor.SetHeight(335);
+        this.diveditor.SetHeight(343);
         this.diveditor.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
         this.diveditor.SetChildOrderEx(1);
         this.diveditor.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);

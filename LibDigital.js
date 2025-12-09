@@ -80603,21 +80603,34 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
           if (isIOS()) {
             console.log("This is an iOS device.");
-            alert(' es un dispositivo IOS');
       
-         window.visualViewport.addEventListener('resize', function() {
-          const visualViewportHeight = window.visualViewport.height;
-          const documentHeight = document.documentElement.clientHeight; // Or another reference height
+            //alert(' es un dispositivo IOS');
+      
+         if ("virtualKeyboard" in navigator) {
+             navigator.virtualKeyboard.overlaysContent = true; // Prevent browser viewport resize
+             navigator.virtualKeyboard.addEventListener("geometrychange", (event) => {
+             const { height } = event.target.boundingRect; // Get keyboard height
+            // Adjust your element's height or position based on 'height'
+             // Example: document.getElementById('myElement').style.paddingBottom = `${height}px`;
+             document.getElementById('panel_abajo').style.paddingBottom = `${height}px`;
+             document.getElementById('editor').style.paddingBottom = `${height}px`;
+             document.getElementById('panel_arriba').style.paddingBottom = `${height}px`;
+        });
+       }
+      
+        // window.visualViewport.addEventListener('resize', function() {
+         // const visualViewportHeight = window.visualViewport.height;
+         // const documentHeight = document.documentElement.clientHeight; // Or another reference height
       
           // Calculate keyboard height (simplified)
-          const keyboardHeight = documentHeight - visualViewportHeight;
+         // const keyboardHeight = documentHeight - visualViewportHeight;
       
           // Adjust element positioning (example for a fixed footer)
-          const footer = document.getElementById('panel_abajo');
-          if (footer) {
-              footer.style.bottom = keyboardHeight + 'px';
-          }
-      });
+         // const footer = document.getElementById('panel_abajo');
+         // if (footer) {
+         //     footer.style.bottom = keyboardHeight + 'px';
+        //  }
+      //});
       
           } else {
               console.log("This is not an iOS device.");
@@ -82106,7 +82119,7 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.listaHojas = pas["WEBLib.StdCtrls"].TListBox.$create("Create$2",["listaabrir"]);
       this.btnAbrir = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.btnCancelarAbrir = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
-      this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$2",["panel_arriba"]);
       this.WebSpeedButton1 = pas["WEBLib.Buttons"].TSpeedButton.$create("Create$1",[this]);
       this.webBotonMenu = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebHTMLDiv1 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$1",[this]);

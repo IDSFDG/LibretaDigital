@@ -81751,7 +81751,10 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                 console.log('element focus ',childOffsetTop);
                  // Scroll the parent container to bring the child to the top
       
-                  targetDiv.scrollTop = childOffsetTop;
+      
+            //  ********  scrollTop  ********
+               //   targetDiv.scrollTop = childOffsetTop;
+            //  ********  scrollTop  ********
       
                  //element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                  //element.scrollIntoView();
@@ -82065,7 +82068,12 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
              // {
              //   childOffsetTop=0;
              // }
-              codeEditor.scrollTop = childOffsetTop;
+      
+            //  ********  scrollTop  ********
+      
+             // codeEditor.scrollTop = childOffsetTop;
+            //  ********  scrollTop  ********
+      
               //  focusableDivs[index].scrollIntoView();
       
               setCaretAtEnd(focusableDivs[index]);

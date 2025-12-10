@@ -93997,6 +93997,19 @@ rtl.module("uLibretayTabulator",["System","SysUtils","Classes","JS","Web","WEBLi
       
       
       });
+      
+      table.on("sheetLoaded", function(sheet){
+          //sheet - sheet component for sheet
+          console.log('hoja',sheet);
+          var key = sheet.getKey();
+          if (key =='uno')
+          {
+            var tableElement = table.element;
+            var tableWidth = tableElement.offsetWidth;
+            table.updateColumnDefinition("A", {title:"", width: tableWidth-50 }) //change the column title
+      
+          }
+      });
     };
     this.webBotonMenuClick = function (Sender) {
       var r = null;
@@ -94309,7 +94322,7 @@ rtl.module("uLibretayTabulator",["System","SysUtils","Classes","JS","Web","WEBLi
         this.WebPanel1.SetElementClassName("card text-white bg-secondary mb-3");
         this.WebPanel1.SetAlign(pas["WEBLib.Controls"].TAlign.alTop);
         this.WebPanel1.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
-        this.WebPanel1.SetCaption("Libreta Digital Tabular");
+        this.WebPanel1.SetCaption("Libreta Digital");
         this.WebPanel1.SetChildOrderEx(1);
         this.WebPanel1.SetColor(16770250);
         this.WebPanel1.FElementBodyClassName = "d-flex justify-content-center align-items-center min-vh-100";

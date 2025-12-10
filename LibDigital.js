@@ -83216,7 +83216,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
             key:"dos",
            // rows:10,
             rows:50,
-            columns:3,
+            columns:4,
             data:[],
         },
       
@@ -83314,6 +83314,8 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
             table.updateColumnDefinition("B", {title:"",visible:false }) //change the column title
       
           }
+         table.updateColumnDefinition("B", {title:"",visible:false }) //change the column title
+      
       });
     };
     this.webBotonMenuClick = function (Sender) {

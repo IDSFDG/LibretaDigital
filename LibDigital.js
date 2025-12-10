@@ -83206,7 +83206,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
             rows:50,
             //rows:0,
            // columns:7,
-            columns:1,
+            columns:2,
             data:[],
         },
       
@@ -83224,6 +83224,17 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
       //Build Tabulator
       var table = new Tabulator("#eletabulator", {
+      rowHeight:40,
+      rowFormatter: function(row){
+              var data = row.getData();
+              if(data.B === "1"){
+                  row.getElement().style.backgroundColor = "yellow"; // Light red for critical status
+              } else if (data.B === "") {
+                  row.getElement().style.backgroundColor = ""; // Light yellow for warning status
+              }
+          },
+      
+      
         //headerVisible: false,
         height:"311px",
         height:"90%",
@@ -83261,26 +83272,32 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
               if (row.getElement().style.backgroundColor =='')
               {
                row.getElement().style.backgroundColor = "yellow"; // Or any other color
+               row.update({"B":"1"});
+      
               }
               else if (row.getElement().style.backgroundColor =='yellow')
               {
                   row.getElement().style.backgroundColor ="";
+                  row.update({"B":""});
               }
               // Store the currently selected row (optional)
               table.selectedRow = row;
       });
+      
       table.on("headerClick", function(e, column){
           //e - the click event object
           //column - column component
       
           column.updateDefinition({ title: 'nuevo titulo' });
       });
+      
       table.on("tableBuilt", function()
       {
           var tableElement = table.element;
           var tableWidth = tableElement.offsetWidth;
           console.log("Table width:", tableWidth + "px");
            table.updateColumnDefinition("A", {title:"", width: tableWidth-50 }) //change the column title
+           table.updateColumnDefinition("B", {title:"", visible:false }) //change the column title
       
       
       });
@@ -83294,6 +83311,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
             var tableElement = table.element;
             var tableWidth = tableElement.offsetWidth;
             table.updateColumnDefinition("A", {title:"", width: tableWidth-50 }) //change the column title
+            table.updateColumnDefinition("B", {title:"",visible:false }) //change the column title
       
           }
       });
@@ -83609,7 +83627,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebPanel1.SetElementClassName("card text-white bg-secondary mb-3");
         this.WebPanel1.SetAlign(pas["WEBLib.Controls"].TAlign.alTop);
         this.WebPanel1.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
-        this.WebPanel1.SetCaption("Libreta Digital Tabular");
+        this.WebPanel1.SetCaption("Libreta Digital");
         this.WebPanel1.SetChildOrderEx(1);
         this.WebPanel1.SetColor(16770250);
         this.WebPanel1.FElementBodyClassName = "d-flex justify-content-center align-items-center min-vh-100";

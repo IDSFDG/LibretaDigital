@@ -83053,10 +83053,10 @@ rtl.module("WEBLib.Login",["System","Classes","SysUtils","Types","WEBLib.Control
     rtl.addIntf(this,pas.System.IUnknown);
   });
 });
-rtl.module("uLibretayTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.WebCtrls","WEBLib.StdCtrls","WEBLib.StdCtrls","WEBLib.Buttons","WEBLib.Controls","WEBLib.ExtCtrls","WEBLib.Menus","WEBLib.Menus"],function () {
+rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.WebCtrls","WEBLib.StdCtrls","WEBLib.StdCtrls","WEBLib.Buttons","WEBLib.Controls","WEBLib.ExtCtrls","WEBLib.Menus","WEBLib.Menus"],function () {
   "use strict";
   var $mod = this;
-  rtl.createClass(this,"TfrmLibyTabulator",pas["WEBLib.Forms"].TForm,function () {
+  rtl.createClass(this,"TfrmLibTabulator",pas["WEBLib.Forms"].TForm,function () {
     this.$init = function () {
       pas["WEBLib.Forms"].TForm.$init.call(this);
       this.WebPanel1 = null;
@@ -83588,7 +83588,7 @@ rtl.module("uLibretayTabulator",["System","SysUtils","Classes","JS","Web","WEBLi
       this.ExportarArchivoTexto1.BeforeLoadDFMValues();
       this.Salir1.BeforeLoadDFMValues();
       try {
-        this.SetName("frmLibyTabulator");
+        this.SetName("frmLibTabulator");
         this.SetWidth(600);
         this.SetHeight(462);
         this.SetCSSLibrary(pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap);
@@ -83609,7 +83609,7 @@ rtl.module("uLibretayTabulator",["System","SysUtils","Classes","JS","Web","WEBLi
         this.WebPanel1.SetElementClassName("card text-white bg-secondary mb-3");
         this.WebPanel1.SetAlign(pas["WEBLib.Controls"].TAlign.alTop);
         this.WebPanel1.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
-        this.WebPanel1.SetCaption("Libreta Digital");
+        this.WebPanel1.SetCaption("Libreta Digital Tabular");
         this.WebPanel1.SetChildOrderEx(1);
         this.WebPanel1.SetColor(16770250);
         this.WebPanel1.FElementBodyClassName = "d-flex justify-content-center align-items-center min-vh-100";
@@ -83963,7 +83963,7 @@ rtl.module("uLibretayTabulator",["System","SysUtils","Classes","JS","Web","WEBLi
     $r.addMethod("AgregarColumna1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnAgregarColClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
-  this.frmLibyTabulator = null;
+  this.frmLibTabulator = null;
 },["uAyuda"]);
 rtl.module("uLoginForma",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.Controls","WEBLib.Login","WEBLib.StdCtrls","WEBLib.StdCtrls","WEBLib.WebCtrls"],function () {
   "use strict";
@@ -83981,15 +83981,15 @@ rtl.module("uLoginForma",["System","SysUtils","Classes","JS","Web","WEBLib.Graph
     };
     this.WebLoginPanel1Login = function (Sender) {
       var $Self = this;
-      var frmLibreta = null;
+      var frmLibretaTab = null;
       var i = 0;
       function AfterShowModal(AValue) {
         $Self.Close();
       };
       function AfterCreate(AForm) {
       };
-      frmLibreta = pas.uLibretayTabulator.TfrmLibyTabulator.$create("CreateNew$3",[AfterCreate]);
-      frmLibreta.ShowModal$1(AfterShowModal);
+      frmLibretaTab = pas.uLibTabulator.TfrmLibTabulator.$create("CreateNew$3",[AfterCreate]);
+      frmLibretaTab.ShowModal$1(AfterShowModal);
     };
     this.WebFormCreate = function (Sender) {
       const contentDiv = document.getElementById("divdemo");
@@ -84054,7 +84054,7 @@ rtl.module("uLoginForma",["System","SysUtils","Classes","JS","Web","WEBLib.Graph
     $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.frmLogin = null;
-},["UFormaLibreta","uLibretayTabulator"]);
+},["uLibTabulator"]);
 rtl.module("jsdelphisystem",["System"],function () {
   "use strict";
   var $mod = this;
@@ -94678,7 +94678,7 @@ rtl.module("Unit5",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
   });
   this.Form5 = null;
 });
-rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","UFormaLibreta","uLoginForma","uAyuda","uTabulator","Unit5","uLibretayTabulator"],function () {
+rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","UFormaLibreta","uLoginForma","uAyuda","uLibTabulator","Unit5","uTabulator"],function () {
   "use strict";
   var $mod = this;
   $mod.$implcode = function () {
@@ -94701,6 +94701,11 @@ rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","UFormaLibreta","uL
         return this.p.frmLogin;
       }, set: function (v) {
         this.p.frmLogin = v;
+      }});
+    pas["WEBLib.Forms"].Application.CreateFormDirect(pas.uTabulator.TfrmTabulator,{p: pas.uTabulator, get: function () {
+        return this.p.frmTabulator;
+      }, set: function (v) {
+        this.p.frmTabulator = v;
       }});
     pas["WEBLib.Forms"].Application.Run();
   };

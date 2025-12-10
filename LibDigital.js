@@ -80602,35 +80602,25 @@ rtl.module("UFormaLibreta",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
          };
       
           if (isIOS()) {
+      
+              document.body.addEventListener('touchmove', function(event) {
+              event.preventDefault(); // Prevents default scrolling behavior
+          }, { passive: false }); // Important for preventing default
             console.log("This is an iOS device.");
       
             //alert(' es un dispositivo IOS');
+         window.visualViewport.addEventListener('resize', function() {
       
-         if ("virtualKeyboard" in navigator) {
-             navigator.virtualKeyboard.overlaysContent = true; // Prevent browser viewport resize
-             navigator.virtualKeyboard.addEventListener("geometrychange", (event) => {
-             const { height } = event.target.boundingRect; // Get keyboard height
-            // Adjust your element's height or position based on 'height'
-             // Example: document.getElementById('myElement').style.paddingBottom = `${height}px`;
-             document.getElementById('panel_abajo').style.paddingBottom = `${height}px`;
-             document.getElementById('editor').style.paddingBottom = `${height}px`;
-             document.getElementById('panel_arriba').style.paddingBottom = `${height}px`;
+          const visualViewportHeight = window.visualViewport.height;
+          const documentHeight = document.documentElement.clientHeight; // Or another reference height
+      
+         //  alert(visualViewportHeight);
+      
+         //    OK cambia el tamaño del body     **************************
+           document.body.style.height = `${visualViewportHeight}px`;
+         //    OK cambia el tamaño del body     **************************
+      
         });
-       }
-      
-        // window.visualViewport.addEventListener('resize', function() {
-         // const visualViewportHeight = window.visualViewport.height;
-         // const documentHeight = document.documentElement.clientHeight; // Or another reference height
-      
-          // Calculate keyboard height (simplified)
-         // const keyboardHeight = documentHeight - visualViewportHeight;
-      
-          // Adjust element positioning (example for a fixed footer)
-         // const footer = document.getElementById('panel_abajo');
-         // if (footer) {
-         //     footer.style.bottom = keyboardHeight + 'px';
-        //  }
-      //});
       
           } else {
               console.log("This is not an iOS device.");
@@ -93776,7 +93766,906 @@ rtl.module("Unit5",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
   });
   this.Form5 = null;
 });
-rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","UFormaLibreta","uLoginForma","uAyuda","uTabulator","Unit5"],function () {
+rtl.module("uLibretayTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.WebCtrls","WEBLib.StdCtrls","WEBLib.StdCtrls","WEBLib.Buttons","WEBLib.Controls","WEBLib.ExtCtrls","WEBLib.Menus","WEBLib.Menus"],function () {
+  "use strict";
+  var $mod = this;
+  rtl.createClass(this,"TfrmLibyTabulator",pas["WEBLib.Forms"].TForm,function () {
+    this.$init = function () {
+      pas["WEBLib.Forms"].TForm.$init.call(this);
+      this.WebPanel1 = null;
+      this.WebSpeedButton1 = null;
+      this.webBotonMenu = null;
+      this.WebHTMLDiv1 = null;
+      this.WebHTMLDiv2 = null;
+      this.WebPanel2 = null;
+      this.divTabulator = null;
+      this.WebPopupMenu1 = null;
+      this.Cerrar1 = null;
+      this.Ayuda1 = null;
+      this.N1 = null;
+      this.LimpiarHoja1 = null;
+      this.Abrir1 = null;
+      this.Guardar1 = null;
+      this.Compartir1 = null;
+      this.Visualizar1 = null;
+      this.N2 = null;
+      this.Exportar1 = null;
+      this.ExportarArchivoTexto1 = null;
+      this.Salir1 = null;
+      this.WebButton1 = null;
+      this.divcontainer = null;
+      this.panelColumnas = null;
+      this.btnAgregarCol = null;
+      this.btnAgregarColCerrar = null;
+      this.AgregarColumna1 = null;
+      this.WebLabel1 = null;
+      this.WebLabel2 = null;
+      this.columna_nom = null;
+      this.columna_tit = null;
+      this.WebLabel3 = null;
+    };
+    this.$final = function () {
+      this.WebPanel1 = undefined;
+      this.WebSpeedButton1 = undefined;
+      this.webBotonMenu = undefined;
+      this.WebHTMLDiv1 = undefined;
+      this.WebHTMLDiv2 = undefined;
+      this.WebPanel2 = undefined;
+      this.divTabulator = undefined;
+      this.WebPopupMenu1 = undefined;
+      this.Cerrar1 = undefined;
+      this.Ayuda1 = undefined;
+      this.N1 = undefined;
+      this.LimpiarHoja1 = undefined;
+      this.Abrir1 = undefined;
+      this.Guardar1 = undefined;
+      this.Compartir1 = undefined;
+      this.Visualizar1 = undefined;
+      this.N2 = undefined;
+      this.Exportar1 = undefined;
+      this.ExportarArchivoTexto1 = undefined;
+      this.Salir1 = undefined;
+      this.WebButton1 = undefined;
+      this.divcontainer = undefined;
+      this.panelColumnas = undefined;
+      this.btnAgregarCol = undefined;
+      this.btnAgregarColCerrar = undefined;
+      this.AgregarColumna1 = undefined;
+      this.WebLabel1 = undefined;
+      this.WebLabel2 = undefined;
+      this.columna_nom = undefined;
+      this.columna_tit = undefined;
+      this.WebLabel3 = undefined;
+      pas["WEBLib.Forms"].TForm.$final.call(this);
+    };
+    this.WebFormCreate = function (Sender) {
+      this.webBotonMenu.SetCaption("" + "☰");
+      function customEditor(cell, onRendered, success, cancel) {
+       // const input = document.createElement('input')
+        const input = document.createElement('textarea')
+      
+        input.style.width = "100%";
+        //input.style.height = "100%";
+        //input.style.boxSizing = "border-box";
+        input.value = cell.getValue()
+        //input.selectionStart = input.value.length
+        //input.selectionEnd = input.value.length;
+      
+        input.value= input.value.trim()
+         if (input.value === 'undefined')
+        {
+           //console.log('undefined');
+           input.value='';
+        }
+        onRendered(() => {
+      
+          input.focus()
+         // input.select()
+      
+        })
+      
+        function onChange() {
+          if (input.value != cell.getValue()) {
+            success(input.value)
+          } else {
+            cancel()
+          }
+        }
+      
+        input.addEventListener('blur', onChange)
+      
+        input.addEventListener('keydown', (e) => {
+         // alert(e.keyCode);
+          if (e.keyCode == 13) {
+            table.navigateNext()
+      
+            onChange()
+          }
+      
+          if (e.keyCode == 27) {
+            cancel()
+          }
+        })
+      
+        return input
+      }
+       var editCheck = function(cell){
+          //cell - the cell component for the editable cell
+          //get row data
+          var data = cell.getRow().getData();
+         // return data.age > 18; // only allow the name cell to be edited if the age is over 18
+        // return false // no editable
+        return true // editable
+      }
+      
+        var sheetData = [
+        [9937,	"",	"",	7749,	9816,	4355,	8279,	"",	""],
+        [2380,	"",	6977,	8896,	4012,	3803,	5408,	3415,	3056],
+        [9180,	"",	39,	9445,	3917,	"",	18,	5239,	2516],
+        [1924,	8734,	1819,	1838,	2330,	7921,	9219,	"",	3537],
+        ["",	8665,	5875,	9732,	1926,	"",	9743,	8388,   ""],
+        [7040,	4861,	2988,	5584,	2344,	9749,	8872,	9177,	6246],
+        [6334,	1674,	2967,	"",	9353,	396,	6006,	8572 , ""],
+        [6359,	"",	2580,	5723,	9801,	554,	1044,	5266,	8532],
+        [7278,	6971,	2232,	5720,	5665,	7231,	1165,	"",	168],
+      ];
+      
+      
+        var sheets = [
+          {
+            name:'huno',
+            title:"Editor",
+            key:"uno",
+            rows:15,
+            //rows:0,
+           // columns:7,
+            columns:1,
+            data:[],
+        },
+      
+         {
+            name:'hdos',
+            title:"Tabular",
+            key:"dos",
+           // rows:10,
+            rows:10,
+            columns:3,
+            data:[],
+        },
+      
+      ];
+      
+      //Build Tabulator
+      var table = new Tabulator("#eletabulator", {
+        //headerVisible: false,
+        height:"311px",
+        height:"90%",
+       // spreadsheetRows:15,
+       // spreadsheetColumns:10,
+        //spreadsheetColumnDefinition:{editor:"input"},
+      
+        spreadsheet:true,
+        //spreadsheetData:sheetData,
+        spreadsheetSheets:sheets,        // DEFINICION HOJAS ARREGLO
+        spreadsheetSheetTabs:true,
+      
+        rowHeader:{field:"_id", hozAlign:"center", headerSort:false, frozen:true},
+      
+        editorEmptyValue:undefined, //ensure empty values are set to undefined so they arent included in spreadsheet output data
+      
+      
+      
+       spreadsheetColumnDefinition:{editable:editCheck,editor:customEditor},
+      
+        });
+      
+        table.on("rowDblClick", function(e, row){
+          //e - the click event object
+          //row - row component
+      
+              // Reset background color of previously selected row (optional)
+              // If you want only one row highlighted at a time
+              if (table.selectedRow) {
+             //     table.selectedRow.getElement().style.backgroundColor = ""; // Reset to default
+              }
+      
+          console.log('color', row.getElement().style.backgroundColor);
+              // Change background color of the clicked row
+              if (row.getElement().style.backgroundColor =='')
+              {
+               row.getElement().style.backgroundColor = "yellow"; // Or any other color
+              }
+              else if (row.getElement().style.backgroundColor =='yellow')
+              {
+                  row.getElement().style.backgroundColor ="";
+              }
+              // Store the currently selected row (optional)
+              table.selectedRow = row;
+      });
+      table.on("headerClick", function(e, column){
+          //e - the click event object
+          //column - column component
+      
+          column.updateDefinition({ title: 'nuevo titulo' });
+      });
+      table.on("tableBuilt", function()
+      {
+          var tableElement = table.element;
+          var tableWidth = tableElement.offsetWidth;
+          console.log("Table width:", tableWidth + "px");
+           table.updateColumnDefinition("A", {title:"", width: tableWidth-50 }) //change the column title
+      
+      
+      });
+    };
+    this.webBotonMenuClick = function (Sender) {
+      var r = null;
+      var vpopmenuwidth = 0.0;
+      var i = 0;
+      var w = 0.0;
+      var maxw = 0.0;
+      var s = "";
+      var SelectedText = "";
+      var lselini = 0;
+      var lsellen = 0;
+      var popmenuwidth = 0;
+      this.WebPopupMenu1.SetVisible(true);
+      popmenuwidth = 180;
+      r = this.webBotonMenu.GetElementHandle().getBoundingClientRect();
+      this.WebPopupMenu1.Popup(Math.round(r.left - popmenuwidth),Math.round(r.bottom));
+    };
+    this.Cerrar1Click = function (Sender) {
+      this.WebPopupMenu1.SetVisible(false);
+    };
+    this.Salir1Click = function (Sender) {
+      this.Close();
+    };
+    this.Ayuda1Click = function (Sender) {
+      var $Self = this;
+      var frmAyuda = null;
+      var i = 0;
+      function AfterShowModal(AValue) {
+      };
+      function AfterCreate(AForm) {
+      };
+      frmAyuda = pas.uAyuda.TfrmAyuda.$create("CreateNew$3",[AfterCreate]);
+      frmAyuda.ShowModal$1(AfterShowModal);
+    };
+    this.WebButton1Click = function (Sender) {
+      var headerPopupFormatter = function(e, column, onRendered){
+              const clientX = event.clientX;
+              const clientY = event.clientY;
+              console.log(`Client X: ${clientX}, Client Y: ${clientY}`);
+          var container = document.createElement("div");
+      
+          var label = document.createElement("label");
+          label.innerHTML = "Nombre Columna:";
+          label.style.display = "block";
+          label.style.fontSize = ".7em";
+      
+          var input = document.createElement("input");
+          input.placeholder = "Nombre Columna...";
+         // input.value = column.getHeaderFilterValue() || "";
+      
+          input.addEventListener("keyup", (e) => {
+              //column.setHeaderFilterValue(input.value);
+             if (e.keyCode == 13) {
+               console.log('columna',column);
+               column.updateDefinition({title:input.value});
+               const containerdivt = document.getElementById('contenedor');
+               containerdivt.innerHTML = '';
+               containerdivt.style.display = 'none';
+             }
+          });
+      
+          container.appendChild(label);
+          container.appendChild(input);
+          return container;
+      }
+      function customEditor(cell, onRendered, success, cancel) {
+       // const input = document.createElement('input')
+        const input = document.createElement('textarea')
+      
+        //input.style.width = "100%";
+        //input.style.height = "100%";
+        //input.style.boxSizing = "border-box";
+        input.value = cell.getValue()
+        //input.selectionStart = input.value.length
+        //input.selectionEnd = input.value.length;
+      
+        input.value= input.value.trim()
+         if (input.value === 'undefined')
+        {
+           //console.log('undefined');
+           input.value='';
+        }
+        onRendered(() => {
+      
+          input.focus()
+         // input.select()
+      
+        })
+      
+        function onChange() {
+          if (input.value != cell.getValue()) {
+            success(input.value)
+          } else {
+            cancel()
+          }
+        }
+      
+        input.addEventListener('blur', onChange)
+      
+        input.addEventListener('keydown', (e) => {
+         // alert(e.keyCode);
+          if (e.keyCode == 13) {
+            table.navigateNext()
+      
+            onChange()
+          }
+      
+          if (e.keyCode == 27) {
+            cancel()
+          }
+        })
+      
+        return input
+      }
+      
+                var titcolumna = 'nombre';
+                var table = Tabulator.findTable("#eletabulator")[0];
+      
+      
+                table.addColumn({title:titcolumna, field:"name"})
+                     .then(function(column){
+                            //column - the component for the newly created column
+      
+                      //run code after column has been added
+                        column.updateDefinition({editable:true,editor:customEditor,
+                        headerClick: function(e, column){
+                  // e - the click event object
+                  // column - column component
+                  console.log("Header clicked for column:", column.getDefinition().field);
+                  const mydiv = headerPopupFormatter(this,column);
+                  console.log(mydiv);
+                  const containerdiv = document.getElementById('contenedor');
+                  console.log(containerdiv);
+                  containerdiv.appendChild(mydiv);
+                  containerdiv.style.display = 'block';
+              }}); //change the column editor
+      
+                    })
+                  .catch(function(error){
+                         //handle error adding column
+                });
+    };
+    this.btnAgregarColCerrarClick = function (Sender) {
+      this.panelColumnas.SetVisible(false);
+    };
+    this.AgregarColumna1Click = function (Sender) {
+      this.panelColumnas.SetVisible(true);
+    };
+    this.btnAgregarColClick = function (Sender) {
+      var col_tit = "";
+      var col_nom = "";
+      col_tit = this.columna_tit.GetText();
+      col_nom = this.columna_nom.GetText();
+      function customEditor(cell, onRendered, success, cancel) {
+       // const input = document.createElement('input')
+        const input = document.createElement('textarea')
+      
+        //input.style.width = "100%";
+        //input.style.height = "100%";
+        //input.style.boxSizing = "border-box";
+        input.value = cell.getValue()
+        //input.selectionStart = input.value.length
+        //input.selectionEnd = input.value.length;
+      
+        input.value= input.value.trim()
+         if (input.value === 'undefined')
+        {
+           //console.log('undefined');
+           input.value='';
+        }
+        onRendered(() => {
+      
+          input.focus()
+         // input.select()
+      
+        })
+      
+        function onChange() {
+          if (input.value != cell.getValue()) {
+            success(input.value)
+          } else {
+            cancel()
+          }
+        }
+      
+        input.addEventListener('blur', onChange)
+      
+        input.addEventListener('keydown', (e) => {
+         // alert(e.keyCode);
+          if (e.keyCode == 13) {
+            table.navigateNext()
+      
+            onChange()
+          }
+      
+          if (e.keyCode == 27) {
+            cancel()
+          }
+        })
+      
+        return input
+      }
+      
+      
+          var table = Tabulator.findTable("#eletabulator")[0];
+          var titcolumna = 'titulo';
+          var nomcolumna = 'nombre';
+          titcolumna=col_tit;
+          nomcolumna=col_nom;
+          table.addColumn({title:titcolumna, field:nomcolumna})
+                     .then(function(column){
+      
+                     //column - the component for the newly created column
+      
+                      //run code after column has been added
+                     column.updateDefinition({editable:true,editor:customEditor}
+                      ); //change the column editor
+      
+                    })
+                  .catch(function(error){
+                         //handle error adding column
+                });
+      this.columna_tit.SetText("");
+      this.columna_nom.SetText("");
+      this.columna_nom.SetFocus();
+    };
+    this.LoadDFMValues = function () {
+      pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
+      this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.WebSpeedButton1 = pas["WEBLib.Buttons"].TSpeedButton.$create("Create$1",[this]);
+      this.webBotonMenu = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.WebHTMLDiv1 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$1",[this]);
+      this.WebHTMLDiv2 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$1",[this]);
+      this.WebButton1 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.divTabulator = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["eletabulator"]);
+      this.divcontainer = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["contenedor"]);
+      this.panelColumnas = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.WebLabel1 = pas["WEBLib.StdCtrls"].TLabel.$create("Create$1",[this]);
+      this.WebLabel2 = pas["WEBLib.StdCtrls"].TLabel.$create("Create$1",[this]);
+      this.WebLabel3 = pas["WEBLib.StdCtrls"].TLabel.$create("Create$1",[this]);
+      this.btnAgregarCol = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.btnAgregarColCerrar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.columna_nom = pas["WEBLib.StdCtrls"].TEdit.$create("Create$1",[this]);
+      this.columna_tit = pas["WEBLib.StdCtrls"].TEdit.$create("Create$1",[this]);
+      this.WebPopupMenu1 = pas["WEBLib.Menus"].TPopupMenu.$create("Create$1",[this]);
+      this.Cerrar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.Ayuda1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.N1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.AgregarColumna1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.LimpiarHoja1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.Abrir1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.Guardar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.Compartir1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.Visualizar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.N2 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.Exportar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.ExportarArchivoTexto1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.Salir1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.WebPanel1.BeforeLoadDFMValues();
+      this.WebSpeedButton1.BeforeLoadDFMValues();
+      this.webBotonMenu.BeforeLoadDFMValues();
+      this.WebHTMLDiv1.BeforeLoadDFMValues();
+      this.WebHTMLDiv2.BeforeLoadDFMValues();
+      this.WebButton1.BeforeLoadDFMValues();
+      this.WebPanel2.BeforeLoadDFMValues();
+      this.divTabulator.BeforeLoadDFMValues();
+      this.divcontainer.BeforeLoadDFMValues();
+      this.panelColumnas.BeforeLoadDFMValues();
+      this.WebLabel1.BeforeLoadDFMValues();
+      this.WebLabel2.BeforeLoadDFMValues();
+      this.WebLabel3.BeforeLoadDFMValues();
+      this.btnAgregarCol.BeforeLoadDFMValues();
+      this.btnAgregarColCerrar.BeforeLoadDFMValues();
+      this.columna_nom.BeforeLoadDFMValues();
+      this.columna_tit.BeforeLoadDFMValues();
+      this.WebPopupMenu1.BeforeLoadDFMValues();
+      this.Cerrar1.BeforeLoadDFMValues();
+      this.Ayuda1.BeforeLoadDFMValues();
+      this.N1.BeforeLoadDFMValues();
+      this.AgregarColumna1.BeforeLoadDFMValues();
+      this.LimpiarHoja1.BeforeLoadDFMValues();
+      this.Abrir1.BeforeLoadDFMValues();
+      this.Guardar1.BeforeLoadDFMValues();
+      this.Compartir1.BeforeLoadDFMValues();
+      this.Visualizar1.BeforeLoadDFMValues();
+      this.N2.BeforeLoadDFMValues();
+      this.Exportar1.BeforeLoadDFMValues();
+      this.ExportarArchivoTexto1.BeforeLoadDFMValues();
+      this.Salir1.BeforeLoadDFMValues();
+      try {
+        this.SetName("frmLibyTabulator");
+        this.SetWidth(600);
+        this.SetHeight(462);
+        this.SetCSSLibrary(pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap);
+        this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.FFont.FCharset = 1;
+        this.FFont.SetColor(65793);
+        this.FFont.SetHeight(-15);
+        this.FFont.SetName("Tahoma");
+        this.FFont.SetStyle({});
+        this.SetParentFont(false);
+        this.SetEvent(this,"OnCreate","WebFormCreate");
+        this.WebPanel1.SetParentComponent(this);
+        this.WebPanel1.SetName("WebPanel1");
+        this.WebPanel1.SetLeft(0);
+        this.WebPanel1.SetTop(0);
+        this.WebPanel1.SetWidth(600);
+        this.WebPanel1.SetHeight(57);
+        this.WebPanel1.SetElementClassName("card text-white bg-secondary mb-3");
+        this.WebPanel1.SetAlign(pas["WEBLib.Controls"].TAlign.alTop);
+        this.WebPanel1.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
+        this.WebPanel1.SetCaption("Libreta Digital Tabular");
+        this.WebPanel1.SetChildOrderEx(1);
+        this.WebPanel1.SetColor(16770250);
+        this.WebPanel1.FElementBodyClassName = "d-flex justify-content-center align-items-center min-vh-100";
+        this.WebPanel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebPanel1.SetTabOrder(0);
+        this.WebSpeedButton1.SetParentComponent(this.WebPanel1);
+        this.WebSpeedButton1.SetName("WebSpeedButton1");
+        this.WebSpeedButton1.SetLeft(561);
+        this.WebSpeedButton1.SetTop(0);
+        this.WebSpeedButton1.SetWidth(39);
+        this.WebSpeedButton1.SetHeight(57);
+        this.WebSpeedButton1.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
+        this.WebSpeedButton1.SetColorEx(-1);
+        this.WebSpeedButton1.SetElementClassName("btn bg-transparent");
+        this.WebSpeedButton1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebSpeedButton1.SetFlat(true);
+        this.WebSpeedButton1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebSpeedButton1.SetHeightPercent(100.000000000000000000);
+        this.WebSpeedButton1.SetTabOrder(0);
+        this.WebSpeedButton1.SetWidthPercent(100.000000000000000000);
+        this.webBotonMenu.SetParentComponent(this.WebPanel1);
+        this.webBotonMenu.SetName("webBotonMenu");
+        this.webBotonMenu.SetLeft(512);
+        this.webBotonMenu.SetTop(0);
+        this.webBotonMenu.SetWidth(49);
+        this.webBotonMenu.SetHeight(57);
+        this.webBotonMenu.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
+        this.webBotonMenu.SetCaption("Menu");
+        this.webBotonMenu.FCenter.SetVertical(true);
+        this.webBotonMenu.SetChildOrderEx(2);
+        this.webBotonMenu.SetElementClassName("btn-outline-secondary");
+        this.webBotonMenu.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.webBotonMenu.FFont.FCharset = 1;
+        this.webBotonMenu.FFont.SetColor(65793);
+        this.webBotonMenu.FFont.SetHeight(-15);
+        this.webBotonMenu.FFont.SetName("Tahoma");
+        this.webBotonMenu.FFont.SetStyle({});
+        this.webBotonMenu.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.webBotonMenu.SetHeightPercent(100.000000000000000000);
+        this.webBotonMenu.SetParentFont(false);
+        this.webBotonMenu.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.webBotonMenu,this,"OnClick","webBotonMenuClick");
+        this.WebHTMLDiv1.SetParentComponent(this.WebPanel1);
+        this.WebHTMLDiv1.SetName("WebHTMLDiv1");
+        this.WebHTMLDiv1.SetLeft(424);
+        this.WebHTMLDiv1.SetTop(0);
+        this.WebHTMLDiv1.SetWidth(88);
+        this.WebHTMLDiv1.SetHeight(57);
+        this.WebHTMLDiv1.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
+        this.WebHTMLDiv1.SetChildOrderEx(2);
+        this.WebHTMLDiv1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebHTMLDiv1.SetRole("");
+        this.WebHTMLDiv2.SetParentComponent(this.WebHTMLDiv1);
+        this.WebHTMLDiv2.SetName("WebHTMLDiv2");
+        this.WebHTMLDiv2.SetLeft(12);
+        this.WebHTMLDiv2.SetTop(13);
+        this.WebHTMLDiv2.SetWidth(70);
+        this.WebHTMLDiv2.SetHeight(41);
+        this.WebHTMLDiv2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebHTMLDiv2.FHTML.BeginUpdate();
+        try {
+          this.WebHTMLDiv2.FHTML.Clear();
+          this.WebHTMLDiv2.FHTML.Add('<P align="center"><B>Menú:</B></P>');
+        } finally {
+          this.WebHTMLDiv2.FHTML.EndUpdate();
+        };
+        this.WebHTMLDiv2.SetRole("");
+        this.WebButton1.SetParentComponent(this.WebPanel1);
+        this.WebButton1.SetName("WebButton1");
+        this.WebButton1.SetLeft(24);
+        this.WebButton1.SetTop(16);
+        this.WebButton1.SetWidth(96);
+        this.WebButton1.SetHeight(25);
+        this.WebButton1.SetCaption("+ Columna");
+        this.WebButton1.SetChildOrderEx(3);
+        this.WebButton1.SetElementClassName("btn btn-light");
+        this.WebButton1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebButton1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebButton1.SetHeightPercent(100.000000000000000000);
+        this.WebButton1.SetVisible(false);
+        this.WebButton1.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.WebButton1,this,"OnClick","WebButton1Click");
+        this.WebPanel2.SetParentComponent(this);
+        this.WebPanel2.SetName("WebPanel2");
+        this.WebPanel2.SetLeft(0);
+        this.WebPanel2.SetTop(422);
+        this.WebPanel2.SetWidth(600);
+        this.WebPanel2.SetHeight(40);
+        this.WebPanel2.SetElementClassName("card text-white bg-secondary mb-3");
+        this.WebPanel2.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
+        this.WebPanel2.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
+        this.WebPanel2.SetChildOrderEx(2);
+        this.WebPanel2.SetColor(16770250);
+        this.WebPanel2.FElementBodyClassName = "d-flex justify-content-center align-items-center min-vh-100";
+        this.WebPanel2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebPanel2.SetTabOrder(1);
+        this.divTabulator.SetParentComponent(this);
+        this.divTabulator.SetName("divTabulator");
+        this.divTabulator.SetLeft(0);
+        this.divTabulator.SetTop(57);
+        this.divTabulator.SetWidth(600);
+        this.divTabulator.SetHeight(365);
+        this.divTabulator.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
+        this.divTabulator.SetChildOrderEx(2);
+        this.divTabulator.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.divTabulator.SetRole("");
+        this.divcontainer.SetParentComponent(this);
+        this.divcontainer.SetName("divcontainer");
+        this.divcontainer.SetLeft(162);
+        this.divcontainer.SetTop(8);
+        this.divcontainer.SetWidth(177);
+        this.divcontainer.SetHeight(57);
+        this.divcontainer.SetChildOrderEx(3);
+        this.divcontainer.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.divcontainer.SetRole("");
+        this.panelColumnas.SetParentComponent(this);
+        this.panelColumnas.SetName("panelColumnas");
+        this.panelColumnas.SetLeft(136);
+        this.panelColumnas.SetTop(112);
+        this.panelColumnas.SetWidth(289);
+        this.panelColumnas.SetHeight(201);
+        this.panelColumnas.SetElementClassName("card");
+        this.panelColumnas.SetChildOrderEx(4);
+        this.panelColumnas.FElementBodyClassName = "card-body";
+        this.panelColumnas.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.panelColumnas.SetTabOrder(4);
+        this.panelColumnas.SetVisible(false);
+        this.WebLabel1.SetParentComponent(this.panelColumnas);
+        this.WebLabel1.SetName("WebLabel1");
+        this.WebLabel1.SetLeft(32);
+        this.WebLabel1.SetTop(40);
+        this.WebLabel1.SetWidth(57);
+        this.WebLabel1.SetHeight(18);
+        this.WebLabel1.SetCaption("Nombre:");
+        this.WebLabel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebLabel1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebLabel1.SetHeightPercent(100.000000000000000000);
+        this.WebLabel1.SetWidthPercent(100.000000000000000000);
+        this.WebLabel2.SetParentComponent(this.panelColumnas);
+        this.WebLabel2.SetName("WebLabel2");
+        this.WebLabel2.SetLeft(32);
+        this.WebLabel2.SetTop(80);
+        this.WebLabel2.SetWidth(40);
+        this.WebLabel2.SetHeight(18);
+        this.WebLabel2.SetCaption("Titulo:");
+        this.WebLabel2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebLabel2.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebLabel2.SetHeightPercent(100.000000000000000000);
+        this.WebLabel2.SetWidthPercent(100.000000000000000000);
+        this.WebLabel3.SetParentComponent(this.panelColumnas);
+        this.WebLabel3.SetName("WebLabel3");
+        this.WebLabel3.SetLeft(83);
+        this.WebLabel3.SetTop(3);
+        this.WebLabel3.SetWidth(112);
+        this.WebLabel3.SetHeight(18);
+        this.WebLabel3.SetCaption("Agregar Columna");
+        this.WebLabel3.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebLabel3.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebLabel3.SetHeightPercent(100.000000000000000000);
+        this.WebLabel3.SetWidthPercent(100.000000000000000000);
+        this.btnAgregarCol.SetParentComponent(this.panelColumnas);
+        this.btnAgregarCol.SetName("btnAgregarCol");
+        this.btnAgregarCol.SetLeft(48);
+        this.btnAgregarCol.SetTop(144);
+        this.btnAgregarCol.SetWidth(96);
+        this.btnAgregarCol.SetHeight(25);
+        this.btnAgregarCol.SetCaption("Agregar");
+        this.btnAgregarCol.SetElementClassName("btn btn-light");
+        this.btnAgregarCol.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.btnAgregarCol.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.btnAgregarCol.SetHeightPercent(100.000000000000000000);
+        this.btnAgregarCol.SetTabOrder(2);
+        this.btnAgregarCol.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.btnAgregarCol,this,"OnClick","btnAgregarColClick");
+        this.btnAgregarColCerrar.SetParentComponent(this.panelColumnas);
+        this.btnAgregarColCerrar.SetName("btnAgregarColCerrar");
+        this.btnAgregarColCerrar.SetLeft(160);
+        this.btnAgregarColCerrar.SetTop(144);
+        this.btnAgregarColCerrar.SetWidth(96);
+        this.btnAgregarColCerrar.SetHeight(25);
+        this.btnAgregarColCerrar.SetCaption("Cerrar");
+        this.btnAgregarColCerrar.SetChildOrderEx(1);
+        this.btnAgregarColCerrar.SetElementClassName("btn btn-light");
+        this.btnAgregarColCerrar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.btnAgregarColCerrar.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.btnAgregarColCerrar.SetHeightPercent(100.000000000000000000);
+        this.btnAgregarColCerrar.SetTabOrder(3);
+        this.btnAgregarColCerrar.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.btnAgregarColCerrar,this,"OnClick","btnAgregarColCerrarClick");
+        this.columna_nom.SetParentComponent(this.panelColumnas);
+        this.columna_nom.SetName("columna_nom");
+        this.columna_nom.SetLeft(112);
+        this.columna_nom.SetTop(40);
+        this.columna_nom.SetWidth(121);
+        this.columna_nom.SetHeight(22);
+        this.columna_nom.SetChildOrderEx(4);
+        this.columna_nom.SetElementClassName("form-control");
+        this.columna_nom.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.columna_nom.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.columna_nom.SetHeightPercent(100.000000000000000000);
+        this.columna_nom.SetWidthPercent(100.000000000000000000);
+        this.columna_tit.SetParentComponent(this.panelColumnas);
+        this.columna_tit.SetName("columna_tit");
+        this.columna_tit.SetLeft(112);
+        this.columna_tit.SetTop(80);
+        this.columna_tit.SetWidth(121);
+        this.columna_tit.SetHeight(22);
+        this.columna_tit.SetChildOrderEx(4);
+        this.columna_tit.SetElementClassName("form-control");
+        this.columna_tit.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.columna_tit.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.columna_tit.SetHeightPercent(100.000000000000000000);
+        this.columna_tit.SetTabOrder(1);
+        this.columna_tit.SetWidthPercent(100.000000000000000000);
+        this.WebPopupMenu1.SetParentComponent(this);
+        this.WebPopupMenu1.SetName("WebPopupMenu1");
+        this.WebPopupMenu1.FAppearance.FHamburgerMenu.SetCaption("Menu");
+        this.WebPopupMenu1.FAppearance.SetSubmenuIndicator("&#9658;");
+        this.WebPopupMenu1.FFont.FCharset = 1;
+        this.WebPopupMenu1.FFont.SetColor(65793);
+        this.WebPopupMenu1.FFont.SetHeight(-12);
+        this.WebPopupMenu1.FFont.SetName("Segoe UI");
+        this.WebPopupMenu1.FFont.SetStyle({});
+        this.WebPopupMenu1.SetLeft(457);
+        this.WebPopupMenu1.SetTop(92);
+        this.Cerrar1.SetParentComponent(this.WebPopupMenu1);
+        this.Cerrar1.SetName("Cerrar1");
+        this.Cerrar1.SetCaption("Cerrar menú");
+        this.SetEvent$1(this.Cerrar1,this,"OnClick","Cerrar1Click");
+        this.Ayuda1.SetParentComponent(this.WebPopupMenu1);
+        this.Ayuda1.SetName("Ayuda1");
+        this.Ayuda1.SetCaption("Ayuda");
+        this.SetEvent$1(this.Ayuda1,this,"OnClick","Ayuda1Click");
+        this.N1.SetParentComponent(this.WebPopupMenu1);
+        this.N1.SetName("N1");
+        this.N1.SetCaption("-");
+        this.AgregarColumna1.SetParentComponent(this.WebPopupMenu1);
+        this.AgregarColumna1.SetName("AgregarColumna1");
+        this.AgregarColumna1.SetCaption("Agregar Columna");
+        this.SetEvent$1(this.AgregarColumna1,this,"OnClick","AgregarColumna1Click");
+        this.LimpiarHoja1.SetParentComponent(this.WebPopupMenu1);
+        this.LimpiarHoja1.SetName("LimpiarHoja1");
+        this.LimpiarHoja1.SetCaption("Nueva Hoja");
+        this.LimpiarHoja1.SetEnabled(false);
+        this.Abrir1.SetParentComponent(this.WebPopupMenu1);
+        this.Abrir1.SetName("Abrir1");
+        this.Abrir1.SetCaption("Abrir");
+        this.Abrir1.SetEnabled(false);
+        this.Guardar1.SetParentComponent(this.WebPopupMenu1);
+        this.Guardar1.SetName("Guardar1");
+        this.Guardar1.SetCaption("Guardar");
+        this.Guardar1.SetEnabled(false);
+        this.Compartir1.SetParentComponent(this.WebPopupMenu1);
+        this.Compartir1.SetName("Compartir1");
+        this.Compartir1.SetCaption("Compartir");
+        this.Compartir1.SetEnabled(false);
+        this.Visualizar1.SetParentComponent(this.WebPopupMenu1);
+        this.Visualizar1.SetName("Visualizar1");
+        this.Visualizar1.SetCaption("Visualizar");
+        this.Visualizar1.SetEnabled(false);
+        this.N2.SetParentComponent(this.WebPopupMenu1);
+        this.N2.SetName("N2");
+        this.N2.SetCaption("-");
+        this.Exportar1.SetParentComponent(this.WebPopupMenu1);
+        this.Exportar1.SetName("Exportar1");
+        this.Exportar1.SetCaption("Exportar");
+        this.Exportar1.SetEnabled(false);
+        this.ExportarArchivoTexto1.SetParentComponent(this.WebPopupMenu1);
+        this.ExportarArchivoTexto1.SetName("ExportarArchivoTexto1");
+        this.ExportarArchivoTexto1.SetCaption("Exportar a Archivo");
+        this.ExportarArchivoTexto1.SetEnabled(false);
+        this.Salir1.SetParentComponent(this.WebPopupMenu1);
+        this.Salir1.SetName("Salir1");
+        this.Salir1.SetCaption("Salir");
+        this.SetEvent$1(this.Salir1,this,"OnClick","Salir1Click");
+      } finally {
+        this.WebPanel1.AfterLoadDFMValues();
+        this.WebSpeedButton1.AfterLoadDFMValues();
+        this.webBotonMenu.AfterLoadDFMValues();
+        this.WebHTMLDiv1.AfterLoadDFMValues();
+        this.WebHTMLDiv2.AfterLoadDFMValues();
+        this.WebButton1.AfterLoadDFMValues();
+        this.WebPanel2.AfterLoadDFMValues();
+        this.divTabulator.AfterLoadDFMValues();
+        this.divcontainer.AfterLoadDFMValues();
+        this.panelColumnas.AfterLoadDFMValues();
+        this.WebLabel1.AfterLoadDFMValues();
+        this.WebLabel2.AfterLoadDFMValues();
+        this.WebLabel3.AfterLoadDFMValues();
+        this.btnAgregarCol.AfterLoadDFMValues();
+        this.btnAgregarColCerrar.AfterLoadDFMValues();
+        this.columna_nom.AfterLoadDFMValues();
+        this.columna_tit.AfterLoadDFMValues();
+        this.WebPopupMenu1.AfterLoadDFMValues();
+        this.Cerrar1.AfterLoadDFMValues();
+        this.Ayuda1.AfterLoadDFMValues();
+        this.N1.AfterLoadDFMValues();
+        this.AgregarColumna1.AfterLoadDFMValues();
+        this.LimpiarHoja1.AfterLoadDFMValues();
+        this.Abrir1.AfterLoadDFMValues();
+        this.Guardar1.AfterLoadDFMValues();
+        this.Compartir1.AfterLoadDFMValues();
+        this.Visualizar1.AfterLoadDFMValues();
+        this.N2.AfterLoadDFMValues();
+        this.Exportar1.AfterLoadDFMValues();
+        this.ExportarArchivoTexto1.AfterLoadDFMValues();
+        this.Salir1.AfterLoadDFMValues();
+      };
+    };
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+    var $r = this.$rtti;
+    $r.addField("WebPanel1",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
+    $r.addField("WebSpeedButton1",pas["WEBLib.Buttons"].$rtti["TSpeedButton"]);
+    $r.addField("webBotonMenu",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("WebHTMLDiv1",pas["WEBLib.WebCtrls"].$rtti["THTMLDiv"]);
+    $r.addField("WebHTMLDiv2",pas["WEBLib.WebCtrls"].$rtti["THTMLDiv"]);
+    $r.addField("WebPanel2",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
+    $r.addField("divTabulator",pas["WEBLib.WebCtrls"].$rtti["THTMLDiv"]);
+    $r.addField("WebPopupMenu1",pas["WEBLib.Menus"].$rtti["TPopupMenu"]);
+    $r.addField("Cerrar1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("Ayuda1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("N1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("LimpiarHoja1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("Abrir1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("Guardar1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("Compartir1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("Visualizar1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("N2",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("Exportar1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("ExportarArchivoTexto1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("Salir1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("WebButton1",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("divcontainer",pas["WEBLib.WebCtrls"].$rtti["THTMLDiv"]);
+    $r.addField("panelColumnas",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
+    $r.addField("btnAgregarCol",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("btnAgregarColCerrar",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("AgregarColumna1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("WebLabel1",pas["WEBLib.StdCtrls"].$rtti["TLabel"]);
+    $r.addField("WebLabel2",pas["WEBLib.StdCtrls"].$rtti["TLabel"]);
+    $r.addField("columna_nom",pas["WEBLib.StdCtrls"].$rtti["TEdit"]);
+    $r.addField("columna_tit",pas["WEBLib.StdCtrls"].$rtti["TEdit"]);
+    $r.addField("WebLabel3",pas["WEBLib.StdCtrls"].$rtti["TLabel"]);
+    $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("webBotonMenuClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("Cerrar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("Salir1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("Ayuda1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebButton1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("btnAgregarColCerrarClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("AgregarColumna1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("btnAgregarColClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
+  });
+  this.frmLibyTabulator = null;
+},["uAyuda"]);
+rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","UFormaLibreta","uLoginForma","uAyuda","uTabulator","Unit5","uLibretayTabulator"],function () {
   "use strict";
   var $mod = this;
   $mod.$implcode = function () {
@@ -93795,15 +94684,15 @@ rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","UFormaLibreta","uL
   $mod.$main = function () {
     pas["WEBLib.Forms"].Application.Initialize();
     pas["WEBLib.Forms"].Application.FMainFormOnTaskBar = true;
+    pas["WEBLib.Forms"].Application.CreateFormDirect(pas.uLibretayTabulator.TfrmLibyTabulator,{p: pas.uLibretayTabulator, get: function () {
+        return this.p.frmLibyTabulator;
+      }, set: function (v) {
+        this.p.frmLibyTabulator = v;
+      }});
     pas["WEBLib.Forms"].Application.CreateForm(pas.uLoginForma.TfrmLogin,{p: pas.uLoginForma, get: function () {
         return this.p.frmLogin;
       }, set: function (v) {
         this.p.frmLogin = v;
-      }});
-    pas["WEBLib.Forms"].Application.CreateForm(pas.uTabulator.TfrmTabulator,{p: pas.uTabulator, get: function () {
-        return this.p.frmTabulator;
-      }, set: function (v) {
-        this.p.frmTabulator = v;
       }});
     pas["WEBLib.Forms"].Application.Run();
   };

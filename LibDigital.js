@@ -84017,7 +84017,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebPanel2.SetTabOrder(1);
         this.btnNoEditar.SetParentComponent(this.WebPanel2);
         this.btnNoEditar.SetName("btnNoEditar");
-        this.btnNoEditar.SetLeft(129);
+        this.btnNoEditar.SetLeft(105);
         this.btnNoEditar.SetTop(6);
         this.btnNoEditar.SetWidth(96);
         this.btnNoEditar.SetHeight(25);
@@ -84030,7 +84030,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.SetEvent$1(this.btnNoEditar,this,"OnClick","btnNoEditarClick");
         this.btnSiEditar.SetParentComponent(this.WebPanel2);
         this.btnSiEditar.SetName("btnSiEditar");
-        this.btnSiEditar.SetLeft(14);
+        this.btnSiEditar.SetLeft(3);
         this.btnSiEditar.SetTop(6);
         this.btnSiEditar.SetWidth(96);
         this.btnSiEditar.SetHeight(25);
@@ -84044,8 +84044,8 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.SetEvent$1(this.btnSiEditar,this,"OnClick","btnSiEditarClick");
         this.btnCopiar.SetParentComponent(this.WebPanel2);
         this.btnCopiar.SetName("btnCopiar");
-        this.btnCopiar.SetLeft(248);
-        this.btnCopiar.SetTop(8);
+        this.btnCopiar.SetLeft(207);
+        this.btnCopiar.SetTop(6);
         this.btnCopiar.SetWidth(96);
         this.btnCopiar.SetHeight(25);
         this.btnCopiar.SetCaption("Copiar");
@@ -84058,8 +84058,8 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.SetEvent$1(this.btnCopiar,this,"OnClick","btnCopiarClick");
         this.btnPegar.SetParentComponent(this.WebPanel2);
         this.btnPegar.SetName("btnPegar");
-        this.btnPegar.SetLeft(368);
-        this.btnPegar.SetTop(8);
+        this.btnPegar.SetLeft(309);
+        this.btnPegar.SetTop(6);
         this.btnPegar.SetWidth(96);
         this.btnPegar.SetHeight(25);
         this.btnPegar.SetCaption("Pegar");

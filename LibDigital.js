@@ -83090,6 +83090,10 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.columna_nom = null;
       this.columna_tit = null;
       this.WebLabel3 = null;
+      this.btnNoEditar = null;
+      this.btnSiEditar = null;
+      this.btnCopiar = null;
+      this.btnPegar = null;
     };
     this.$final = function () {
       this.WebPanel1 = undefined;
@@ -83123,6 +83127,10 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.columna_nom = undefined;
       this.columna_tit = undefined;
       this.WebLabel3 = undefined;
+      this.btnNoEditar = undefined;
+      this.btnSiEditar = undefined;
+      this.btnCopiar = undefined;
+      this.btnPegar = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
@@ -83145,7 +83153,6 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
            input.value='';
         }
         onRendered(() => {
-      
           input.focus()
          // input.select()
       
@@ -83159,7 +83166,13 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
           }
         }
       
-        input.addEventListener('blur', onChange)
+        var successFunc = function(){
+              success(input.value);
+      
+          };
+      
+          input.addEventListener('blur', onChange)
+         // input.addEventListener("blur", successFunc);
       
         input.addEventListener('keydown', (e) => {
          // alert(e.keyCode);
@@ -83235,6 +83248,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
           },
       
       
+      
         //headerVisible: false,
         height:"311px",
         height:"90%",
@@ -83252,9 +83266,34 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         editorEmptyValue:undefined, //ensure empty values are set to undefined so they arent included in spreadsheet output data
       
       
-      
        spreadsheetColumnDefinition:{editable:editCheck,editor:customEditor},
       
+         // editTriggerEvent:"dblclick", //trigger edit on double click
+        // enable clipboard functionality
+          clipboard: true,
+          clipboardCopyRowRange:"range",
+          clipboardPasteParser:"range",
+          clipboardPasteAction:"range",
+          clipboardCopyConfig:{
+              rowHeaders:false, //do not include row headers in clipboard output
+              columnHeaders:false, //do not include column headers in clipboard output
+          },
+          rangeSelection: true,
+      
+          clipboardCopyCellRange: "selected",
+          cellRangeSelection :true,
+      
+          //selectableRange:true,
+          //selectableRangeColumns:true,
+          //selectableRangeRows:true,
+          //selectableRangeClearCells:true,
+          editTriggerEvent: "click", // Trigger edit on single click
+      
+          selectableRows:true,
+      
+           clipboard: true,                // Enable clipboard functionality
+          selectable: true,               // Enable row selection
+          clipboardCopyRowRange: "selected", // Copy only selected rows
         });
       
         table.on("rowDblClick", function(e, row){
@@ -83287,8 +83326,12 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       table.on("headerClick", function(e, column){
           //e - the click event object
           //column - column component
-      
+          var activeSheet = table.getSheet();
+          var key = activeSheet.getKey();
+          if (key !='uno')
+          {
           column.updateDefinition({ title: 'nuevo titulo' });
+          }
       });
       
       table.on("tableBuilt", function()
@@ -83315,6 +83358,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
           }
          table.updateColumnDefinition("B", {title:"",visible:false }) //change the column title
+         // Assuming 'table' is your Tabulator instance
       
       });
     };
@@ -83543,6 +83587,125 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.columna_nom.SetText("");
       this.columna_nom.SetFocus();
     };
+    this.btnNoEditarClick = function (Sender) {
+      var table = Tabulator.findTable("#eletabulator")[0];
+               // Setting editor to undefined and editable to false removes edit capabilities
+      
+              table.updateColumnDefinition("A", {editor: undefined, editable: false}); 
+              table.updateColumnDefinition("B", {editor: undefined, editable: false}); ;
+    };
+    this.btnSiEditarClick = function (Sender) {
+      function customEditor(cell, onRendered, success, cancel) {
+       // const input = document.createElement('input')
+        const input = document.createElement('textarea')
+      
+        input.style.width = "100%";
+        //input.style.height = "100%";
+        //input.style.boxSizing = "border-box";
+        input.value = cell.getValue()
+        //input.selectionStart = input.value.length
+        //input.selectionEnd = input.value.length;
+      
+        input.value= input.value.trim()
+         if (input.value === 'undefined')
+        {
+           //console.log('undefined');
+           input.value='';
+        }
+        onRendered(() => {
+          input.focus()
+         // input.select()
+      
+        })
+      
+        function onChange() {
+          if (input.value != cell.getValue()) {
+            success(input.value)
+          } else {
+            cancel()
+          }
+        }
+      
+        var successFunc = function(){
+              success(input.value);
+      
+          };
+      
+          input.addEventListener('blur', onChange)
+         // input.addEventListener("blur", successFunc);
+      
+        input.addEventListener('keydown', (e) => {
+         // alert(e.keyCode);
+          if (e.keyCode == 13) {
+            table.navigateNext()
+      
+            onChange()
+          }
+      
+          if (e.keyCode == 27) {
+            cancel()
+          }
+        })
+      
+        return input
+      }
+       var editCheck = function(cell){
+          //cell - the cell component for the editable cell
+          //get row data
+          var data = cell.getRow().getData();
+         // return data.age > 18; // only allow the name cell to be edited if the age is over 18
+        // return false // no editable
+        return true // editable
+      }
+              var table = Tabulator.findTable("#eletabulator")[0];
+               // Setting editor to undefined and editable to false removes edit capabilities
+              table.deselectRow();
+              table.updateColumnDefinition("A", {editable:editCheck,editor:customEditor}); 
+              table.updateColumnDefinition("B", {editable:editCheck,editor:customEditor}); ;
+    };
+    this.btnCopiarClick = async function (Sender) {
+      var table = Tabulator.findTable("#eletabulator")[0];
+            //table.copyToClipboard("selected");
+            var selectedData = table.getSelectedData(); //get array of currently selected data.
+            console.log('selectedData', selectedData);
+            const arrayAsString = JSON.stringify(selectedData);
+      
+          try
+        {
+          // 2. Write the string to the clipboard using the Clipboard API
+          await navigator.clipboard.writeText(arrayAsString);
+          console.log('Array copied:', arrayAsString);
+        } catch (err) {
+          // Handle potential errors (e.g., user denied permission, browser incompatibility)
+          console.error('Failed to copy array: ', err);
+        };
+    };
+    this.btnPegarClick = function (Sender) {
+      var table = Tabulator.findTable("#eletabulator")[0];
+                 async function pasteFromJsonClipboard() {
+          try {
+              // Read text from clipboard
+              const clipboardText = await navigator.clipboard.readText();
+      
+              // Parse the text into a JSON array of objects
+              const jsonData = JSON.parse(clipboardText);
+      
+              // Check if the parsed data is an array
+              if (Array.isArray(jsonData)) {
+                  // Set the table data using the parsed array
+                 // table.setData(jsonData);
+                  table.updateData(jsonData);
+                  console.log("Data successfully set from clipboard JSON.");
+              } else {
+                  alert("Clipboard content is not a valid JSON array.");
+              }
+          } catch (err) {
+              console.error('Failed to read clipboard contents: ', err);
+              alert('Failed to read clipboard. Ensure you have granted permission.');
+          }
+      };
+      pasteFromJsonClipboard();
+    };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
       this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
@@ -83551,7 +83714,6 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.WebHTMLDiv1 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$1",[this]);
       this.WebHTMLDiv2 = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$1",[this]);
       this.WebButton1 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
-      this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
       this.divTabulator = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["eletabulator"]);
       this.divcontainer = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["contenedor"]);
       this.panelColumnas = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
@@ -83562,6 +83724,11 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.btnAgregarColCerrar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.columna_nom = pas["WEBLib.StdCtrls"].TEdit.$create("Create$1",[this]);
       this.columna_tit = pas["WEBLib.StdCtrls"].TEdit.$create("Create$1",[this]);
+      this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.btnNoEditar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.btnSiEditar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.btnCopiar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.btnPegar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebPopupMenu1 = pas["WEBLib.Menus"].TPopupMenu.$create("Create$1",[this]);
       this.Cerrar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Ayuda1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
@@ -83582,7 +83749,6 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.WebHTMLDiv1.BeforeLoadDFMValues();
       this.WebHTMLDiv2.BeforeLoadDFMValues();
       this.WebButton1.BeforeLoadDFMValues();
-      this.WebPanel2.BeforeLoadDFMValues();
       this.divTabulator.BeforeLoadDFMValues();
       this.divcontainer.BeforeLoadDFMValues();
       this.panelColumnas.BeforeLoadDFMValues();
@@ -83593,6 +83759,11 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.btnAgregarColCerrar.BeforeLoadDFMValues();
       this.columna_nom.BeforeLoadDFMValues();
       this.columna_tit.BeforeLoadDFMValues();
+      this.WebPanel2.BeforeLoadDFMValues();
+      this.btnNoEditar.BeforeLoadDFMValues();
+      this.btnSiEditar.BeforeLoadDFMValues();
+      this.btnCopiar.BeforeLoadDFMValues();
+      this.btnPegar.BeforeLoadDFMValues();
       this.WebPopupMenu1.BeforeLoadDFMValues();
       this.Cerrar1.BeforeLoadDFMValues();
       this.Ayuda1.BeforeLoadDFMValues();
@@ -83712,26 +83883,12 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebButton1.SetVisible(false);
         this.WebButton1.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.WebButton1,this,"OnClick","WebButton1Click");
-        this.WebPanel2.SetParentComponent(this);
-        this.WebPanel2.SetName("WebPanel2");
-        this.WebPanel2.SetLeft(0);
-        this.WebPanel2.SetTop(422);
-        this.WebPanel2.SetWidth(600);
-        this.WebPanel2.SetHeight(40);
-        this.WebPanel2.SetElementClassName("card text-white bg-secondary mb-3");
-        this.WebPanel2.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
-        this.WebPanel2.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
-        this.WebPanel2.SetChildOrderEx(2);
-        this.WebPanel2.SetColor(16770250);
-        this.WebPanel2.FElementBodyClassName = "d-flex justify-content-center align-items-center min-vh-100";
-        this.WebPanel2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.WebPanel2.SetTabOrder(1);
         this.divTabulator.SetParentComponent(this);
         this.divTabulator.SetName("divTabulator");
         this.divTabulator.SetLeft(0);
         this.divTabulator.SetTop(57);
         this.divTabulator.SetWidth(600);
-        this.divTabulator.SetHeight(365);
+        this.divTabulator.SetHeight(343);
         this.divTabulator.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
         this.divTabulator.SetChildOrderEx(2);
         this.divTabulator.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
@@ -83844,6 +84001,75 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.columna_tit.SetHeightPercent(100.000000000000000000);
         this.columna_tit.SetTabOrder(1);
         this.columna_tit.SetWidthPercent(100.000000000000000000);
+        this.WebPanel2.SetParentComponent(this);
+        this.WebPanel2.SetName("WebPanel2");
+        this.WebPanel2.SetLeft(0);
+        this.WebPanel2.SetTop(400);
+        this.WebPanel2.SetWidth(600);
+        this.WebPanel2.SetHeight(62);
+        this.WebPanel2.SetElementClassName("card text-white bg-secondary mb-3");
+        this.WebPanel2.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
+        this.WebPanel2.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
+        this.WebPanel2.SetChildOrderEx(2);
+        this.WebPanel2.SetColor(16770250);
+        this.WebPanel2.FElementBodyClassName = "d-flex justify-content-center align-items-center min-vh-100";
+        this.WebPanel2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebPanel2.SetTabOrder(1);
+        this.btnNoEditar.SetParentComponent(this.WebPanel2);
+        this.btnNoEditar.SetName("btnNoEditar");
+        this.btnNoEditar.SetLeft(129);
+        this.btnNoEditar.SetTop(6);
+        this.btnNoEditar.SetWidth(96);
+        this.btnNoEditar.SetHeight(25);
+        this.btnNoEditar.SetCaption("No Editar");
+        this.btnNoEditar.SetElementClassName("btn btn-light");
+        this.btnNoEditar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.btnNoEditar.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.btnNoEditar.SetHeightPercent(100.000000000000000000);
+        this.btnNoEditar.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.btnNoEditar,this,"OnClick","btnNoEditarClick");
+        this.btnSiEditar.SetParentComponent(this.WebPanel2);
+        this.btnSiEditar.SetName("btnSiEditar");
+        this.btnSiEditar.SetLeft(14);
+        this.btnSiEditar.SetTop(6);
+        this.btnSiEditar.SetWidth(96);
+        this.btnSiEditar.SetHeight(25);
+        this.btnSiEditar.SetCaption("Editar");
+        this.btnSiEditar.SetChildOrderEx(1);
+        this.btnSiEditar.SetElementClassName("btn btn-light");
+        this.btnSiEditar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.btnSiEditar.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.btnSiEditar.SetHeightPercent(100.000000000000000000);
+        this.btnSiEditar.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.btnSiEditar,this,"OnClick","btnSiEditarClick");
+        this.btnCopiar.SetParentComponent(this.WebPanel2);
+        this.btnCopiar.SetName("btnCopiar");
+        this.btnCopiar.SetLeft(248);
+        this.btnCopiar.SetTop(8);
+        this.btnCopiar.SetWidth(96);
+        this.btnCopiar.SetHeight(25);
+        this.btnCopiar.SetCaption("Copiar");
+        this.btnCopiar.SetChildOrderEx(2);
+        this.btnCopiar.SetElementClassName("btn btn-light");
+        this.btnCopiar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.btnCopiar.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.btnCopiar.SetHeightPercent(100.000000000000000000);
+        this.btnCopiar.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.btnCopiar,this,"OnClick","btnCopiarClick");
+        this.btnPegar.SetParentComponent(this.WebPanel2);
+        this.btnPegar.SetName("btnPegar");
+        this.btnPegar.SetLeft(368);
+        this.btnPegar.SetTop(8);
+        this.btnPegar.SetWidth(96);
+        this.btnPegar.SetHeight(25);
+        this.btnPegar.SetCaption("Pegar");
+        this.btnPegar.SetChildOrderEx(3);
+        this.btnPegar.SetElementClassName("btn btn-light");
+        this.btnPegar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.btnPegar.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.btnPegar.SetHeightPercent(100.000000000000000000);
+        this.btnPegar.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.btnPegar,this,"OnClick","btnPegarClick");
         this.WebPopupMenu1.SetParentComponent(this);
         this.WebPopupMenu1.SetName("WebPopupMenu1");
         this.WebPopupMenu1.FAppearance.FHamburgerMenu.SetCaption("Menu");
@@ -83912,7 +84138,6 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebHTMLDiv1.AfterLoadDFMValues();
         this.WebHTMLDiv2.AfterLoadDFMValues();
         this.WebButton1.AfterLoadDFMValues();
-        this.WebPanel2.AfterLoadDFMValues();
         this.divTabulator.AfterLoadDFMValues();
         this.divcontainer.AfterLoadDFMValues();
         this.panelColumnas.AfterLoadDFMValues();
@@ -83923,6 +84148,11 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.btnAgregarColCerrar.AfterLoadDFMValues();
         this.columna_nom.AfterLoadDFMValues();
         this.columna_tit.AfterLoadDFMValues();
+        this.WebPanel2.AfterLoadDFMValues();
+        this.btnNoEditar.AfterLoadDFMValues();
+        this.btnSiEditar.AfterLoadDFMValues();
+        this.btnCopiar.AfterLoadDFMValues();
+        this.btnPegar.AfterLoadDFMValues();
         this.WebPopupMenu1.AfterLoadDFMValues();
         this.Cerrar1.AfterLoadDFMValues();
         this.Ayuda1.AfterLoadDFMValues();
@@ -83973,6 +84203,10 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addField("columna_nom",pas["WEBLib.StdCtrls"].$rtti["TEdit"]);
     $r.addField("columna_tit",pas["WEBLib.StdCtrls"].$rtti["TEdit"]);
     $r.addField("WebLabel3",pas["WEBLib.StdCtrls"].$rtti["TLabel"]);
+    $r.addField("btnNoEditar",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("btnSiEditar",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("btnCopiar",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("btnPegar",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("webBotonMenuClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Cerrar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
@@ -83982,6 +84216,10 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addMethod("btnAgregarColCerrarClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("AgregarColumna1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnAgregarColClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("btnNoEditarClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("btnSiEditarClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("btnCopiarClick",0,[["Sender",pas.System.$rtti["TObject"]]],null,16,{attr: [pas.JS.AsyncAttribute,"Create"]});
+    $r.addMethod("btnPegarClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.frmLibTabulator = null;
 },["uAyuda"]);
@@ -94721,11 +94959,6 @@ rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","UFormaLibreta","uL
         return this.p.frmLogin;
       }, set: function (v) {
         this.p.frmLogin = v;
-      }});
-    pas["WEBLib.Forms"].Application.CreateFormDirect(pas.uTabulator.TfrmTabulator,{p: pas.uTabulator, get: function () {
-        return this.p.frmTabulator;
-      }, set: function (v) {
-        this.p.frmTabulator = v;
       }});
     pas["WEBLib.Forms"].Application.Run();
   };

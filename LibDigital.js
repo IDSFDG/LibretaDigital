@@ -83053,7 +83053,368 @@ rtl.module("WEBLib.Login",["System","Classes","SysUtils","Types","WEBLib.Control
     rtl.addIntf(this,pas.System.IUnknown);
   });
 });
-rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.WebCtrls","WEBLib.StdCtrls","WEBLib.StdCtrls","WEBLib.Buttons","WEBLib.Controls","WEBLib.ExtCtrls","WEBLib.Menus","WEBLib.Menus"],function () {
+rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.Controls","WEBLib.WebCtrls","WEBLib.StdCtrls","WEBLib.StdCtrls","WEBLib.Menus","WEBLib.Menus","WEBLib.ExtCtrls"],function () {
+  "use strict";
+  var $mod = this;
+  rtl.createClass(this,"TfrmEditor",pas["WEBLib.Forms"].TForm,function () {
+    this.$init = function () {
+      pas["WEBLib.Forms"].TForm.$init.call(this);
+      this.divSunEditor = null;
+      this.WebButton1 = null;
+      this.cmeditor = undefined;
+      this.suneditor = undefined;
+    };
+    this.$final = function () {
+      this.divSunEditor = undefined;
+      this.WebButton1 = undefined;
+      pas["WEBLib.Forms"].TForm.$final.call(this);
+    };
+    this.WebFormCreate = function (Sender) {
+      // INICIO No Crear SummerNote    **********************************
+      
+        if (1==0) {
+          var undoButton = function (context) {
+            var ui = $.summernote.ui;
+            var button = ui.button({
+              contents: '<i class="fas fa-undo"/> Undo',
+              tooltip: 'Undo'
+            });
+            return button.render();
+          };
+      
+          var redoButton = function (context) {
+            var ui = $.summernote.ui;
+            var button = ui.button({
+              contents: '<i class="fas fa-redo"/> Redo',
+              tooltip: 'Redo',
+            });
+            return button.render();
+          };
+      
+          var SummernoteSave = this.SummernoteSave;
+          var saveButton = function (context) {
+            var ui = $.summernote.ui;
+            var button = ui.button({
+              contents: '<div id="SummernoteSave"><i class="fas fa-check"></div>',
+              tooltip: 'Save Changes',
+              id: "SummernoteSave",
+              container: $('.note-editor.note-frame'),
+              click: function () {
+                var HTML = $('#divSummernote').summernote('code');
+                SummernoteSave(HTML);
+              }
+            });
+            return button.render();
+          };
+      
+      
+          $('#divSummernote').summernote({
+            height: 200,
+            minHeight: 100,
+            buttons: {
+              undo: undoButton,
+              redo: redoButton,
+              save: saveButton,
+            },
+            toolbar: [
+              ['edit', ['undo','save','redo']],
+              ['style', ['style']],
+              ['font', ['bold', 'underline', 'clear']],
+              ['fontname', ['fontname']],
+              ['color', ['color']],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['table', ['table']],
+              ['insert', ['link', 'picture', 'video']],
+              ['view', ['fullscreen', 'codeview', 'help']]
+            ],
+            icons: {
+              align:         'fas fa-align',
+              alignCenter:   'fas fa-align-center',
+              alignJustify:  'fas fa-align-justify',
+              alignLeft:     'fas fa-align-left',
+              alignRight:    'fas fa-align-right',
+              indent:        'fas fa-indent',
+              outdent:       'fas fa-outdent',
+              arrowsAlt:     'fas fa-expand',
+              bold:          'fas fa-bold',
+              caret:         'fas fa-caret-down',
+              circle:        'fas fa-circle',
+              close:         'fas fa fa-close',
+              code:          'fas fa-code',
+              eraser:        'fas fa-eraser',
+              font:          'fas fa-font',
+              italic:        'fas fa-italic',
+              link:          'fas fa-link',
+              unlink:        'fas fa-chain-broken',
+              magic:         'fas fa-magic',
+              menuCheck:     'fas fa-check',
+              minus:         'fas fa-minus',
+              orderedlist:   'fas fa-list-ol',
+              pencil:        'fas fa-pencil',
+              picture:       'fas fa-image',
+              question:      'fas fa-question',
+              redo:          'fas fa-redo',
+              square:        'fas fa-square',
+              strikethrough: 'fas fa-strikethrough',
+              subscript:     'fas fa-subscript',
+              superscript:   'fas fa-superscript',
+              table:         'fas fa-table',
+              textHeight:    'fas fa-text-height',
+              trash:         'fas fa-trash',
+              underline:     'fas fa-underline',
+              undo:          'fas fa-undo',
+              unorderedlist: 'fas fa-list-ul',
+              video:         'fas fa-video-camera'
+            },
+          });
+      
+          $('#divSummernote').on('summernote.change', function(we, contents, $editable) {
+            document.getElementById('SummernoteSave').style.color = "green";
+          });
+      
+      
+      
+          // Fixes the duplicate carets issue
+          var styleEle = $("style#fixed");
+          if (styleEle.length == 0)
+            $("<style id=\"fixed\">.note-editor .dropdown-toggle::after { all: unset; } .note-editor .note-dropdown-menu { box-sizing: content-box; } .note-editor .note-modal-footer { box-sizing: content-box; }</style>")
+            .prependTo("body");
+      
+         } // 1=0
+      
+          // FIN No Crear SummerNote    **********************************
+      
+          var SunEditorSave = this.SunEditorSave;
+          this.suneditor = SUNEDITOR.create('divSunEditor',{
+            width: 'auto',
+            height: 300,
+            minHeight: 100,
+            codeMirror: {
+              src: CodeMirror,
+              options: {
+                lineNumbers: true
+              }
+            },
+            katex: katex,
+            callBackSave: function (contents, isChanged) {
+              SunEditorSave(contents);
+            },
+            buttonList: [
+              ['undo', 'save', 'redo'],
+              ['font', 'fontSize', 'formatBlock'],
+              ['paragraphStyle', 'blockquote','horizontalRule'],
+              ['bold', 'underline', 'italic', 'strike', 'subscript', 'superscript', 'math'],
+              ['fontColor', 'hiliteColor', 'textStyle', 'removeFormat'],
+              ['list', 'outdent', 'indent', 'align', 'lineHeight'],
+              ['table', 'link', 'image', 'video', 'audio'],
+              ['fullScreen','showBlocks', 'codeView', 'print']
+            ],
+            icons: {
+              undo: '<span><i class="fas fa-undo"></i></span>',
+              save: '<span class="HTMLSave" style="margin-top: -2px;"><i class="fas fa-check fa-xl"></i></span>',
+              redo: '<span><i class="fas fa-redo"></i></span>',
+      
+              paragraph_style: '<span><i class="fas fa-paragraph"></i></span>',
+              blockquote: '<span><i class="fas fa-quote-left"></i></span>',
+              horizontal_rule: '<span><i class="fas fa-horizontal-rule"></i></span>',
+      
+              bold: '<span><i class="fas fa-bold"></i></span>',
+              underline: '<span><i class="fas fa-underline"></i></span>',
+              italic: '<span><i class="fas fa-italic"></i></span>',
+              strike: '<span><i class="fas fa-strikethrough"></i></span>',
+              subscript: '<span><i class="fas fa-subscript"></i></span>',
+              superscript: '<span><i class="fas fa-superscript"></i></span>',
+              math: '<span><i class="fas fa-abacus"></i></span>',
+      
+              font_color: '<span><i class="fas fa-pen-nib"></i></span>',
+              highlight_color: '<span><i class="fas fa-highlighter"></i></span>',
+              text_style: '<span><i class="fas fa-text"></i></span>',
+              erase: '<span><i class="fas fa-eraser"></i></span>',
+      
+              list_bullets: '<span><i class="fas fa-list"></i></span>',
+              list_number: '<span><i class="fas fa-list-ol"></i></span>',
+              outdent: '<span><i class="fas fa-indent"></i></span>',
+              indent: '<span><i class="fas fa-outdent"></i></span>',
+              align_left: '<span><i class="fas fa-align-left"></i></span>',
+              align_right: '<span><i class="fas fa-align-right"></i></span>',
+              align_justify: '<span><i class="fas fa-align-justify"></i></span>',
+              align_center: '<span><i class="fas fa-align-center"></i></span>',
+              line_height: '<span><i class="fas fa-text-height"></i></span>',
+      
+              table: '<span><i class="fas fa-table"></i></span>',
+              link: '<span><i class="fas fa-link"></i></span>',
+              image: '<span><i class="fas fa-image"></i></span>',
+              video: '<span><i class="fas fa-video"></i></span>',
+              audio: '<span><i class="fas fa-microphone"></i></span>',
+      
+              expansion: '<span><i class="fas fa-expand"></i></span>',
+              reduction: '<span><i class="fas fa-compress"></i></span>',
+              show_blocks: '<span><i class="fas fa-tasks"></i></span>',
+              code_view: '<span><i class="fas fa-code"></i></span>',
+              print: '<span><i class="fas fa-print"></i></span>'
+            },
+          });
+      
+      
+      
+          // INICIO No Crear divCodeMirror    **********************************
+         if (1==0) {
+      
+          this.cmeditor = CodeMirror(divCodeMirror, {
+            mode: "markdown",
+            lineNumbers: true
+          });
+      
+          var boldclick = this.btnCodeMirrorBoldClick;
+          this.cmeditor.addKeyMap({"Ctrl-B":function (cm) { boldclick() }});
+          var underlineclick = this.btnCodeMirrorBoldClick;
+          this.cmeditor.addKeyMap({"Ctrl-I":function (cm) { underlineclick() }});
+          var italicclick = this.btnCodeMirrorBoldClick;
+          this.cmeditor.addKeyMap({"Ctrl-U":function (cm) { italicclick() }});
+          var saveclick = this.btnCodeMirrorSaveClick;
+          this.cmeditor.addKeyMap({"Ctrl-S":function (cm) { saveclick() }});
+      
+          divCodeMirror.classList.add('w-100');
+          divCodeMirror.firstElementChild.style.height = "200px";
+          divCodeMirror.firstElementChild.style.minHeight = "100px";
+          divCodeMirror.firstElementChild.style.resize = "vertical";
+          divCodeMirror.firstElementChild.style.overflow = "auto !important";
+      
+          // Set default CodeMirror Text
+          this.cmeditor.setValue('# Hello\r1. One\r1. Two\r1. Three\r');
+         }  // 1=0
+      
+          // FINAL No Crear divCodeMirror    **********************************;
+    };
+    this.btnCodeMirrorBoldClick = function (Sender) {
+      var cm = undefined;
+      cm = $mod.frmEditor.cmeditor;
+      var selection = cm.getSelection();
+      cm.replaceSelection('**' + selection + '**');
+      if (!selection) {
+        var cursorPos =cm.getCursor();
+        cm.setCursor(cursorPos.line, cursorPos.ch - 2);
+      };
+    };
+    this.btnCodeMirrorUnderlineClick = function (Sender) {
+      var cm = undefined;
+      cm = $mod.frmEditor.cmeditor;
+      var selection = cm.getSelection();
+      cm.replaceSelection('<span style="text-decoration: underline">' + selection + '</span>');
+      if (!selection) {
+        var cursorPos =cm.getCursor();
+        cm.setCursor(cursorPos.line, cursorPos.ch - 2);
+      };
+    };
+    this.btnCodeMirrorItalicClick = function (Sender) {
+      var cm = undefined;
+      cm = $mod.frmEditor.cmeditor;
+      var selection = cm.getSelection();
+      cm.replaceSelection('*' + selection + '*');
+      if (!selection) {
+        var cursorPos =cm.getCursor();
+        cm.setCursor(cursorPos.line, cursorPos.ch - 2);
+      };
+    };
+    this.SummernoteSave = function (HTML) {
+      window.console.log("User wants to save an HTML file that has SummernoteSave" + pas.SysUtils.IntToStr(HTML.length) + " bytes");
+    };
+    this.SunEditorSave = function (HTML) {
+      var strHmtl = "";
+      strHmtl = HTML;
+      window.console.log("User wants to save an HTML file that has SunEditorSave " + pas.SysUtils.IntToStr(HTML.length) + " bytes");
+      alert('Salvar  SunEditorSave');
+      alert(strHmtl);
+    };
+    this.btnCodeMirrorSaveClick = function (Sender) {
+      var cm = undefined;
+      var se = undefined;
+      cm = $mod.frmEditor.cmeditor;
+      se = $mod.frmEditor.suneditor;
+      var markdown = cm.getValue();
+         var converter = new showdown.Converter();
+         var html = converter.makeHtml(markdown);
+         $("#divSummernote").summernote('code',html);
+      //   se.setContents(html);
+    };
+    this.WebPanel1Click = function (Sender) {
+      this.Close();
+    };
+    this.WebLabel1Click = function (Sender) {
+      this.Close();
+    };
+    this.WebButton1Click = function (Sender) {
+      this.Close();
+    };
+    this.LoadDFMValues = function () {
+      pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
+      this.divSunEditor = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["divSunEditor"]);
+      this.WebButton1 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.divSunEditor.BeforeLoadDFMValues();
+      this.WebButton1.BeforeLoadDFMValues();
+      try {
+        this.SetName("frmEditor");
+        this.SetWidth(1081);
+        this.SetHeight(960);
+        this.SetColor(12632256);
+        this.SetCSSLibrary(pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap);
+        this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.FFont.FCharset = 1;
+        this.FFont.SetColor(65793);
+        this.FFont.SetHeight(-15);
+        this.FFont.SetName("Tahoma");
+        this.FFont.SetStyle({});
+        this.SetParentFont(false);
+        this.SetEvent(this,"OnCreate","WebFormCreate");
+        this.divSunEditor.SetParentComponent(this);
+        this.divSunEditor.SetName("divSunEditor");
+        this.divSunEditor.SetLeft(0);
+        this.divSunEditor.SetTop(56);
+        this.divSunEditor.SetWidth(727);
+        this.divSunEditor.SetHeight(192);
+        this.divSunEditor.SetChildOrderEx(1);
+        this.divSunEditor.SetElementPosition(pas["WEBLib.Controls"].TElementPosition.epIgnore);
+        this.divSunEditor.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.divSunEditor.SetRole("");
+        this.WebButton1.SetParentComponent(this);
+        this.WebButton1.SetName("WebButton1");
+        this.WebButton1.SetLeft(0);
+        this.WebButton1.SetTop(935);
+        this.WebButton1.SetWidth(1081);
+        this.WebButton1.SetHeight(25);
+        this.WebButton1.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
+        this.WebButton1.SetCaption("Salir");
+        this.WebButton1.SetChildOrderEx(4);
+        this.WebButton1.SetElementClassName("btn btn-light");
+        this.WebButton1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebButton1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebButton1.SetHeightPercent(100.000000000000000000);
+        this.WebButton1.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.WebButton1,this,"OnClick","WebButton1Click");
+      } finally {
+        this.divSunEditor.AfterLoadDFMValues();
+        this.WebButton1.AfterLoadDFMValues();
+      };
+    };
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+    var $r = this.$rtti;
+    $r.addField("divSunEditor",pas["WEBLib.WebCtrls"].$rtti["THTMLDiv"]);
+    $r.addField("WebButton1",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("btnCodeMirrorBoldClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("btnCodeMirrorUnderlineClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("btnCodeMirrorItalicClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("SummernoteSave",0,[["HTML",pas.System.$rtti["WideString"]]]);
+    $r.addMethod("SunEditorSave",0,[["HTML",pas.System.$rtti["WideString"]]]);
+    $r.addMethod("btnCodeMirrorSaveClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebPanel1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebLabel1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebButton1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+  });
+  this.frmEditor = null;
+});
+rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.WebCtrls","WEBLib.StdCtrls","WEBLib.StdCtrls","WEBLib.Buttons","WEBLib.Controls","WEBLib.ExtCtrls","WEBLib.Menus","WEBLib.Menus","uEditor"],function () {
   "use strict";
   var $mod = this;
   rtl.createClass(this,"TfrmLibTabulator",pas["WEBLib.Forms"].TForm,function () {
@@ -83094,6 +83455,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.btnSiEditar = null;
       this.btnCopiar = null;
       this.btnPegar = null;
+      this.Editor1 = null;
     };
     this.$final = function () {
       this.WebPanel1 = undefined;
@@ -83131,6 +83493,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.btnSiEditar = undefined;
       this.btnCopiar = undefined;
       this.btnPegar = undefined;
+      this.Editor1 = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
@@ -83251,7 +83614,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       
         //headerVisible: false,
         height:"311px",
-        height:"90%",
+        height:"80%",
        // spreadsheetRows:15,
        // spreadsheetColumns:10,
         //spreadsheetColumnDefinition:{editor:"input"},
@@ -83706,8 +84069,23 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       };
       pasteFromJsonClipboard();
     };
+    this.Editor1Click = function (Sender) {
+      var $Self = this;
+      var i = 0;
+      function AfterShowModal(AValue) {
+      };
+      function AfterCreate(AForm) {
+      };
+      pas.uEditor.frmEditor = pas.uEditor.TfrmEditor.$create("CreateNew$3",[AfterCreate]);
+      pas.uEditor.frmEditor.ShowModal$1(AfterShowModal);
+    };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
+      this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.btnNoEditar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.btnSiEditar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.btnCopiar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.btnPegar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
       this.WebSpeedButton1 = pas["WEBLib.Buttons"].TSpeedButton.$create("Create$1",[this]);
       this.webBotonMenu = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
@@ -83724,15 +84102,11 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.btnAgregarColCerrar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.columna_nom = pas["WEBLib.StdCtrls"].TEdit.$create("Create$1",[this]);
       this.columna_tit = pas["WEBLib.StdCtrls"].TEdit.$create("Create$1",[this]);
-      this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
-      this.btnNoEditar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
-      this.btnSiEditar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
-      this.btnCopiar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
-      this.btnPegar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebPopupMenu1 = pas["WEBLib.Menus"].TPopupMenu.$create("Create$1",[this]);
       this.Cerrar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Ayuda1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.N1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.Editor1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.AgregarColumna1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.LimpiarHoja1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Abrir1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
@@ -83743,6 +84117,11 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.Exportar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.ExportarArchivoTexto1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Salir1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.WebPanel2.BeforeLoadDFMValues();
+      this.btnNoEditar.BeforeLoadDFMValues();
+      this.btnSiEditar.BeforeLoadDFMValues();
+      this.btnCopiar.BeforeLoadDFMValues();
+      this.btnPegar.BeforeLoadDFMValues();
       this.WebPanel1.BeforeLoadDFMValues();
       this.WebSpeedButton1.BeforeLoadDFMValues();
       this.webBotonMenu.BeforeLoadDFMValues();
@@ -83759,15 +84138,11 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.btnAgregarColCerrar.BeforeLoadDFMValues();
       this.columna_nom.BeforeLoadDFMValues();
       this.columna_tit.BeforeLoadDFMValues();
-      this.WebPanel2.BeforeLoadDFMValues();
-      this.btnNoEditar.BeforeLoadDFMValues();
-      this.btnSiEditar.BeforeLoadDFMValues();
-      this.btnCopiar.BeforeLoadDFMValues();
-      this.btnPegar.BeforeLoadDFMValues();
       this.WebPopupMenu1.BeforeLoadDFMValues();
       this.Cerrar1.BeforeLoadDFMValues();
       this.Ayuda1.BeforeLoadDFMValues();
       this.N1.BeforeLoadDFMValues();
+      this.Editor1.BeforeLoadDFMValues();
       this.AgregarColumna1.BeforeLoadDFMValues();
       this.LimpiarHoja1.BeforeLoadDFMValues();
       this.Abrir1.BeforeLoadDFMValues();
@@ -83781,7 +84156,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       try {
         this.SetName("frmLibTabulator");
         this.SetWidth(600);
-        this.SetHeight(462);
+        this.SetHeight(359);
         this.SetCSSLibrary(pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap);
         this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.FFont.FCharset = 1;
@@ -83791,12 +84166,81 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.FFont.SetStyle({});
         this.SetParentFont(false);
         this.SetEvent(this,"OnCreate","WebFormCreate");
+        this.WebPanel2.SetParentComponent(this);
+        this.WebPanel2.SetName("WebPanel2");
+        this.WebPanel2.SetLeft(0);
+        this.WebPanel2.SetTop(319);
+        this.WebPanel2.SetWidth(600);
+        this.WebPanel2.SetHeight(40);
+        this.WebPanel2.SetElementClassName("card text-white bg-secondary mb-3");
+        this.WebPanel2.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
+        this.WebPanel2.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
+        this.WebPanel2.SetChildOrderEx(2);
+        this.WebPanel2.SetColor(16770250);
+        this.WebPanel2.FElementBodyClassName = "d-flex justify-content-center align-items-center min-vh-100";
+        this.WebPanel2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebPanel2.SetTabOrder(1);
+        this.btnNoEditar.SetParentComponent(this.WebPanel2);
+        this.btnNoEditar.SetName("btnNoEditar");
+        this.btnNoEditar.SetLeft(105);
+        this.btnNoEditar.SetTop(6);
+        this.btnNoEditar.SetWidth(96);
+        this.btnNoEditar.SetHeight(25);
+        this.btnNoEditar.SetCaption("No Editar");
+        this.btnNoEditar.SetElementClassName("btn btn-light");
+        this.btnNoEditar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.btnNoEditar.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.btnNoEditar.SetHeightPercent(100.000000000000000000);
+        this.btnNoEditar.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.btnNoEditar,this,"OnClick","btnNoEditarClick");
+        this.btnSiEditar.SetParentComponent(this.WebPanel2);
+        this.btnSiEditar.SetName("btnSiEditar");
+        this.btnSiEditar.SetLeft(3);
+        this.btnSiEditar.SetTop(6);
+        this.btnSiEditar.SetWidth(96);
+        this.btnSiEditar.SetHeight(25);
+        this.btnSiEditar.SetCaption("Editar");
+        this.btnSiEditar.SetChildOrderEx(1);
+        this.btnSiEditar.SetElementClassName("btn btn-light");
+        this.btnSiEditar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.btnSiEditar.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.btnSiEditar.SetHeightPercent(100.000000000000000000);
+        this.btnSiEditar.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.btnSiEditar,this,"OnClick","btnSiEditarClick");
+        this.btnCopiar.SetParentComponent(this.WebPanel2);
+        this.btnCopiar.SetName("btnCopiar");
+        this.btnCopiar.SetLeft(207);
+        this.btnCopiar.SetTop(6);
+        this.btnCopiar.SetWidth(96);
+        this.btnCopiar.SetHeight(25);
+        this.btnCopiar.SetCaption("Copiar");
+        this.btnCopiar.SetChildOrderEx(2);
+        this.btnCopiar.SetElementClassName("btn btn-light");
+        this.btnCopiar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.btnCopiar.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.btnCopiar.SetHeightPercent(100.000000000000000000);
+        this.btnCopiar.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.btnCopiar,this,"OnClick","btnCopiarClick");
+        this.btnPegar.SetParentComponent(this.WebPanel2);
+        this.btnPegar.SetName("btnPegar");
+        this.btnPegar.SetLeft(309);
+        this.btnPegar.SetTop(6);
+        this.btnPegar.SetWidth(96);
+        this.btnPegar.SetHeight(25);
+        this.btnPegar.SetCaption("Pegar");
+        this.btnPegar.SetChildOrderEx(3);
+        this.btnPegar.SetElementClassName("btn btn-light");
+        this.btnPegar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.btnPegar.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.btnPegar.SetHeightPercent(100.000000000000000000);
+        this.btnPegar.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.btnPegar,this,"OnClick","btnPegarClick");
         this.WebPanel1.SetParentComponent(this);
         this.WebPanel1.SetName("WebPanel1");
         this.WebPanel1.SetLeft(0);
         this.WebPanel1.SetTop(0);
         this.WebPanel1.SetWidth(600);
-        this.WebPanel1.SetHeight(57);
+        this.WebPanel1.SetHeight(51);
         this.WebPanel1.SetElementClassName("card text-white bg-secondary mb-3");
         this.WebPanel1.SetAlign(pas["WEBLib.Controls"].TAlign.alTop);
         this.WebPanel1.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
@@ -83811,7 +84255,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebSpeedButton1.SetLeft(561);
         this.WebSpeedButton1.SetTop(0);
         this.WebSpeedButton1.SetWidth(39);
-        this.WebSpeedButton1.SetHeight(57);
+        this.WebSpeedButton1.SetHeight(51);
         this.WebSpeedButton1.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
         this.WebSpeedButton1.SetColorEx(-1);
         this.WebSpeedButton1.SetElementClassName("btn bg-transparent");
@@ -83826,7 +84270,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.webBotonMenu.SetLeft(512);
         this.webBotonMenu.SetTop(0);
         this.webBotonMenu.SetWidth(49);
-        this.webBotonMenu.SetHeight(57);
+        this.webBotonMenu.SetHeight(51);
         this.webBotonMenu.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
         this.webBotonMenu.SetCaption("Menu");
         this.webBotonMenu.FCenter.SetVertical(true);
@@ -83848,7 +84292,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebHTMLDiv1.SetLeft(424);
         this.WebHTMLDiv1.SetTop(0);
         this.WebHTMLDiv1.SetWidth(88);
-        this.WebHTMLDiv1.SetHeight(57);
+        this.WebHTMLDiv1.SetHeight(51);
         this.WebHTMLDiv1.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
         this.WebHTMLDiv1.SetChildOrderEx(2);
         this.WebHTMLDiv1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
@@ -83886,16 +84330,16 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.divTabulator.SetParentComponent(this);
         this.divTabulator.SetName("divTabulator");
         this.divTabulator.SetLeft(0);
-        this.divTabulator.SetTop(57);
+        this.divTabulator.SetTop(51);
         this.divTabulator.SetWidth(600);
-        this.divTabulator.SetHeight(343);
+        this.divTabulator.SetHeight(268);
         this.divTabulator.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
         this.divTabulator.SetChildOrderEx(2);
         this.divTabulator.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.divTabulator.SetRole("");
         this.divcontainer.SetParentComponent(this);
         this.divcontainer.SetName("divcontainer");
-        this.divcontainer.SetLeft(162);
+        this.divcontainer.SetLeft(74);
         this.divcontainer.SetTop(8);
         this.divcontainer.SetWidth(177);
         this.divcontainer.SetHeight(57);
@@ -84001,75 +84445,6 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.columna_tit.SetHeightPercent(100.000000000000000000);
         this.columna_tit.SetTabOrder(1);
         this.columna_tit.SetWidthPercent(100.000000000000000000);
-        this.WebPanel2.SetParentComponent(this);
-        this.WebPanel2.SetName("WebPanel2");
-        this.WebPanel2.SetLeft(0);
-        this.WebPanel2.SetTop(400);
-        this.WebPanel2.SetWidth(600);
-        this.WebPanel2.SetHeight(62);
-        this.WebPanel2.SetElementClassName("card text-white bg-secondary mb-3");
-        this.WebPanel2.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
-        this.WebPanel2.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
-        this.WebPanel2.SetChildOrderEx(2);
-        this.WebPanel2.SetColor(16770250);
-        this.WebPanel2.FElementBodyClassName = "d-flex justify-content-center align-items-center min-vh-100";
-        this.WebPanel2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.WebPanel2.SetTabOrder(1);
-        this.btnNoEditar.SetParentComponent(this.WebPanel2);
-        this.btnNoEditar.SetName("btnNoEditar");
-        this.btnNoEditar.SetLeft(105);
-        this.btnNoEditar.SetTop(6);
-        this.btnNoEditar.SetWidth(96);
-        this.btnNoEditar.SetHeight(25);
-        this.btnNoEditar.SetCaption("No Editar");
-        this.btnNoEditar.SetElementClassName("btn btn-light");
-        this.btnNoEditar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.btnNoEditar.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
-        this.btnNoEditar.SetHeightPercent(100.000000000000000000);
-        this.btnNoEditar.SetWidthPercent(100.000000000000000000);
-        this.SetEvent$1(this.btnNoEditar,this,"OnClick","btnNoEditarClick");
-        this.btnSiEditar.SetParentComponent(this.WebPanel2);
-        this.btnSiEditar.SetName("btnSiEditar");
-        this.btnSiEditar.SetLeft(3);
-        this.btnSiEditar.SetTop(6);
-        this.btnSiEditar.SetWidth(96);
-        this.btnSiEditar.SetHeight(25);
-        this.btnSiEditar.SetCaption("Editar");
-        this.btnSiEditar.SetChildOrderEx(1);
-        this.btnSiEditar.SetElementClassName("btn btn-light");
-        this.btnSiEditar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.btnSiEditar.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
-        this.btnSiEditar.SetHeightPercent(100.000000000000000000);
-        this.btnSiEditar.SetWidthPercent(100.000000000000000000);
-        this.SetEvent$1(this.btnSiEditar,this,"OnClick","btnSiEditarClick");
-        this.btnCopiar.SetParentComponent(this.WebPanel2);
-        this.btnCopiar.SetName("btnCopiar");
-        this.btnCopiar.SetLeft(207);
-        this.btnCopiar.SetTop(6);
-        this.btnCopiar.SetWidth(96);
-        this.btnCopiar.SetHeight(25);
-        this.btnCopiar.SetCaption("Copiar");
-        this.btnCopiar.SetChildOrderEx(2);
-        this.btnCopiar.SetElementClassName("btn btn-light");
-        this.btnCopiar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.btnCopiar.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
-        this.btnCopiar.SetHeightPercent(100.000000000000000000);
-        this.btnCopiar.SetWidthPercent(100.000000000000000000);
-        this.SetEvent$1(this.btnCopiar,this,"OnClick","btnCopiarClick");
-        this.btnPegar.SetParentComponent(this.WebPanel2);
-        this.btnPegar.SetName("btnPegar");
-        this.btnPegar.SetLeft(309);
-        this.btnPegar.SetTop(6);
-        this.btnPegar.SetWidth(96);
-        this.btnPegar.SetHeight(25);
-        this.btnPegar.SetCaption("Pegar");
-        this.btnPegar.SetChildOrderEx(3);
-        this.btnPegar.SetElementClassName("btn btn-light");
-        this.btnPegar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.btnPegar.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
-        this.btnPegar.SetHeightPercent(100.000000000000000000);
-        this.btnPegar.SetWidthPercent(100.000000000000000000);
-        this.SetEvent$1(this.btnPegar,this,"OnClick","btnPegarClick");
         this.WebPopupMenu1.SetParentComponent(this);
         this.WebPopupMenu1.SetName("WebPopupMenu1");
         this.WebPopupMenu1.FAppearance.FHamburgerMenu.SetCaption("Menu");
@@ -84092,6 +84467,10 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.N1.SetParentComponent(this.WebPopupMenu1);
         this.N1.SetName("N1");
         this.N1.SetCaption("-");
+        this.Editor1.SetParentComponent(this.WebPopupMenu1);
+        this.Editor1.SetName("Editor1");
+        this.Editor1.SetCaption("Editor");
+        this.SetEvent$1(this.Editor1,this,"OnClick","Editor1Click");
         this.AgregarColumna1.SetParentComponent(this.WebPopupMenu1);
         this.AgregarColumna1.SetName("AgregarColumna1");
         this.AgregarColumna1.SetCaption("Agregar Columna");
@@ -84132,6 +84511,11 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.Salir1.SetCaption("Salir");
         this.SetEvent$1(this.Salir1,this,"OnClick","Salir1Click");
       } finally {
+        this.WebPanel2.AfterLoadDFMValues();
+        this.btnNoEditar.AfterLoadDFMValues();
+        this.btnSiEditar.AfterLoadDFMValues();
+        this.btnCopiar.AfterLoadDFMValues();
+        this.btnPegar.AfterLoadDFMValues();
         this.WebPanel1.AfterLoadDFMValues();
         this.WebSpeedButton1.AfterLoadDFMValues();
         this.webBotonMenu.AfterLoadDFMValues();
@@ -84148,15 +84532,11 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.btnAgregarColCerrar.AfterLoadDFMValues();
         this.columna_nom.AfterLoadDFMValues();
         this.columna_tit.AfterLoadDFMValues();
-        this.WebPanel2.AfterLoadDFMValues();
-        this.btnNoEditar.AfterLoadDFMValues();
-        this.btnSiEditar.AfterLoadDFMValues();
-        this.btnCopiar.AfterLoadDFMValues();
-        this.btnPegar.AfterLoadDFMValues();
         this.WebPopupMenu1.AfterLoadDFMValues();
         this.Cerrar1.AfterLoadDFMValues();
         this.Ayuda1.AfterLoadDFMValues();
         this.N1.AfterLoadDFMValues();
+        this.Editor1.AfterLoadDFMValues();
         this.AgregarColumna1.AfterLoadDFMValues();
         this.LimpiarHoja1.AfterLoadDFMValues();
         this.Abrir1.AfterLoadDFMValues();
@@ -84207,6 +84587,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addField("btnSiEditar",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addField("btnCopiar",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addField("btnPegar",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("Editor1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
     $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("webBotonMenuClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Cerrar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
@@ -84220,6 +84601,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addMethod("btnSiEditarClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnCopiarClick",0,[["Sender",pas.System.$rtti["TObject"]]],null,16,{attr: [pas.JS.AsyncAttribute,"Create"]});
     $r.addMethod("btnPegarClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("Editor1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.frmLibTabulator = null;
 },["uAyuda"]);
@@ -94936,7 +95318,634 @@ rtl.module("Unit5",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","
   });
   this.Form5 = null;
 });
-rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","UFormaLibreta","uLoginForma","uAyuda","uLibTabulator","Unit5","uTabulator"],function () {
+rtl.module("uClipboard",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.Controls","WEBLib.WebCtrls","WEBLib.StdCtrls","WEBLib.StdCtrls"],function () {
+  "use strict";
+  var $mod = this;
+  rtl.createClass(this,"TformaClipboard",pas["WEBLib.Forms"].TForm,function () {
+    this.$init = function () {
+      pas["WEBLib.Forms"].TForm.$init.call(this);
+      this.divTabulator = null;
+      this.WebButton1 = null;
+      this.WebButton2 = null;
+      this.WebButton3 = null;
+      this.WebButton4 = null;
+    };
+    this.$final = function () {
+      this.divTabulator = undefined;
+      this.WebButton1 = undefined;
+      this.WebButton2 = undefined;
+      this.WebButton3 = undefined;
+      this.WebButton4 = undefined;
+      pas["WEBLib.Forms"].TForm.$final.call(this);
+    };
+    this.WebButton1Click = function (Sender) {
+      var tableData = [
+          {id:1, name:"Billy Bob", age:"12", gender:"male", height:1, col:"red", dob:"", cheese:1},
+          {id:2, name:"Mary May", age:"1", gender:"female", height:2, col:"blue", dob:"14/05/1982", cheese:true},
+          {id:3, name:"Nicole ", age:"1", gender:"female", height:2, col:"blue", dob:"14/05/1982", cheese:true},
+          {id:4, name:"Hernan", age:"1", gender:"female", height:2, col:"blue", dob:"14/05/1982", cheese:true},
+      ]
+      
+      var table = new Tabulator("#eletabulator", {
+          data:tableData, //set initial table data
+      
+         selectableRows:true,
+           clipboard:true,
+           clipboardPasteAction:"replace",
+          columns:[
+              {title:"Name", field:"name"},
+              {title:"Age", field:"age"},
+              {title:"Gender", field:"gender"},
+              {title:"Height", field:"height"},
+              {title:"Favourite Color", field:"col"},
+              {title:"Date Of Birth", field:"dob"},
+              {title:"Cheese Preference", field:"cheese"},
+          ],
+      });
+    };
+    this.WebButton2Click = function (Sender) {
+      function customEditor(cell, onRendered, success, cancel) {
+       // const input = document.createElement('input')
+        const input = document.createElement('textarea')
+      
+        input.style.width = "100%";
+        //input.style.height = "100%";
+        //input.style.boxSizing = "border-box";
+        input.value = cell.getValue()
+        //input.selectionStart = input.value.length
+        //input.selectionEnd = input.value.length;
+      
+        input.value= input.value.trim()
+         if (input.value === 'undefined')
+        {
+           //console.log('undefined');
+           input.value='';
+        }
+        onRendered(() => {
+          input.focus()
+         // input.select()
+      
+        })
+      
+        function onChange() {
+          if (input.value != cell.getValue()) {
+            success(input.value)
+          } else {
+            cancel()
+          }
+        }
+      
+        var successFunc = function(){
+              success(input.value);
+      
+          };
+      
+          input.addEventListener('blur', onChange)
+         // input.addEventListener("blur", successFunc);
+      
+        input.addEventListener('keydown', (e) => {
+         // alert(e.keyCode);
+          if (e.keyCode == 13) {
+            table.navigateNext()
+      
+            onChange()
+          }
+      
+          if (e.keyCode == 27) {
+            cancel()
+          }
+        })
+      
+        return input
+      }
+       var editCheck = function(cell){
+          //cell - the cell component for the editable cell
+          //get row data
+          var data = cell.getRow().getData();
+         // return data.age > 18; // only allow the name cell to be edited if the age is over 18
+        // return false // no editable
+        return true // editable
+      }
+          var sheetData = [
+        [9937,	"",	"",	7749,	9816,	4355,	8279,	"",	""],
+        [2380,	"",	6977,	8896,	4012,	3803,	5408,	3415,	3056],
+        [9180,	"",	39,	9445,	3917,	"",	18,	5239,	2516],
+        [1924,	8734,	1819,	1838,	2330,	7921,	9219,	"",	3537],
+        ["",	8665,	5875,	9732,	1926,	"",	9743,	8388,   ""],
+        [7040,	4861,	2988,	5584,	2344,	9749,	8872,	9177,	6246],
+        [6334,	1674,	2967,	"",	9353,	396,	6006,	8572 , ""],
+        [6359,	"",	2580,	5723,	9801,	554,	1044,	5266,	8532],
+        [7278,	6971,	2232,	5720,	5665,	7231,	1165,	"",	168],
+      ];
+      
+      //Build Tabulator
+      var table = new Tabulator("#eletabulator", {
+        height:"311px",
+      
+         selectableRows:true,        // Puede eliminarse para no afectar el Copy Paste del Texto
+                                     // pero habilitado copy el renglon como Json String para exportar y/o pegar
+      
+        spreadsheet:true,
+        spreadsheetRows:10,
+        spreadsheetColumns:10,
+        spreadsheetColumnDefinition:{editor:"input"},
+        spreadsheetData:sheetData,
+      
+        rowHeader:{field:"_id", hozAlign:"center", headerSort:false, frozen:true},
+      
+        editorEmptyValue:undefined, //ensure empty values are set to undefined so they arent included in spreadsheet output data
+      
+           clipboard:true,
+           clipboardPasteAction:"replace",
+           rowHeader: true,  // This hides the row number header
+      
+           columns:[
+              {title:"Name", field:"A"},
+              {title:"Age", field:"B"},
+              {title:"Gender", field:"C"},
+              {title:"Height", field:"D"},
+              {title:"Favourite Color", field:"E"},
+              {title:"Date Of Birth", field:"F"},
+              {title:"G", field:"G"},
+              {title:"H", field:"H"},
+              {title:"I", field:"I"},
+              {title:"J", field:"J"},
+          ],
+      
+       spreadsheetColumnDefinition:{editable:editCheck,editor:customEditor},
+      
+      });
+      
+       table.on("rowDeselected", function(row){
+          //row - row component for the deselected row
+           var columns = table.getColumns();
+           columns.forEach(function(column) {
+          column.editable = false;
+         });
+      });
+    };
+    this.WebButton3Click = function (Sender) {
+      function customEditor(cell, onRendered, success, cancel) {
+       // const input = document.createElement('input')
+        const input = document.createElement('textarea')
+      
+        input.style.width = "100%";
+        //input.style.height = "100%";
+        //input.style.boxSizing = "border-box";
+        input.value = cell.getValue()
+        //input.selectionStart = input.value.length
+        //input.selectionEnd = input.value.length;
+      
+        input.value= input.value.trim()
+         if (input.value === 'undefined')
+        {
+           //console.log('undefined');
+           input.value='';
+        }
+        onRendered(() => {
+          input.focus()
+         // input.select()
+      
+        })
+      
+        function onChange() {
+          if (input.value != cell.getValue()) {
+            success(input.value)
+          } else {
+            cancel()
+          }
+        }
+      
+        var successFunc = function(){
+              success(input.value);
+      
+          };
+      
+          input.addEventListener('blur', onChange)
+         // input.addEventListener("blur", successFunc);
+      
+        input.addEventListener('keydown', (e) => {
+         // alert(e.keyCode);
+          if (e.keyCode == 13) {
+            table.navigateNext()
+      
+            onChange()
+          }
+      
+          if (e.keyCode == 27) {
+            cancel()
+          }
+        })
+      
+        return input
+      }
+      
+      
+             var table = Tabulator.findTable("#eletabulator")[0];
+               var columns = table.getColumns();
+           columns.forEach(function(column) {
+          var field = column.getField();
+          var title = column.getDefinition().title;
+      
+              table.updateColumnDefinition(field, { editor: customEditor });
+            });
+    };
+    this.WebButton4Click = function (Sender) {
+      var table = Tabulator.findTable("#eletabulator")[0];
+      
+               var columns = table.getColumns();
+           columns.forEach(function(column) {
+          var field = column.getField();
+          var title = column.getDefinition().title;
+      
+              table.updateColumnDefinition(field, { editor: false });
+            });
+    };
+    this.LoadDFMValues = function () {
+      pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
+      this.divTabulator = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["eletabulator"]);
+      this.WebButton1 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.WebButton2 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.WebButton3 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.WebButton4 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.divTabulator.BeforeLoadDFMValues();
+      this.WebButton1.BeforeLoadDFMValues();
+      this.WebButton2.BeforeLoadDFMValues();
+      this.WebButton3.BeforeLoadDFMValues();
+      this.WebButton4.BeforeLoadDFMValues();
+      try {
+        this.SetName("formaClipboard");
+        this.SetWidth(640);
+        this.SetHeight(480);
+        this.SetCSSLibrary(pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap);
+        this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.FFont.FCharset = 1;
+        this.FFont.SetColor(65793);
+        this.FFont.SetHeight(-15);
+        this.FFont.SetName("Tahoma");
+        this.FFont.SetStyle({});
+        this.SetParentFont(false);
+        this.divTabulator.SetParentComponent(this);
+        this.divTabulator.SetName("divTabulator");
+        this.divTabulator.SetLeft(0);
+        this.divTabulator.SetTop(57);
+        this.divTabulator.SetWidth(600);
+        this.divTabulator.SetHeight(304);
+        this.divTabulator.SetChildOrderEx(2);
+        this.divTabulator.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.divTabulator.SetRole("");
+        this.WebButton1.SetParentComponent(this);
+        this.WebButton1.SetName("WebButton1");
+        this.WebButton1.SetLeft(32);
+        this.WebButton1.SetTop(382);
+        this.WebButton1.SetWidth(96);
+        this.WebButton1.SetHeight(25);
+        this.WebButton1.SetCaption("Tabla");
+        this.WebButton1.SetChildOrderEx(1);
+        this.WebButton1.SetElementClassName("btn btn-light");
+        this.WebButton1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebButton1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebButton1.SetHeightPercent(100.000000000000000000);
+        this.WebButton1.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.WebButton1,this,"OnClick","WebButton1Click");
+        this.WebButton2.SetParentComponent(this);
+        this.WebButton2.SetName("WebButton2");
+        this.WebButton2.SetLeft(144);
+        this.WebButton2.SetTop(382);
+        this.WebButton2.SetWidth(96);
+        this.WebButton2.SetHeight(25);
+        this.WebButton2.SetCaption("SpreadSheet");
+        this.WebButton2.SetChildOrderEx(2);
+        this.WebButton2.SetElementClassName("btn btn-light");
+        this.WebButton2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebButton2.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebButton2.SetHeightPercent(100.000000000000000000);
+        this.WebButton2.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.WebButton2,this,"OnClick","WebButton2Click");
+        this.WebButton3.SetParentComponent(this);
+        this.WebButton3.SetName("WebButton3");
+        this.WebButton3.SetLeft(32);
+        this.WebButton3.SetTop(432);
+        this.WebButton3.SetWidth(96);
+        this.WebButton3.SetHeight(25);
+        this.WebButton3.SetCaption("Editable");
+        this.WebButton3.SetChildOrderEx(3);
+        this.WebButton3.SetElementClassName("btn btn-light");
+        this.WebButton3.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebButton3.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebButton3.SetHeightPercent(100.000000000000000000);
+        this.WebButton3.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.WebButton3,this,"OnClick","WebButton3Click");
+        this.WebButton4.SetParentComponent(this);
+        this.WebButton4.SetName("WebButton4");
+        this.WebButton4.SetLeft(144);
+        this.WebButton4.SetTop(432);
+        this.WebButton4.SetWidth(96);
+        this.WebButton4.SetHeight(25);
+        this.WebButton4.SetCaption("No Editable");
+        this.WebButton4.SetChildOrderEx(4);
+        this.WebButton4.SetElementClassName("btn btn-light");
+        this.WebButton4.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebButton4.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebButton4.SetHeightPercent(100.000000000000000000);
+        this.WebButton4.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.WebButton4,this,"OnClick","WebButton4Click");
+      } finally {
+        this.divTabulator.AfterLoadDFMValues();
+        this.WebButton1.AfterLoadDFMValues();
+        this.WebButton2.AfterLoadDFMValues();
+        this.WebButton3.AfterLoadDFMValues();
+        this.WebButton4.AfterLoadDFMValues();
+      };
+    };
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+    var $r = this.$rtti;
+    $r.addField("divTabulator",pas["WEBLib.WebCtrls"].$rtti["THTMLDiv"]);
+    $r.addField("WebButton1",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("WebButton2",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("WebButton3",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("WebButton4",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addMethod("WebButton1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebButton2Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebButton3Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebButton4Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+  });
+  this.formaClipboard = null;
+});
+rtl.module("URichEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.Buttons","WEBLib.ComCtrls","WEBLib.Controls","WEBLib.ExtCtrls","WEBLib.WebCtrls"],function () {
+  "use strict";
+  var $mod = this;
+  rtl.createClass(this,"TfrmRichEditor",pas["WEBLib.Forms"].TForm,function () {
+    this.$init = function () {
+      pas["WEBLib.Forms"].TForm.$init.call(this);
+      this.WebScrollBox1 = null;
+      this.WebPanel1 = null;
+      this.WebRichEditToolBar1 = null;
+      this.WebRichEdit1 = null;
+    };
+    this.$final = function () {
+      this.WebScrollBox1 = undefined;
+      this.WebPanel1 = undefined;
+      this.WebRichEditToolBar1 = undefined;
+      this.WebRichEdit1 = undefined;
+      pas["WEBLib.Forms"].TForm.$final.call(this);
+    };
+    this.LoadDFMValues = function () {
+      pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
+      this.WebScrollBox1 = pas["WEBLib.ExtCtrls"].TScrollBox.$create("Create$1",[this]);
+      this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.WebRichEditToolBar1 = pas["WEBLib.Buttons"].TRichEditToolBar.$create("Create$2",[""]);
+      this.WebRichEdit1 = pas["WEBLib.ComCtrls"].TRichEdit.$create("Create$1",[this]);
+      this.WebScrollBox1.BeforeLoadDFMValues();
+      this.WebPanel1.BeforeLoadDFMValues();
+      this.WebRichEditToolBar1.BeforeLoadDFMValues();
+      this.WebRichEdit1.BeforeLoadDFMValues();
+      try {
+        this.SetName("frmRichEditor");
+        this.SetWidth(817);
+        this.SetHeight(480);
+        this.SetCSSLibrary(pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap);
+        this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.FFont.FCharset = 1;
+        this.FFont.SetColor(65793);
+        this.FFont.SetHeight(-15);
+        this.FFont.SetName("Tahoma");
+        this.FFont.SetStyle({});
+        this.SetParentFont(false);
+        this.WebScrollBox1.SetParentComponent(this);
+        this.WebScrollBox1.SetName("WebScrollBox1");
+        this.WebScrollBox1.SetLeft(0);
+        this.WebScrollBox1.SetTop(0);
+        this.WebScrollBox1.SetWidth(817);
+        this.WebScrollBox1.SetHeight(480);
+        this.WebScrollBox1.SetElementClassName("card");
+        this.WebScrollBox1.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
+        this.WebScrollBox1.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsSingle);
+        this.WebPanel1.SetParentComponent(this.WebScrollBox1);
+        this.WebPanel1.SetName("WebPanel1");
+        this.WebPanel1.SetLeft(3);
+        this.WebPanel1.SetTop(0);
+        this.WebPanel1.SetWidth(811);
+        this.WebPanel1.SetHeight(477);
+        this.WebPanel1.SetElementClassName("card");
+        this.WebPanel1.SetCaption("WebPanel1");
+        this.WebPanel1.FElementBodyClassName = "card-body";
+        this.WebPanel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebPanel1.SetTabOrder(0);
+        this.WebRichEditToolBar1.SetParentComponent(this.WebPanel1);
+        this.WebRichEditToolBar1.SetName("WebRichEditToolBar1");
+        this.WebRichEditToolBar1.SetLeft(0);
+        this.WebRichEditToolBar1.SetTop(0);
+        this.WebRichEditToolBar1.SetWidth(811);
+        this.WebRichEditToolBar1.SetHeight(32);
+        this.WebRichEditToolBar1.SetElementClassName("");
+        this.WebRichEditToolBar1.SetAlign(pas["WEBLib.Controls"].TAlign.alTop);
+        this.WebRichEditToolBar1.FHints.BeginUpdate();
+        try {
+          this.WebRichEditToolBar1.FHints.Clear();
+          this.WebRichEditToolBar1.FHints.Add("Bold");
+          this.WebRichEditToolBar1.FHints.Add("Italic");
+          this.WebRichEditToolBar1.FHints.Add("Underline");
+          this.WebRichEditToolBar1.FHints.Add("Strike Throught");
+          this.WebRichEditToolBar1.FHints.Add("Text Color");
+          this.WebRichEditToolBar1.FHints.Add("Background Color");
+          this.WebRichEditToolBar1.FHints.Add("Align lef");
+          this.WebRichEditToolBar1.FHints.Add("Align center");
+          this.WebRichEditToolBar1.FHints.Add("Align right");
+          this.WebRichEditToolBar1.FHints.Add("Numbered list");
+          this.WebRichEditToolBar1.FHints.Add("List");
+        } finally {
+          this.WebRichEditToolBar1.FHints.EndUpdate();
+        };
+        this.WebRichEditToolBar1.SetRichEdit(this.WebRichEdit1);
+        this.WebRichEdit1.SetParentComponent(this.WebPanel1);
+        this.WebRichEdit1.SetName("WebRichEdit1");
+        this.WebRichEdit1.SetLeft(0);
+        this.WebRichEdit1.SetTop(32);
+        this.WebRichEdit1.SetWidth(811);
+        this.WebRichEdit1.SetHeight(445);
+        this.WebRichEdit1.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
+        this.WebRichEdit1.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsSingle);
+        this.WebRichEdit1.SetChildOrderEx(1);
+        this.WebRichEdit1.SetColor(16777215);
+      } finally {
+        this.WebScrollBox1.AfterLoadDFMValues();
+        this.WebPanel1.AfterLoadDFMValues();
+        this.WebRichEditToolBar1.AfterLoadDFMValues();
+        this.WebRichEdit1.AfterLoadDFMValues();
+      };
+    };
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+    var $r = this.$rtti;
+    $r.addField("WebScrollBox1",pas["WEBLib.ExtCtrls"].$rtti["TScrollBox"]);
+    $r.addField("WebPanel1",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
+    $r.addField("WebRichEditToolBar1",pas["WEBLib.Buttons"].$rtti["TRichEditToolBar"]);
+    $r.addField("WebRichEdit1",pas["WEBLib.ComCtrls"].$rtti["TRichEdit"]);
+  });
+  this.frmRichEditor = null;
+});
+rtl.module("uResponsiveGrid",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.Buttons","WEBLib.ComCtrls","WEBLib.Controls","WEBLib.ExtCtrls","WEBLib.WebCtrls","WEBLib.Grids","WEBLib.StdCtrls","WEBLib.StdCtrls"],function () {
+  "use strict";
+  var $mod = this;
+  rtl.createClass(this,"TForm1",pas["WEBLib.Forms"].TForm,function () {
+    this.$init = function () {
+      pas["WEBLib.Forms"].TForm.$init.call(this);
+      this.WebResponsiveGrid1 = null;
+      this.WebButton1 = null;
+    };
+    this.$final = function () {
+      this.WebResponsiveGrid1 = undefined;
+      this.WebButton1 = undefined;
+      pas["WEBLib.Forms"].TForm.$final.call(this);
+    };
+    this.WebButton1Click = function (Sender) {
+      var toolbar = null;
+      var WebRichEdit1 = null;
+      var ItemElement = null;
+      WebRichEdit1 = pas["WEBLib.ComCtrls"].TRichEdit.$create("Create$1",[this]);
+      WebRichEdit1.SetTop(33);
+      WebRichEdit1.SetWidth(811);
+      WebRichEdit1.SetHeight(445);
+      toolbar = pas["WEBLib.Buttons"].TRichEditToolBar.$create("Create$1",[this]);
+      toolbar.SetRichEdit(WebRichEdit1);
+      toolbar.SetWidth(841);
+      toolbar.SetHeight(32);
+      toolbar.SetParentElement(this.WebResponsiveGrid1.FItems.GetItem$1(0).FElementHandle);
+      toolbar.FTag$1 = 1;
+      ItemElement = this.WebResponsiveGrid1.FItems.GetItem$1(0).FElementHandle;
+      if (ItemElement != null) {
+        ItemElement.style.height = '33px';
+        ItemElement.style.width = '841px';
+      };
+      WebRichEdit1.SetParentElement(this.WebResponsiveGrid1.FItems.GetItem$1(1).FElementHandle);
+      toolbar.FTag$1 = 2;
+    };
+    this.LoadDFMValues = function () {
+      pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
+      this.WebResponsiveGrid1 = pas["WEBLib.Grids"].TResponsiveGrid.$create("Create$1",[this]);
+      this.WebButton1 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.WebResponsiveGrid1.BeforeLoadDFMValues();
+      this.WebButton1.BeforeLoadDFMValues();
+      try {
+        this.SetName("Form1");
+        this.SetWidth(640);
+        this.SetHeight(480);
+        this.SetCSSLibrary(pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap);
+        this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.FFont.FCharset = 1;
+        this.FFont.SetColor(65793);
+        this.FFont.SetHeight(-15);
+        this.FFont.SetName("Tahoma");
+        this.FFont.SetStyle({});
+        this.SetParentFont(false);
+        this.WebResponsiveGrid1.SetParentComponent(this);
+        this.WebResponsiveGrid1.SetName("WebResponsiveGrid1");
+        this.WebResponsiveGrid1.SetLeft(8);
+        this.WebResponsiveGrid1.SetTop(32);
+        this.WebResponsiveGrid1.SetWidth(632);
+        this.WebResponsiveGrid1.SetHeight(409);
+        this.WebResponsiveGrid1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebResponsiveGrid1.FItems.Clear$1();
+        var $with = this.WebResponsiveGrid1.FItems.Add$1();
+        var $with1 = this.WebResponsiveGrid1.FItems.Add$1();
+        this.WebResponsiveGrid1.FOptions.SetItemHeight(450);
+        this.WebResponsiveGrid1.FOptions.SetItemWidthMin(850);
+        this.WebButton1.SetParentComponent(this);
+        this.WebButton1.SetName("WebButton1");
+        this.WebButton1.SetLeft(56);
+        this.WebButton1.SetTop(447);
+        this.WebButton1.SetWidth(96);
+        this.WebButton1.SetHeight(25);
+        this.WebButton1.SetCaption("ResponGrid");
+        this.WebButton1.SetChildOrderEx(1);
+        this.WebButton1.SetElementClassName("btn btn-light");
+        this.WebButton1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebButton1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebButton1.SetHeightPercent(100.000000000000000000);
+        this.WebButton1.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.WebButton1,this,"OnClick","WebButton1Click");
+      } finally {
+        this.WebResponsiveGrid1.AfterLoadDFMValues();
+        this.WebButton1.AfterLoadDFMValues();
+      };
+    };
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+    var $r = this.$rtti;
+    $r.addField("WebResponsiveGrid1",pas["WEBLib.Grids"].$rtti["TResponsiveGrid"]);
+    $r.addField("WebButton1",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addMethod("WebButton1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+  });
+  this.Form1 = null;
+});
+rtl.module("UEditorCM",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.Controls","WEBLib.WebCtrls"],function () {
+  "use strict";
+  var $mod = this;
+  rtl.createClass(this,"TfrmEditorCM",pas["WEBLib.Forms"].TForm,function () {
+    this.$init = function () {
+      pas["WEBLib.Forms"].TForm.$init.call(this);
+      this.divCodeMirror = null;
+    };
+    this.$final = function () {
+      this.divCodeMirror = undefined;
+      pas["WEBLib.Forms"].TForm.$final.call(this);
+    };
+    this.WebFormCreate = function (Sender) {
+      var editorDiv = document.getElementById("divCodeMirror");
+      var myCodeMirror = CodeMirror(editorDiv, {
+          value: "<!-- Write your HTML/JS/CSS here -->\nconsole.log('Hello world!');",
+          mode: "htmlmixed", // Use 'htmlmixed' mode for full functionality
+          lineNumbers: true, // Display line numbers
+          autofocus: true    // Give the editor focus on page load
+          // Add other options as needed
+      });
+    };
+    this.LoadDFMValues = function () {
+      pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
+      this.divCodeMirror = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["divCodeMirror"]);
+      this.divCodeMirror.BeforeLoadDFMValues();
+      try {
+        this.SetName("frmEditorCM");
+        this.SetWidth(640);
+        this.SetHeight(480);
+        this.SetCSSLibrary(pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap);
+        this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.FFont.FCharset = 1;
+        this.FFont.SetColor(65793);
+        this.FFont.SetHeight(-15);
+        this.FFont.SetName("Tahoma");
+        this.FFont.SetStyle({});
+        this.SetParentFont(false);
+        this.SetEvent(this,"OnCreate","WebFormCreate");
+        this.divCodeMirror.SetParentComponent(this);
+        this.divCodeMirror.SetName("divCodeMirror");
+        this.divCodeMirror.SetLeft(-191);
+        this.divCodeMirror.SetTop(0);
+        this.divCodeMirror.SetWidth(1071);
+        this.divCodeMirror.SetHeight(168);
+        this.divCodeMirror.FMargins.SetLeft(5);
+        this.divCodeMirror.FMargins.SetTop(5);
+        this.divCodeMirror.FMargins.SetRight(5);
+        this.divCodeMirror.FMargins.SetBottom(5);
+        this.divCodeMirror.SetChildOrderEx(3);
+        this.divCodeMirror.SetElementPosition(pas["WEBLib.Controls"].TElementPosition.epIgnore);
+        this.divCodeMirror.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.divCodeMirror.SetRole("");
+      } finally {
+        this.divCodeMirror.AfterLoadDFMValues();
+      };
+    };
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+    var $r = this.$rtti;
+    $r.addField("divCodeMirror",pas["WEBLib.WebCtrls"].$rtti["THTMLDiv"]);
+    $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
+  });
+  this.frmEditorCM = null;
+});
+rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","UFormaLibreta","uLoginForma","uAyuda","uLibTabulator","Unit5","uTabulator","uClipboard","URichEditor","uResponsiveGrid","uEditor","UEditorCM"],function () {
   "use strict";
   var $mod = this;
   $mod.$implcode = function () {

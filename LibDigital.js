@@ -83187,8 +83187,8 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
           var SunEditorSave = this.SunEditorSave;
           this.suneditor = SUNEDITOR.create('divSunEditor',{
             width: 'auto',
-            height: 350,
-            minHeight: 150,
+            height: 300,
+            minHeight: 100,
             codeMirror: {
               src: CodeMirror,
               options: {
@@ -83369,7 +83369,7 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
         this.divSunEditor.SetParentComponent(this);
         this.divSunEditor.SetName("divSunEditor");
         this.divSunEditor.SetLeft(0);
-        this.divSunEditor.SetTop(56);
+        this.divSunEditor.SetTop(24);
         this.divSunEditor.SetWidth(727);
         this.divSunEditor.SetHeight(192);
         this.divSunEditor.SetChildOrderEx(1);
@@ -83626,7 +83626,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
           },
       
       
-      
+         printRowRange: "all",
         //headerVisible: false,
         height:"311px",
         height:"80%",
@@ -83744,6 +83744,8 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.LibHojasDbClientDataset1.FFieldDefs.Add$5("hojacontenido",pas.DB.TFieldType.ftString);
       this.LibHojasDbClientDataset1.FFieldDefs.Add$5("hojaclases",pas.DB.TFieldType.ftString);
       this.LibHojasDbClientDataset1.FFieldDefs.Add$5("fecha",pas.DB.TFieldType.ftString);
+      const myElement = document.getElementById('html-table');
+      console.log('element',myElement);
     };
     this.webBotonMenuClick = function (Sender) {
       var r = null;
@@ -84188,6 +84190,85 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
                 };
       };
       this.panelHojas.SetVisible(false);
+    };
+    this.Visualizar1Click = function (Sender) {
+      var table = Tabulator.findTable("#eletabulator")[0];
+       table.print(false, true);
+      // table.print("active",true);
+    };
+    this.Compartir1Click = function (Sender) {
+      var fechahoy = 0.0;
+      var anio = 0;
+      var mes = 0;
+      var dia = 0;
+      var sfechadia = "";
+      fechahoy = pas.SysUtils.Now();
+      pas.SysUtils.DecodeDate(fechahoy,{get: function () {
+          return anio;
+        }, set: function (v) {
+          anio = v;
+        }},{get: function () {
+          return mes;
+        }, set: function (v) {
+          mes = v;
+        }},{get: function () {
+          return dia;
+        }, set: function (v) {
+          dia = v;
+        }});
+      sfechadia = pas.SysUtils.DateToStr(fechahoy);
+      sfechadia = pas.SysUtils.Format("%.4d%.2d%.2d",pas.System.VarRecs(0,anio,0,mes,0,dia)) + ".pdf";
+      sfechadia = "Ventas_del_" + sfechadia;
+      var table = Tabulator.findTable("#eletabulator")[0];
+            //var htmlTable = table.getHtml("active",false);
+            var htmlTable = table.getHtml("all",false);
+            var jsonData = table.getSheetData("uno");
+           // console.log('htmlTable',  htmlTable);
+            const { jsPDF } = window.jspdf;
+            var doc = new jsPDF('l', 'pt'); //set document to landscape, better for most tables
+      
+      
+           var specialElementHandlers = {
+           '#getPDF': function(element, renderer){
+             return true;
+           },
+           '.controls': function(element, renderer){
+             return true;
+           }
+         };
+      
+         const myElement = document.createElement('div');
+         //const myElement = document.getElementById('html-table');
+         console.log('element',myElement);
+         myElement.innerHTML = htmlTable;
+        // console.log('myelement',myElement);
+         // OK
+         //doc.autoTable({ html: myElement.querySelector('table') });
+         //doc.save("aaa.pdf");
+         // fin ok
+       // https://phppot.com/javascript/jspdf-autotable/
+        //doc.autoTable({ html: myElement.querySelector('table') ,
+        //console.log('tablehtml',myElement.querySelector('table'));
+      
+         doc.autoTable({ html: myElement.querySelector('table')});
+         const pdfBlob = doc.output('blob');
+      
+        // const file = new File([pdfBlob], 'document.pdf', { type: 'application/pdf' });
+         const file = new File([pdfBlob], sfechadia, { type: 'application/pdf' });
+         if ( window.navigator.share) {
+            //  const pdfBlob = new Blob([fileContents], { type: 'application/pdf' });
+            //const file = new File([pdfBlob], 'document.pdf', { type: 'application/pdf' });
+      
+          window.navigator.share({
+              files: [file],
+              title: 'PDF Document',
+              text: 'Check out this PDF document!',
+          })
+         .then(() => console.log('PDF compartido correctamente'))
+         .catch((error) => console.error('Error compartir PDF:', error));
+          } else {
+          console.log('Web Share API not supported in this browser.');
+      };
     };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
@@ -84694,11 +84775,11 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.Compartir1.SetParentComponent(this.WebPopupMenu1);
         this.Compartir1.SetName("Compartir1");
         this.Compartir1.SetCaption("Compartir");
-        this.Compartir1.SetEnabled(false);
+        this.SetEvent$1(this.Compartir1,this,"OnClick","Compartir1Click");
         this.Visualizar1.SetParentComponent(this.WebPopupMenu1);
         this.Visualizar1.SetName("Visualizar1");
-        this.Visualizar1.SetCaption("Visualizar");
-        this.Visualizar1.SetEnabled(false);
+        this.Visualizar1.SetCaption("Imprimir");
+        this.SetEvent$1(this.Visualizar1,this,"OnClick","Visualizar1Click");
         this.N2.SetParentComponent(this.WebPopupMenu1);
         this.N2.SetName("N2");
         this.N2.SetCaption("-");
@@ -84706,10 +84787,12 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.Exportar1.SetName("Exportar1");
         this.Exportar1.SetCaption("Exportar");
         this.Exportar1.SetEnabled(false);
+        this.Exportar1.FVisible = false;
         this.ExportarArchivoTexto1.SetParentComponent(this.WebPopupMenu1);
         this.ExportarArchivoTexto1.SetName("ExportarArchivoTexto1");
         this.ExportarArchivoTexto1.SetCaption("Exportar a Archivo");
         this.ExportarArchivoTexto1.SetEnabled(false);
+        this.ExportarArchivoTexto1.FVisible = false;
         this.Salir1.SetParentComponent(this.WebPopupMenu1);
         this.Salir1.SetName("Salir1");
         this.Salir1.SetCaption("Salir");
@@ -84833,6 +84916,8 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addMethod("Guardar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Abrir1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnAbrirClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("Visualizar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("Compartir1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.frmLibTabulator = null;
   $mod.$implcode = function () {

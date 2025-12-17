@@ -83187,8 +83187,8 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
           var SunEditorSave = this.SunEditorSave;
           this.suneditor = SUNEDITOR.create('divSunEditor',{
             width: 'auto',
-            height: 300,
-            minHeight: 100,
+            height: 350,
+            minHeight: 150,
             codeMirror: {
               src: CodeMirror,
               options: {
@@ -83414,9 +83414,10 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
   });
   this.frmEditor = null;
 });
-rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.WebCtrls","WEBLib.StdCtrls","WEBLib.StdCtrls","WEBLib.Buttons","WEBLib.Controls","WEBLib.ExtCtrls","WEBLib.Menus","WEBLib.Menus","uEditor"],function () {
+rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.WebCtrls","WEBLib.StdCtrls","WEBLib.StdCtrls","WEBLib.Buttons","WEBLib.Controls","WEBLib.ExtCtrls","WEBLib.Menus","WEBLib.Menus","uEditor","DB","WEBLib.IndexedDb"],function () {
   "use strict";
   var $mod = this;
+  var $impl = $mod.$impl;
   rtl.createClass(this,"TfrmLibTabulator",pas["WEBLib.Forms"].TForm,function () {
     this.$init = function () {
       pas["WEBLib.Forms"].TForm.$init.call(this);
@@ -83456,6 +83457,13 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.btnCopiar = null;
       this.btnPegar = null;
       this.Editor1 = null;
+      this.LibHojasDbClientDataset1 = null;
+      this.WebEdit1 = null;
+      this.panelHojas = null;
+      this.WebLabel4 = null;
+      this.listaHojas = null;
+      this.btnAbrir = null;
+      this.btnCancelarAbrir = null;
     };
     this.$final = function () {
       this.WebPanel1 = undefined;
@@ -83494,6 +83502,13 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.btnCopiar = undefined;
       this.btnPegar = undefined;
       this.Editor1 = undefined;
+      this.LibHojasDbClientDataset1 = undefined;
+      this.WebEdit1 = undefined;
+      this.panelHojas = undefined;
+      this.WebLabel4 = undefined;
+      this.listaHojas = undefined;
+      this.btnAbrir = undefined;
+      this.btnCancelarAbrir = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
@@ -83577,7 +83592,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         var sheets = [
           {
             name:'huno',
-            title:"Editor",
+            title:"Renglones",
             key:"uno",
             rows:50,
             //rows:0,
@@ -83724,6 +83739,11 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
          // Assuming 'table' is your Tabulator instance
       
       });
+      this.LibHojasDbClientDataset1.FFieldDefs.Clear();
+      this.LibHojasDbClientDataset1.FFieldDefs.Add$5("id",pas.DB.TFieldType.ftInteger);
+      this.LibHojasDbClientDataset1.FFieldDefs.Add$5("hojacontenido",pas.DB.TFieldType.ftString);
+      this.LibHojasDbClientDataset1.FFieldDefs.Add$5("hojaclases",pas.DB.TFieldType.ftString);
+      this.LibHojasDbClientDataset1.FFieldDefs.Add$5("fecha",pas.DB.TFieldType.ftString);
     };
     this.webBotonMenuClick = function (Sender) {
       var r = null;
@@ -84079,6 +84099,96 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       pas.uEditor.frmEditor = pas.uEditor.TfrmEditor.$create("CreateNew$3",[AfterCreate]);
       pas.uEditor.frmEditor.ShowModal$1(AfterShowModal);
     };
+    this.LimpiarHoja1Click = function (Sender) {
+      var table = Tabulator.findTable("#eletabulator")[0];
+      // table.setData([]);
+       var activeSheet = table.getSheet();
+       var key = activeSheet.getKey();
+       table.clearSheet(key); //clear the data from the info sheet;
+    };
+    this.WebFormShow = function (Sender) {
+      var $Self = this;
+      this.LibHojasDbClientDataset1.Init(function () {
+        $Self.LibHojasDbClientDataset1.SetActive(true);
+      });
+    };
+    this.Guardar1Click = function (Sender) {
+      var datoshoja = "";
+      var iddb = "";
+      var table = Tabulator.findTable("#eletabulator")[0];
+            var activeSheet = table.getSheet();
+            var key = activeSheet.getKey();
+            var data = table.getSheetData(key); //get the data from the info sheet
+            //table.copyToClipboard("selected");
+      
+            console.log('data', data);
+            const arrayAsString = JSON.stringify(data);
+            datoshoja= arrayAsString;
+      if (datoshoja.length > 0) {
+        iddb = this.WebEdit1.GetText();
+        if (!this.LibHojasDbClientDataset1.Locate("id",iddb,{})) {
+          this.LibHojasDbClientDataset1.Append();
+          this.LibHojasDbClientDataset1.FieldByName("hojacontenido").SetAsString(datoshoja);
+          this.LibHojasDbClientDataset1.FieldByName("fecha").SetAsString(pas.SysUtils.DateToStr(pas.SysUtils.Now()));
+          this.LibHojasDbClientDataset1.Post();
+        } else {
+          this.LibHojasDbClientDataset1.Edit();
+          this.LibHojasDbClientDataset1.FieldByName("hojacontenido").SetAsString(datoshoja);
+          this.LibHojasDbClientDataset1.FieldByName("hojaclases").SetAsString("");
+          this.LibHojasDbClientDataset1.FieldByName("fecha").SetAsString(pas.SysUtils.DateToStr(pas.SysUtils.Now()));
+          this.LibHojasDbClientDataset1.UpdateRecord();
+          this.LibHojasDbClientDataset1.Post();
+        };
+      };
+    };
+    this.Abrir1Click = function (Sender) {
+      var datoshoja = "";
+      var id = "";
+      var itemDB = null;
+      this.listaHojas.FItems.Clear();
+      this.LibHojasDbClientDataset1.First();
+      while (!this.LibHojasDbClientDataset1.GetEOF()) {
+        id = this.LibHojasDbClientDataset1.FieldByName("id").GetAsString();
+        itemDB = $impl.THojas.$create("Create$1");
+        itemDB.id = this.LibHojasDbClientDataset1.FieldByName("id").GetAsString();
+        itemDB.contenido = this.LibHojasDbClientDataset1.FieldByName("hojacontenido").GetAsString();
+        itemDB.clases = this.LibHojasDbClientDataset1.FieldByName("hojaclases").GetAsString();
+        this.listaHojas.AddItem("Hoja:" + id,itemDB);
+        this.LibHojasDbClientDataset1.Next();
+      };
+      this.panelHojas.SetVisible(true);
+    };
+    this.btnAbrirClick = function (Sender) {
+      var itemDB = null;
+      var itemindex = 0;
+      var iddb = "";
+      var indexs = "";
+      var contenido = "";
+      var clases = "";
+      itemindex = this.listaHojas.GetItemIndex();
+      indexs = this.listaHojas.FItems.Get(itemindex);
+      iddb = pas.System.Copy(indexs,pas.System.Pos(":",indexs) + 1,indexs.length);
+      this.WebEdit1.SetText(iddb);
+      console.log('index',iddb);
+      if (this.LibHojasDbClientDataset1.Locate("id",iddb,{})) {
+        console.log('record found');
+        contenido = this.LibHojasDbClientDataset1.FieldByName("hojacontenido").GetAsString();
+        var table = Tabulator.findTable("#eletabulator")[0];
+                 console.log('contenido', contenido);
+                 var activeSheet = table.getSheet();
+                 var key = activeSheet.getKey();
+                 console.log('tabla',table);
+                 console.log('activeshee',activeSheet);
+                 console.log('key',key);
+                 const jsonData = JSON.parse(contenido);
+        
+                // Check if the parsed data is an array
+                if (Array.isArray(jsonData)) {
+                  table.setSheetData(key,jsonData);
+                };
+      };
+      this.panelHojas.SetVisible(false);
+    };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
       this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
@@ -84086,6 +84196,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.btnSiEditar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.btnCopiar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.btnPegar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.WebEdit1 = pas["WEBLib.StdCtrls"].TEdit.$create("Create$1",[this]);
       this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
       this.WebSpeedButton1 = pas["WEBLib.Buttons"].TSpeedButton.$create("Create$1",[this]);
       this.webBotonMenu = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
@@ -84102,6 +84213,11 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.btnAgregarColCerrar = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.columna_nom = pas["WEBLib.StdCtrls"].TEdit.$create("Create$1",[this]);
       this.columna_tit = pas["WEBLib.StdCtrls"].TEdit.$create("Create$1",[this]);
+      this.panelHojas = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.WebLabel4 = pas["WEBLib.StdCtrls"].TLabel.$create("Create$1",[this]);
+      this.listaHojas = pas["WEBLib.StdCtrls"].TListBox.$create("Create$2",["listaabrir"]);
+      this.btnAbrir = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.btnCancelarAbrir = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebPopupMenu1 = pas["WEBLib.Menus"].TPopupMenu.$create("Create$1",[this]);
       this.Cerrar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Ayuda1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
@@ -84117,11 +84233,13 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.Exportar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.ExportarArchivoTexto1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Salir1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.LibHojasDbClientDataset1 = pas["WEBLib.IndexedDb"].TIndexedDbClientDataset.$create("Create$1",[this]);
       this.WebPanel2.BeforeLoadDFMValues();
       this.btnNoEditar.BeforeLoadDFMValues();
       this.btnSiEditar.BeforeLoadDFMValues();
       this.btnCopiar.BeforeLoadDFMValues();
       this.btnPegar.BeforeLoadDFMValues();
+      this.WebEdit1.BeforeLoadDFMValues();
       this.WebPanel1.BeforeLoadDFMValues();
       this.WebSpeedButton1.BeforeLoadDFMValues();
       this.webBotonMenu.BeforeLoadDFMValues();
@@ -84138,6 +84256,11 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.btnAgregarColCerrar.BeforeLoadDFMValues();
       this.columna_nom.BeforeLoadDFMValues();
       this.columna_tit.BeforeLoadDFMValues();
+      this.panelHojas.BeforeLoadDFMValues();
+      this.WebLabel4.BeforeLoadDFMValues();
+      this.listaHojas.BeforeLoadDFMValues();
+      this.btnAbrir.BeforeLoadDFMValues();
+      this.btnCancelarAbrir.BeforeLoadDFMValues();
       this.WebPopupMenu1.BeforeLoadDFMValues();
       this.Cerrar1.BeforeLoadDFMValues();
       this.Ayuda1.BeforeLoadDFMValues();
@@ -84153,6 +84276,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.Exportar1.BeforeLoadDFMValues();
       this.ExportarArchivoTexto1.BeforeLoadDFMValues();
       this.Salir1.BeforeLoadDFMValues();
+      this.LibHojasDbClientDataset1.BeforeLoadDFMValues();
       try {
         this.SetName("frmLibTabulator");
         this.SetWidth(600);
@@ -84166,6 +84290,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.FFont.SetStyle({});
         this.SetParentFont(false);
         this.SetEvent(this,"OnCreate","WebFormCreate");
+        this.SetEvent(this,"OnShow","WebFormShow");
         this.WebPanel2.SetParentComponent(this);
         this.WebPanel2.SetName("WebPanel2");
         this.WebPanel2.SetLeft(0);
@@ -84191,6 +84316,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.btnNoEditar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.btnNoEditar.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
         this.btnNoEditar.SetHeightPercent(100.000000000000000000);
+        this.btnNoEditar.SetVisible(false);
         this.btnNoEditar.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.btnNoEditar,this,"OnClick","btnNoEditarClick");
         this.btnSiEditar.SetParentComponent(this.WebPanel2);
@@ -84205,6 +84331,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.btnSiEditar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.btnSiEditar.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
         this.btnSiEditar.SetHeightPercent(100.000000000000000000);
+        this.btnSiEditar.SetVisible(false);
         this.btnSiEditar.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.btnSiEditar,this,"OnClick","btnSiEditarClick");
         this.btnCopiar.SetParentComponent(this.WebPanel2);
@@ -84235,6 +84362,19 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.btnPegar.SetHeightPercent(100.000000000000000000);
         this.btnPegar.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.btnPegar,this,"OnClick","btnPegarClick");
+        this.WebEdit1.SetParentComponent(this.WebPanel2);
+        this.WebEdit1.SetName("WebEdit1");
+        this.WebEdit1.SetLeft(436);
+        this.WebEdit1.SetTop(6);
+        this.WebEdit1.SetWidth(97);
+        this.WebEdit1.SetHeight(22);
+        this.WebEdit1.SetChildOrderEx(3);
+        this.WebEdit1.SetElementClassName("form-control");
+        this.WebEdit1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebEdit1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebEdit1.SetHeightPercent(100.000000000000000000);
+        this.WebEdit1.SetVisible(false);
+        this.WebEdit1.SetWidthPercent(100.000000000000000000);
         this.WebPanel1.SetParentComponent(this);
         this.WebPanel1.SetName("WebPanel1");
         this.WebPanel1.SetLeft(0);
@@ -84445,6 +84585,70 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.columna_tit.SetHeightPercent(100.000000000000000000);
         this.columna_tit.SetTabOrder(1);
         this.columna_tit.SetWidthPercent(100.000000000000000000);
+        this.panelHojas.SetParentComponent(this);
+        this.panelHojas.SetName("panelHojas");
+        this.panelHojas.SetLeft(123);
+        this.panelHojas.SetTop(75);
+        this.panelHojas.SetWidth(353);
+        this.panelHojas.SetHeight(209);
+        this.panelHojas.FCenter.SetHorizontal(true);
+        this.panelHojas.FCenter.SetVertical(true);
+        this.panelHojas.SetElementClassName("card");
+        this.panelHojas.SetChildOrderEx(3);
+        this.panelHojas.FElementBodyClassName = "card-body";
+        this.panelHojas.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.panelHojas.SetTabOrder(5);
+        this.panelHojas.SetVisible(false);
+        this.WebLabel4.SetParentComponent(this.panelHojas);
+        this.WebLabel4.SetName("WebLabel4");
+        this.WebLabel4.SetLeft(16);
+        this.WebLabel4.SetTop(18);
+        this.WebLabel4.SetWidth(118);
+        this.WebLabel4.SetHeight(18);
+        this.WebLabel4.SetCaption("Hojas registradas:");
+        this.WebLabel4.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebLabel4.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebLabel4.SetHeightPercent(100.000000000000000000);
+        this.WebLabel4.SetWidthPercent(100.000000000000000000);
+        this.listaHojas.SetParentComponent(this.panelHojas);
+        this.listaHojas.SetName("listaHojas");
+        this.listaHojas.SetLeft(16);
+        this.listaHojas.SetTop(42);
+        this.listaHojas.SetWidth(326);
+        this.listaHojas.SetHeight(119);
+        this.listaHojas.SetElementClassName("form-control");
+        this.listaHojas.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.listaHojas.SetHeightPercent(100.000000000000000000);
+        this.listaHojas.SetItemHeight(18);
+        this.listaHojas.SetWidthPercent(100.000000000000000000);
+        this.listaHojas.SetItemIndex(-1);
+        this.btnAbrir.SetParentComponent(this.panelHojas);
+        this.btnAbrir.SetName("btnAbrir");
+        this.btnAbrir.SetLeft(76);
+        this.btnAbrir.SetTop(165);
+        this.btnAbrir.SetWidth(96);
+        this.btnAbrir.SetHeight(25);
+        this.btnAbrir.SetCaption("Abrir");
+        this.btnAbrir.SetChildOrderEx(2);
+        this.btnAbrir.SetElementClassName("btn btn-light");
+        this.btnAbrir.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.btnAbrir.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.btnAbrir.SetHeightPercent(100.000000000000000000);
+        this.btnAbrir.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.btnAbrir,this,"OnClick","btnAbrirClick");
+        this.btnCancelarAbrir.SetParentComponent(this.panelHojas);
+        this.btnCancelarAbrir.SetName("btnCancelarAbrir");
+        this.btnCancelarAbrir.SetLeft(192);
+        this.btnCancelarAbrir.SetTop(167);
+        this.btnCancelarAbrir.SetWidth(96);
+        this.btnCancelarAbrir.SetHeight(25);
+        this.btnCancelarAbrir.SetCaption("Cancelar");
+        this.btnCancelarAbrir.SetChildOrderEx(2);
+        this.btnCancelarAbrir.SetElementClassName("btn btn-light");
+        this.btnCancelarAbrir.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.btnCancelarAbrir.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.btnCancelarAbrir.SetHeightPercent(100.000000000000000000);
+        this.btnCancelarAbrir.SetWidthPercent(100.000000000000000000);
         this.WebPopupMenu1.SetParentComponent(this);
         this.WebPopupMenu1.SetName("WebPopupMenu1");
         this.WebPopupMenu1.FAppearance.FHamburgerMenu.SetCaption("Menu");
@@ -84469,7 +84673,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.N1.SetCaption("-");
         this.Editor1.SetParentComponent(this.WebPopupMenu1);
         this.Editor1.SetName("Editor1");
-        this.Editor1.SetCaption("Editor");
+        this.Editor1.SetCaption("Editor de Texto");
         this.SetEvent$1(this.Editor1,this,"OnClick","Editor1Click");
         this.AgregarColumna1.SetParentComponent(this.WebPopupMenu1);
         this.AgregarColumna1.SetName("AgregarColumna1");
@@ -84478,15 +84682,15 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.LimpiarHoja1.SetParentComponent(this.WebPopupMenu1);
         this.LimpiarHoja1.SetName("LimpiarHoja1");
         this.LimpiarHoja1.SetCaption("Nueva Hoja");
-        this.LimpiarHoja1.SetEnabled(false);
+        this.SetEvent$1(this.LimpiarHoja1,this,"OnClick","LimpiarHoja1Click");
         this.Abrir1.SetParentComponent(this.WebPopupMenu1);
         this.Abrir1.SetName("Abrir1");
         this.Abrir1.SetCaption("Abrir");
-        this.Abrir1.SetEnabled(false);
+        this.SetEvent$1(this.Abrir1,this,"OnClick","Abrir1Click");
         this.Guardar1.SetParentComponent(this.WebPopupMenu1);
         this.Guardar1.SetName("Guardar1");
-        this.Guardar1.SetCaption("Guardar");
-        this.Guardar1.SetEnabled(false);
+        this.Guardar1.SetCaption("Guardar ");
+        this.SetEvent$1(this.Guardar1,this,"OnClick","Guardar1Click");
         this.Compartir1.SetParentComponent(this.WebPopupMenu1);
         this.Compartir1.SetName("Compartir1");
         this.Compartir1.SetCaption("Compartir");
@@ -84510,12 +84714,21 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.Salir1.SetName("Salir1");
         this.Salir1.SetCaption("Salir");
         this.SetEvent$1(this.Salir1,this,"OnClick","Salir1Click");
+        this.LibHojasDbClientDataset1.SetParentComponent(this);
+        this.LibHojasDbClientDataset1.SetName("LibHojasDbClientDataset1");
+        this.LibHojasDbClientDataset1.FIDBDatabaseName = "BDLibretaDigital";
+        this.LibHojasDbClientDataset1.FIDBObjectStoreName = "LibretaHojas";
+        this.LibHojasDbClientDataset1.FIDBKeyFieldName = "id";
+        this.LibHojasDbClientDataset1.FIDBAutoIncrement = true;
+        this.LibHojasDbClientDataset1.SetLeft(64);
+        this.LibHojasDbClientDataset1.SetTop(8);
       } finally {
         this.WebPanel2.AfterLoadDFMValues();
         this.btnNoEditar.AfterLoadDFMValues();
         this.btnSiEditar.AfterLoadDFMValues();
         this.btnCopiar.AfterLoadDFMValues();
         this.btnPegar.AfterLoadDFMValues();
+        this.WebEdit1.AfterLoadDFMValues();
         this.WebPanel1.AfterLoadDFMValues();
         this.WebSpeedButton1.AfterLoadDFMValues();
         this.webBotonMenu.AfterLoadDFMValues();
@@ -84532,6 +84745,11 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.btnAgregarColCerrar.AfterLoadDFMValues();
         this.columna_nom.AfterLoadDFMValues();
         this.columna_tit.AfterLoadDFMValues();
+        this.panelHojas.AfterLoadDFMValues();
+        this.WebLabel4.AfterLoadDFMValues();
+        this.listaHojas.AfterLoadDFMValues();
+        this.btnAbrir.AfterLoadDFMValues();
+        this.btnCancelarAbrir.AfterLoadDFMValues();
         this.WebPopupMenu1.AfterLoadDFMValues();
         this.Cerrar1.AfterLoadDFMValues();
         this.Ayuda1.AfterLoadDFMValues();
@@ -84547,6 +84765,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.Exportar1.AfterLoadDFMValues();
         this.ExportarArchivoTexto1.AfterLoadDFMValues();
         this.Salir1.AfterLoadDFMValues();
+        this.LibHojasDbClientDataset1.AfterLoadDFMValues();
       };
     };
     rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
@@ -84588,6 +84807,13 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addField("btnCopiar",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addField("btnPegar",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addField("Editor1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("LibHojasDbClientDataset1",pas["WEBLib.IndexedDb"].$rtti["TIndexedDbClientDataset"]);
+    $r.addField("WebEdit1",pas["WEBLib.StdCtrls"].$rtti["TEdit"]);
+    $r.addField("panelHojas",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
+    $r.addField("WebLabel4",pas["WEBLib.StdCtrls"].$rtti["TLabel"]);
+    $r.addField("listaHojas",pas["WEBLib.StdCtrls"].$rtti["TListBox"]);
+    $r.addField("btnAbrir",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("btnCancelarAbrir",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("webBotonMenuClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Cerrar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
@@ -84602,8 +84828,28 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addMethod("btnCopiarClick",0,[["Sender",pas.System.$rtti["TObject"]]],null,16,{attr: [pas.JS.AsyncAttribute,"Create"]});
     $r.addMethod("btnPegarClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Editor1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("LimpiarHoja1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebFormShow",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("Guardar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("Abrir1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("btnAbrirClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.frmLibTabulator = null;
+  $mod.$implcode = function () {
+    rtl.createClass($impl,"THojas",pas.System.TObject,function () {
+      this.$init = function () {
+        pas.System.TObject.$init.call(this);
+        this.id = "";
+        this.contenido = "";
+        this.clases = "";
+        this.fecha = "";
+      };
+      this.Create$1 = function () {
+        pas.System.TObject.Create.call(this);
+        return this;
+      };
+    });
+  };
 },["uAyuda"]);
 rtl.module("uLoginForma",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.Controls","WEBLib.Login","WEBLib.StdCtrls","WEBLib.StdCtrls","WEBLib.WebCtrls"],function () {
   "use strict";

@@ -83464,6 +83464,9 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.listaHojas = null;
       this.btnAbrir = null;
       this.btnCancelarAbrir = null;
+      this.VerPdf1 = null;
+      this.Copiar1 = null;
+      this.Pegar1 = null;
     };
     this.$final = function () {
       this.WebPanel1 = undefined;
@@ -83509,6 +83512,9 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.listaHojas = undefined;
       this.btnAbrir = undefined;
       this.btnCancelarAbrir = undefined;
+      this.VerPdf1 = undefined;
+      this.Copiar1 = undefined;
+      this.Pegar1 = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
@@ -84270,6 +84276,97 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
           console.log('Web Share API not supported in this browser.');
       };
     };
+    this.VerPdf1Click = function (Sender) {
+      var fechahoy = 0.0;
+      var anio = 0;
+      var mes = 0;
+      var dia = 0;
+      var sfechadia = "";
+      fechahoy = pas.SysUtils.Now();
+      pas.SysUtils.DecodeDate(fechahoy,{get: function () {
+          return anio;
+        }, set: function (v) {
+          anio = v;
+        }},{get: function () {
+          return mes;
+        }, set: function (v) {
+          mes = v;
+        }},{get: function () {
+          return dia;
+        }, set: function (v) {
+          dia = v;
+        }});
+      sfechadia = pas.SysUtils.DateToStr(fechahoy);
+      sfechadia = pas.SysUtils.Format("%.4d%.2d%.2d",pas.System.VarRecs(0,anio,0,mes,0,dia)) + ".pdf";
+      sfechadia = "Ventas_del_" + sfechadia;
+      /**
+       * Opens a PDF blob in a new browser tab.
+       * @param {Blob} blob - The PDF Blob object.
+       */
+      function openPdfBlobInNewTab(blob) {
+        // Ensure the blob is specifically a PDF type
+        const pdfBlob = new Blob([blob], { type: 'application/pdf' });
+      
+        // Create a temporary URL for the blob data
+        const fileURL = URL.createObjectURL(pdfBlob);
+      
+        // Open the URL in a new tab
+        const newTab = window.open(fileURL, '_blank');
+      
+        if (newTab) {
+          // Optional: Set a custom title for the new tab's document
+          newTab.document.title = 'View PDF Document';
+        } else {
+          // Handle cases where the browser's pop-up blocker prevents opening the tab
+          alert('Please allow pop-ups for this site to view the PDF.');
+        }
+      
+        // Optional (for cleanup): Revoke the URL when the tab is closed or the URL is no longer needed.
+        // Note: This URL will automatically be revoked when the document from which it was created is unloaded.
+        // URL.revokeObjectURL(fileURL);
+      }
+      
+             var table = Tabulator.findTable("#eletabulator")[0];
+            //var htmlTable = table.getHtml("active",false);
+            var htmlTable = table.getHtml("all",false);
+            var jsonData = table.getSheetData("uno");
+           // console.log('htmlTable',  htmlTable);
+            const { jsPDF } = window.jspdf;
+            var doc = new jsPDF('l', 'pt'); //set document to landscape, better for most tables
+      
+      
+           var specialElementHandlers = {
+           '#getPDF': function(element, renderer){
+             return true;
+           },
+           '.controls': function(element, renderer){
+             return true;
+           }
+         };
+      
+         const myElement = document.createElement('div');
+         //const myElement = document.getElementById('html-table');
+         console.log('element',myElement);
+         myElement.innerHTML = htmlTable;
+        // console.log('myelement',myElement);
+         // OK
+         //doc.autoTable({ html: myElement.querySelector('table') });
+         //doc.save("aaa.pdf");
+         // fin ok
+       // https://phppot.com/javascript/jspdf-autotable/
+        //doc.autoTable({ html: myElement.querySelector('table') ,
+        //console.log('tablehtml',myElement.querySelector('table'));
+      
+         doc.autoTable({ html: myElement.querySelector('table')});
+         const pdfBlob = doc.output('blob');
+         openPdfBlobInNewTab(pdfBlob);
+    };
+    this.Copiar1Click = function (Sender) {
+      this.btnCopiarClick(Sender);
+    };
+    this.Pegar1Click = function (Sender) {
+      this.btnPegarClick(Sender);
+    };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
       this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
@@ -84302,6 +84399,8 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.WebPopupMenu1 = pas["WEBLib.Menus"].TPopupMenu.$create("Create$1",[this]);
       this.Cerrar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Ayuda1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.Copiar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.Pegar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.N1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Editor1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.AgregarColumna1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
@@ -84311,6 +84410,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.Compartir1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Visualizar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.N2 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
+      this.VerPdf1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Exportar1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.ExportarArchivoTexto1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
       this.Salir1 = pas["WEBLib.Menus"].TMenuItem.$create("Create$1",[this]);
@@ -84345,6 +84445,8 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.WebPopupMenu1.BeforeLoadDFMValues();
       this.Cerrar1.BeforeLoadDFMValues();
       this.Ayuda1.BeforeLoadDFMValues();
+      this.Copiar1.BeforeLoadDFMValues();
+      this.Pegar1.BeforeLoadDFMValues();
       this.N1.BeforeLoadDFMValues();
       this.Editor1.BeforeLoadDFMValues();
       this.AgregarColumna1.BeforeLoadDFMValues();
@@ -84354,6 +84456,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.Compartir1.BeforeLoadDFMValues();
       this.Visualizar1.BeforeLoadDFMValues();
       this.N2.BeforeLoadDFMValues();
+      this.VerPdf1.BeforeLoadDFMValues();
       this.Exportar1.BeforeLoadDFMValues();
       this.ExportarArchivoTexto1.BeforeLoadDFMValues();
       this.Salir1.BeforeLoadDFMValues();
@@ -84427,6 +84530,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.btnCopiar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.btnCopiar.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
         this.btnCopiar.SetHeightPercent(100.000000000000000000);
+        this.btnCopiar.SetVisible(false);
         this.btnCopiar.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.btnCopiar,this,"OnClick","btnCopiarClick");
         this.btnPegar.SetParentComponent(this.WebPanel2);
@@ -84441,6 +84545,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.btnPegar.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.btnPegar.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
         this.btnPegar.SetHeightPercent(100.000000000000000000);
+        this.btnPegar.SetVisible(false);
         this.btnPegar.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.btnPegar,this,"OnClick","btnPegarClick");
         this.WebEdit1.SetParentComponent(this.WebPanel2);
@@ -84749,6 +84854,14 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.Ayuda1.SetName("Ayuda1");
         this.Ayuda1.SetCaption("Ayuda");
         this.SetEvent$1(this.Ayuda1,this,"OnClick","Ayuda1Click");
+        this.Copiar1.SetParentComponent(this.WebPopupMenu1);
+        this.Copiar1.SetName("Copiar1");
+        this.Copiar1.SetCaption("Copiar");
+        this.SetEvent$1(this.Copiar1,this,"OnClick","Copiar1Click");
+        this.Pegar1.SetParentComponent(this.WebPopupMenu1);
+        this.Pegar1.SetName("Pegar1");
+        this.Pegar1.SetCaption("Pegar");
+        this.SetEvent$1(this.Pegar1,this,"OnClick","Pegar1Click");
         this.N1.SetParentComponent(this.WebPopupMenu1);
         this.N1.SetName("N1");
         this.N1.SetCaption("-");
@@ -84783,6 +84896,10 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.N2.SetParentComponent(this.WebPopupMenu1);
         this.N2.SetName("N2");
         this.N2.SetCaption("-");
+        this.VerPdf1.SetParentComponent(this.WebPopupMenu1);
+        this.VerPdf1.SetName("VerPdf1");
+        this.VerPdf1.SetCaption("Ver Pdf");
+        this.SetEvent$1(this.VerPdf1,this,"OnClick","VerPdf1Click");
         this.Exportar1.SetParentComponent(this.WebPopupMenu1);
         this.Exportar1.SetName("Exportar1");
         this.Exportar1.SetCaption("Exportar");
@@ -84836,6 +84953,8 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebPopupMenu1.AfterLoadDFMValues();
         this.Cerrar1.AfterLoadDFMValues();
         this.Ayuda1.AfterLoadDFMValues();
+        this.Copiar1.AfterLoadDFMValues();
+        this.Pegar1.AfterLoadDFMValues();
         this.N1.AfterLoadDFMValues();
         this.Editor1.AfterLoadDFMValues();
         this.AgregarColumna1.AfterLoadDFMValues();
@@ -84845,6 +84964,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.Compartir1.AfterLoadDFMValues();
         this.Visualizar1.AfterLoadDFMValues();
         this.N2.AfterLoadDFMValues();
+        this.VerPdf1.AfterLoadDFMValues();
         this.Exportar1.AfterLoadDFMValues();
         this.ExportarArchivoTexto1.AfterLoadDFMValues();
         this.Salir1.AfterLoadDFMValues();
@@ -84897,6 +85017,9 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addField("listaHojas",pas["WEBLib.StdCtrls"].$rtti["TListBox"]);
     $r.addField("btnAbrir",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addField("btnCancelarAbrir",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("VerPdf1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("Copiar1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
+    $r.addField("Pegar1",pas["WEBLib.Menus"].$rtti["TMenuItem"]);
     $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("webBotonMenuClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Cerrar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
@@ -84918,6 +85041,9 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addMethod("btnAbrirClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Visualizar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Compartir1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("VerPdf1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("Copiar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("Pegar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.frmLibTabulator = null;
   $mod.$implcode = function () {

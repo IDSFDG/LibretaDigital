@@ -84367,6 +84367,9 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     this.Pegar1Click = function (Sender) {
       this.btnPegarClick(Sender);
     };
+    this.WebPanel2Click = function (Sender) {
+      this.Salir1Click(Sender);
+    };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
       this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
@@ -84484,11 +84487,13 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         this.WebPanel2.SetElementClassName("card text-white bg-secondary mb-3");
         this.WebPanel2.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
         this.WebPanel2.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
+        this.WebPanel2.SetCaption("Salir");
         this.WebPanel2.SetChildOrderEx(2);
         this.WebPanel2.SetColor(16770250);
         this.WebPanel2.FElementBodyClassName = "d-flex justify-content-center align-items-center min-vh-100";
         this.WebPanel2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.WebPanel2.SetTabOrder(1);
+        this.SetEvent$1(this.WebPanel2,this,"OnClick","WebPanel2Click");
         this.btnNoEditar.SetParentComponent(this.WebPanel2);
         this.btnNoEditar.SetName("btnNoEditar");
         this.btnNoEditar.SetLeft(105);
@@ -85044,6 +85049,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     $r.addMethod("VerPdf1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Copiar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("Pegar1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebPanel2Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.frmLibTabulator = null;
   $mod.$implcode = function () {
@@ -85071,11 +85077,13 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
       this.WebHTMLContainer1 = null;
       this.WebPanel1 = null;
       this.WebPanel2 = null;
+      this.WebButton1 = null;
     };
     this.$final = function () {
       this.WebHTMLContainer1 = undefined;
       this.WebPanel1 = undefined;
       this.WebPanel2 = undefined;
+      this.WebButton1 = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
@@ -85107,37 +85115,37 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
           console.log("Selected Item Text:", selectedText);
           console.log("Selected Item Href:", selectedHref);
           console.log("ID seleccionado:", selectopc);
+        //  pas.unitCards.TfrmCard.cargarForma(textosel);
+      
         });
       
       
       });
-      
-        const button = document.getElementById('botonentrar');
-      
-      // Add a click event listener
-      button.addEventListener('click', function() {
-        // This function runs when the button is clicked
-        //alert('The primary button was clicked!');
-        console.log('Button clicked successfully.');
-          console.log("Texto seleccionado boton:", textosel);
-          console.log(this);
-          console.log(pas.unitCards.TfrmCard);
-          pas.unitCards.TfrmCard.cargarForma(textosel);
-      });
+    };
+    this.WebButton1Click = function (Sender) {
+      this.cargarForma("0");
+    };
+    this.WebPanel2Click = function (Sender) {
+      this.cerrarForma();
     };
     this.cargarForma = function (opcion) {
       var $Self = this;
       var frmLibretaTab = null;
       var frmEditor = null;
       var opc = 0;
+      var sopc = "";
       function AfterShowModal(AValue) {
-        $Self.Close();
       };
       function AfterCreate(AForm) {
       };
-      opc = pas.SysUtils.StrToInt(opcion);
+      const currentActive = document.querySelector('.nav-link.active');
+      console.log('currentActive',currentActive);
+      const opcid = currentActive.getAttribute('id');
+      console.log('id',opcid);
+      sopc = opcid;
+      opc = pas.SysUtils.StrToInt(sopc);
       var $tmp = opc;
-      if ($tmp === 1) {
+      if (($tmp === 1) || ($tmp === 2)) {
         frmLibretaTab = pas.uLibTabulator.TfrmLibTabulator.$create("CreateNew$3",[AfterCreate]);
         frmLibretaTab.ShowModal$1(AfterShowModal);
       } else if ($tmp === 3) {
@@ -85145,14 +85153,20 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
         frmEditor.ShowModal$1(AfterShowModal);
       };
     };
+    this.cerrarForma = function () {
+      this.Close();
+      pas["WEBLib.Forms"].Application.Terminate();
+    };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
       this.WebHTMLContainer1 = pas["WEBLib.ExtCtrls"].THTMLContainer.$create("Create$1",[this]);
       this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
       this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.WebButton1 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebHTMLContainer1.BeforeLoadDFMValues();
       this.WebPanel1.BeforeLoadDFMValues();
       this.WebPanel2.BeforeLoadDFMValues();
+      this.WebButton1.BeforeLoadDFMValues();
       try {
         this.SetName("frmCard");
         this.SetWidth(640);
@@ -85195,7 +85209,7 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
           this.WebHTMLContainer1.FHTML.Add('  <div class="card-body">');
           this.WebHTMLContainer1.FHTML.Add('    <h5 class="card-title">Su libreta de información personal</h5>');
           this.WebHTMLContainer1.FHTML.Add('    <p class="card-text">capture de manera segura, sus notas, pendientes, registros ágiles y seguros, todo en su dispositivo.</p>');
-          this.WebHTMLContainer1.FHTML.Add('    <a href="#" class="btn btn-primary" id="botonentrar">Ir a aplicación</a>');
+          this.WebHTMLContainer1.FHTML.Add('   <!-- <a href="#" class="btn btn-primary" id="botonentrar">Ir a aplicación</a>-->');
           this.WebHTMLContainer1.FHTML.Add("  </div>");
           this.WebHTMLContainer1.FHTML.Add("</div>");
         } finally {
@@ -85225,15 +85239,33 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
         this.WebPanel2.SetElementClassName("card text-white bg-secondary mb-3");
         this.WebPanel2.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
         this.WebPanel2.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
+        this.WebPanel2.SetCaption("Salir");
         this.WebPanel2.SetChildOrderEx(2);
         this.WebPanel2.SetColor(16770250);
         this.WebPanel2.FElementBodyClassName = "d-flex justify-content-center align-items-center min-vh-100";
         this.WebPanel2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.WebPanel2.SetTabOrder(2);
+        this.SetEvent$1(this.WebPanel2,this,"OnClick","WebPanel2Click");
+        this.WebButton1.SetParentComponent(this);
+        this.WebButton1.SetName("WebButton1");
+        this.WebButton1.SetLeft(272);
+        this.WebButton1.SetTop(398);
+        this.WebButton1.SetWidth(96);
+        this.WebButton1.SetHeight(25);
+        this.WebButton1.SetCaption("Entrar");
+        this.WebButton1.FCenter.SetHorizontal(true);
+        this.WebButton1.SetChildOrderEx(3);
+        this.WebButton1.SetElementClassName("btn-primary");
+        this.WebButton1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebButton1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebButton1.SetHeightPercent(100.000000000000000000);
+        this.WebButton1.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.WebButton1,this,"OnClick","WebButton1Click");
       } finally {
         this.WebHTMLContainer1.AfterLoadDFMValues();
         this.WebPanel1.AfterLoadDFMValues();
         this.WebPanel2.AfterLoadDFMValues();
+        this.WebButton1.AfterLoadDFMValues();
       };
     };
     rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
@@ -85242,7 +85274,10 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
     $r.addField("WebHTMLContainer1",pas["WEBLib.ExtCtrls"].$rtti["THTMLContainer"]);
     $r.addField("WebPanel1",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
     $r.addField("WebPanel2",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
+    $r.addField("WebButton1",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebButton1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebPanel2Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.frmCard = null;
 },["uLibTabulator","uEditor"]);

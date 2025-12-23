@@ -85121,6 +85121,48 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
       
       
       });
+      
+       //const listItems = document.querySelectorAll('#myList li');
+       const listItems = document.querySelectorAll('.list-group-item');
+      
+      console.log('listItems',listItems);
+      
+      listItems.forEach(item => {
+        //console.log('item',item);
+        item.addEventListener('click', function() {
+          console.log('You clicked on:', this.textContent);
+      
+         const lcurrentActive = document.querySelector(".list-group-item.active");
+         console.log('lcurrentActive***',lcurrentActive);
+              if (lcurrentActive) {
+                  lcurrentActive.classList.remove("active");
+              }
+      
+              // Add the 'active' class to the clicked item
+              this.classList.add("active");
+      
+      
+          // Add your function logic here
+          console.log(item);
+          console.log('id',item.id);
+          const str = item.id;
+          const idNav = str.substring(str.length - 1);
+          console.log('id',item.id,' ',idNav);
+          console.log(navLinks);
+          const activeNav = navLinks[idNav-1];
+      
+          const currentActive = document.querySelector('.nav-link.active');
+          if (currentActive) {
+                currentActive.classList.remove('active');
+                currentActive.removeAttribute('aria-current');
+          }
+      
+          if (activeNav) {
+            activeNav.classList.add('active');
+            activeNav.setAttribute('aria-current', 'page');
+          }
+        });
+      });
     };
     this.WebButton1Click = function (Sender) {
       this.cargarForma("0");
@@ -85183,11 +85225,10 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
         this.WebHTMLContainer1.SetParentComponent(this);
         this.WebHTMLContainer1.SetName("WebHTMLContainer1");
         this.WebHTMLContainer1.SetLeft(96);
-        this.WebHTMLContainer1.SetTop(87);
+        this.WebHTMLContainer1.SetTop(57);
         this.WebHTMLContainer1.SetWidth(447);
         this.WebHTMLContainer1.SetHeight(305);
         this.WebHTMLContainer1.FCenter.SetHorizontal(true);
-        this.WebHTMLContainer1.FCenter.SetVertical(true);
         this.WebHTMLContainer1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.WebHTMLContainer1.FHTML.BeginUpdate();
         try {
@@ -85195,16 +85236,21 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
           this.WebHTMLContainer1.FHTML.Add('<div class="card text-center">');
           this.WebHTMLContainer1.FHTML.Add('  <div class="card-header">');
           this.WebHTMLContainer1.FHTML.Add('    <ul class="nav nav-pills card-header-pills">');
-          this.WebHTMLContainer1.FHTML.Add('      <li class="nav-item">');
+          this.WebHTMLContainer1.FHTML.Add('      <li class="nav-item" Hoja Renglones>');
           this.WebHTMLContainer1.FHTML.Add('        <a class="nav-link " id = "1" href="#">Hoja Renglones</a>');
           this.WebHTMLContainer1.FHTML.Add("      </li>");
-          this.WebHTMLContainer1.FHTML.Add('      <li class="nav-item">');
+          this.WebHTMLContainer1.FHTML.Add('      <li class="nav-item" Hoja Tabular>');
           this.WebHTMLContainer1.FHTML.Add('        <a class="nav-link" id = "2"  href="#">Hoja Tabular</a>');
           this.WebHTMLContainer1.FHTML.Add("      </li>");
-          this.WebHTMLContainer1.FHTML.Add('      <li class="nav-item">');
+          this.WebHTMLContainer1.FHTML.Add('      <li class="nav-item" Editor Textos>');
           this.WebHTMLContainer1.FHTML.Add('        <a class="nav-link"  id = "3" href="#">Editor Textos</a>');
           this.WebHTMLContainer1.FHTML.Add("      </li>");
           this.WebHTMLContainer1.FHTML.Add("    </ul>");
+          this.WebHTMLContainer1.FHTML.Add('<ul class="list-group list-group-flush">');
+          this.WebHTMLContainer1.FHTML.Add('    <li class=" list-group-item" id = "l1">Renglones</li> ');
+          this.WebHTMLContainer1.FHTML.Add('    <li class=" list-group-item" id = "l2">Tabular</li>');
+          this.WebHTMLContainer1.FHTML.Add('    <li class=" list-group-item" id = "l3">Editor</li>');
+          this.WebHTMLContainer1.FHTML.Add("  </ul>");
           this.WebHTMLContainer1.FHTML.Add("  </div>");
           this.WebHTMLContainer1.FHTML.Add('  <div class="card-body">');
           this.WebHTMLContainer1.FHTML.Add('    <h5 class="card-title">Su libreta de información personal</h5>');

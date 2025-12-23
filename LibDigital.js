@@ -85087,9 +85087,52 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
-      var textosel = "";
+      function despliegaTexto(id) {
+          //console.log("Hello, " + username + "!");
+          // The function execution stops here.
+          // It implicitly returns 'undefined'.
+      
+               var texto = "";
+      
+      
+          console.log('idNAV',id);
+      
+            switch (parseInt(id)) {
+          case 1:
+          // Code to execute if expression === value1
+             texto = 'RENGLONES';
+            break;
+          case 2:
+          // Code to execute if expression === value2
+            texto = 'TABULAR';
+            break;
+          case 3:
+          // Code to execute if expression === value2
+            texto = 'EDITOR';
+            break;
+        // ... more cases ...
+        default:
+          // Code to execute if none of the cases match
+      }
+      
+      
+      
+            const element = document.getElementById("textodescrip");
+            element.textContent =texto;
+      }
+      
+      
+          var textosel = "";
             // Select all navigation links
       const navLinks = document.querySelectorAll('.nav-link');
+      
+       if (navLinks.length > 0) {
+             console.log(navLinks.length);
+              navLinks[0].classList.add('active');
+              navLinks[0].removeAttribute('aria-current');
+              navLinks[0].setAttribute('aria-current', 'page');
+              despliegaTexto(1);
+          }
       
       // Add a click event listener to each link
       navLinks.forEach(link => {
@@ -85117,6 +85160,11 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
           console.log("ID seleccionado:", selectopc);
         //  pas.unitCards.TfrmCard.cargarForma(textosel);
       
+          const element = document.getElementById("textodescrip");
+          console.log(element.textContent);
+          //element.textContent ="**** NAV id selected:"+selectopc;
+      
+            despliegaTexto(selectopc);
         });
       
       
@@ -85126,6 +85174,14 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
        const listItems = document.querySelectorAll('.list-group-item');
       
       console.log('listItems',listItems);
+      if (listItems.length > 0) {
+             console.log(navLinks.length);
+              listItems[0].classList.add('active');
+              //listItems[0].removeAttribute('aria-current');
+              listItems[0].setAttribute('aria-current', 'page');
+              despliegaTexto(1);
+          }
+      
       
       listItems.forEach(item => {
         //console.log('item',item);
@@ -85160,6 +85216,10 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
           if (activeNav) {
             activeNav.classList.add('active');
             activeNav.setAttribute('aria-current', 'page');
+            const element = document.getElementById("textodescrip");
+            console.log(element.textContent);
+            despliegaTexto(idNav);
+      
           }
         });
       });
@@ -85227,7 +85287,7 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
         this.WebHTMLContainer1.SetLeft(96);
         this.WebHTMLContainer1.SetTop(57);
         this.WebHTMLContainer1.SetWidth(447);
-        this.WebHTMLContainer1.SetHeight(305);
+        this.WebHTMLContainer1.SetHeight(336);
         this.WebHTMLContainer1.FCenter.SetHorizontal(true);
         this.WebHTMLContainer1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.WebHTMLContainer1.FHTML.BeginUpdate();
@@ -85254,7 +85314,7 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
           this.WebHTMLContainer1.FHTML.Add("  </div>");
           this.WebHTMLContainer1.FHTML.Add('  <div class="card-body">');
           this.WebHTMLContainer1.FHTML.Add('    <h5 class="card-title">Su libreta de información personal</h5>');
-          this.WebHTMLContainer1.FHTML.Add('    <p class="card-text">capture de manera segura, sus notas, pendientes, registros ágiles y seguros, todo en su dispositivo.</p>');
+          this.WebHTMLContainer1.FHTML.Add('    <p id=textodescrip class="card-text">capture de manera segura, sus notas, pendientes, registros ágiles y seguros, todo en su dispositivo.</p>');
           this.WebHTMLContainer1.FHTML.Add('   <!-- <a href="#" class="btn btn-primary" id="botonentrar">Ir a aplicación</a>-->');
           this.WebHTMLContainer1.FHTML.Add("  </div>");
           this.WebHTMLContainer1.FHTML.Add("</div>");
@@ -85295,7 +85355,7 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
         this.WebButton1.SetParentComponent(this);
         this.WebButton1.SetName("WebButton1");
         this.WebButton1.SetLeft(272);
-        this.WebButton1.SetTop(398);
+        this.WebButton1.SetTop(409);
         this.WebButton1.SetWidth(96);
         this.WebButton1.SetHeight(25);
         this.WebButton1.SetCaption("Entrar");

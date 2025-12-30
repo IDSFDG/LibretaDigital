@@ -1,8 +1,29 @@
-<html>
+﻿<html>
   <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <title>TMS Web Project</title>
 <style>
+img {
+    width: 20%; /* Image takes up 50% of its parent container's width */
+    height: 20%; /*  auto Height adjusts automatically to maintain aspect ratio */
+    max-width: 100%; /* Ensures the image doesn't exceed its original size if the container is very large */
+  }
+.card-image {
+    width: 60%;
+    height: 60%;
+    background-image: url("https://res.cloudinary.com/dudegkgw9/image/upload/v1655351737/cloudinary_riys5j.jpg");
+    background-repeat: no-repeat;
+    background-size: 60% 60%;
+}
+
+.card-image1 {
+    width: 60%;
+    height: 60%;
+    background-image: "img/libreta02sm.jpg";
+    background-repeat: no-repeat;
+    background-size: 60% 60%;
+}
+
 .horizontal-scroll-cards {
   /* Hide scrollbar for Chrome, Safari and Opera */
   &::-webkit-scrollbar {

@@ -96938,7 +96938,7 @@ rtl.module("unitCards2",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
           this.WebHTMLContainer1.FHTML.Add('  <!--  <div class="card" class="col-sm-6 mb-3 mb-sm-0">-->');
           this.WebHTMLContainer1.FHTML.Add("");
           this.WebHTMLContainer1.FHTML.Add('           <!--  <img src="img/libreta02sm.png" class="card-img-top"    alt="...">  -->');
-          this.WebHTMLContainer1.FHTML.Add('        <img src="img/libreta02sm.png"  class="rounded mx-auto d-block"     alt="..."> ');
+          this.WebHTMLContainer1.FHTML.Add('        <img src="img/libreta02sm.PNG"  class="rounded mx-auto d-block"     alt="...">   ');
           this.WebHTMLContainer1.FHTML.Add('     <!-- <div class="card-image1">');
           this.WebHTMLContainer1.FHTML.Add("      </div>");
           this.WebHTMLContainer1.FHTML.Add("     -->");
@@ -96953,7 +96953,7 @@ rtl.module("unitCards2",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
           this.WebHTMLContainer1.FHTML.Add("");
           this.WebHTMLContainer1.FHTML.Add('  <!--  <div class="card" class="col-sm-6 mb-3 mb-sm-0">-->');
           this.WebHTMLContainer1.FHTML.Add('           <!--  <img src="img/libreta02sm.png" class="card-img-top"    alt="...">  -->');
-          this.WebHTMLContainer1.FHTML.Add('      <img src="img/tabular01sm.png" class="rounded mx-auto d-block" alt="...">');
+          this.WebHTMLContainer1.FHTML.Add('      <img src="img/tabular01sm.PNG" class="rounded mx-auto d-block" alt="...">');
           this.WebHTMLContainer1.FHTML.Add('      <div class="card-body">');
           this.WebHTMLContainer1.FHTML.Add('        <h5 class="card-title">Card title 2</h5>');
           this.WebHTMLContainer1.FHTML.Add('        <p class="card-text">Some quick example text2.</p>');

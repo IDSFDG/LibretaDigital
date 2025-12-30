@@ -83061,16 +83061,38 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
       pas["WEBLib.Forms"].TForm.$init.call(this);
       this.divSunEditor = null;
       this.WebButton1 = null;
+      this.WebPanel1 = null;
+      this.WebButton3 = null;
+      this.WebButton2 = null;
       this.cmeditor = undefined;
       this.suneditor = undefined;
     };
     this.$final = function () {
       this.divSunEditor = undefined;
       this.WebButton1 = undefined;
+      this.WebPanel1 = undefined;
+      this.WebButton3 = undefined;
+      this.WebButton2 = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
-      // INICIO No Crear SummerNote    **********************************
+      var varsuneditor = undefined;
+      // Function to hide the toolbar
+           function hideToolbar() {
+             //const editor = editorInstance;
+             const editor = suneditor;
+             console.log(editor);
+             editorInstance .toolbar.hide();
+           }
+      
+           // Function to show the toolbar
+            function showToolbar() {
+              const editor = editorInstance;
+              editor.toolbar.show();
+          }
+      
+      
+          // INICIO No Crear SummerNote    **********************************
       
         if (1==0) {
           var undoButton = function (context) {
@@ -83186,6 +83208,8 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
       
           var SunEditorSave = this.SunEditorSave;
           this.suneditor = SUNEDITOR.create('divSunEditor',{
+         // const editorInstance = SUNEDITOR.create('divSunEditor', {
+        // options...
             width: 'auto',
             height: 300,
             minHeight: 100,
@@ -83284,7 +83308,13 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
           this.cmeditor.setValue('# Hello\r1. One\r1. Two\r1. Three\r');
          }  // 1=0
       
-          // FINAL No Crear divCodeMirror    **********************************;
+          // FINAL No Crear divCodeMirror    **********************************
+      
+        //  hideToolbar();
+      console.log('editor',this.suneditor);
+      varsuneditor=this.suneditor;
+      console.log('editor2',varsuneditor);
+      $mod.vsuneditor = varsuneditor;
     };
     this.btnCodeMirrorBoldClick = function (Sender) {
       var cm = undefined;
@@ -83346,12 +83376,31 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
     this.WebButton1Click = function (Sender) {
       this.Close();
     };
+    this.WebButton2Click = function (Sender) {
+      var se = undefined;
+      window.console.log("form",$mod.frmEditor);
+      window.console.log("editor3",$mod.vsuneditor);
+      se = $mod.vsuneditor;
+      se.toolbar.show();
+    };
+    this.WebButton3Click = function (Sender) {
+      var se = undefined;
+      window.console.log("editor3",$mod.vsuneditor);
+      se = $mod.vsuneditor;
+      se.toolbar.hide();
+    };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
       this.divSunEditor = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["divSunEditor"]);
       this.WebButton1 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.WebButton3 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.WebButton2 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.divSunEditor.BeforeLoadDFMValues();
       this.WebButton1.BeforeLoadDFMValues();
+      this.WebPanel1.BeforeLoadDFMValues();
+      this.WebButton3.BeforeLoadDFMValues();
+      this.WebButton2.BeforeLoadDFMValues();
       try {
         this.SetName("frmEditor");
         this.SetWidth(1081);
@@ -83369,7 +83418,7 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
         this.divSunEditor.SetParentComponent(this);
         this.divSunEditor.SetName("divSunEditor");
         this.divSunEditor.SetLeft(0);
-        this.divSunEditor.SetTop(24);
+        this.divSunEditor.SetTop(31);
         this.divSunEditor.SetWidth(727);
         this.divSunEditor.SetHeight(192);
         this.divSunEditor.SetChildOrderEx(1);
@@ -83389,11 +83438,57 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
         this.WebButton1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.WebButton1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
         this.WebButton1.SetHeightPercent(100.000000000000000000);
+        this.WebButton1.SetVisible(false);
         this.WebButton1.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.WebButton1,this,"OnClick","WebButton1Click");
+        this.WebPanel1.SetParentComponent(this);
+        this.WebPanel1.SetName("WebPanel1");
+        this.WebPanel1.SetLeft(0);
+        this.WebPanel1.SetTop(896);
+        this.WebPanel1.SetWidth(1081);
+        this.WebPanel1.SetHeight(39);
+        this.WebPanel1.SetElementClassName("card");
+        this.WebPanel1.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
+        this.WebPanel1.SetCaption("Salir");
+        this.WebPanel1.SetChildOrderEx(4);
+        this.WebPanel1.FElementBodyClassName = "card-body";
+        this.WebPanel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebPanel1.SetTabOrder(2);
+        this.SetEvent$1(this.WebPanel1,this,"OnClick","WebPanel1Click");
+        this.WebButton3.SetParentComponent(this.WebPanel1);
+        this.WebButton3.SetName("WebButton3");
+        this.WebButton3.SetLeft(248);
+        this.WebButton3.SetTop(5);
+        this.WebButton3.SetWidth(96);
+        this.WebButton3.SetHeight(17);
+        this.WebButton3.SetCaption("Hide");
+        this.WebButton3.SetChildOrderEx(3);
+        this.WebButton3.SetElementClassName("btn btn-light");
+        this.WebButton3.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebButton3.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebButton3.SetHeightPercent(100.000000000000000000);
+        this.WebButton3.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.WebButton3,this,"OnClick","WebButton3Click");
+        this.WebButton2.SetParentComponent(this.WebPanel1);
+        this.WebButton2.SetName("WebButton2");
+        this.WebButton2.SetLeft(350);
+        this.WebButton2.SetTop(5);
+        this.WebButton2.SetWidth(96);
+        this.WebButton2.SetHeight(17);
+        this.WebButton2.SetCaption("Show");
+        this.WebButton2.SetChildOrderEx(2);
+        this.WebButton2.SetElementClassName("btn btn-light");
+        this.WebButton2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebButton2.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebButton2.SetHeightPercent(100.000000000000000000);
+        this.WebButton2.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.WebButton2,this,"OnClick","WebButton2Click");
       } finally {
         this.divSunEditor.AfterLoadDFMValues();
         this.WebButton1.AfterLoadDFMValues();
+        this.WebPanel1.AfterLoadDFMValues();
+        this.WebButton3.AfterLoadDFMValues();
+        this.WebButton2.AfterLoadDFMValues();
       };
     };
     rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
@@ -83401,6 +83496,9 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
     var $r = this.$rtti;
     $r.addField("divSunEditor",pas["WEBLib.WebCtrls"].$rtti["THTMLDiv"]);
     $r.addField("WebButton1",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("WebPanel1",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
+    $r.addField("WebButton3",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addField("WebButton2",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnCodeMirrorBoldClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnCodeMirrorUnderlineClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
@@ -83411,8 +83509,11 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
     $r.addMethod("WebPanel1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebLabel1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebButton1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebButton2Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebButton3Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.frmEditor = null;
+  this.vsuneditor = undefined;
 });
 rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.WebCtrls","WEBLib.StdCtrls","WEBLib.StdCtrls","WEBLib.Buttons","WEBLib.Controls","WEBLib.ExtCtrls","WEBLib.Menus","WEBLib.Menus","uEditor","DB","WEBLib.IndexedDb"],function () {
   "use strict";
@@ -96727,7 +96828,148 @@ rtl.module("UEditorCM",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
   });
   this.frmEditorCM = null;
 });
-rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","UFormaLibreta","uLoginForma","uAyuda","uLibTabulator","Unit5","uTabulator","uClipboard","URichEditor","uResponsiveGrid","uEditor","UEditorCM","unitCards"],function () {
+rtl.module("unitCards2",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.Controls","WEBLib.ExtCtrls"],function () {
+  "use strict";
+  var $mod = this;
+  rtl.createClass(this,"TfrmCard2",pas["WEBLib.Forms"].TForm,function () {
+    this.$init = function () {
+      pas["WEBLib.Forms"].TForm.$init.call(this);
+      this.WebHTMLContainer3 = null;
+      this.WebHTMLContainer1 = null;
+    };
+    this.$final = function () {
+      this.WebHTMLContainer3 = undefined;
+      this.WebHTMLContainer1 = undefined;
+      pas["WEBLib.Forms"].TForm.$final.call(this);
+    };
+    this.LoadDFMValues = function () {
+      pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
+      this.WebHTMLContainer3 = pas["WEBLib.ExtCtrls"].THTMLContainer.$create("Create$1",[this]);
+      this.WebHTMLContainer1 = pas["WEBLib.ExtCtrls"].THTMLContainer.$create("Create$1",[this]);
+      this.WebHTMLContainer3.BeforeLoadDFMValues();
+      this.WebHTMLContainer1.BeforeLoadDFMValues();
+      try {
+        this.SetName("frmCard2");
+        this.SetWidth(640);
+        this.SetHeight(480);
+        this.SetCSSLibrary(pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap);
+        this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.FFont.FCharset = 1;
+        this.FFont.SetColor(65793);
+        this.FFont.SetHeight(-15);
+        this.FFont.SetName("Tahoma");
+        this.FFont.SetStyle({});
+        this.SetParentFont(false);
+        this.WebHTMLContainer3.SetParentComponent(this);
+        this.WebHTMLContainer3.SetName("WebHTMLContainer3");
+        this.WebHTMLContainer3.SetLeft(0);
+        this.WebHTMLContainer3.SetTop(10);
+        this.WebHTMLContainer3.SetWidth(640);
+        this.WebHTMLContainer3.SetHeight(232);
+        this.WebHTMLContainer3.FCenter.SetHorizontal(true);
+        this.WebHTMLContainer3.SetChildOrderEx(1);
+        this.WebHTMLContainer3.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebHTMLContainer3.FHTML.BeginUpdate();
+        try {
+          this.WebHTMLContainer3.FHTML.Clear();
+          this.WebHTMLContainer3.FHTML.Add("");
+          this.WebHTMLContainer3.FHTML.Add("");
+          this.WebHTMLContainer3.FHTML.Add('<div class="container"> ');
+          this.WebHTMLContainer3.FHTML.Add('<!--  <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="true">-->');
+          this.WebHTMLContainer3.FHTML.Add('   <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000"> ');
+          this.WebHTMLContainer3.FHTML.Add('    <div class="carousel-indicators">');
+          this.WebHTMLContainer3.FHTML.Add('      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide ');
+          this.WebHTMLContainer3.FHTML.Add('1"></button>');
+          this.WebHTMLContainer3.FHTML.Add('      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>');
+          this.WebHTMLContainer3.FHTML.Add('      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>');
+          this.WebHTMLContainer3.FHTML.Add("    </div>");
+          this.WebHTMLContainer3.FHTML.Add("");
+          this.WebHTMLContainer3.FHTML.Add('    <div class="carousel-inner">');
+          this.WebHTMLContainer3.FHTML.Add('      <div class="carousel-item active">');
+          this.WebHTMLContainer3.FHTML.Add('        <img src="https://dummyimage.com/1000x200/000/fff" class="d-block w-100" alt="...">');
+          this.WebHTMLContainer3.FHTML.Add('        <div class="position-relative text-center">');
+          this.WebHTMLContainer3.FHTML.Add("          Caption 1");
+          this.WebHTMLContainer3.FHTML.Add("        </div>");
+          this.WebHTMLContainer3.FHTML.Add("      </div>");
+          this.WebHTMLContainer3.FHTML.Add('      <div class="carousel-item">');
+          this.WebHTMLContainer3.FHTML.Add('        <img src="https://dummyimage.com/1000x200/000/fff" class="d-block w-100" alt="...">');
+          this.WebHTMLContainer3.FHTML.Add('        <div class="position-relative text-center">');
+          this.WebHTMLContainer3.FHTML.Add("          Caption 2");
+          this.WebHTMLContainer3.FHTML.Add("        </div>");
+          this.WebHTMLContainer3.FHTML.Add("      </div>");
+          this.WebHTMLContainer3.FHTML.Add('      <div class="carousel-item">');
+          this.WebHTMLContainer3.FHTML.Add('        <img src="https://dummyimage.com/1000x200/000/fff" class="d-block w-100" alt="...">');
+          this.WebHTMLContainer3.FHTML.Add('        <div class="position-relative text-center">');
+          this.WebHTMLContainer3.FHTML.Add("          Caption 3");
+          this.WebHTMLContainer3.FHTML.Add("        </div>");
+          this.WebHTMLContainer3.FHTML.Add("      </div>");
+          this.WebHTMLContainer3.FHTML.Add("    </div>");
+          this.WebHTMLContainer3.FHTML.Add('    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">');
+          this.WebHTMLContainer3.FHTML.Add('        <span class="carousel-control-prev-icon" aria-hidden="true"></span>');
+          this.WebHTMLContainer3.FHTML.Add('        <span class="visually-hidden">Previous</span>');
+          this.WebHTMLContainer3.FHTML.Add("      </button>");
+          this.WebHTMLContainer3.FHTML.Add('    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">');
+          this.WebHTMLContainer3.FHTML.Add('        <span class="carousel-control-next-icon" aria-hidden="true"></span>');
+          this.WebHTMLContainer3.FHTML.Add('        <span class="visually-hidden">Next</span>');
+          this.WebHTMLContainer3.FHTML.Add("      </button>");
+          this.WebHTMLContainer3.FHTML.Add("  </div>");
+          this.WebHTMLContainer3.FHTML.Add("</div>");
+        } finally {
+          this.WebHTMLContainer3.FHTML.EndUpdate();
+        };
+        this.WebHTMLContainer1.SetParentComponent(this);
+        this.WebHTMLContainer1.SetName("WebHTMLContainer1");
+        this.WebHTMLContainer1.SetLeft(0);
+        this.WebHTMLContainer1.SetTop(248);
+        this.WebHTMLContainer1.SetWidth(640);
+        this.WebHTMLContainer1.SetHeight(232);
+        this.WebHTMLContainer1.FCenter.SetHorizontal(true);
+        this.WebHTMLContainer1.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
+        this.WebHTMLContainer1.SetChildOrderEx(1);
+        this.WebHTMLContainer1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebHTMLContainer1.FHTML.BeginUpdate();
+        try {
+          this.WebHTMLContainer1.FHTML.Clear();
+          this.WebHTMLContainer1.FHTML.Add('<div class="container-fluid my-4">');
+          this.WebHTMLContainer1.FHTML.Add('  <div class="scrollable-cards d-flex flex-nowrap">');
+          this.WebHTMLContainer1.FHTML.Add("    <!-- Card 1 -->");
+          this.WebHTMLContainer1.FHTML.Add('    <div class="card" style="width: 18rem; flex: 0 0 auto;">');
+          this.WebHTMLContainer1.FHTML.Add('      <img src="..." class="card-img-top" alt="...">');
+          this.WebHTMLContainer1.FHTML.Add('      <div class="card-body">');
+          this.WebHTMLContainer1.FHTML.Add('        <h5 class="card-title">Card title 1</h5>');
+          this.WebHTMLContainer1.FHTML.Add('        <p class="card-text">Some quick example text.</p>');
+          this.WebHTMLContainer1.FHTML.Add('        <a href="#" class="btn btn-primary">Go somewhere</a>');
+          this.WebHTMLContainer1.FHTML.Add("      </div>");
+          this.WebHTMLContainer1.FHTML.Add("    </div>");
+          this.WebHTMLContainer1.FHTML.Add("    <!-- Card 2 -->");
+          this.WebHTMLContainer1.FHTML.Add('   <div class="card" style="width: 18rem; flex: 0 0 auto;">');
+          this.WebHTMLContainer1.FHTML.Add('      <img src="..." class="card-img-top" alt="...">');
+          this.WebHTMLContainer1.FHTML.Add('      <div class="card-body">');
+          this.WebHTMLContainer1.FHTML.Add('        <h5 class="card-title">Card title 2</h5>');
+          this.WebHTMLContainer1.FHTML.Add('        <p class="card-text">Some quick example text2.</p>');
+          this.WebHTMLContainer1.FHTML.Add('        <a href="#" class="btn btn-primary">Go somewhere2</a>');
+          this.WebHTMLContainer1.FHTML.Add("      </div>");
+          this.WebHTMLContainer1.FHTML.Add("    </div>");
+          this.WebHTMLContainer1.FHTML.Add("    <!-- Add more cards as needed -->");
+          this.WebHTMLContainer1.FHTML.Add("  </div>");
+          this.WebHTMLContainer1.FHTML.Add("</div>");
+        } finally {
+          this.WebHTMLContainer1.FHTML.EndUpdate();
+        };
+      } finally {
+        this.WebHTMLContainer3.AfterLoadDFMValues();
+        this.WebHTMLContainer1.AfterLoadDFMValues();
+      };
+    };
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+    var $r = this.$rtti;
+    $r.addField("WebHTMLContainer3",pas["WEBLib.ExtCtrls"].$rtti["THTMLContainer"]);
+    $r.addField("WebHTMLContainer1",pas["WEBLib.ExtCtrls"].$rtti["THTMLContainer"]);
+  });
+  this.frmCard2 = null;
+});
+rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","UFormaLibreta","uLoginForma","uAyuda","uLibTabulator","Unit5","uTabulator","uClipboard","URichEditor","uResponsiveGrid","uEditor","UEditorCM","unitCards","unitCards2"],function () {
   "use strict";
   var $mod = this;
   $mod.$implcode = function () {
@@ -96746,10 +96988,10 @@ rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","UFormaLibreta","uL
   $mod.$main = function () {
     pas["WEBLib.Forms"].Application.Initialize();
     pas["WEBLib.Forms"].Application.FMainFormOnTaskBar = true;
-    pas["WEBLib.Forms"].Application.CreateForm(pas.uLoginForma.TfrmLogin,{p: pas.uLoginForma, get: function () {
-        return this.p.frmLogin;
+    pas["WEBLib.Forms"].Application.CreateForm(pas.unitCards2.TfrmCard2,{p: pas.unitCards2, get: function () {
+        return this.p.frmCard2;
       }, set: function (v) {
-        this.p.frmLogin = v;
+        this.p.frmCard2 = v;
       }});
     pas["WEBLib.Forms"].Application.Run();
   };

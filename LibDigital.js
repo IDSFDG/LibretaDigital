@@ -96932,10 +96932,10 @@ rtl.module("unitCards2",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
           this.WebHTMLContainer1.FHTML.Clear();
           this.WebHTMLContainer1.FHTML.Add('<div class="container-fluid my-4">');
           this.WebHTMLContainer1.FHTML.Add('  <div class="scrollable-cards d-flex flex-nowrap">');
-          this.WebHTMLContainer1.FHTML.Add("    <!-- Card 1 ");
+          this.WebHTMLContainer1.FHTML.Add("    <!-- Card 1 -->");
           this.WebHTMLContainer1.FHTML.Add('    <div class="card" style="width: 18rem; flex: 0 0 auto;">');
-          this.WebHTMLContainer1.FHTML.Add("   -->");
-          this.WebHTMLContainer1.FHTML.Add('    <div class="card" class="col-sm-6 mb-3 mb-sm-0">');
+          this.WebHTMLContainer1.FHTML.Add("");
+          this.WebHTMLContainer1.FHTML.Add('  <!--  <div class="card" class="col-sm-6 mb-3 mb-sm-0">-->');
           this.WebHTMLContainer1.FHTML.Add("");
           this.WebHTMLContainer1.FHTML.Add('           <!--  <img src="img/libreta02sm.png" class="card-img-top"    alt="...">  -->');
           this.WebHTMLContainer1.FHTML.Add('        <img src="img/libreta02sm.png"  class="rounded mx-auto d-block"     alt="..."> ');
@@ -96948,10 +96948,10 @@ rtl.module("unitCards2",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
           this.WebHTMLContainer1.FHTML.Add('        <a href="#" class="btn btn-primary">Go somewhere</a>');
           this.WebHTMLContainer1.FHTML.Add("      </div>");
           this.WebHTMLContainer1.FHTML.Add("    </div>");
-          this.WebHTMLContainer1.FHTML.Add("    <!-- Card 2 ");
+          this.WebHTMLContainer1.FHTML.Add("    <!-- Card 2 -->");
           this.WebHTMLContainer1.FHTML.Add('    <div class="card" style="width: 18rem; flex: 0 0 auto;">');
-          this.WebHTMLContainer1.FHTML.Add("   -->");
-          this.WebHTMLContainer1.FHTML.Add('    <div class="card" class="col-sm-6 mb-3 mb-sm-0">');
+          this.WebHTMLContainer1.FHTML.Add("");
+          this.WebHTMLContainer1.FHTML.Add('  <!--  <div class="card" class="col-sm-6 mb-3 mb-sm-0">-->');
           this.WebHTMLContainer1.FHTML.Add('           <!--  <img src="img/libreta02sm.png" class="card-img-top"    alt="...">  -->');
           this.WebHTMLContainer1.FHTML.Add('      <img src="img/tabular01sm.png" class="rounded mx-auto d-block" alt="...">');
           this.WebHTMLContainer1.FHTML.Add('      <div class="card-body">');

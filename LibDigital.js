@@ -83568,6 +83568,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       this.VerPdf1 = null;
       this.Copiar1 = null;
       this.Pegar1 = null;
+      this.seltipo = 0;
     };
     this.$final = function () {
       this.WebPanel1 = undefined;
@@ -83619,6 +83620,8 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
     this.WebFormCreate = function (Sender) {
+      var tiposel = 0;
+      tiposel = this.seltipo;
       this.webBotonMenu.SetCaption("" + "☰");
       function customEditor(cell, onRendered, success, cancel) {
        // const input = document.createElement('input')
@@ -83694,9 +83697,12 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
         [6359,	"",	2580,	5723,	9801,	554,	1044,	5266,	8532],
         [7278,	6971,	2232,	5720,	5665,	7231,	1165,	"",	168],
       ];
-      
-      
-        var sheets = [
+       // alert('tiposel');
+       // alert(tiposel);
+        switch (tiposel) {
+        case 1:
+          // Code to execute if expression === value1
+          var sheets = [
           {
             name:'huno',
             title:"Renglones",
@@ -83706,8 +83712,12 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
            // columns:7,
             columns:2,
             data:[],
-        },
-      
+        }
+      ];
+          break;
+        case 2:
+          // Code to execute if expression === value2
+          var sheets = [
          {
             name:'hdos',
             title:"Tabular",
@@ -83716,9 +83726,36 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
             rows:50,
             columns:4,
             data:[],
-        },
-      
+        }
       ];
+          break;
+        // ... more cases ...
+        default:
+          // Code to execute if no case matches
+      }
+        //  var sheets = [
+         //   {
+         //     name:'huno',
+          //    title:"Renglones",
+          //    key:"uno",
+          //    rows:50,
+             //rows:0,
+           // columns:7,
+          //    columns:2,
+          //    data:[],
+        //  },
+      
+        //   {
+         //     name:'hdos',
+          //    title:"Tabular",
+          //    key:"dos",
+           // rows:10,
+          //    rows:50,
+         //     columns:4,
+         //     data:[],
+        //  },
+      
+       // ];
       
       //Build Tabulator
       var table = new Tabulator("#eletabulator", {
@@ -83824,9 +83861,14 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
           var tableElement = table.element;
           var tableWidth = tableElement.offsetWidth;
           console.log("Table width:", tableWidth + "px");
+          var activeSheet = table.getSheet();
+          var key = activeSheet.getKey();
+          if (key =='uno')
+          {
+      
            table.updateColumnDefinition("A", {title:"", width: tableWidth-50 }) //change the column title
            table.updateColumnDefinition("B", {title:"", visible:false }) //change the column title
-      
+         }
       
       });
       
@@ -83842,7 +83884,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
             table.updateColumnDefinition("B", {title:"",visible:false }) //change the column title
       
           }
-         table.updateColumnDefinition("B", {title:"",visible:false }) //change the column title
+         //table.updateColumnDefinition("B", {title:"",visible:false }) //change the column title
          // Assuming 'table' is your Tabulator instance
       
       });
@@ -85382,6 +85424,7 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
       var $tmp = opc;
       if (($tmp === 1) || ($tmp === 2)) {
         frmLibretaTab = pas.uLibTabulator.TfrmLibTabulator.$create("CreateNew$3",[AfterCreate]);
+        frmLibretaTab.seltipo = opc;
         frmLibretaTab.ShowModal$1(AfterShowModal);
       } else if ($tmp === 3) {
         frmEditor = pas.uEditor.TfrmEditor.$create("CreateNew$3",[AfterCreate]);
@@ -85395,21 +85438,21 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
       this.WebLabel1 = pas["WEBLib.StdCtrls"].TLabel.$create("Create$2",["opcionselect"]);
-      this.WebHTMLContainer2 = pas["WEBLib.ExtCtrls"].THTMLContainer.$create("Create$1",[this]);
       this.WebHTMLContainer1 = pas["WEBLib.ExtCtrls"].THTMLContainer.$create("Create$1",[this]);
+      this.WebHTMLContainer2 = pas["WEBLib.ExtCtrls"].THTMLContainer.$create("Create$1",[this]);
       this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
-      this.WebButton1 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.WebButton1 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebLabel1.BeforeLoadDFMValues();
-      this.WebHTMLContainer2.BeforeLoadDFMValues();
       this.WebHTMLContainer1.BeforeLoadDFMValues();
+      this.WebHTMLContainer2.BeforeLoadDFMValues();
       this.WebPanel1.BeforeLoadDFMValues();
-      this.WebButton1.BeforeLoadDFMValues();
       this.WebPanel2.BeforeLoadDFMValues();
+      this.WebButton1.BeforeLoadDFMValues();
       try {
         this.SetName("frmCard");
-        this.SetWidth(615);
-        this.SetHeight(480);
+        this.SetWidth(652);
+        this.SetHeight(457);
         this.SetCSSLibrary(pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap);
         this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.FFont.FCharset = 1;
@@ -85423,7 +85466,7 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
         this.WebLabel1.SetName("WebLabel1");
         this.WebLabel1.SetLeft(472);
         this.WebLabel1.SetTop(446);
-        this.WebLabel1.SetWidth(33);
+        this.WebLabel1.SetWidth(8);
         this.WebLabel1.SetHeight(18);
         this.WebLabel1.SetCaption("0");
         this.WebLabel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
@@ -85431,70 +85474,9 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
         this.WebLabel1.SetHeightPercent(100.000000000000000000);
         this.WebLabel1.SetVisible(false);
         this.WebLabel1.SetWidthPercent(100.000000000000000000);
-        this.WebHTMLContainer2.SetParentComponent(this);
-        this.WebHTMLContainer2.SetName("WebHTMLContainer2");
-        this.WebHTMLContainer2.SetLeft(0);
-        this.WebHTMLContainer2.SetTop(196);
-        this.WebHTMLContainer2.SetWidth(615);
-        this.WebHTMLContainer2.SetHeight(244);
-        this.WebHTMLContainer2.FCenter.SetHorizontal(true);
-        this.WebHTMLContainer2.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
-        this.WebHTMLContainer2.SetChildOrderEx(1);
-        this.WebHTMLContainer2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.WebHTMLContainer2.FHTML.BeginUpdate();
-        try {
-          this.WebHTMLContainer2.FHTML.Clear();
-          this.WebHTMLContainer2.FHTML.Add('<div class="container-fluid my-4">');
-          this.WebHTMLContainer2.FHTML.Add('  <div class="scrollable-cards d-flex flex-nowrap">');
-          this.WebHTMLContainer2.FHTML.Add("    <!-- Card 1 -->");
-          this.WebHTMLContainer2.FHTML.Add('    <div class="card" style="width: 18rem; flex: 0 0 auto;">');
-          this.WebHTMLContainer2.FHTML.Add("");
-          this.WebHTMLContainer2.FHTML.Add('  <!--  <div class="card" class="col-sm-6 mb-3 mb-sm-0">-->');
-          this.WebHTMLContainer2.FHTML.Add("");
-          this.WebHTMLContainer2.FHTML.Add('           <!--  <img src="img/libreta02sm.png" class="card-img-top"    alt="...">  ');
-          this.WebHTMLContainer2.FHTML.Add('        <img src="img/libreta02sm.PNG"  class="rounded mx-auto d-block"     alt="...">-->   ');
-          this.WebHTMLContainer2.FHTML.Add('     <!-- <div class="card-image1">');
-          this.WebHTMLContainer2.FHTML.Add("      </div>");
-          this.WebHTMLContainer2.FHTML.Add("     -->");
-          this.WebHTMLContainer2.FHTML.Add('      <div class="card-body">');
-          this.WebHTMLContainer2.FHTML.Add('        <h5 class="card-title">Libreta Renglones</h5>');
-          this.WebHTMLContainer2.FHTML.Add('        <p class="card-text text-wrap" >Registro de renglones con información relevante</p>');
-          this.WebHTMLContainer2.FHTML.Add('        <a href="#" class="btn btn-primary" onclick="myFunction(event,1)">OK</a>');
-          this.WebHTMLContainer2.FHTML.Add("      </div>");
-          this.WebHTMLContainer2.FHTML.Add("    </div>");
-          this.WebHTMLContainer2.FHTML.Add("    <!-- Card 2 -->");
-          this.WebHTMLContainer2.FHTML.Add('    <div class="card" style="width: 18rem; flex: 0 0 auto;">');
-          this.WebHTMLContainer2.FHTML.Add("");
-          this.WebHTMLContainer2.FHTML.Add('  <!--  <div class="card" class="col-sm-6 mb-3 mb-sm-0">-->');
-          this.WebHTMLContainer2.FHTML.Add('           <!--  <img src="img/libreta02sm.png" class="card-img-top"    alt="..."> ');
-          this.WebHTMLContainer2.FHTML.Add('      <img src="img/tabular01sm.PNG" class="rounded mx-auto d-block" alt="..."> -->');
-          this.WebHTMLContainer2.FHTML.Add('      <div class="card-body">');
-          this.WebHTMLContainer2.FHTML.Add('        <h5 class="card-title">Libreta Tabular</h5>');
-          this.WebHTMLContainer2.FHTML.Add('        <p class="card-text text-wrap">Registro en formato tabular con información relevante.</p>');
-          this.WebHTMLContainer2.FHTML.Add('        <a href="#" class="btn btn-primary" onclick="myFunction(event,2)">OK</a>');
-          this.WebHTMLContainer2.FHTML.Add("      </div>");
-          this.WebHTMLContainer2.FHTML.Add("    </div>");
-          this.WebHTMLContainer2.FHTML.Add("    <!-- Card 3 -->");
-          this.WebHTMLContainer2.FHTML.Add('    <div class="card" style="width: 18rem; flex: 0 0 auto;">');
-          this.WebHTMLContainer2.FHTML.Add("");
-          this.WebHTMLContainer2.FHTML.Add('  <!--  <div class="card" class="col-sm-6 mb-3 mb-sm-0">-->');
-          this.WebHTMLContainer2.FHTML.Add('           <!--  <img src="img/libreta02sm.png" class="card-img-top"    alt="...">  ');
-          this.WebHTMLContainer2.FHTML.Add('      <img src="img/tabular01sm.PNG" class="rounded mx-auto d-block" alt="...">-->');
-          this.WebHTMLContainer2.FHTML.Add('      <div class="card-body">');
-          this.WebHTMLContainer2.FHTML.Add('        <h5 class="card-title">Editor de Texto</h5>');
-          this.WebHTMLContainer2.FHTML.Add('        <p class="card-text text-wrap">Editor de texto libre, con formato enriquecido imagenes, tablas etc.</p>');
-          this.WebHTMLContainer2.FHTML.Add('        <a href="#" class="btn btn-primary" onclick="myFunction(event,3)">OK</a>');
-          this.WebHTMLContainer2.FHTML.Add("      </div>");
-          this.WebHTMLContainer2.FHTML.Add("    </div>");
-          this.WebHTMLContainer2.FHTML.Add("    <!-- Add more cards as needed -->");
-          this.WebHTMLContainer2.FHTML.Add("  </div>");
-          this.WebHTMLContainer2.FHTML.Add("</div>");
-        } finally {
-          this.WebHTMLContainer2.FHTML.EndUpdate();
-        };
         this.WebHTMLContainer1.SetParentComponent(this);
         this.WebHTMLContainer1.SetName("WebHTMLContainer1");
-        this.WebHTMLContainer1.SetLeft(84);
+        this.WebHTMLContainer1.SetLeft(102);
         this.WebHTMLContainer1.SetTop(57);
         this.WebHTMLContainer1.SetWidth(447);
         this.WebHTMLContainer1.SetHeight(336);
@@ -85532,11 +85514,72 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
           this.WebHTMLContainer1.FHTML.EndUpdate();
         };
         this.WebHTMLContainer1.SetVisible(false);
+        this.WebHTMLContainer2.SetParentComponent(this);
+        this.WebHTMLContainer2.SetName("WebHTMLContainer2");
+        this.WebHTMLContainer2.SetLeft(0);
+        this.WebHTMLContainer2.SetTop(173);
+        this.WebHTMLContainer2.SetWidth(652);
+        this.WebHTMLContainer2.SetHeight(244);
+        this.WebHTMLContainer2.FCenter.SetHorizontal(true);
+        this.WebHTMLContainer2.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
+        this.WebHTMLContainer2.SetChildOrderEx(1);
+        this.WebHTMLContainer2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebHTMLContainer2.FHTML.BeginUpdate();
+        try {
+          this.WebHTMLContainer2.FHTML.Clear();
+          this.WebHTMLContainer2.FHTML.Add('<div class="container-fluid my-4">');
+          this.WebHTMLContainer2.FHTML.Add('  <div class="scrollable-cards d-flex flex-nowrap">');
+          this.WebHTMLContainer2.FHTML.Add("    <!-- Card 1 -->");
+          this.WebHTMLContainer2.FHTML.Add('    <div class="card" style="width: 18rem; flex: 0 0 auto;">');
+          this.WebHTMLContainer2.FHTML.Add("");
+          this.WebHTMLContainer2.FHTML.Add('  <!--  <div class="card" class="col-sm-6 mb-3 mb-sm-0">-->');
+          this.WebHTMLContainer2.FHTML.Add("");
+          this.WebHTMLContainer2.FHTML.Add('           <!--  <img src="img/libreta02sm.png" class="card-img-top"    alt="...">  ');
+          this.WebHTMLContainer2.FHTML.Add('        <img src="img/libreta02sm.PNG"  class="rounded mx-auto d-block"     alt="...">-->   ');
+          this.WebHTMLContainer2.FHTML.Add('     <!-- <div class="card-image1">');
+          this.WebHTMLContainer2.FHTML.Add("      </div>");
+          this.WebHTMLContainer2.FHTML.Add("     -->");
+          this.WebHTMLContainer2.FHTML.Add('      <div class="card-body">');
+          this.WebHTMLContainer2.FHTML.Add('        <h5 class="card-title text-wrap">Hoja de renglones </h5>');
+          this.WebHTMLContainer2.FHTML.Add('        <p class="card-text text-wrap" >Registro de renglones con información relevante, notas, apuntes, pendientes, actividades etc.</p>');
+          this.WebHTMLContainer2.FHTML.Add('        <a href="#" class="btn btn-primary" onclick="myFunction(event,1)">OK</a>');
+          this.WebHTMLContainer2.FHTML.Add("      </div>");
+          this.WebHTMLContainer2.FHTML.Add("    </div>");
+          this.WebHTMLContainer2.FHTML.Add("    <!-- Card 2 -->");
+          this.WebHTMLContainer2.FHTML.Add('    <div class="card" style="width: 18rem; flex: 0 0 auto;">');
+          this.WebHTMLContainer2.FHTML.Add("");
+          this.WebHTMLContainer2.FHTML.Add('  <!--  <div class="card" class="col-sm-6 mb-3 mb-sm-0">-->');
+          this.WebHTMLContainer2.FHTML.Add('           <!--  <img src="img/libreta02sm.png" class="card-img-top"    alt="..."> ');
+          this.WebHTMLContainer2.FHTML.Add('      <img src="img/tabular01sm.PNG" class="rounded mx-auto d-block" alt="..."> -->');
+          this.WebHTMLContainer2.FHTML.Add('      <div class="card-body">');
+          this.WebHTMLContainer2.FHTML.Add('        <h5 class="card-title text-wrap">Hoja de columnas y renglones </h5>');
+          this.WebHTMLContainer2.FHTML.Add('        <p class="card-text text-wrap">Registro en formato tabular tipo Excel, con información columnas y renglones.</p>');
+          this.WebHTMLContainer2.FHTML.Add('        <a href="#" class="btn btn-primary" onclick="myFunction(event,2)">OK</a>');
+          this.WebHTMLContainer2.FHTML.Add("      </div>");
+          this.WebHTMLContainer2.FHTML.Add("    </div>");
+          this.WebHTMLContainer2.FHTML.Add("    <!-- Card 3 -->");
+          this.WebHTMLContainer2.FHTML.Add('    <div class="card" style="width: 18rem; flex: 0 0 auto;">');
+          this.WebHTMLContainer2.FHTML.Add("");
+          this.WebHTMLContainer2.FHTML.Add('  <!--  <div class="card" class="col-sm-6 mb-3 mb-sm-0">-->');
+          this.WebHTMLContainer2.FHTML.Add('           <!--  <img src="img/libreta02sm.png" class="card-img-top"    alt="...">  ');
+          this.WebHTMLContainer2.FHTML.Add('      <img src="img/tabular01sm.PNG" class="rounded mx-auto d-block" alt="...">-->');
+          this.WebHTMLContainer2.FHTML.Add('      <div class="card-body">');
+          this.WebHTMLContainer2.FHTML.Add('        <h5 class="card-title text-wrap">Editor de Texto</h5>');
+          this.WebHTMLContainer2.FHTML.Add('        <p class="card-text text-wrap">Editor de texto libre, con formato enriquecido imagenes, tablas etc.</p>');
+          this.WebHTMLContainer2.FHTML.Add('        <a href="#" class="btn btn-primary" onclick="myFunction(event,3)">OK</a>');
+          this.WebHTMLContainer2.FHTML.Add("      </div>");
+          this.WebHTMLContainer2.FHTML.Add("    </div>");
+          this.WebHTMLContainer2.FHTML.Add("    <!-- Add more cards as needed -->");
+          this.WebHTMLContainer2.FHTML.Add("  </div>");
+          this.WebHTMLContainer2.FHTML.Add("</div>");
+        } finally {
+          this.WebHTMLContainer2.FHTML.EndUpdate();
+        };
         this.WebPanel1.SetParentComponent(this);
         this.WebPanel1.SetName("WebPanel1");
         this.WebPanel1.SetLeft(0);
         this.WebPanel1.SetTop(0);
-        this.WebPanel1.SetWidth(615);
+        this.WebPanel1.SetWidth(652);
         this.WebPanel1.SetHeight(51);
         this.WebPanel1.SetElementClassName("card text-white bg-secondary mb-3");
         this.WebPanel1.SetAlign(pas["WEBLib.Controls"].TAlign.alTop);
@@ -85547,26 +85590,11 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
         this.WebPanel1.FElementBodyClassName = "d-flex justify-content-center align-items-center min-vh-100";
         this.WebPanel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.WebPanel1.SetTabOrder(1);
-        this.WebButton1.SetParentComponent(this.WebPanel1);
-        this.WebButton1.SetName("WebButton1");
-        this.WebButton1.SetLeft(488);
-        this.WebButton1.SetTop(0);
-        this.WebButton1.SetWidth(127);
-        this.WebButton1.SetHeight(51);
-        this.WebButton1.SetAlign(pas["WEBLib.Controls"].TAlign.alRight);
-        this.WebButton1.SetCaption("Entrar");
-        this.WebButton1.SetChildOrderEx(3);
-        this.WebButton1.SetElementClassName("btn-primary");
-        this.WebButton1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.WebButton1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
-        this.WebButton1.SetHeightPercent(100.000000000000000000);
-        this.WebButton1.SetWidthPercent(100.000000000000000000);
-        this.SetEvent$1(this.WebButton1,this,"OnClick","WebButton1Click");
         this.WebPanel2.SetParentComponent(this);
         this.WebPanel2.SetName("WebPanel2");
         this.WebPanel2.SetLeft(0);
-        this.WebPanel2.SetTop(440);
-        this.WebPanel2.SetWidth(615);
+        this.WebPanel2.SetTop(417);
+        this.WebPanel2.SetWidth(652);
         this.WebPanel2.SetHeight(40);
         this.WebPanel2.SetElementClassName("card text-white bg-secondary mb-3");
         this.WebPanel2.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
@@ -85578,13 +85606,28 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
         this.WebPanel2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.WebPanel2.SetTabOrder(2);
         this.SetEvent$1(this.WebPanel2,this,"OnClick","WebPanel2Click");
+        this.WebButton1.SetParentComponent(this);
+        this.WebButton1.SetName("WebButton1");
+        this.WebButton1.SetLeft(262);
+        this.WebButton1.SetTop(57);
+        this.WebButton1.SetWidth(127);
+        this.WebButton1.SetHeight(42);
+        this.WebButton1.SetCaption("Entrar");
+        this.WebButton1.FCenter.SetHorizontal(true);
+        this.WebButton1.SetChildOrderEx(3);
+        this.WebButton1.SetElementClassName("btn-primary");
+        this.WebButton1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebButton1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebButton1.SetHeightPercent(100.000000000000000000);
+        this.WebButton1.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.WebButton1,this,"OnClick","WebButton1Click");
       } finally {
         this.WebLabel1.AfterLoadDFMValues();
-        this.WebHTMLContainer2.AfterLoadDFMValues();
         this.WebHTMLContainer1.AfterLoadDFMValues();
+        this.WebHTMLContainer2.AfterLoadDFMValues();
         this.WebPanel1.AfterLoadDFMValues();
-        this.WebButton1.AfterLoadDFMValues();
         this.WebPanel2.AfterLoadDFMValues();
+        this.WebButton1.AfterLoadDFMValues();
       };
     };
     rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
@@ -85661,6 +85704,7 @@ rtl.module("uLoginForma",["System","SysUtils","Classes","JS","Web","WEBLib.Graph
         this.WebLoginPanel1.SetCaptionLabel("Control Acceso");
         this.WebLoginPanel1.FCenter.SetHorizontal(true);
         this.WebLoginPanel1.FCenter.SetVertical(true);
+        this.WebLoginPanel1.SetElementClassName$1("card text-white bg-dark  mb-3");
         this.WebLoginPanel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efProperty);
         this.WebLoginPanel1.SetElementPosition(pas["WEBLib.Controls"].TElementPosition.epAbsolute);
         this.WebLoginPanel1.SetLoginLabel("Entrar");

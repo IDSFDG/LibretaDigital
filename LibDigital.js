@@ -85211,204 +85211,56 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
     });
   };
 },["uAyuda"]);
-rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.Controls","WEBLib.ExtCtrls","WEBLib.StdCtrls","WEBLib.StdCtrls"],function () {
+rtl.module("uFormaTarjetas",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.ExtCtrls","WEBLib.Controls"],function () {
   "use strict";
   var $mod = this;
-  rtl.createClass(this,"TfrmCard",pas["WEBLib.Forms"].TForm,function () {
+  rtl.createClass(this,"TfrmCardTarjetas",pas["WEBLib.Forms"].TForm,function () {
     this.$init = function () {
       pas["WEBLib.Forms"].TForm.$init.call(this);
       this.WebHTMLContainer1 = null;
       this.WebPanel1 = null;
       this.WebPanel2 = null;
       this.WebHTMLContainer2 = null;
-      this.WebLabel1 = null;
-      this.WebButton1 = null;
     };
     this.$final = function () {
       this.WebHTMLContainer1 = undefined;
       this.WebPanel1 = undefined;
       this.WebPanel2 = undefined;
       this.WebHTMLContainer2 = undefined;
-      this.WebLabel1 = undefined;
-      this.WebButton1 = undefined;
       pas["WEBLib.Forms"].TForm.$final.call(this);
     };
-    this.WebFormCreate = function (Sender) {
-      const lbsel = document.getElementById('opcionselect');
-      lbsel.innerHTML="0";
-      function despliegaTexto(id) {
-          //console.log("Hello, " + username + "!");
-          // The function execution stops here.
-          // It implicitly returns 'undefined'.
-      
-               var texto = "";
-      
-      
-          console.log('idNAV',id);
-      
-            switch (parseInt(id)) {
-          case 1:
-          // Code to execute if expression === value1
-             texto = 'RENGLONES';
-            break;
-          case 2:
-          // Code to execute if expression === value2
-            texto = 'TABULAR';
-            break;
-          case 3:
-          // Code to execute if expression === value2
-            texto = 'EDITOR';
-            break;
-        // ... more cases ...
-        default:
-          // Code to execute if none of the cases match
-      }
-      
-      
-      
-            const element = document.getElementById("textodescrip");
-            element.textContent =texto;
-      }
-      
-      
-          var textosel = "";
-            // Select all navigation links
-      const navLinks = document.querySelectorAll('.nav-link');
-      
-       if (navLinks.length > 0) {
-             console.log(navLinks.length);
-              navLinks[0].classList.add('active');
-              navLinks[0].removeAttribute('aria-current');
-              navLinks[0].setAttribute('aria-current', 'page');
-              despliegaTexto(1);
-          }
-      
-      // Add a click event listener to each link
-      navLinks.forEach(link => {
-        link.addEventListener('click', function(event) {
-          // 1. Remove 'active' class and 'aria-current' from the previously active link
-          const currentActive = document.querySelector('.nav-link.active');
-          if (currentActive) {
-            currentActive.classList.remove('active');
-            currentActive.removeAttribute('aria-current');
-          }
-      
-          // 2. Add 'active' class and 'aria-current="page"' to the clicked link
-          this.classList.add('active');
-          this.setAttribute('aria-current', 'page');
-      
-          // 3. Get the selected item's text or href (value)
-          const selectedText = this.textContent;
-          const selectedHref = this.getAttribute('href');
-          const selectopc = this.getAttribute('id');
-          textosel = this.textContent;
-          textosel =selectopc;
-          console.log("id selected:",selectopc);
-          console.log("Selected Item Text:", selectedText);
-          console.log("Selected Item Href:", selectedHref);
-          console.log("ID seleccionado:", selectopc);
-        //  pas.unitCards.TfrmCard.cargarForma(textosel);
-      
-          const element = document.getElementById("textodescrip");
-          console.log(element.textContent);
-          //element.textContent ="**** NAV id selected:"+selectopc;
-      
-            despliegaTexto(selectopc);
-        });
-      
-      
-      });
-      
-       //const listItems = document.querySelectorAll('#myList li');
-       const listItems = document.querySelectorAll('.list-group-item');
-      
-      console.log('listItems',listItems);
-      if (listItems.length > 0) {
-             console.log(navLinks.length);
-              listItems[0].classList.add('active');
-              //listItems[0].removeAttribute('aria-current');
-              listItems[0].setAttribute('aria-current', 'page');
-              despliegaTexto(1);
-          }
-      
-      
-      listItems.forEach(item => {
-        //console.log('item',item);
-        item.addEventListener('click', function() {
-          console.log('You clicked on:', this.textContent);
-      
-         const lcurrentActive = document.querySelector(".list-group-item.active");
-         console.log('lcurrentActive***',lcurrentActive);
-              if (lcurrentActive) {
-                  lcurrentActive.classList.remove("active");
-              }
-      
-              // Add the 'active' class to the clicked item
-              this.classList.add("active");
-      
-      
-          // Add your function logic here
-          console.log(item);
-          console.log('id',item.id);
-          const str = item.id;
-          const idNav = str.substring(str.length - 1);
-          console.log('id',item.id,' ',idNav);
-          console.log(navLinks);
-          const activeNav = navLinks[idNav-1];
-      
-          const currentActive = document.querySelector('.nav-link.active');
-          if (currentActive) {
-                currentActive.classList.remove('active');
-                currentActive.removeAttribute('aria-current');
-          }
-      
-          if (activeNav) {
-            activeNav.classList.add('active');
-            activeNav.setAttribute('aria-current', 'page');
-            const element = document.getElementById("textodescrip");
-            console.log(element.textContent);
-            despliegaTexto(idNav);
-      
-          }
-        });
-      });
-    };
-    this.WebButton1Click = function (Sender) {
-      var opcsel = "";
-      const lbsel = document.getElementById('opcionselect');
-      console.log('opcion sel',lbsel.innerHTML);
-      opcsel=lbsel.innerHTML;
-      if (!(opcsel === "0")) {
-        this.cargarForma2(opcsel)}
-       else pas["WEBLib.Dialogs"].ShowMessage("favor de seleccionar opción");
+    this.WebFormShow = function (Sender) {
+      var el = null;
+      el = document.getElementById("btnid_1");
+      el.addEventListener("click",rtl.createSafeCallback(this,"BtnClick"));
+      el = document.getElementById("btnid_2");
+      el.addEventListener("click",rtl.createSafeCallback(this,"BtnClick"));
+      el = document.getElementById("btnid_3");
+      el.addEventListener("click",rtl.createSafeCallback(this,"BtnClick"));
+      el = document.getElementById("btnid_4");
+      el.addEventListener("click",rtl.createSafeCallback(this,"BtnClick"));
+      el = document.getElementById("btnid_5");
+      el.addEventListener("click",rtl.createSafeCallback(this,"BtnClick"));
+      el = document.getElementById("btnid_6");
+      el.addEventListener("click",rtl.createSafeCallback(this,"BtnClick"));
+      el = document.getElementById("btnid_7");
+      el.addEventListener("click",rtl.createSafeCallback(this,"BtnClick"));
+      el = document.getElementById("btnid_8");
+      el.addEventListener("click",rtl.createSafeCallback(this,"BtnClick"));
     };
     this.WebPanel2Click = function (Sender) {
       this.cerrarForma();
     };
-    this.cargarForma = function (opcion) {
-      var $Self = this;
-      var frmLibretaTab = null;
-      var frmEditor = null;
-      var opc = 0;
-      var sopc = "";
-      function AfterShowModal(AValue) {
-      };
-      function AfterCreate(AForm) {
-      };
-      const currentActive = document.querySelector('.nav-link.active');
-      console.log('currentActive',currentActive);
-      const opcid = currentActive.getAttribute('id');
-      console.log('id',opcid);
-      sopc = opcid;
-      opc = pas.SysUtils.StrToInt(sopc);
-      var $tmp = opc;
-      if (($tmp === 1) || ($tmp === 2)) {
-        frmLibretaTab = pas.uLibTabulator.TfrmLibTabulator.$create("CreateNew$3",[AfterCreate]);
-        frmLibretaTab.ShowModal$1(AfterShowModal);
-      } else if ($tmp === 3) {
-        frmEditor = pas.uEditor.TfrmEditor.$create("CreateNew$3",[AfterCreate]);
-        frmEditor.ShowModal$1(AfterShowModal);
-      };
+    this.BtnClick = function (Event) {
+      var Result = false;
+      var idboton = "";
+      const eid =Event.srcElement.id;
+      const sindex = eid.indexOf("_");
+      const idBoton = eid.substring(sindex+1);
+      idboton =idBoton;
+      console.log(eid, sindex,idBoton);
+      this.cargarForma2(idboton);
+      return Result;
     };
     this.cargarForma2 = function (opcion) {
       var $Self = this;
@@ -85437,22 +85289,18 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
     };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
-      this.WebLabel1 = pas["WEBLib.StdCtrls"].TLabel.$create("Create$2",["opcionselect"]);
       this.WebHTMLContainer1 = pas["WEBLib.ExtCtrls"].THTMLContainer.$create("Create$1",[this]);
-      this.WebHTMLContainer2 = pas["WEBLib.ExtCtrls"].THTMLContainer.$create("Create$1",[this]);
       this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
       this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
-      this.WebButton1 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
-      this.WebLabel1.BeforeLoadDFMValues();
+      this.WebHTMLContainer2 = pas["WEBLib.ExtCtrls"].THTMLContainer.$create("Create$1",[this]);
       this.WebHTMLContainer1.BeforeLoadDFMValues();
-      this.WebHTMLContainer2.BeforeLoadDFMValues();
       this.WebPanel1.BeforeLoadDFMValues();
       this.WebPanel2.BeforeLoadDFMValues();
-      this.WebButton1.BeforeLoadDFMValues();
+      this.WebHTMLContainer2.BeforeLoadDFMValues();
       try {
-        this.SetName("frmCard");
-        this.SetWidth(652);
-        this.SetHeight(457);
+        this.SetName("frmCardTarjetas");
+        this.SetWidth(640);
+        this.SetHeight(480);
         this.SetCSSLibrary(pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap);
         this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.FFont.FCharset = 1;
@@ -85461,173 +85309,212 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
         this.FFont.SetName("Tahoma");
         this.FFont.SetStyle({});
         this.SetParentFont(false);
-        this.SetEvent(this,"OnCreate","WebFormCreate");
-        this.WebLabel1.SetParentComponent(this);
-        this.WebLabel1.SetName("WebLabel1");
-        this.WebLabel1.SetLeft(472);
-        this.WebLabel1.SetTop(446);
-        this.WebLabel1.SetWidth(8);
-        this.WebLabel1.SetHeight(18);
-        this.WebLabel1.SetCaption("0");
-        this.WebLabel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.WebLabel1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
-        this.WebLabel1.SetHeightPercent(100.000000000000000000);
-        this.WebLabel1.SetVisible(false);
-        this.WebLabel1.SetWidthPercent(100.000000000000000000);
+        this.SetEvent(this,"OnShow","WebFormShow");
         this.WebHTMLContainer1.SetParentComponent(this);
         this.WebHTMLContainer1.SetName("WebHTMLContainer1");
-        this.WebHTMLContainer1.SetLeft(102);
-        this.WebHTMLContainer1.SetTop(57);
-        this.WebHTMLContainer1.SetWidth(447);
-        this.WebHTMLContainer1.SetHeight(336);
-        this.WebHTMLContainer1.FCenter.SetHorizontal(true);
+        this.WebHTMLContainer1.SetLeft(0);
+        this.WebHTMLContainer1.SetTop(60);
+        this.WebHTMLContainer1.SetWidth(640);
+        this.WebHTMLContainer1.SetHeight(360);
+        this.WebHTMLContainer1.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
         this.WebHTMLContainer1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.WebHTMLContainer1.FHTML.BeginUpdate();
         try {
           this.WebHTMLContainer1.FHTML.Clear();
-          this.WebHTMLContainer1.FHTML.Add('<div class="card text-center">');
-          this.WebHTMLContainer1.FHTML.Add('  <div class="card-header">');
-          this.WebHTMLContainer1.FHTML.Add('    <ul class="nav nav-pills card-header-pills">');
-          this.WebHTMLContainer1.FHTML.Add('      <li class="nav-item" Hoja Renglones>');
-          this.WebHTMLContainer1.FHTML.Add('        <a class="nav-link " id = "1" href="#">Hoja Renglones</a>');
-          this.WebHTMLContainer1.FHTML.Add("      </li>");
-          this.WebHTMLContainer1.FHTML.Add('      <li class="nav-item" Hoja Tabular>');
-          this.WebHTMLContainer1.FHTML.Add('        <a class="nav-link" id = "2"  href="#">Hoja Tabular</a>');
-          this.WebHTMLContainer1.FHTML.Add("      </li>");
-          this.WebHTMLContainer1.FHTML.Add('      <li class="nav-item" Editor Textos>');
-          this.WebHTMLContainer1.FHTML.Add('        <a class="nav-link"  id = "3" href="#">Editor Textos</a>');
-          this.WebHTMLContainer1.FHTML.Add("      </li>");
-          this.WebHTMLContainer1.FHTML.Add("    </ul>");
-          this.WebHTMLContainer1.FHTML.Add('<ul class="list-group list-group-flush">');
-          this.WebHTMLContainer1.FHTML.Add('    <li class=" list-group-item" id = "l1">Renglones</li> ');
-          this.WebHTMLContainer1.FHTML.Add('    <li class=" list-group-item" id = "l2">Tabular</li>');
-          this.WebHTMLContainer1.FHTML.Add('    <li class=" list-group-item" id = "l3">Editor</li>');
-          this.WebHTMLContainer1.FHTML.Add("  </ul>");
-          this.WebHTMLContainer1.FHTML.Add("  </div>");
-          this.WebHTMLContainer1.FHTML.Add('  <div class="card-body">');
-          this.WebHTMLContainer1.FHTML.Add('    <h5 class="card-title">Su libreta de información personal</h5>');
-          this.WebHTMLContainer1.FHTML.Add('    <p id=textodescrip class="card-text">capture de manera segura, sus notas, pendientes, registros ágiles y seguros, todo en su dispositivo.</p>');
-          this.WebHTMLContainer1.FHTML.Add('   <!-- <a href="#" class="btn btn-primary" id="botonentrar">Ir a aplicación</a>-->');
-          this.WebHTMLContainer1.FHTML.Add("  </div>");
+          this.WebHTMLContainer1.FHTML.Add('<div class="container my-4">\n  ');
+          this.WebHTMLContainer1.FHTML.Add('<div class="row row-cols-1 row-md-cols-3 g-4">\n    ');
+          this.WebHTMLContainer1.FHTML.Add("<!-- Card 1 -->\n   ");
+          this.WebHTMLContainer1.FHTML.Add(' <div class="col">\n     ');
+          this.WebHTMLContainer1.FHTML.Add(' <div class="card h-100 bg-primary text-white">\n        ');
+          this.WebHTMLContainer1.FHTML.Add('<!--<img src="..." class="card-img-top" alt="...">\n   -->\n       ');
+          this.WebHTMLContainer1.FHTML.Add('<div class="card-body ">\n          ');
+          this.WebHTMLContainer1.FHTML.Add('<h5 class="card-title">Hoja de renglones</h5>\n               ');
+          this.WebHTMLContainer1.FHTML.Add('<p class="card-text text-wrap" >Registro de renglones con información relevante, notas, apuntes, pendientes, actividades etc.</p>');
+          this.WebHTMLContainer1.FHTML.Add('<!--<a href="#" class="btn btn-primary">Go somewhere</a>-->\n            ');
+          this.WebHTMLContainer1.FHTML.Add('<input type="button"  value="Entrar" id="btnid_1"></input> ');
+          this.WebHTMLContainer1.FHTML.Add(" </div>\n      ");
+          this.WebHTMLContainer1.FHTML.Add("</div>\n    ");
+          this.WebHTMLContainer1.FHTML.Add("</div>\n  ");
+          this.WebHTMLContainer1.FHTML.Add("  <!-- Card 2 -->\n    ");
+          this.WebHTMLContainer1.FHTML.Add('<div class="col">\n     ');
+          this.WebHTMLContainer1.FHTML.Add(' <div class="card h-100 bg-secondary text-white ">\n        ');
+          this.WebHTMLContainer1.FHTML.Add('<!--<img src="..." class="card-img-top" alt="...">\n   -->\n       ');
+          this.WebHTMLContainer1.FHTML.Add('<div class="card-body">\n         ');
+          this.WebHTMLContainer1.FHTML.Add(' <h5 class="card-title">Hoja de columnas y renglones</h5>\n          ');
+          this.WebHTMLContainer1.FHTML.Add('<p class="card-text text-wrap">Registro en formato tabular tipo Excel, con información columnas y renglones.</p>   ');
+          this.WebHTMLContainer1.FHTML.Add('<!--<a href="#" class="btn btn-primary">Go somewhere</a>-->\n         ');
+          this.WebHTMLContainer1.FHTML.Add('<input type="button"  value="Entrar" id="btnid_2"></input> ');
+          this.WebHTMLContainer1.FHTML.Add("</div>\n      ");
+          this.WebHTMLContainer1.FHTML.Add("</div>\n   ");
+          this.WebHTMLContainer1.FHTML.Add(" </div>\n    ");
+          this.WebHTMLContainer1.FHTML.Add("<!-- Card 3 -->\n   ");
+          this.WebHTMLContainer1.FHTML.Add(' <div class="col">\n      ');
+          this.WebHTMLContainer1.FHTML.Add('<div class="card h-100 bg-primary text-white">\n       ');
+          this.WebHTMLContainer1.FHTML.Add('<!--<img src="..." class="card-img-top" alt="...">\n   -->\n       ');
+          this.WebHTMLContainer1.FHTML.Add('<div class="card-body">\n          ');
+          this.WebHTMLContainer1.FHTML.Add('<h5 class="card-title">Editor de Texto</h5>\n          ');
+          this.WebHTMLContainer1.FHTML.Add('<p class="card-text text-wrap">Editor de texto libre, con formato enriquecido imagenes, tablas etc.</p>     ');
+          this.WebHTMLContainer1.FHTML.Add('<!--<a href="#" class="btn btn-primary">Go somewhere</a>-->\n         ');
+          this.WebHTMLContainer1.FHTML.Add('<input type="button"  value="Entrar" id="btnid_3"></input> ');
+          this.WebHTMLContainer1.FHTML.Add("</div>\n      ");
+          this.WebHTMLContainer1.FHTML.Add("</div>\n    ");
+          this.WebHTMLContainer1.FHTML.Add("</div>\n  ");
+          this.WebHTMLContainer1.FHTML.Add("");
+          this.WebHTMLContainer1.FHTML.Add("");
+          this.WebHTMLContainer1.FHTML.Add("");
+          this.WebHTMLContainer1.FHTML.Add("</div>\n  ");
           this.WebHTMLContainer1.FHTML.Add("</div>");
         } finally {
           this.WebHTMLContainer1.FHTML.EndUpdate();
-        };
-        this.WebHTMLContainer1.SetVisible(false);
-        this.WebHTMLContainer2.SetParentComponent(this);
-        this.WebHTMLContainer2.SetName("WebHTMLContainer2");
-        this.WebHTMLContainer2.SetLeft(0);
-        this.WebHTMLContainer2.SetTop(173);
-        this.WebHTMLContainer2.SetWidth(652);
-        this.WebHTMLContainer2.SetHeight(244);
-        this.WebHTMLContainer2.FCenter.SetHorizontal(true);
-        this.WebHTMLContainer2.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
-        this.WebHTMLContainer2.SetChildOrderEx(1);
-        this.WebHTMLContainer2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.WebHTMLContainer2.FHTML.BeginUpdate();
-        try {
-          this.WebHTMLContainer2.FHTML.Clear();
-          this.WebHTMLContainer2.FHTML.Add('<div class="container-fluid my-4">');
-          this.WebHTMLContainer2.FHTML.Add('  <div class="scrollable-cards d-flex flex-nowrap">');
-          this.WebHTMLContainer2.FHTML.Add("    <!-- Card 1 -->");
-          this.WebHTMLContainer2.FHTML.Add('    <div class="card" style="width: 18rem; flex: 0 0 auto;">');
-          this.WebHTMLContainer2.FHTML.Add("");
-          this.WebHTMLContainer2.FHTML.Add('  <!--  <div class="card" class="col-sm-6 mb-3 mb-sm-0">-->');
-          this.WebHTMLContainer2.FHTML.Add("");
-          this.WebHTMLContainer2.FHTML.Add('           <!--  <img src="img/libreta02sm.png" class="card-img-top"    alt="...">  ');
-          this.WebHTMLContainer2.FHTML.Add('        <img src="img/libreta02sm.PNG"  class="rounded mx-auto d-block"     alt="...">-->   ');
-          this.WebHTMLContainer2.FHTML.Add('     <!-- <div class="card-image1">');
-          this.WebHTMLContainer2.FHTML.Add("      </div>");
-          this.WebHTMLContainer2.FHTML.Add("     -->");
-          this.WebHTMLContainer2.FHTML.Add('      <div class="card-body">');
-          this.WebHTMLContainer2.FHTML.Add('        <h5 class="card-title text-wrap">Hoja de renglones </h5>');
-          this.WebHTMLContainer2.FHTML.Add('        <p class="card-text text-wrap" >Registro de renglones con información relevante, notas, apuntes, pendientes, actividades etc.</p>');
-          this.WebHTMLContainer2.FHTML.Add('        <a href="#" class="btn btn-primary" onclick="myFunction(event,1)">OK</a>');
-          this.WebHTMLContainer2.FHTML.Add("      </div>");
-          this.WebHTMLContainer2.FHTML.Add("    </div>");
-          this.WebHTMLContainer2.FHTML.Add("    <!-- Card 2 -->");
-          this.WebHTMLContainer2.FHTML.Add('    <div class="card" style="width: 18rem; flex: 0 0 auto;">');
-          this.WebHTMLContainer2.FHTML.Add("");
-          this.WebHTMLContainer2.FHTML.Add('  <!--  <div class="card" class="col-sm-6 mb-3 mb-sm-0">-->');
-          this.WebHTMLContainer2.FHTML.Add('           <!--  <img src="img/libreta02sm.png" class="card-img-top"    alt="..."> ');
-          this.WebHTMLContainer2.FHTML.Add('      <img src="img/tabular01sm.PNG" class="rounded mx-auto d-block" alt="..."> -->');
-          this.WebHTMLContainer2.FHTML.Add('      <div class="card-body">');
-          this.WebHTMLContainer2.FHTML.Add('        <h5 class="card-title text-wrap">Hoja de columnas y renglones </h5>');
-          this.WebHTMLContainer2.FHTML.Add('        <p class="card-text text-wrap">Registro en formato tabular tipo Excel, con información columnas y renglones.</p>');
-          this.WebHTMLContainer2.FHTML.Add('        <a href="#" class="btn btn-primary" onclick="myFunction(event,2)">OK</a>');
-          this.WebHTMLContainer2.FHTML.Add("      </div>");
-          this.WebHTMLContainer2.FHTML.Add("    </div>");
-          this.WebHTMLContainer2.FHTML.Add("    <!-- Card 3 -->");
-          this.WebHTMLContainer2.FHTML.Add('    <div class="card" style="width: 18rem; flex: 0 0 auto;">');
-          this.WebHTMLContainer2.FHTML.Add("");
-          this.WebHTMLContainer2.FHTML.Add('  <!--  <div class="card" class="col-sm-6 mb-3 mb-sm-0">-->');
-          this.WebHTMLContainer2.FHTML.Add('           <!--  <img src="img/libreta02sm.png" class="card-img-top"    alt="...">  ');
-          this.WebHTMLContainer2.FHTML.Add('      <img src="img/tabular01sm.PNG" class="rounded mx-auto d-block" alt="...">-->');
-          this.WebHTMLContainer2.FHTML.Add('      <div class="card-body">');
-          this.WebHTMLContainer2.FHTML.Add('        <h5 class="card-title text-wrap">Editor de Texto</h5>');
-          this.WebHTMLContainer2.FHTML.Add('        <p class="card-text text-wrap">Editor de texto libre, con formato enriquecido imagenes, tablas etc.</p>');
-          this.WebHTMLContainer2.FHTML.Add('        <a href="#" class="btn btn-primary" onclick="myFunction(event,3)">OK</a>');
-          this.WebHTMLContainer2.FHTML.Add("      </div>");
-          this.WebHTMLContainer2.FHTML.Add("    </div>");
-          this.WebHTMLContainer2.FHTML.Add("    <!-- Add more cards as needed -->");
-          this.WebHTMLContainer2.FHTML.Add("  </div>");
-          this.WebHTMLContainer2.FHTML.Add("</div>");
-        } finally {
-          this.WebHTMLContainer2.FHTML.EndUpdate();
         };
         this.WebPanel1.SetParentComponent(this);
         this.WebPanel1.SetName("WebPanel1");
         this.WebPanel1.SetLeft(0);
         this.WebPanel1.SetTop(0);
-        this.WebPanel1.SetWidth(652);
-        this.WebPanel1.SetHeight(51);
+        this.WebPanel1.SetWidth(640);
+        this.WebPanel1.SetHeight(60);
         this.WebPanel1.SetElementClassName("card text-white bg-secondary mb-3");
         this.WebPanel1.SetAlign(pas["WEBLib.Controls"].TAlign.alTop);
-        this.WebPanel1.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
         this.WebPanel1.SetCaption("Libreta Digital");
         this.WebPanel1.SetChildOrderEx(1);
-        this.WebPanel1.SetColor(16770250);
         this.WebPanel1.FElementBodyClassName = "d-flex justify-content-center align-items-center min-vh-100";
         this.WebPanel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.WebPanel1.SetTabOrder(1);
         this.WebPanel2.SetParentComponent(this);
         this.WebPanel2.SetName("WebPanel2");
         this.WebPanel2.SetLeft(0);
-        this.WebPanel2.SetTop(417);
-        this.WebPanel2.SetWidth(652);
-        this.WebPanel2.SetHeight(40);
+        this.WebPanel2.SetTop(420);
+        this.WebPanel2.SetWidth(640);
+        this.WebPanel2.SetHeight(60);
         this.WebPanel2.SetElementClassName("card text-white bg-secondary mb-3");
         this.WebPanel2.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
-        this.WebPanel2.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
         this.WebPanel2.SetCaption("Salir");
         this.WebPanel2.SetChildOrderEx(2);
-        this.WebPanel2.SetColor(16770250);
         this.WebPanel2.FElementBodyClassName = "d-flex justify-content-center align-items-center min-vh-100";
         this.WebPanel2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.WebPanel2.SetTabOrder(2);
         this.SetEvent$1(this.WebPanel2,this,"OnClick","WebPanel2Click");
-        this.WebButton1.SetParentComponent(this);
-        this.WebButton1.SetName("WebButton1");
-        this.WebButton1.SetLeft(262);
-        this.WebButton1.SetTop(57);
-        this.WebButton1.SetWidth(127);
-        this.WebButton1.SetHeight(42);
-        this.WebButton1.SetCaption("Entrar");
-        this.WebButton1.FCenter.SetHorizontal(true);
-        this.WebButton1.SetChildOrderEx(3);
-        this.WebButton1.SetElementClassName("btn-primary");
-        this.WebButton1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.WebButton1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
-        this.WebButton1.SetHeightPercent(100.000000000000000000);
-        this.WebButton1.SetWidthPercent(100.000000000000000000);
-        this.SetEvent$1(this.WebButton1,this,"OnClick","WebButton1Click");
+        this.WebHTMLContainer2.SetParentComponent(this);
+        this.WebHTMLContainer2.SetName("WebHTMLContainer2");
+        this.WebHTMLContainer2.SetLeft(488);
+        this.WebHTMLContainer2.SetTop(13);
+        this.WebHTMLContainer2.SetWidth(100);
+        this.WebHTMLContainer2.SetHeight(41);
+        this.WebHTMLContainer2.SetChildOrderEx(3);
+        this.WebHTMLContainer2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebHTMLContainer2.FHTML.BeginUpdate();
+        try {
+          this.WebHTMLContainer2.FHTML.Clear();
+          this.WebHTMLContainer2.FHTML.Add('<div class="container my-4">\n  ');
+          this.WebHTMLContainer2.FHTML.Add('<div class="row row-cols-1 row-md-cols-3 g-4">\n    ');
+          this.WebHTMLContainer2.FHTML.Add("<!-- Card 1 -->\n   ");
+          this.WebHTMLContainer2.FHTML.Add(' <div class="col">\n     ');
+          this.WebHTMLContainer2.FHTML.Add(' <div class="card h-100 bg-primary text-white">\n        ');
+          this.WebHTMLContainer2.FHTML.Add('<!--<img src="..." class="card-img-top" alt="...">\n   -->\n       ');
+          this.WebHTMLContainer2.FHTML.Add('<div class="card-body ">\n          ');
+          this.WebHTMLContainer2.FHTML.Add('<h5 class="card-title">Opcion 1</h5>\n          ');
+          this.WebHTMLContainer2.FHTML.Add('<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card\'s content.</p>\n          ');
+          this.WebHTMLContainer2.FHTML.Add('<!--<a href="#" class="btn btn-primary">Go somewhere</a>-->\n            ');
+          this.WebHTMLContainer2.FHTML.Add('<input type="button"  value="Entrar" id="btnid_1"></input> ');
+          this.WebHTMLContainer2.FHTML.Add(" </div>\n      ");
+          this.WebHTMLContainer2.FHTML.Add("</div>\n    ");
+          this.WebHTMLContainer2.FHTML.Add("</div>\n  ");
+          this.WebHTMLContainer2.FHTML.Add("  <!-- Card 2 -->\n    ");
+          this.WebHTMLContainer2.FHTML.Add('<div class="col">\n     ');
+          this.WebHTMLContainer2.FHTML.Add(' <div class="card h-100 bg-secondary text-white ">\n        ');
+          this.WebHTMLContainer2.FHTML.Add('<!--<img src="..." class="card-img-top" alt="...">\n   -->\n       ');
+          this.WebHTMLContainer2.FHTML.Add('<div class="card-body">\n         ');
+          this.WebHTMLContainer2.FHTML.Add(' <h5 class="card-title">Opcion 2</h5>\n          ');
+          this.WebHTMLContainer2.FHTML.Add('<p class="card-text">This card has some additional content to make it slightly taller than the first.</p>\n         ');
+          this.WebHTMLContainer2.FHTML.Add('<!--<a href="#" class="btn btn-primary">Go somewhere</a>-->\n         ');
+          this.WebHTMLContainer2.FHTML.Add('<input type="button"  value="Entrar" id="btnid_2"></input> ');
+          this.WebHTMLContainer2.FHTML.Add("</div>\n      ");
+          this.WebHTMLContainer2.FHTML.Add("</div>\n   ");
+          this.WebHTMLContainer2.FHTML.Add(" </div>\n    ");
+          this.WebHTMLContainer2.FHTML.Add("<!-- Card 3 -->\n   ");
+          this.WebHTMLContainer2.FHTML.Add(' <div class="col">\n      ');
+          this.WebHTMLContainer2.FHTML.Add('<div class="card h-100 bg-primary text-white">\n       ');
+          this.WebHTMLContainer2.FHTML.Add('<!--<img src="..." class="card-img-top" alt="...">\n   -->\n       ');
+          this.WebHTMLContainer2.FHTML.Add('<div class="card-body">\n          ');
+          this.WebHTMLContainer2.FHTML.Add('<h5 class="card-title">Opcion 3</h5>\n          ');
+          this.WebHTMLContainer2.FHTML.Add('<p class="card-text">Yet another card with content.</p>\n         ');
+          this.WebHTMLContainer2.FHTML.Add('<!--<a href="#" class="btn btn-primary">Go somewhere</a>-->\n         ');
+          this.WebHTMLContainer2.FHTML.Add('<input type="button"  value="Entrar" id="btnid_3"></input> ');
+          this.WebHTMLContainer2.FHTML.Add("</div>\n      ");
+          this.WebHTMLContainer2.FHTML.Add("</div>\n    ");
+          this.WebHTMLContainer2.FHTML.Add("</div>\n  ");
+          this.WebHTMLContainer2.FHTML.Add("<!-- Card 4 -->\n   ");
+          this.WebHTMLContainer2.FHTML.Add(' <div class="col">\n      ');
+          this.WebHTMLContainer2.FHTML.Add('<div class="card h-100 bg-secondary text-white">\n       ');
+          this.WebHTMLContainer2.FHTML.Add('<!--<img src="..." class="card-img-top" alt="...">\n   -->\n       ');
+          this.WebHTMLContainer2.FHTML.Add('<div class="card-body">\n          ');
+          this.WebHTMLContainer2.FHTML.Add('<h5 class="card-title">Opcion 4</h5>\n          ');
+          this.WebHTMLContainer2.FHTML.Add('<p class="card-text">Yet another card with content C4.</p>\n         ');
+          this.WebHTMLContainer2.FHTML.Add('<!--<a href="#" class="btn btn-primary">Go somewhere</a>-->\n         ');
+          this.WebHTMLContainer2.FHTML.Add('<input type="button"  value="Entrar" id="btnid_4"></input> ');
+          this.WebHTMLContainer2.FHTML.Add("</div>\n      ");
+          this.WebHTMLContainer2.FHTML.Add("</div>\n    ");
+          this.WebHTMLContainer2.FHTML.Add("</div>\n  ");
+          this.WebHTMLContainer2.FHTML.Add("<!-- Card 5 -->\n   ");
+          this.WebHTMLContainer2.FHTML.Add(' <div class="col">\n      ');
+          this.WebHTMLContainer2.FHTML.Add('<div class="card h-100 bg-primary text-white">\n       ');
+          this.WebHTMLContainer2.FHTML.Add('<!--<img src="..." class="card-img-top" alt="...">\n   -->\n       ');
+          this.WebHTMLContainer2.FHTML.Add('<div class="card-body">\n          ');
+          this.WebHTMLContainer2.FHTML.Add('<h5 class="card-title">Card title 5</h5>\n          ');
+          this.WebHTMLContainer2.FHTML.Add('<p class="card-text">Yet another card with content C5.</p>\n         ');
+          this.WebHTMLContainer2.FHTML.Add('<!--<a href="#" class="btn btn-primary">Go somewhere</a>-->\n         ');
+          this.WebHTMLContainer2.FHTML.Add('<input type="button"  value="Entrar" id="btnid_5"></input> ');
+          this.WebHTMLContainer2.FHTML.Add("</div>\n      ");
+          this.WebHTMLContainer2.FHTML.Add("</div>\n    ");
+          this.WebHTMLContainer2.FHTML.Add("</div>\n  ");
+          this.WebHTMLContainer2.FHTML.Add("<!-- Card 6 -->\n   ");
+          this.WebHTMLContainer2.FHTML.Add(' <div class="col">\n      ');
+          this.WebHTMLContainer2.FHTML.Add('<div class="card h-100 bg-secondary text-white">\n       ');
+          this.WebHTMLContainer2.FHTML.Add('<!--<img src="..." class="card-img-top" alt="...">\n   -->\n        ');
+          this.WebHTMLContainer2.FHTML.Add('<div class="card-body">\n          ');
+          this.WebHTMLContainer2.FHTML.Add('<h5 class="card-title">Card title 6</h5>\n          ');
+          this.WebHTMLContainer2.FHTML.Add('<p class="card-text">Yet another card with content C6.</p>\n         ');
+          this.WebHTMLContainer2.FHTML.Add('<!--<a href="#" class="btn btn-primary">Go somewhere</a>-->\n         ');
+          this.WebHTMLContainer2.FHTML.Add('<input type="button"  value="Entrar" id="btnid_6"></input> ');
+          this.WebHTMLContainer2.FHTML.Add("</div>\n      ");
+          this.WebHTMLContainer2.FHTML.Add("</div>\n    ");
+          this.WebHTMLContainer2.FHTML.Add("</div>\n  ");
+          this.WebHTMLContainer2.FHTML.Add("<!-- Card 7 -->\n   ");
+          this.WebHTMLContainer2.FHTML.Add(' <div class="col">\n      ');
+          this.WebHTMLContainer2.FHTML.Add('<div class="card h-100 bg-primary text-white">\n       ');
+          this.WebHTMLContainer2.FHTML.Add('<!--<img src="..." class="card-img-top" alt="...">\n   -->\n       ');
+          this.WebHTMLContainer2.FHTML.Add('<div class="card-body">\n          ');
+          this.WebHTMLContainer2.FHTML.Add('<h5 class="card-title">Card title 7</h5>\n          ');
+          this.WebHTMLContainer2.FHTML.Add('<p class="card-text">Yet another card with content C7.</p>\n         ');
+          this.WebHTMLContainer2.FHTML.Add('<!--<a href="#" class="btn btn-primary">Go somewhere</a>-->\n         ');
+          this.WebHTMLContainer2.FHTML.Add('<input type="button"  value="Entrar" id="btnid_7"></input> ');
+          this.WebHTMLContainer2.FHTML.Add("</div>\n      ");
+          this.WebHTMLContainer2.FHTML.Add("</div>\n    ");
+          this.WebHTMLContainer2.FHTML.Add("</div>\n  ");
+          this.WebHTMLContainer2.FHTML.Add("<!-- Card 8 -->\n   ");
+          this.WebHTMLContainer2.FHTML.Add(' <div class="col">\n      ');
+          this.WebHTMLContainer2.FHTML.Add('<div class="card h-100 bg-secondary text-white">\n       ');
+          this.WebHTMLContainer2.FHTML.Add('<!--<img src="..." class="card-img-top" alt="...">\n   -->\n       ');
+          this.WebHTMLContainer2.FHTML.Add('<div class="card-body">\n          ');
+          this.WebHTMLContainer2.FHTML.Add('<h5 class="card-title">Card title 8</h5>\n          ');
+          this.WebHTMLContainer2.FHTML.Add('<p class="card-text">Yet another card with content C8.</p>\n         ');
+          this.WebHTMLContainer2.FHTML.Add('<!--<a href="#" class="btn btn-primary">Go somewhere</a>-->\n         ');
+          this.WebHTMLContainer2.FHTML.Add('<input type="button"  value="Entrar" id="btnid_8"></input> ');
+          this.WebHTMLContainer2.FHTML.Add("</div>\n      ");
+          this.WebHTMLContainer2.FHTML.Add("</div>\n    ");
+          this.WebHTMLContainer2.FHTML.Add("</div>\n  ");
+          this.WebHTMLContainer2.FHTML.Add("");
+          this.WebHTMLContainer2.FHTML.Add("</div>\n  ");
+          this.WebHTMLContainer2.FHTML.Add("</div>");
+        } finally {
+          this.WebHTMLContainer2.FHTML.EndUpdate();
+        };
+        this.WebHTMLContainer2.SetVisible(false);
       } finally {
-        this.WebLabel1.AfterLoadDFMValues();
         this.WebHTMLContainer1.AfterLoadDFMValues();
-        this.WebHTMLContainer2.AfterLoadDFMValues();
         this.WebPanel1.AfterLoadDFMValues();
         this.WebPanel2.AfterLoadDFMValues();
-        this.WebButton1.AfterLoadDFMValues();
+        this.WebHTMLContainer2.AfterLoadDFMValues();
       };
     };
     rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
@@ -85637,13 +85524,10 @@ rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
     $r.addField("WebPanel1",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
     $r.addField("WebPanel2",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
     $r.addField("WebHTMLContainer2",pas["WEBLib.ExtCtrls"].$rtti["THTMLContainer"]);
-    $r.addField("WebLabel1",pas["WEBLib.StdCtrls"].$rtti["TLabel"]);
-    $r.addField("WebButton1",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
-    $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
-    $r.addMethod("WebButton1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebFormShow",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebPanel2Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
-  this.frmCard = null;
+  this.frmCardTarjetas = null;
 },["uLibTabulator","uEditor"]);
 rtl.module("uLoginForma",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.Controls","WEBLib.Login","WEBLib.StdCtrls","WEBLib.StdCtrls","WEBLib.WebCtrls"],function () {
   "use strict";
@@ -85668,7 +85552,7 @@ rtl.module("uLoginForma",["System","SysUtils","Classes","JS","Web","WEBLib.Graph
       };
       function AfterCreate(AForm) {
       };
-      frmLibretaTab = pas.unitCards.TfrmCard.$create("CreateNew$3",[AfterCreate]);
+      frmLibretaTab = pas.uFormaTarjetas.TfrmCardTarjetas.$create("CreateNew$3",[AfterCreate]);
       frmLibretaTab.ShowModal$1(AfterShowModal);
     };
     this.WebFormCreate = function (Sender) {
@@ -85735,7 +85619,7 @@ rtl.module("uLoginForma",["System","SysUtils","Classes","JS","Web","WEBLib.Graph
     $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.frmLogin = null;
-},["unitCards"]);
+},["uFormaTarjetas"]);
 rtl.module("jsdelphisystem",["System"],function () {
   "use strict";
   var $mod = this;
@@ -96986,6 +96870,440 @@ rtl.module("UEditorCM",["System","SysUtils","Classes","JS","Web","WEBLib.Graphic
   });
   this.frmEditorCM = null;
 });
+rtl.module("unitCards",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.Controls","WEBLib.ExtCtrls","WEBLib.StdCtrls","WEBLib.StdCtrls"],function () {
+  "use strict";
+  var $mod = this;
+  rtl.createClass(this,"TfrmCard",pas["WEBLib.Forms"].TForm,function () {
+    this.$init = function () {
+      pas["WEBLib.Forms"].TForm.$init.call(this);
+      this.WebHTMLContainer1 = null;
+      this.WebPanel1 = null;
+      this.WebPanel2 = null;
+      this.WebHTMLContainer2 = null;
+      this.WebLabel1 = null;
+      this.WebButton1 = null;
+    };
+    this.$final = function () {
+      this.WebHTMLContainer1 = undefined;
+      this.WebPanel1 = undefined;
+      this.WebPanel2 = undefined;
+      this.WebHTMLContainer2 = undefined;
+      this.WebLabel1 = undefined;
+      this.WebButton1 = undefined;
+      pas["WEBLib.Forms"].TForm.$final.call(this);
+    };
+    this.WebFormCreate = function (Sender) {
+      const lbsel = document.getElementById('opcionselect');
+      lbsel.innerHTML="0";
+      function despliegaTexto(id) {
+          //console.log("Hello, " + username + "!");
+          // The function execution stops here.
+          // It implicitly returns 'undefined'.
+      
+               var texto = "";
+      
+      
+          console.log('idNAV',id);
+      
+            switch (parseInt(id)) {
+          case 1:
+          // Code to execute if expression === value1
+             texto = 'RENGLONES';
+            break;
+          case 2:
+          // Code to execute if expression === value2
+            texto = 'TABULAR';
+            break;
+          case 3:
+          // Code to execute if expression === value2
+            texto = 'EDITOR';
+            break;
+        // ... more cases ...
+        default:
+          // Code to execute if none of the cases match
+      }
+      
+      
+      
+            const element = document.getElementById("textodescrip");
+            element.textContent =texto;
+      }
+      
+      
+          var textosel = "";
+            // Select all navigation links
+      const navLinks = document.querySelectorAll('.nav-link');
+      
+       if (navLinks.length > 0) {
+             console.log(navLinks.length);
+              navLinks[0].classList.add('active');
+              navLinks[0].removeAttribute('aria-current');
+              navLinks[0].setAttribute('aria-current', 'page');
+              despliegaTexto(1);
+          }
+      
+      // Add a click event listener to each link
+      navLinks.forEach(link => {
+        link.addEventListener('click', function(event) {
+          // 1. Remove 'active' class and 'aria-current' from the previously active link
+          const currentActive = document.querySelector('.nav-link.active');
+          if (currentActive) {
+            currentActive.classList.remove('active');
+            currentActive.removeAttribute('aria-current');
+          }
+      
+          // 2. Add 'active' class and 'aria-current="page"' to the clicked link
+          this.classList.add('active');
+          this.setAttribute('aria-current', 'page');
+      
+          // 3. Get the selected item's text or href (value)
+          const selectedText = this.textContent;
+          const selectedHref = this.getAttribute('href');
+          const selectopc = this.getAttribute('id');
+          textosel = this.textContent;
+          textosel =selectopc;
+          console.log("id selected:",selectopc);
+          console.log("Selected Item Text:", selectedText);
+          console.log("Selected Item Href:", selectedHref);
+          console.log("ID seleccionado:", selectopc);
+        //  pas.unitCards.TfrmCard.cargarForma(textosel);
+      
+          const element = document.getElementById("textodescrip");
+          console.log(element.textContent);
+          //element.textContent ="**** NAV id selected:"+selectopc;
+      
+            despliegaTexto(selectopc);
+        });
+      
+      
+      });
+      
+       //const listItems = document.querySelectorAll('#myList li');
+       const listItems = document.querySelectorAll('.list-group-item');
+      
+      console.log('listItems',listItems);
+      if (listItems.length > 0) {
+             console.log(navLinks.length);
+              listItems[0].classList.add('active');
+              //listItems[0].removeAttribute('aria-current');
+              listItems[0].setAttribute('aria-current', 'page');
+              despliegaTexto(1);
+          }
+      
+      
+      listItems.forEach(item => {
+        //console.log('item',item);
+        item.addEventListener('click', function() {
+          console.log('You clicked on:', this.textContent);
+      
+         const lcurrentActive = document.querySelector(".list-group-item.active");
+         console.log('lcurrentActive***',lcurrentActive);
+              if (lcurrentActive) {
+                  lcurrentActive.classList.remove("active");
+              }
+      
+              // Add the 'active' class to the clicked item
+              this.classList.add("active");
+      
+      
+          // Add your function logic here
+          console.log(item);
+          console.log('id',item.id);
+          const str = item.id;
+          const idNav = str.substring(str.length - 1);
+          console.log('id',item.id,' ',idNav);
+          console.log(navLinks);
+          const activeNav = navLinks[idNav-1];
+      
+          const currentActive = document.querySelector('.nav-link.active');
+          if (currentActive) {
+                currentActive.classList.remove('active');
+                currentActive.removeAttribute('aria-current');
+          }
+      
+          if (activeNav) {
+            activeNav.classList.add('active');
+            activeNav.setAttribute('aria-current', 'page');
+            const element = document.getElementById("textodescrip");
+            console.log(element.textContent);
+            despliegaTexto(idNav);
+      
+          }
+        });
+      });
+    };
+    this.WebButton1Click = function (Sender) {
+      var opcsel = "";
+      const lbsel = document.getElementById('opcionselect');
+      console.log('opcion sel',lbsel.innerHTML);
+      opcsel=lbsel.innerHTML;
+      if (!(opcsel === "0")) {
+        this.cargarForma2(opcsel)}
+       else pas["WEBLib.Dialogs"].ShowMessage("favor de seleccionar opción");
+    };
+    this.WebPanel2Click = function (Sender) {
+      this.cerrarForma();
+    };
+    this.cargarForma = function (opcion) {
+      var $Self = this;
+      var frmLibretaTab = null;
+      var frmEditor = null;
+      var opc = 0;
+      var sopc = "";
+      function AfterShowModal(AValue) {
+      };
+      function AfterCreate(AForm) {
+      };
+      const currentActive = document.querySelector('.nav-link.active');
+      console.log('currentActive',currentActive);
+      const opcid = currentActive.getAttribute('id');
+      console.log('id',opcid);
+      sopc = opcid;
+      opc = pas.SysUtils.StrToInt(sopc);
+      var $tmp = opc;
+      if (($tmp === 1) || ($tmp === 2)) {
+        frmLibretaTab = pas.uLibTabulator.TfrmLibTabulator.$create("CreateNew$3",[AfterCreate]);
+        frmLibretaTab.ShowModal$1(AfterShowModal);
+      } else if ($tmp === 3) {
+        frmEditor = pas.uEditor.TfrmEditor.$create("CreateNew$3",[AfterCreate]);
+        frmEditor.ShowModal$1(AfterShowModal);
+      };
+    };
+    this.cargarForma2 = function (opcion) {
+      var $Self = this;
+      var frmLibretaTab = null;
+      var frmEditor = null;
+      var opc = 0;
+      var sopc = "";
+      function AfterShowModal(AValue) {
+      };
+      function AfterCreate(AForm) {
+      };
+      opc = pas.SysUtils.StrToInt(opcion);
+      var $tmp = opc;
+      if (($tmp === 1) || ($tmp === 2)) {
+        frmLibretaTab = pas.uLibTabulator.TfrmLibTabulator.$create("CreateNew$3",[AfterCreate]);
+        frmLibretaTab.seltipo = opc;
+        frmLibretaTab.ShowModal$1(AfterShowModal);
+      } else if ($tmp === 3) {
+        frmEditor = pas.uEditor.TfrmEditor.$create("CreateNew$3",[AfterCreate]);
+        frmEditor.ShowModal$1(AfterShowModal);
+      };
+    };
+    this.cerrarForma = function () {
+      this.Close();
+      pas["WEBLib.Forms"].Application.Terminate();
+    };
+    this.LoadDFMValues = function () {
+      pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
+      this.WebLabel1 = pas["WEBLib.StdCtrls"].TLabel.$create("Create$2",["opcionselect"]);
+      this.WebHTMLContainer1 = pas["WEBLib.ExtCtrls"].THTMLContainer.$create("Create$1",[this]);
+      this.WebHTMLContainer2 = pas["WEBLib.ExtCtrls"].THTMLContainer.$create("Create$1",[this]);
+      this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.WebPanel2 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.WebButton1 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
+      this.WebLabel1.BeforeLoadDFMValues();
+      this.WebHTMLContainer1.BeforeLoadDFMValues();
+      this.WebHTMLContainer2.BeforeLoadDFMValues();
+      this.WebPanel1.BeforeLoadDFMValues();
+      this.WebPanel2.BeforeLoadDFMValues();
+      this.WebButton1.BeforeLoadDFMValues();
+      try {
+        this.SetName("frmCard");
+        this.SetWidth(652);
+        this.SetHeight(457);
+        this.SetCSSLibrary(pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap);
+        this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.FFont.FCharset = 1;
+        this.FFont.SetColor(65793);
+        this.FFont.SetHeight(-15);
+        this.FFont.SetName("Tahoma");
+        this.FFont.SetStyle({});
+        this.SetParentFont(false);
+        this.SetEvent(this,"OnCreate","WebFormCreate");
+        this.WebLabel1.SetParentComponent(this);
+        this.WebLabel1.SetName("WebLabel1");
+        this.WebLabel1.SetLeft(472);
+        this.WebLabel1.SetTop(446);
+        this.WebLabel1.SetWidth(8);
+        this.WebLabel1.SetHeight(18);
+        this.WebLabel1.SetCaption("0");
+        this.WebLabel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebLabel1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebLabel1.SetHeightPercent(100.000000000000000000);
+        this.WebLabel1.SetVisible(false);
+        this.WebLabel1.SetWidthPercent(100.000000000000000000);
+        this.WebHTMLContainer1.SetParentComponent(this);
+        this.WebHTMLContainer1.SetName("WebHTMLContainer1");
+        this.WebHTMLContainer1.SetLeft(102);
+        this.WebHTMLContainer1.SetTop(57);
+        this.WebHTMLContainer1.SetWidth(447);
+        this.WebHTMLContainer1.SetHeight(336);
+        this.WebHTMLContainer1.FCenter.SetHorizontal(true);
+        this.WebHTMLContainer1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebHTMLContainer1.FHTML.BeginUpdate();
+        try {
+          this.WebHTMLContainer1.FHTML.Clear();
+          this.WebHTMLContainer1.FHTML.Add('<div class="card text-center">');
+          this.WebHTMLContainer1.FHTML.Add('  <div class="card-header">');
+          this.WebHTMLContainer1.FHTML.Add('    <ul class="nav nav-pills card-header-pills">');
+          this.WebHTMLContainer1.FHTML.Add('      <li class="nav-item" Hoja Renglones>');
+          this.WebHTMLContainer1.FHTML.Add('        <a class="nav-link " id = "1" href="#">Hoja Renglones</a>');
+          this.WebHTMLContainer1.FHTML.Add("      </li>");
+          this.WebHTMLContainer1.FHTML.Add('      <li class="nav-item" Hoja Tabular>');
+          this.WebHTMLContainer1.FHTML.Add('        <a class="nav-link" id = "2"  href="#">Hoja Tabular</a>');
+          this.WebHTMLContainer1.FHTML.Add("      </li>");
+          this.WebHTMLContainer1.FHTML.Add('      <li class="nav-item" Editor Textos>');
+          this.WebHTMLContainer1.FHTML.Add('        <a class="nav-link"  id = "3" href="#">Editor Textos</a>');
+          this.WebHTMLContainer1.FHTML.Add("      </li>");
+          this.WebHTMLContainer1.FHTML.Add("    </ul>");
+          this.WebHTMLContainer1.FHTML.Add('<ul class="list-group list-group-flush">');
+          this.WebHTMLContainer1.FHTML.Add('    <li class=" list-group-item" id = "l1">Renglones</li> ');
+          this.WebHTMLContainer1.FHTML.Add('    <li class=" list-group-item" id = "l2">Tabular</li>');
+          this.WebHTMLContainer1.FHTML.Add('    <li class=" list-group-item" id = "l3">Editor</li>');
+          this.WebHTMLContainer1.FHTML.Add("  </ul>");
+          this.WebHTMLContainer1.FHTML.Add("  </div>");
+          this.WebHTMLContainer1.FHTML.Add('  <div class="card-body">');
+          this.WebHTMLContainer1.FHTML.Add('    <h5 class="card-title">Su libreta de información personal</h5>');
+          this.WebHTMLContainer1.FHTML.Add('    <p id=textodescrip class="card-text">capture de manera segura, sus notas, pendientes, registros ágiles y seguros, todo en su dispositivo.</p>');
+          this.WebHTMLContainer1.FHTML.Add('   <!-- <a href="#" class="btn btn-primary" id="botonentrar">Ir a aplicación</a>-->');
+          this.WebHTMLContainer1.FHTML.Add("  </div>");
+          this.WebHTMLContainer1.FHTML.Add("</div>");
+        } finally {
+          this.WebHTMLContainer1.FHTML.EndUpdate();
+        };
+        this.WebHTMLContainer1.SetVisible(false);
+        this.WebHTMLContainer2.SetParentComponent(this);
+        this.WebHTMLContainer2.SetName("WebHTMLContainer2");
+        this.WebHTMLContainer2.SetLeft(0);
+        this.WebHTMLContainer2.SetTop(173);
+        this.WebHTMLContainer2.SetWidth(652);
+        this.WebHTMLContainer2.SetHeight(244);
+        this.WebHTMLContainer2.FCenter.SetHorizontal(true);
+        this.WebHTMLContainer2.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
+        this.WebHTMLContainer2.SetChildOrderEx(1);
+        this.WebHTMLContainer2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebHTMLContainer2.FHTML.BeginUpdate();
+        try {
+          this.WebHTMLContainer2.FHTML.Clear();
+          this.WebHTMLContainer2.FHTML.Add('<div class="container-fluid my-4">');
+          this.WebHTMLContainer2.FHTML.Add('  <div class="scrollable-cards d-flex flex-nowrap">');
+          this.WebHTMLContainer2.FHTML.Add("    <!-- Card 1 -->");
+          this.WebHTMLContainer2.FHTML.Add('    <div class="card" style="width: 18rem; flex: 0 0 auto;">');
+          this.WebHTMLContainer2.FHTML.Add("");
+          this.WebHTMLContainer2.FHTML.Add('  <!--  <div class="card" class="col-sm-6 mb-3 mb-sm-0">-->');
+          this.WebHTMLContainer2.FHTML.Add("");
+          this.WebHTMLContainer2.FHTML.Add('           <!--  <img src="img/libreta02sm.png" class="card-img-top"    alt="...">  ');
+          this.WebHTMLContainer2.FHTML.Add('        <img src="img/libreta02sm.PNG"  class="rounded mx-auto d-block"     alt="...">-->   ');
+          this.WebHTMLContainer2.FHTML.Add('     <!-- <div class="card-image1">');
+          this.WebHTMLContainer2.FHTML.Add("      </div>");
+          this.WebHTMLContainer2.FHTML.Add("     -->");
+          this.WebHTMLContainer2.FHTML.Add('      <div class="card-body">');
+          this.WebHTMLContainer2.FHTML.Add('        <h5 class="card-title text-wrap">Hoja de renglones </h5>');
+          this.WebHTMLContainer2.FHTML.Add('        <p class="card-text text-wrap" >Registro de renglones con información relevante, notas, apuntes, pendientes, actividades etc.</p>');
+          this.WebHTMLContainer2.FHTML.Add('        <a href="#" class="btn btn-primary" onclick="myFunction(event,1)">OK</a>');
+          this.WebHTMLContainer2.FHTML.Add("      </div>");
+          this.WebHTMLContainer2.FHTML.Add("    </div>");
+          this.WebHTMLContainer2.FHTML.Add("    <!-- Card 2 -->");
+          this.WebHTMLContainer2.FHTML.Add('    <div class="card" style="width: 18rem; flex: 0 0 auto;">');
+          this.WebHTMLContainer2.FHTML.Add("");
+          this.WebHTMLContainer2.FHTML.Add('  <!--  <div class="card" class="col-sm-6 mb-3 mb-sm-0">-->');
+          this.WebHTMLContainer2.FHTML.Add('           <!--  <img src="img/libreta02sm.png" class="card-img-top"    alt="..."> ');
+          this.WebHTMLContainer2.FHTML.Add('      <img src="img/tabular01sm.PNG" class="rounded mx-auto d-block" alt="..."> -->');
+          this.WebHTMLContainer2.FHTML.Add('      <div class="card-body">');
+          this.WebHTMLContainer2.FHTML.Add('        <h5 class="card-title text-wrap">Hoja de columnas y renglones </h5>');
+          this.WebHTMLContainer2.FHTML.Add('        <p class="card-text text-wrap">Registro en formato tabular tipo Excel, con información columnas y renglones.</p>');
+          this.WebHTMLContainer2.FHTML.Add('        <a href="#" class="btn btn-primary" onclick="myFunction(event,2)">OK</a>');
+          this.WebHTMLContainer2.FHTML.Add("      </div>");
+          this.WebHTMLContainer2.FHTML.Add("    </div>");
+          this.WebHTMLContainer2.FHTML.Add("    <!-- Card 3 -->");
+          this.WebHTMLContainer2.FHTML.Add('    <div class="card" style="width: 18rem; flex: 0 0 auto;">');
+          this.WebHTMLContainer2.FHTML.Add("");
+          this.WebHTMLContainer2.FHTML.Add('  <!--  <div class="card" class="col-sm-6 mb-3 mb-sm-0">-->');
+          this.WebHTMLContainer2.FHTML.Add('           <!--  <img src="img/libreta02sm.png" class="card-img-top"    alt="...">  ');
+          this.WebHTMLContainer2.FHTML.Add('      <img src="img/tabular01sm.PNG" class="rounded mx-auto d-block" alt="...">-->');
+          this.WebHTMLContainer2.FHTML.Add('      <div class="card-body">');
+          this.WebHTMLContainer2.FHTML.Add('        <h5 class="card-title text-wrap">Editor de Texto</h5>');
+          this.WebHTMLContainer2.FHTML.Add('        <p class="card-text text-wrap">Editor de texto libre, con formato enriquecido imagenes, tablas etc.</p>');
+          this.WebHTMLContainer2.FHTML.Add('        <a href="#" class="btn btn-primary" onclick="myFunction(event,3)">OK</a>');
+          this.WebHTMLContainer2.FHTML.Add("      </div>");
+          this.WebHTMLContainer2.FHTML.Add("    </div>");
+          this.WebHTMLContainer2.FHTML.Add("    <!-- Add more cards as needed -->");
+          this.WebHTMLContainer2.FHTML.Add("  </div>");
+          this.WebHTMLContainer2.FHTML.Add("</div>");
+        } finally {
+          this.WebHTMLContainer2.FHTML.EndUpdate();
+        };
+        this.WebPanel1.SetParentComponent(this);
+        this.WebPanel1.SetName("WebPanel1");
+        this.WebPanel1.SetLeft(0);
+        this.WebPanel1.SetTop(0);
+        this.WebPanel1.SetWidth(652);
+        this.WebPanel1.SetHeight(51);
+        this.WebPanel1.SetElementClassName("card text-white bg-secondary mb-3");
+        this.WebPanel1.SetAlign(pas["WEBLib.Controls"].TAlign.alTop);
+        this.WebPanel1.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
+        this.WebPanel1.SetCaption("Libreta Digital");
+        this.WebPanel1.SetChildOrderEx(1);
+        this.WebPanel1.SetColor(16770250);
+        this.WebPanel1.FElementBodyClassName = "d-flex justify-content-center align-items-center min-vh-100";
+        this.WebPanel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebPanel1.SetTabOrder(1);
+        this.WebPanel2.SetParentComponent(this);
+        this.WebPanel2.SetName("WebPanel2");
+        this.WebPanel2.SetLeft(0);
+        this.WebPanel2.SetTop(417);
+        this.WebPanel2.SetWidth(652);
+        this.WebPanel2.SetHeight(40);
+        this.WebPanel2.SetElementClassName("card text-white bg-secondary mb-3");
+        this.WebPanel2.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
+        this.WebPanel2.SetBorderStyle(pas["WEBLib.Controls"].TBorderStyle.bsNone);
+        this.WebPanel2.SetCaption("Salir");
+        this.WebPanel2.SetChildOrderEx(2);
+        this.WebPanel2.SetColor(16770250);
+        this.WebPanel2.FElementBodyClassName = "d-flex justify-content-center align-items-center min-vh-100";
+        this.WebPanel2.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebPanel2.SetTabOrder(2);
+        this.SetEvent$1(this.WebPanel2,this,"OnClick","WebPanel2Click");
+        this.WebButton1.SetParentComponent(this);
+        this.WebButton1.SetName("WebButton1");
+        this.WebButton1.SetLeft(262);
+        this.WebButton1.SetTop(57);
+        this.WebButton1.SetWidth(127);
+        this.WebButton1.SetHeight(42);
+        this.WebButton1.SetCaption("Entrar");
+        this.WebButton1.FCenter.SetHorizontal(true);
+        this.WebButton1.SetChildOrderEx(3);
+        this.WebButton1.SetElementClassName("btn-primary");
+        this.WebButton1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebButton1.SetHeightStyle(pas["WEBLib.Controls"].TSizeStyle.ssAuto);
+        this.WebButton1.SetHeightPercent(100.000000000000000000);
+        this.WebButton1.SetWidthPercent(100.000000000000000000);
+        this.SetEvent$1(this.WebButton1,this,"OnClick","WebButton1Click");
+      } finally {
+        this.WebLabel1.AfterLoadDFMValues();
+        this.WebHTMLContainer1.AfterLoadDFMValues();
+        this.WebHTMLContainer2.AfterLoadDFMValues();
+        this.WebPanel1.AfterLoadDFMValues();
+        this.WebPanel2.AfterLoadDFMValues();
+        this.WebButton1.AfterLoadDFMValues();
+      };
+    };
+    rtl.addIntf(this,pas["WEBLib.Controls"].IControl);
+    rtl.addIntf(this,pas.System.IUnknown);
+    var $r = this.$rtti;
+    $r.addField("WebHTMLContainer1",pas["WEBLib.ExtCtrls"].$rtti["THTMLContainer"]);
+    $r.addField("WebPanel1",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
+    $r.addField("WebPanel2",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
+    $r.addField("WebHTMLContainer2",pas["WEBLib.ExtCtrls"].$rtti["THTMLContainer"]);
+    $r.addField("WebLabel1",pas["WEBLib.StdCtrls"].$rtti["TLabel"]);
+    $r.addField("WebButton1",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
+    $r.addMethod("WebFormCreate",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebButton1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebPanel2Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+  });
+  this.frmCard = null;
+},["uLibTabulator","uEditor"]);
 rtl.module("unitCards2",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics","WEBLib.Controls","WEBLib.Forms","WEBLib.Dialogs","WEBLib.Controls","WEBLib.ExtCtrls"],function () {
   "use strict";
   var $mod = this;
@@ -97149,7 +97467,7 @@ rtl.module("unitCards2",["System","SysUtils","Classes","JS","Web","WEBLib.Graphi
   });
   this.frmCard2 = null;
 });
-rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","UFormaLibreta","uLoginForma","uAyuda","uLibTabulator","Unit5","uTabulator","uClipboard","URichEditor","uResponsiveGrid","uEditor","UEditorCM","unitCards","unitCards2"],function () {
+rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","UFormaLibreta","uLoginForma","uAyuda","uLibTabulator","Unit5","uTabulator","uClipboard","URichEditor","uResponsiveGrid","uEditor","UEditorCM","unitCards","unitCards2","uFormaTarjetas"],function () {
   "use strict";
   var $mod = this;
   $mod.$implcode = function () {
@@ -97172,11 +97490,6 @@ rtl.module("program",["System","WEBLib.Forms","WEBLib.Forms","UFormaLibreta","uL
         return this.p.frmLogin;
       }, set: function (v) {
         this.p.frmLogin = v;
-      }});
-    pas["WEBLib.Forms"].Application.CreateForm(pas.unitCards.TfrmCard,{p: pas.unitCards, get: function () {
-        return this.p.frmCard;
-      }, set: function (v) {
-        this.p.frmCard = v;
       }});
     pas["WEBLib.Forms"].Application.Run();
   };

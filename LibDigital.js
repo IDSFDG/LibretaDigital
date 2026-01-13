@@ -83467,7 +83467,7 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
         this.WebPanel1.SetTop(896);
         this.WebPanel1.SetWidth(1081);
         this.WebPanel1.SetHeight(39);
-        this.WebPanel1.SetElementClassName("card");
+        this.WebPanel1.SetElementClassName("card text-white bg-secondary mb-3");
         this.WebPanel1.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
         this.WebPanel1.SetCaption("Salir");
         this.WebPanel1.SetChildOrderEx(4);
@@ -85411,8 +85411,8 @@ rtl.module("uFormaTarjetas",["System","SysUtils","Classes","JS","Web","WEBLib.Gr
           this.WebHTMLContainer1.FHTML.Add('<div class="container my-4">\n  ');
           this.WebHTMLContainer1.FHTML.Add('<div class="row row-cols-1 row-md-cols-3 g-4">\n    ');
           this.WebHTMLContainer1.FHTML.Add("<!-- Card 1 -->\n   ");
-          this.WebHTMLContainer1.FHTML.Add(' <div class="col">\n     ');
-          this.WebHTMLContainer1.FHTML.Add(' <div class="card h-100 bg-primary text-white">\n        ');
+          this.WebHTMLContainer1.FHTML.Add(' <div class="col">\n          ');
+          this.WebHTMLContainer1.FHTML.Add(' <div class="card h-100 bg-primary text-white bg-opacity-55">\n       ');
           this.WebHTMLContainer1.FHTML.Add('<!--<img src="..." class="card-img-top" alt="...">\n   -->\n       ');
           this.WebHTMLContainer1.FHTML.Add('<div class="card-body ">\n          ');
           this.WebHTMLContainer1.FHTML.Add('<h5 class="card-title">Hoja de renglones</h5>\n               ');
@@ -85424,7 +85424,7 @@ rtl.module("uFormaTarjetas",["System","SysUtils","Classes","JS","Web","WEBLib.Gr
           this.WebHTMLContainer1.FHTML.Add("</div>\n  ");
           this.WebHTMLContainer1.FHTML.Add("  <!-- Card 2 -->\n    ");
           this.WebHTMLContainer1.FHTML.Add('<div class="col">\n     ');
-          this.WebHTMLContainer1.FHTML.Add(' <div class="card h-100 bg-secondary text-white ">\n        ');
+          this.WebHTMLContainer1.FHTML.Add(' <div class="card h-100 bg-primary text-white bg-opacity-55">\n        ');
           this.WebHTMLContainer1.FHTML.Add('<!--<img src="..." class="card-img-top" alt="...">\n   -->\n       ');
           this.WebHTMLContainer1.FHTML.Add('<div class="card-body">\n         ');
           this.WebHTMLContainer1.FHTML.Add(' <h5 class="card-title">Hoja de columnas y renglones</h5>\n          ');
@@ -85436,7 +85436,7 @@ rtl.module("uFormaTarjetas",["System","SysUtils","Classes","JS","Web","WEBLib.Gr
           this.WebHTMLContainer1.FHTML.Add(" </div>\n    ");
           this.WebHTMLContainer1.FHTML.Add("<!-- Card 3 -->\n   ");
           this.WebHTMLContainer1.FHTML.Add(' <div class="col">\n      ');
-          this.WebHTMLContainer1.FHTML.Add('<div class="card h-100 bg-primary text-white">\n       ');
+          this.WebHTMLContainer1.FHTML.Add(' <div class="card h-100 bg-primary text-white bg-opacity-55">\n        ');
           this.WebHTMLContainer1.FHTML.Add('<!--<img src="..." class="card-img-top" alt="...">\n   -->\n       ');
           this.WebHTMLContainer1.FHTML.Add('<div class="card-body">\n          ');
           this.WebHTMLContainer1.FHTML.Add('<h5 class="card-title">Editor de Texto</h5>\n          ');
@@ -85675,7 +85675,7 @@ rtl.module("uLoginForma",["System","SysUtils","Classes","JS","Web","WEBLib.Graph
         this.WebLoginPanel1.SetCaptionLabel("Control Acceso");
         this.WebLoginPanel1.FCenter.SetHorizontal(true);
         this.WebLoginPanel1.FCenter.SetVertical(true);
-        this.WebLoginPanel1.SetElementClassName$1("card text-white bg-dark  mb-3");
+        this.WebLoginPanel1.SetElementClassName$1("card text-white bg-secondary  bg-opacity-70  mb-3");
         this.WebLoginPanel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efProperty);
         this.WebLoginPanel1.SetElementPosition(pas["WEBLib.Controls"].TElementPosition.epAbsolute);
         this.WebLoginPanel1.SetLoginLabel("Entrar");

@@ -83061,7 +83061,7 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
       pas["WEBLib.Forms"].TForm.$init.call(this);
       this.divSunEditor = null;
       this.WebButton1 = null;
-      this.WebPanel1 = null;
+      this.WebPanelBottom = null;
       this.WebButton3 = null;
       this.WebButton2 = null;
       this.btnfocus = null;
@@ -83071,7 +83071,7 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
     this.$final = function () {
       this.divSunEditor = undefined;
       this.WebButton1 = undefined;
-      this.WebPanel1 = undefined;
+      this.WebPanelBottom = undefined;
       this.WebButton3 = undefined;
       this.WebButton2 = undefined;
       this.btnfocus = undefined;
@@ -83370,7 +83370,7 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
          $("#divSummernote").summernote('code',html);
       //   se.setContents(html);
     };
-    this.WebPanel1Click = function (Sender) {
+    this.WebPanelBottomClick = function (Sender) {
       this.Close();
     };
     this.WebLabel1Click = function (Sender) {
@@ -83406,23 +83406,35 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
       console.log(se.core);
       se.core.focus();
     };
+    this.WebFormResize = function (Sender) {
+      var frmwidth = 0;
+      frmwidth = this.GetWidth();
+      console.log('frmwidth',frmwidth);
+      this.WebPanelBottom.SetWidth(frmwidth);
+      this.SetHeight(450);
+      return;
+      this.WebPanelBottom.SetElementPosition(pas["WEBLib.Controls"].TElementPosition.epIgnore);
+      this.WebPanelBottom.SetWidth(frmwidth);
+      this.WebPanelBottom.SetTop(this.GetHeight() - this.WebPanelBottom.GetHeight());
+      this.WebPanelBottom.SetLeft(0);
+    };
     this.LoadDFMValues = function () {
       pas["WEBLib.Forms"].TCustomForm.LoadDFMValues.call(this);
       this.divSunEditor = pas["WEBLib.WebCtrls"].THTMLDiv.$create("Create$2",["divSunEditor"]);
       this.WebButton1 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
-      this.WebPanel1 = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
+      this.WebPanelBottom = pas["WEBLib.ExtCtrls"].TPanel.$create("Create$1",[this]);
       this.WebButton3 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.WebButton2 = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.btnfocus = pas["WEBLib.StdCtrls"].TButton.$create("Create$1",[this]);
       this.divSunEditor.BeforeLoadDFMValues();
       this.WebButton1.BeforeLoadDFMValues();
-      this.WebPanel1.BeforeLoadDFMValues();
+      this.WebPanelBottom.BeforeLoadDFMValues();
       this.WebButton3.BeforeLoadDFMValues();
       this.WebButton2.BeforeLoadDFMValues();
       this.btnfocus.BeforeLoadDFMValues();
       try {
         this.SetName("frmEditor");
-        this.SetWidth(1081);
+        this.SetWidth(600);
         this.SetHeight(960);
         this.SetColor(12632256);
         this.SetCSSLibrary(pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap);
@@ -83434,12 +83446,13 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
         this.FFont.SetStyle({});
         this.SetParentFont(false);
         this.SetEvent(this,"OnCreate","WebFormCreate");
+        this.SetEvent(this,"OnResize","WebFormResize");
         this.SetEvent(this,"OnShow","WebFormShow");
         this.divSunEditor.SetParentComponent(this);
         this.divSunEditor.SetName("divSunEditor");
-        this.divSunEditor.SetLeft(0);
-        this.divSunEditor.SetTop(31);
-        this.divSunEditor.SetWidth(727);
+        this.divSunEditor.SetLeft(8);
+        this.divSunEditor.SetTop(39);
+        this.divSunEditor.SetWidth(584);
         this.divSunEditor.SetHeight(192);
         this.divSunEditor.SetChildOrderEx(1);
         this.divSunEditor.SetElementPosition(pas["WEBLib.Controls"].TElementPosition.epIgnore);
@@ -83449,7 +83462,7 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
         this.WebButton1.SetName("WebButton1");
         this.WebButton1.SetLeft(0);
         this.WebButton1.SetTop(935);
-        this.WebButton1.SetWidth(1081);
+        this.WebButton1.SetWidth(600);
         this.WebButton1.SetHeight(25);
         this.WebButton1.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
         this.WebButton1.SetCaption("Salir");
@@ -83461,21 +83474,21 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
         this.WebButton1.SetVisible(false);
         this.WebButton1.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.WebButton1,this,"OnClick","WebButton1Click");
-        this.WebPanel1.SetParentComponent(this);
-        this.WebPanel1.SetName("WebPanel1");
-        this.WebPanel1.SetLeft(0);
-        this.WebPanel1.SetTop(896);
-        this.WebPanel1.SetWidth(1081);
-        this.WebPanel1.SetHeight(39);
-        this.WebPanel1.SetElementClassName("card text-white bg-secondary mb-3");
-        this.WebPanel1.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
-        this.WebPanel1.SetCaption("Salir");
-        this.WebPanel1.SetChildOrderEx(4);
-        this.WebPanel1.FElementBodyClassName = "card-body";
-        this.WebPanel1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
-        this.WebPanel1.SetTabOrder(2);
-        this.SetEvent$1(this.WebPanel1,this,"OnClick","WebPanel1Click");
-        this.WebButton3.SetParentComponent(this.WebPanel1);
+        this.WebPanelBottom.SetParentComponent(this);
+        this.WebPanelBottom.SetName("WebPanelBottom");
+        this.WebPanelBottom.SetLeft(0);
+        this.WebPanelBottom.SetTop(896);
+        this.WebPanelBottom.SetWidth(600);
+        this.WebPanelBottom.SetHeight(39);
+        this.WebPanelBottom.SetElementClassName("card text-white bg-secondary mb-3");
+        this.WebPanelBottom.SetAlign(pas["WEBLib.Controls"].TAlign.alBottom);
+        this.WebPanelBottom.SetCaption("Salir");
+        this.WebPanelBottom.SetChildOrderEx(4);
+        this.WebPanelBottom.FElementBodyClassName = "card-body";
+        this.WebPanelBottom.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
+        this.WebPanelBottom.SetTabOrder(2);
+        this.SetEvent$1(this.WebPanelBottom,this,"OnClick","WebPanelBottomClick");
+        this.WebButton3.SetParentComponent(this.WebPanelBottom);
         this.WebButton3.SetName("WebButton3");
         this.WebButton3.SetLeft(112);
         this.WebButton3.SetTop(5);
@@ -83490,7 +83503,7 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
         this.WebButton3.SetVisible(false);
         this.WebButton3.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.WebButton3,this,"OnClick","WebButton3Click");
-        this.WebButton2.SetParentComponent(this.WebPanel1);
+        this.WebButton2.SetParentComponent(this.WebPanelBottom);
         this.WebButton2.SetName("WebButton2");
         this.WebButton2.SetLeft(214);
         this.WebButton2.SetTop(3);
@@ -83505,7 +83518,7 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
         this.WebButton2.SetVisible(false);
         this.WebButton2.SetWidthPercent(100.000000000000000000);
         this.SetEvent$1(this.WebButton2,this,"OnClick","WebButton2Click");
-        this.btnfocus.SetParentComponent(this.WebPanel1);
+        this.btnfocus.SetParentComponent(this.WebPanelBottom);
         this.btnfocus.SetName("btnfocus");
         this.btnfocus.SetLeft(3);
         this.btnfocus.SetTop(3);
@@ -83523,7 +83536,7 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
       } finally {
         this.divSunEditor.AfterLoadDFMValues();
         this.WebButton1.AfterLoadDFMValues();
-        this.WebPanel1.AfterLoadDFMValues();
+        this.WebPanelBottom.AfterLoadDFMValues();
         this.WebButton3.AfterLoadDFMValues();
         this.WebButton2.AfterLoadDFMValues();
         this.btnfocus.AfterLoadDFMValues();
@@ -83534,7 +83547,7 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
     var $r = this.$rtti;
     $r.addField("divSunEditor",pas["WEBLib.WebCtrls"].$rtti["THTMLDiv"]);
     $r.addField("WebButton1",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
-    $r.addField("WebPanel1",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
+    $r.addField("WebPanelBottom",pas["WEBLib.ExtCtrls"].$rtti["TPanel"]);
     $r.addField("WebButton3",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addField("WebButton2",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
     $r.addField("btnfocus",pas["WEBLib.StdCtrls"].$rtti["TButton"]);
@@ -83545,13 +83558,14 @@ rtl.module("uEditor",["System","SysUtils","Classes","JS","Web","WEBLib.Graphics"
     $r.addMethod("SummernoteSave",0,[["HTML",pas.System.$rtti["WideString"]]]);
     $r.addMethod("SunEditorSave",0,[["HTML",pas.System.$rtti["WideString"]]]);
     $r.addMethod("btnCodeMirrorSaveClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
-    $r.addMethod("WebPanel1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebPanelBottomClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebLabel1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebButton1Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebButton2Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebButton3Click",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("btnfocusClick",0,[["Sender",pas.System.$rtti["TObject"]]]);
     $r.addMethod("WebFormShow",0,[["Sender",pas.System.$rtti["TObject"]]]);
+    $r.addMethod("WebFormResize",0,[["Sender",pas.System.$rtti["TObject"]]]);
   });
   this.frmEditor = null;
   this.vsuneditor = undefined;
@@ -83949,6 +83963,7 @@ rtl.module("uLibTabulator",["System","SysUtils","Classes","JS","Web","WEBLib.Gra
               // Get the cell in the 'name' column and trigger edit/focus
               let firstCell = firstRow.getCell('A');
               if (firstCell) {
+                // ********************* FIRST CELL EDIT    ***********************
                   console.log('FIRST CELL EDIT');
                   firstCell.edit();
               }
@@ -85387,7 +85402,7 @@ rtl.module("uFormaTarjetas",["System","SysUtils","Classes","JS","Web","WEBLib.Gr
       try {
         this.SetName("frmCardTarjetas");
         this.SetWidth(610);
-        this.SetHeight(439);
+        this.SetHeight(415);
         this.SetCSSLibrary(pas["WEBLib.Controls"].TCSSLibrary.cssBootstrap);
         this.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.FFont.FCharset = 1;
@@ -85402,7 +85417,7 @@ rtl.module("uFormaTarjetas",["System","SysUtils","Classes","JS","Web","WEBLib.Gr
         this.WebHTMLContainer1.SetLeft(0);
         this.WebHTMLContainer1.SetTop(54);
         this.WebHTMLContainer1.SetWidth(610);
-        this.WebHTMLContainer1.SetHeight(354);
+        this.WebHTMLContainer1.SetHeight(330);
         this.WebHTMLContainer1.SetAlign(pas["WEBLib.Controls"].TAlign.alClient);
         this.WebHTMLContainer1.SetElementFont(pas["WEBLib.Controls"].TElementFont.efCSS);
         this.WebHTMLContainer1.FHTML.BeginUpdate();
@@ -85470,7 +85485,7 @@ rtl.module("uFormaTarjetas",["System","SysUtils","Classes","JS","Web","WEBLib.Gr
         this.WebPanel2.SetParentComponent(this);
         this.WebPanel2.SetName("WebPanel2");
         this.WebPanel2.SetLeft(0);
-        this.WebPanel2.SetTop(408);
+        this.WebPanel2.SetTop(384);
         this.WebPanel2.SetWidth(610);
         this.WebPanel2.SetHeight(31);
         this.WebPanel2.SetElementClassName("card text-white bg-secondary mb-3");
